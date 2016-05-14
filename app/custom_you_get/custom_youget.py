@@ -17,12 +17,13 @@ def m_get_video(urls, **kwargs):
 def m_get_download_progress(urls, **kwargs):
     pass
 
+
 # if __name__ == '__main__':
-#     urls = ['http://www.bilibili.com/video/av1950041/']
-#     # download_main(any_download, any_download_playlist, urls=urls, playlist=False,
-#     #               output_dir='../videos', merge=True, info_only=True,
-#     #               json_output=False, caption=True)
-#
-#     m_get_video(urls=urls,
-#                      output_dir='../videos', merge=True,
-#                      json_output=False, caption=True)
+#     urls = ['https://www.youtube.com/watch?v=mM3dSR_qxcY']
+#     kwargs = {'output_dir': './tmpVideos',
+#               'merge': True,
+#               'json_output': False,
+#               'caption': True}
+#     kwargs['info_only'] = False
+#     m_get_video(urls=urls, **kwargs)
+

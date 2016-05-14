@@ -131,9 +131,8 @@ if sys.stdout.isatty():
     default_encoding = sys.stdout.encoding.lower()
 else:
     default_encoding = locale.getpreferredencoding().lower()
-
-
 sys.stdout = r_obj
+
 
 def maybe_print(*s):
     try:
@@ -518,7 +517,7 @@ def url_save(url, filepath, bar, refer=None, is_part=False, faker=False, headers
                     bar.update_received(len(buffer))
 
     assert received == os.path.getsize(temp_filepath), '%s == %s == %s' % (
-    received, os.path.getsize(temp_filepath), temp_filepath)
+        received, os.path.getsize(temp_filepath), temp_filepath)
 
     if os.access(filepath, os.W_OK):
         os.remove(filepath)  # on Windows rename could fail if destination filepath exists
@@ -1193,9 +1192,9 @@ def script_main(script_name, download, download_playlist, **kwargs):
                         cookies.set_cookie(c)
                 except:
                     pass
-                # TODO: Chromium Cookies
-                # SELECT host_key, path, secure, expires_utc, name, encrypted_value FROM cookies
-                # http://n8henrie.com/2013/11/use-chromes-cookies-for-easier-downloading-with-python-requests/
+                    # TODO: Chromium Cookies
+                    # SELECT host_key, path, secure, expires_utc, name, encrypted_value FROM cookies
+                    # http://n8henrie.com/2013/11/use-chromes-cookies-for-easier-downloading-with-python-requests/
 
         elif o in ('-l', '--playlist'):
             playlist = True

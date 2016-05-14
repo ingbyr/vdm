@@ -38,18 +38,22 @@ class GUI(QMainWindow):
         self.setCentralWidget(ing_main)
 
     def init_menu(self):
-        about_action = QAction(QIcon('/res/icon/about.png'), '&About', self)
+        about_action = QAction(QIcon(base_dir + 'app/res/icon/about.png'), '&About', self)
         about_action.setStatusTip('About this application')
         about_action.triggered.connect(self.about_message)
 
-        exit_action = QAction(QIcon('/res/icon/exit.png'), '&Exit', self)
+        exit_action = QAction(QIcon(base_dir + 'app/res/icon/exit.png'), '&Exit', self)
         exit_action.setShortcut('Ctrl+Q')
         exit_action.setStatusTip('Exit application')
         exit_action.triggered.connect(qApp.quit)
 
-        menubar = self.menuBar()
-        setting_menu = menubar.addMenu('&Setting')
-        help_menu = menubar.addMenu('&Help')
+        file_path_action = QAction(QIcon(base_dir + '/app/res/icon/file_path.png'), '&FilePath', self)
+        file_path_action.setStatusTip('Set file path')
+
+        menu_bar = self.menuBar()
+        setting_menu = menu_bar.addMenu('&Setting')
+        help_menu = menu_bar.addMenu('&Help')
+        setting_menu.addAction(file_path_action)
         help_menu.addAction(about_action)
         help_menu.addAction(exit_action)
 
@@ -75,6 +79,10 @@ class InGMain(QWidget):
         self.informationEdit = QTextEdit()
         self.informationEdit.setReadOnly(True)
         self.informationEdit.setOverwriteMode(False)
+        self.spb = QProgressBar()
+        self.spb.setMaximum(100)
+        self.spb.setMinimum(0)
+        self.progress = 0
 
         self.init_ui()
 
@@ -82,6 +90,7 @@ class InGMain(QWidget):
         url = QLabel('Url')
         search = QLabel('Search')
         information = QLabel('Information')
+        progress = QLabel('Progress')
         download_btn = QPushButton('Download')
         download_btn.setStatusTip('Downlaod into your PC')
         download_btn.clicked.connect(self.gui_download_by_url)
@@ -96,44 +105,64 @@ class InGMain(QWidget):
         grid.addWidget(search, 2, 0)
         grid.addWidget(self.searchEdit, 2, 1)
         grid.addWidget(search_btn, 2, 2)
-        grid.addWidget(information, 3, 0)
-        grid.addWidget(self.informationEdit, 3, 1, 5, 1)
+        grid.addWidget(information, 4, 0)
+        grid.addWidget(self.informationEdit, 4, 1, 4, 1)
+        grid.addWidget(progress, 9, 0)
+        grid.addWidget(self.spb, 9, 1)
+
         self.setLayout(grid)
 
     def gui_download_by_url(self):
-        self.informationEdit.insertPlainText(
-            '****************************\n'
-            '[INFO]Start get the information of video...\n')
+        self.informationEdit.insertHtml('<font color=blue>**************************************</font><br>')
+        self.update_inf_ui(['[INFO] Get the information of video...'])
 
-        urls = str(self.urlEdit.text()).split(';')
-        kwargs = {'output_dir': './tmpVideos',
-                  'merge': True,
-                  'json_output': False,
-                  'caption': True}
-        show_inf = ''
-        can_download = False
+
+        self.urls = str(self.urlEdit.text()).split(';')
+        self.kwargs = {'output_dir': './tmpVideos',
+                       'merge': True,
+                       'json_output': False,
+                       'caption': True}
 
         # show the result first
         try:
-            self.get_inf_thread = GetVideoInfoThread(self.informationEdit, urls, **kwargs)
-            self.get_inf_thread.finish_signal.connect(self.update_inf_ui)
+            self.get_inf_thread = GetVideoInfoThread(self.informationEdit, self.urls, **self.kwargs)
+            self.get_inf_thread.finish_signal.connect(self.start_download)
             self.get_inf_thread.start()
-            can_download = True
         except Exception as e:
             log.debug(e)
         finally:
-            self.informationEdit.insertPlainText(show_inf)
             r_obj.flush()
-            if can_download:
-                self.download_thread = DownloadThread(self.informationEdit, urls, **kwargs)
-                self.download_thread.finishSignal.connect(self.update_inf_ui)
-                self.download_thread.start()
-            else:
-                self.informationEdit.insertPlainText('\n[ERROR]Download failed!!!\n')
 
     def update_inf_ui(self, ls):
         for inf in ls:
-            self.informationEdit.insertPlainText(inf)
+            if str(inf).startswith('[ERROR]'):
+                self.informationEdit.insertHtml('<font color=red>' + inf + '</font><br>')
+            if str(inf).startswith('[INFO]'):
+                self.informationEdit.insertHtml('<font color=green>'+inf+'</font><br>')
+            self.edittext2bottom()
+
+    def finish_download(self, ls):
+        self.update_inf_ui(ls)
+        self.progress = 100
+        self.spb.setValue(self.progress)
+
+    def start_download(self, ls, can_download):
+        self.update_inf_ui(ls)
+        self.progress += 5
+        self.spb.setValue(self.progress)
+
+        if can_download:
+            self.download_thread = DownloadThread(self.informationEdit, self.urls, **self.kwargs)
+            self.download_thread.finishSignal.connect(self.finish_download)
+            self.download_thread.start()
+        else:
+            self.progress = 0
+            self.spb.setValue(self.progress)
+            return
+
+    def edittext2bottom(self):
+        c = self.informationEdit.textCursor()
+        self.informationEdit.setTextCursor(c)
 
 
 if __name__ == '__main__':

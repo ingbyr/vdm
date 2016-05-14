@@ -4,6 +4,7 @@ import time
 from PyQt5 import QtCore
 
 from app.custom_you_get.custom_youget import r_obj, m_get_video
+from app.custom_you_get import log
 
 __author__ = 'InG_byr'
 
@@ -14,7 +15,7 @@ class GetVideoInfoThread(QtCore.QThread):
     """
 
     # a signal, return list
-    finish_signal = QtCore.pyqtSignal(list)
+    finish_signal = QtCore.pyqtSignal(list, bool)
 
     def __init__(self, information_ui, urls, parent=None, **kwargs):
         super(GetVideoInfoThread, self).__init__(parent)
@@ -25,12 +26,19 @@ class GetVideoInfoThread(QtCore.QThread):
     def run(self):
         # download video
         # time.sleep(2)
+        can_download = None
         self.kwargs['info_only'] = True
-        m_get_video(self.urls, **self.kwargs)
-        show_inf = r_obj.get_buffer() + '\n'
-
-        # when finished, notify the main thread
-        self.finish_signal.emit([show_inf])
+        try:
+            m_get_video(self.urls, **self.kwargs)
+            show_inf = '[INFO] ' + r_obj.get_buffer()
+            can_download = True
+        except Exception as e:
+            log.e(str(e))
+            show_inf = '[ERROR] Get information of videos failed'
+            can_download = False
+        finally:
+            # when finished, notify the main thread
+            self.finish_signal.emit([show_inf, '[INFO] Start downloading the video...'], can_download)
 
 
 class DownloadThread(QtCore.QThread):
@@ -47,11 +55,13 @@ class DownloadThread(QtCore.QThread):
         self.kwargs = kwargs
 
     def run(self):
-        # download video
-        time.sleep(2)
+        """
+        Download the video
+        :return: nothing
+        """
+        # time.sleep(2)
         self.kwargs['info_only'] = False
+        r_obj.flush()
         m_get_video(self.urls, **self.kwargs)
-        show_inf = r_obj.get_buffer() + '\n'
-
-        # when finished, notify the main thread
-        self.finishSignal.emit([show_inf])
+        show_inf = '[INFO] ' + r_obj.get_buffer()
+        self.finishSignal.emit([show_inf, '[INFO] Download Successfully<br>'])
