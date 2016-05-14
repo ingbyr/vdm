@@ -92,5 +92,6 @@ ENV/
 tmpVideos/
 videos/
 .idea/
+dev_log.log
 
 

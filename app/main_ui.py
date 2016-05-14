@@ -2,12 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import os
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon
 from app.download_thread import *
-from app import log
+from app import log, base_dir
 
 __author__ = 'InG_byr'
 
@@ -15,14 +14,14 @@ __author__ = 'InG_byr'
 class GUI(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.initUI()
+        self.init_ui()
 
-    def initUI(self):
+    def init_ui(self):
         # menu
-        self.initMenu()
+        self.init_menu()
 
-        # initMain
-        self.initMain()
+        # init main
+        self.init_main()
         # move to the center
         self.center()
 
@@ -31,31 +30,30 @@ class GUI(QMainWindow):
         self.statusBar().showMessage('Ready')
 
         self.setWindowTitle('GUI-YouGet')
-        self.setWindowIcon(QIcon(os.getcwd() + '/res/icon/download.png'))
+        self.setWindowIcon(QIcon(base_dir + '/app/res/icon/logo.jpg'))
         self.show()
 
-    def initMain(self):
-        ingMain = InGMain()
-        self.setCentralWidget(ingMain)
+    def init_main(self):
+        ing_main = InGMain()
+        self.setCentralWidget(ing_main)
 
-    def initMenu(self):
-        aboutAction = QAction(QIcon('/res/icon/about.png'), '&About', self)
-        aboutAction.setStatusTip('About this application')
-        aboutAction.triggered.connect(self.aboutMessage)
+    def init_menu(self):
+        about_action = QAction(QIcon('/res/icon/about.png'), '&About', self)
+        about_action.setStatusTip('About this application')
+        about_action.triggered.connect(self.about_message)
 
-        exitAction = QAction(QIcon('/res/icon/exit.png'), '&Exit', self)
-        exitAction.setShortcut('Ctrl+Q')
-        exitAction.setStatusTip('Exit application')
-        exitAction.triggered.connect(qApp.quit)
+        exit_action = QAction(QIcon('/res/icon/exit.png'), '&Exit', self)
+        exit_action.setShortcut('Ctrl+Q')
+        exit_action.setStatusTip('Exit application')
+        exit_action.triggered.connect(qApp.quit)
 
         menubar = self.menuBar()
-        settingMenu = menubar.addMenu('&Setting')
-        helpMenu = menubar.addMenu('&Help')
-        helpMenu.addAction(aboutAction)
-        helpMenu.addAction(exitAction)
+        setting_menu = menubar.addMenu('&Setting')
+        help_menu = menubar.addMenu('&Help')
+        help_menu.addAction(about_action)
+        help_menu.addAction(exit_action)
 
-    # about this app
-    def aboutMessage(self):
+    def about_message(self):
         # todo: about index not commpleted
         print('about')
 
@@ -71,43 +69,38 @@ class GUI(QMainWindow):
 class InGMain(QWidget):
     def __init__(self):
         super().__init__()
-        self.initUI()
-
-    def initUI(self):
-        url = QLabel('Url')
-        search = QLabel('Search')
-        information = QLabel('Information')
 
         self.urlEdit = QLineEdit()
-        searchEdit = QLineEdit()
+        self.searchEdit = QLineEdit()
         self.informationEdit = QTextEdit()
         self.informationEdit.setReadOnly(True)
         self.informationEdit.setOverwriteMode(False)
 
-        downloadBTN = QPushButton('Download')
-        downloadBTN.setStatusTip('Downlaod into your PC')
-        downloadBTN.clicked.connect(self.gui_download_by_url)
-        searchBTN = QPushButton('Search')
-        searchBTN.setStatusTip('Search in Google and download auto')
+        self.init_ui()
+
+    def init_ui(self):
+        url = QLabel('Url')
+        search = QLabel('Search')
+        information = QLabel('Information')
+        download_btn = QPushButton('Download')
+        download_btn.setStatusTip('Downlaod into your PC')
+        download_btn.clicked.connect(self.gui_download_by_url)
+        search_btn = QPushButton('Search')
+        search_btn.setStatusTip('Search in Google and download auto')
 
         grid = QGridLayout()
         grid.setSpacing(10)
-
         grid.addWidget(url, 1, 0)
         grid.addWidget(self.urlEdit, 1, 1)
-        grid.addWidget(downloadBTN, 1, 2)
-
+        grid.addWidget(download_btn, 1, 2)
         grid.addWidget(search, 2, 0)
-        grid.addWidget(searchEdit, 2, 1)
-        grid.addWidget(searchBTN, 2, 2)
-
+        grid.addWidget(self.searchEdit, 2, 1)
+        grid.addWidget(search_btn, 2, 2)
         grid.addWidget(information, 3, 0)
         grid.addWidget(self.informationEdit, 3, 1, 5, 1)
-
         self.setLayout(grid)
 
     def gui_download_by_url(self):
-
         self.informationEdit.insertPlainText(
             '****************************\n'
             '[INFO]Start get the information of video...\n')
@@ -118,24 +111,23 @@ class InGMain(QWidget):
                   'json_output': False,
                   'caption': True}
         show_inf = ''
-        canDownload = False
+        can_download = False
 
         # show the result first
         try:
-            kwargs['info_only'] = True
             self.get_inf_thread = GetVideoInfoThread(self.informationEdit, urls, **kwargs)
             self.get_inf_thread.finish_signal.connect(self.update_inf_ui)
             self.get_inf_thread.start()
-            canDownload = True
+            can_download = True
         except Exception as e:
             log.debug(e)
         finally:
             self.informationEdit.insertPlainText(show_inf)
             r_obj.flush()
-            if canDownload:
-                self.bwThread = DownloadThread(self.informationEdit, urls, **kwargs)
-                self.bwThread.finishSignal.connect(self.update_inf_ui)
-                self.bwThread.start()
+            if can_download:
+                self.download_thread = DownloadThread(self.informationEdit, urls, **kwargs)
+                self.download_thread.finishSignal.connect(self.update_inf_ui)
+                self.download_thread.start()
             else:
                 self.informationEdit.insertPlainText('\n[ERROR]Download failed!!!\n')
 
