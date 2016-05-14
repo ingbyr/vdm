@@ -4,9 +4,12 @@
 import sys
 import os
 import subprocess
+
+import time
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon
-from gui_inter import main_interface
+from app.custom_you_get.custom_youget import m_show_video_inf
+from app.custom_you_get import r_obj
 
 __author__ = 'InG_byr'
 
@@ -60,7 +63,7 @@ class GUI(QMainWindow):
 
     # show the app in the center
     def center(self):
-        self.setGeometry(300, 300, 500, 400)
+        self.setGeometry(300, 300, 700, 500)
         qr = self.frameGeometry()
         cp = QDesktopWidget().availableGeometry().center()
         qr.moveCenter(cp)
@@ -80,6 +83,8 @@ class InGMain(QWidget):
         self.urlEdit = QLineEdit()
         searchEdit = QLineEdit()
         self.informationEdit = QTextEdit()
+        self.informationEdit.setReadOnly(True)
+        self.informationEdit.setOverwriteMode(False)
 
         downloadBTN = QPushButton('Download')
         downloadBTN.setStatusTip('Downlaod into your PC')
@@ -104,13 +109,24 @@ class InGMain(QWidget):
         self.setLayout(grid)
 
     def gui_download_by_url(self):
-        show_inf = 'Start downloading...\n'
-        self.informationEdit.setText(show_inf)
         urls = []
         urls.append(str(self.urlEdit.text()))
-        result = main_interface(urls)
-        show_inf += result+'\n'
-        self.informationEdit.setText(show_inf)
+        kwargs = {'output_dir': '../videos',
+                  'merge': True,
+                  'json_output': False,
+                  'caption': True}
+        show_inf = ''
+        self.informationEdit.insertPlainText('****************************\nStart get the information of video...\n')
+        try:
+            m_show_video_inf(urls, **kwargs)
+            show_inf += r_obj.get_buffer() + '\n'
+        except Exception as e:
+            show_inf += '[ERROR]'
+            for item in e.args:
+                show_inf += str(item)
+        finally:
+            self.informationEdit.insertPlainText(show_inf)
+            r_obj.flush()
 
 
 if __name__ == '__main__':

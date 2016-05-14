@@ -89,6 +89,7 @@ ENV/
 # Rope project settings
 .ropeproject
 
-/videos
+videos/
+.idea/
 
 
