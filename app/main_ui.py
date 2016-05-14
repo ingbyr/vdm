@@ -3,13 +3,11 @@
 
 import sys
 import os
-import subprocess
 
-import time
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon
-from app.custom_you_get.custom_youget import m_show_video_inf
-from app.custom_you_get import r_obj
+from app.download_thread import *
+from app import log
 
 __author__ = 'InG_byr'
 
@@ -109,24 +107,41 @@ class InGMain(QWidget):
         self.setLayout(grid)
 
     def gui_download_by_url(self):
-        urls = []
-        urls.append(str(self.urlEdit.text()))
-        kwargs = {'output_dir': '../videos',
+
+        self.informationEdit.insertPlainText(
+            '****************************\n'
+            '[INFO]Start get the information of video...\n')
+
+        urls = str(self.urlEdit.text()).split(';')
+        kwargs = {'output_dir': './tmpVideos',
                   'merge': True,
                   'json_output': False,
                   'caption': True}
         show_inf = ''
-        self.informationEdit.insertPlainText('****************************\nStart get the information of video...\n')
+        canDownload = False
+
+        # show the result first
         try:
-            m_show_video_inf(urls, **kwargs)
-            show_inf += r_obj.get_buffer() + '\n'
+            kwargs['info_only'] = True
+            self.get_inf_thread = GetVideoInfoThread(self.informationEdit, urls, **kwargs)
+            self.get_inf_thread.finish_signal.connect(self.update_inf_ui)
+            self.get_inf_thread.start()
+            canDownload = True
         except Exception as e:
-            show_inf += '[ERROR]'
-            for item in e.args:
-                show_inf += str(item)
+            log.debug(e)
         finally:
             self.informationEdit.insertPlainText(show_inf)
             r_obj.flush()
+            if canDownload:
+                self.bwThread = DownloadThread(self.informationEdit, urls, **kwargs)
+                self.bwThread.finishSignal.connect(self.update_inf_ui)
+                self.bwThread.start()
+            else:
+                self.informationEdit.insertPlainText('\n[ERROR]Download failed!!!\n')
+
+    def update_inf_ui(self, ls):
+        for inf in ls:
+            self.informationEdit.insertPlainText(inf)
 
 
 if __name__ == '__main__':
