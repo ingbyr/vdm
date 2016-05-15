@@ -9,6 +9,13 @@ SPEED = ''
 PERCENT = 0.0
 EXIST = False
 
+def set_default():
+    global SPEED
+    global PERCENT
+    global EXIST
+    SPEED = ''
+    PERCENT = 0.0
+    EXIST = False
 
 def set_percent(data):
     global PERCENT

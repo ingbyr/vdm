@@ -3,8 +3,9 @@
 
 import sys
 
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QIcon
 from app.download_thread import *
 from app import mlog, base_dir
 import app.custom_you_get.status as status
@@ -114,11 +115,12 @@ class InGMain(QWidget):
         self.setLayout(grid)
 
     def gui_download_by_url(self):
+        status.set_default()
         self.update_inf_ui(['[TIP] Ready to start download',
                             '[INFO] Get the information of video...'])
 
         self.urls = str(self.urlEdit.text()).split(';')
-        self.kwargs = {'output_dir': './tmpVideos',
+        self.kwargs = {'output_dir': '../tmpVideos',
                        'merge': True,
                        'json_output': False,
                        'caption': True}
@@ -142,7 +144,7 @@ class InGMain(QWidget):
             elif str(inf).startswith('[INFO]'):
                 self.informationEdit.insertHtml('<font color=green>' + inf + '</font><br>')
             else:
-                self.informationEdit.insertHtml(inf + '<br>')
+                pass
             self.edittext2bottom()
 
     def finish_download(self, ls):
@@ -163,15 +165,28 @@ class InGMain(QWidget):
 
             percent = 0
             is_exits = False
+            show_inf = ''
+
+            progressDialog = QProgressDialog(self)
+            progressDialog.setAutoReset(True)
+            progressDialog.setWindowModality(Qt.WindowModal)
+            progressDialog.setMinimumDuration(5)
+            progressDialog.setWindowTitle(self.tr('Progress'))
+            progressDialog.setLabelText(self.tr('Downloading file to ' + base_dir + ' ...'))
+            progressDialog.setCancelButtonText(self.tr("Cancel"))
+            progressDialog.setRange(0, 100)
 
             while percent < 100 and not is_exits:
                 percent = status.get_percent()
-                is_exits=status.get_exist()
+                is_exits = status.get_exist()
                 if is_exits:
-                    self.update_inf_ui(['[TIP] File already exists'])
-                    break
-                mlog.debug(">>>>main ui percent:" + str(percent))
-                time.sleep(0.2)
+                    show_inf = '[TIP] File already exists'
+                    percent = 100
+                progressDialog.setValue(percent)
+                QThread.msleep(100)
+                if progressDialog.wasCanceled():
+                    return
+            self.update_inf_ui([show_inf])
         else:
             # self.progress = 0
             # self.spb.setValue(self.progress)
