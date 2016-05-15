@@ -109,6 +109,7 @@ from .util.strings import get_filename, unescape_html
 from . import json_output as json_output_
 
 from app.custom_you_get import r_obj
+import app.custom_you_get.status as status
 
 dry_run = False
 json_output = False
@@ -451,6 +452,7 @@ def url_save(url, filepath, bar, refer=None, is_part=False, faker=False, headers
                 if bar:
                     bar.done()
                 print('Skipping %s: file already exists' % tr(os.path.basename(filepath)))
+                status.set_exist(True)
             else:
                 if bar:
                     bar.update_received(file_size)
@@ -531,6 +533,7 @@ def url_save_chunked(url, filepath, bar, refer=None, is_part=False, faker=False,
                 if bar:
                     bar.done()
                 print('Skipping %s: file already exists' % tr(os.path.basename(filepath)))
+                status.set_exist(True)
             else:
                 if bar:
                     bar.update_received(os.path.getsize(filepath))
@@ -611,19 +614,22 @@ class SimpleProgressBar:
         percent = round(self.received * 100 / self.total_size, 1)
         if percent >= 100:
             percent = 100
-        dots = bar_size * int(percent) // 100
-        plus = int(percent) - dots // bar_size * 100
-        if plus > 0.8:
-            plus = '█'
-        elif plus > 0.4:
-            plus = '>'
-        else:
-            plus = ''
-        bar = '█' * dots + plus
-        bar = self.bar.format(percent, round(self.received / 1048576, 1), bar, self.current_piece, self.total_pieces,
-                              self.speed)
-        sys.stdout.write('\r' + bar)
-        sys.stdout.flush()
+
+        status.set_percent(percent)
+
+        # dots = bar_size * int(percent) // 100
+        # plus = int(percent) - dots // bar_size * 100
+        # if plus > 0.8:
+        #     plus = '█'
+        # elif plus > 0.4:
+        #     plus = '>'
+        # else:
+        #     plus = ''
+        # bar = '█' * dots + plus
+        # bar = self.bar.format(percent, round(self.received / 1048576, 1), bar, self.current_piece, self.total_pieces,
+        #                       self.speed)
+        # sys.stdout.write('\r' + bar)
+        # sys.stdout.flush()
 
     def update_received(self, n):
         self.received += n
@@ -742,6 +748,7 @@ def download_urls(urls, title, ext, total_size, output_dir='.', refer=None, merg
     if total_size:
         if not force and os.path.exists(output_filepath) and os.path.getsize(output_filepath) >= total_size * 0.9:
             print('Skipping %s: file already exists' % output_filepath)
+            status.set_exist(True)
             print()
             return
         bar = SimpleProgressBar(total_size, len(urls))
@@ -852,6 +859,7 @@ def download_urls_chunked(urls, title, ext, total_size, output_dir='.', refer=No
     if total_size and ext in ('ts'):
         if not force and os.path.exists(filepath[:-3] + '.mkv'):
             print('Skipping %s: file already exists' % filepath[:-3] + '.mkv')
+            status.set_exist(True)
             print()
             return
         bar = SimpleProgressBar(total_size, len(urls))

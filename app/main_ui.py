@@ -6,7 +6,8 @@ import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon
 from app.download_thread import *
-from app import log, base_dir
+from app import mlog, base_dir
+import app.custom_you_get.status as status
 
 __author__ = 'InG_byr'
 
@@ -79,10 +80,10 @@ class InGMain(QWidget):
         self.informationEdit = QTextEdit()
         self.informationEdit.setReadOnly(True)
         self.informationEdit.setOverwriteMode(False)
-        self.spb = QProgressBar()
-        self.spb.setMaximum(100)
-        self.spb.setMinimum(0)
-        self.progress = 0
+        # self.spb = QProgressBar()
+        # self.spb.setMaximum(100)
+        # self.spb.setMinimum(0)
+        # self.progress = 0
 
         self.init_ui()
 
@@ -90,7 +91,7 @@ class InGMain(QWidget):
         url = QLabel('Url')
         search = QLabel('Search')
         information = QLabel('Information')
-        progress = QLabel('Progress')
+        # progress = QLabel('Progress')
         download_btn = QPushButton('Download')
         download_btn.setStatusTip('Downlaod into your PC')
         download_btn.clicked.connect(self.gui_download_by_url)
@@ -107,13 +108,13 @@ class InGMain(QWidget):
         grid.addWidget(search_btn, 2, 2)
         grid.addWidget(information, 4, 0)
         grid.addWidget(self.informationEdit, 4, 1, 4, 1)
-        grid.addWidget(progress, 9, 0)
-        grid.addWidget(self.spb, 9, 1)
+        # grid.addWidget(progress, 9, 0)
+        # grid.addWidget(self.spb, 9, 1)
 
         self.setLayout(grid)
 
     def gui_download_by_url(self):
-        self.update_inf_ui(['[TIP]Ready to start download',
+        self.update_inf_ui(['[TIP] Ready to start download',
                             '[INFO] Get the information of video...'])
 
         self.urls = str(self.urlEdit.text()).split(';')
@@ -146,22 +147,34 @@ class InGMain(QWidget):
 
     def finish_download(self, ls):
         self.update_inf_ui(ls)
-        self.progress = 100
-        self.spb.setValue(self.progress)
+        # self.progress = 100
+        # self.spb.setValue(self.progress)
 
     def start_download(self, ls, can_download):
         self.update_inf_ui(ls)
-        self.progress += 5
-        self.spb.setValue(self.progress)
+        # self.progress += 5
+        # self.spb.setValue(self.progress)
 
         if can_download:
             self.update_inf_ui(['[INFO] Start downloading the video...'])
             self.download_thread = DownloadThread(self.informationEdit, self.urls, **self.kwargs)
             self.download_thread.finishSignal.connect(self.finish_download)
             self.download_thread.start()
+
+            percent = 0
+            is_exits = False
+
+            while percent < 100 and not is_exits:
+                percent = status.get_percent()
+                is_exits=status.get_exist()
+                if is_exits:
+                    self.update_inf_ui(['[TIP] File already exists'])
+                    break
+                mlog.debug(">>>>main ui percent:" + str(percent))
+                time.sleep(0.2)
         else:
-            self.progress = 0
-            self.spb.setValue(self.progress)
+            # self.progress = 0
+            # self.spb.setValue(self.progress)
             return
 
     def edittext2bottom(self):

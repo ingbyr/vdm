@@ -61,5 +61,6 @@ class DownloadThread(QtCore.QThread):
         self.kwargs['info_only'] = False
         r_obj.flush()
         m_get_video(self.urls, **self.kwargs)
-        show_inf = '[INFO] ' + r_obj.get_buffer()
-        self.finishSignal.emit([show_inf, '[TIP] Finished<br><br>'])
+        # show_inf = '[INFO] ' + r_obj.get_buffer()
+        show_inf='[TIP] Finished<br><br>'
+        self.finishSignal.emit([show_inf])
