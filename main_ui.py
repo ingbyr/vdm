@@ -32,7 +32,8 @@ class GUI(QMainWindow):
         self.statusBar().showMessage('Ready')
 
         self.setWindowTitle('GUI-YouGet')
-        self.setWindowIcon(QIcon(base_dir + '/app/res/icon/logo.jpg'))
+        mlog.debug('>>>base dir: ' + base_dir)
+        self.setWindowIcon(QIcon(base_dir + '/favicon.ico'))
         self.show()
 
     def init_main(self):
@@ -81,10 +82,6 @@ class InGMain(QWidget):
         self.informationEdit = QTextEdit()
         self.informationEdit.setReadOnly(True)
         self.informationEdit.setOverwriteMode(False)
-        # self.spb = QProgressBar()
-        # self.spb.setMaximum(100)
-        # self.spb.setMinimum(0)
-        # self.progress = 0
 
         self.init_ui()
 
@@ -92,7 +89,6 @@ class InGMain(QWidget):
         url = QLabel('Url')
         search = QLabel('Search')
         information = QLabel('Information')
-        # progress = QLabel('Progress')
         download_btn = QPushButton('Download')
         download_btn.setStatusTip('Downlaod into your PC')
         download_btn.clicked.connect(self.gui_download_by_url)
@@ -109,8 +105,6 @@ class InGMain(QWidget):
         grid.addWidget(search_btn, 2, 2)
         grid.addWidget(information, 4, 0)
         grid.addWidget(self.informationEdit, 4, 1, 4, 1)
-        # grid.addWidget(progress, 9, 0)
-        # grid.addWidget(self.spb, 9, 1)
 
         self.setLayout(grid)
 
@@ -120,7 +114,7 @@ class InGMain(QWidget):
                             '[INFO] Get the information of video...'])
 
         self.urls = str(self.urlEdit.text()).split(';')
-        self.kwargs = {'output_dir': '../tmpVideos',
+        self.kwargs = {'output_dir': './tmpVideos',
                        'merge': True,
                        'json_output': False,
                        'caption': True}
@@ -149,13 +143,9 @@ class InGMain(QWidget):
 
     def finish_download(self, ls):
         self.update_inf_ui(ls)
-        # self.progress = 100
-        # self.spb.setValue(self.progress)
 
     def start_download(self, ls, can_download):
         self.update_inf_ui(ls)
-        # self.progress += 5
-        # self.spb.setValue(self.progress)
 
         if can_download:
             self.update_inf_ui(['[INFO] Start downloading the video...'])
@@ -185,11 +175,10 @@ class InGMain(QWidget):
                 progressDialog.setValue(percent)
                 QThread.msleep(100)
                 if progressDialog.wasCanceled():
-                    return
+                    # todo: can not to cancel?
+                    self.download_thread.exit()
             self.update_inf_ui([show_inf])
         else:
-            # self.progress = 0
-            # self.spb.setValue(self.progress)
             return
 
     def edittext2bottom(self):
