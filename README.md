@@ -5,14 +5,14 @@ Just a GUI based on the [you-get](https://github.com/soimort/you-get/)
 
 Version 0.1
 
-What `You-Get` can do for you:
+What `GUI-YouGet` can do for you:
 
 * Download videos / audios from popular websites such as YouTube, Youku, Niconico, and a bunch more. (See the [full list of supported sites](#supported-sites))
 * More feature is comming...
 
 ## Known bugs
 
-If something is broken and `you-get` can't get you things you want, don't panic. (Yes, this happens all the time!)
+If something is broken and `GUI-YouGet` can't get you things you want, don't panic. (Yes, this happens all the time!)
 Open a new issue, with detailed dev_log.log output attached.
 
 ## Legal Issues
@@ -28,10 +28,6 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-## Authors
-
-Made by [@ingbyr](https://www.ingbyr.tk), who likes to play CS:GO ^_^
 
 ## Supported Sites
 
@@ -110,4 +106,7 @@ Made by [@ingbyr](https://www.ingbyr.tk), who likes to play CS:GO ^_^
 | 央视网   | <http://www.cntv.cn/>          |✓| | |
 | 花瓣     | <http://huaban.com/>           | |✓| |
 
+## Authors
+
+Made by [@ingbyr](https://www.ingbyr.tk), who likes to play CS:GO ^_^
 
