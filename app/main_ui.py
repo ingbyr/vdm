@@ -37,7 +37,8 @@ class GUI(QMainWindow):
         self.setWindowIcon(QIcon(':res/favicon.ico'))
         self.show()
 
-        self.ing_main.update_inf_ui(['[TIP] Welcome to use YouGet'])
+        self.ing_main.update_inf_ui(['[TIP] Welcome to use YouGet',
+                                     '[TIP] Usage: Input the url, then click the download'])
 
     def init_main(self):
         self.ing_main = InGMain()
@@ -85,16 +86,16 @@ class InGMain(QWidget):
     def __init__(self):
         super().__init__()
 
+        self.init_ui()
+        self.init_data()
+
+    def init_ui(self):
         self.urlEdit = QLineEdit()
         self.searchEdit = QLineEdit()
         self.informationEdit = QTextEdit()
         self.informationEdit.setReadOnly(True)
         self.informationEdit.setOverwriteMode(False)
 
-        self.init_ui()
-        self.init_data()
-
-    def init_ui(self):
         url = QLabel('Url')
         search = QLabel('Search')
         information = QLabel('Information')
@@ -103,6 +104,10 @@ class InGMain(QWidget):
         download_btn.clicked.connect(self.gui_download_by_url)
         search_btn = QPushButton('Search')
         search_btn.setStatusTip('Search in Google and download auto')
+
+        # TODO: search viedo on
+        self.searchEdit.insert('Don\'t work in this version')
+        self.searchEdit.setReadOnly(True)
 
         grid = QGridLayout()
         grid.setSpacing(10)
@@ -118,7 +123,7 @@ class InGMain(QWidget):
         self.setLayout(grid)
 
     def init_data(self):
-        self.kwargs = {'output_dir': base_dir+'/YouGetVideos',
+        self.kwargs = {'output_dir': base_dir + '/YouGetVideos',
                        'merge': True,
                        'json_output': False,
                        'caption': True}
@@ -232,8 +237,7 @@ class AboutMessage(QWidget):
             '<a>Version 0.1 License </a><a href = "https://zh.wikipedia.org/wiki/MIT%E8%A8%B1%E5%8F%AF%E8%AD%89">MIT</a><br><br>'
             '<a>Based on the open source program</a> <a href="https://github.com/soimort/you-get">you-get</a><br><br>'
             '<a>About me: </a>'
-            '<br><a href="http://www.ingbyr.tk">My Blog</a>'
-            '<br><a href="http://www.weibo.com/zwkv5">Sina Weibo</a>')
+            '<br><a href="http://www.ingbyr.tk">My Blog</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.weibo.com/zwkv5">Sina Weibo</a>')
 
         grid.addWidget(laber, 1, 0)
         grid.addWidget(message, 1, 1)

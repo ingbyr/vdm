@@ -89,8 +89,11 @@ ENV/
 # Rope project settings
 .ropeproject
 
-tmpVideos/
+YouGetVideos/
 .idea/
 app/tmp.py
+app/build/
+app/dist/
+
 
 
