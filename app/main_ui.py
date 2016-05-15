@@ -113,9 +113,8 @@ class InGMain(QWidget):
         self.setLayout(grid)
 
     def gui_download_by_url(self):
-        self.informationEdit.insertHtml('<font color=blue>**************************************</font><br>')
-        self.update_inf_ui(['[INFO] Get the information of video...'])
-
+        self.update_inf_ui(['[TIP]Ready to start download',
+                            '[INFO] Get the information of video...'])
 
         self.urls = str(self.urlEdit.text()).split(';')
         self.kwargs = {'output_dir': './tmpVideos',
@@ -135,10 +134,14 @@ class InGMain(QWidget):
 
     def update_inf_ui(self, ls):
         for inf in ls:
-            if str(inf).startswith('[ERROR]'):
+            if str(inf).startswith('[TIP]'):
+                self.informationEdit.insertHtml('<font color=blue>' + inf + '</font><br>')
+            elif str(inf).startswith('[ERROR]'):
                 self.informationEdit.insertHtml('<font color=red>' + inf + '</font><br>')
-            if str(inf).startswith('[INFO]'):
-                self.informationEdit.insertHtml('<font color=green>'+inf+'</font><br>')
+            elif str(inf).startswith('[INFO]'):
+                self.informationEdit.insertHtml('<font color=green>' + inf + '</font><br>')
+            else:
+                self.informationEdit.insertHtml(inf + '<br>')
             self.edittext2bottom()
 
     def finish_download(self, ls):
@@ -152,6 +155,7 @@ class InGMain(QWidget):
         self.spb.setValue(self.progress)
 
         if can_download:
+            self.update_inf_ui(['[INFO] Start downloading the video...'])
             self.download_thread = DownloadThread(self.informationEdit, self.urls, **self.kwargs)
             self.download_thread.finishSignal.connect(self.finish_download)
             self.download_thread.start()

@@ -90,8 +90,6 @@ ENV/
 .ropeproject
 
 tmpVideos/
-videos/
 .idea/
-dev_log.log
 
 

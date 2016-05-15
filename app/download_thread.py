@@ -26,19 +26,17 @@ class GetVideoInfoThread(QtCore.QThread):
     def run(self):
         # download video
         # time.sleep(2)
-        can_download = None
         self.kwargs['info_only'] = True
         try:
             m_get_video(self.urls, **self.kwargs)
-            show_inf = '[INFO] ' + r_obj.get_buffer()
+            show_inf = ['[INFO] ' + r_obj.get_buffer()]
             can_download = True
-        except Exception as e:
-            log.e(str(e))
-            show_inf = '[ERROR] Get information of videos failed'
+        except Exception:
+            show_inf = ['[ERROR] Get information of videos failed', '[ERROR] Stopped', '[TIP] Please check your url']
             can_download = False
         finally:
             # when finished, notify the main thread
-            self.finish_signal.emit([show_inf, '[INFO] Start downloading the video...'], can_download)
+            self.finish_signal.emit(show_inf, can_download)
 
 
 class DownloadThread(QtCore.QThread):
@@ -64,4 +62,4 @@ class DownloadThread(QtCore.QThread):
         r_obj.flush()
         m_get_video(self.urls, **self.kwargs)
         show_inf = '[INFO] ' + r_obj.get_buffer()
-        self.finishSignal.emit([show_inf, '[INFO] Download Successfully<br>'])
+        self.finishSignal.emit([show_inf, '[TIP] Finished<br><br>'])
