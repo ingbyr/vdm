@@ -176,7 +176,7 @@ class InGMain(QWidget):
 
     def finish_download(self, ls):
         self.update_inf_ui(ls)
-        self.setEnabled(True)
+        self.download_btn.setEnabled(True)
         r_obj.flush()
 
     def start_download(self, ls, can_download):
@@ -212,8 +212,9 @@ class InGMain(QWidget):
                 QThread.msleep(100)
                 if progressDialog.wasCanceled():
                     # todo: can not cancel
-                    self.download_thread.wait(100)
-                    self.download_thread.quit()
+                    # self.download_thread.terminate()
+                    # self.download_thread.wait(200)
+                    # self.stop_by_user()
 
             self.update_inf_ui([show_inf])
         else:
