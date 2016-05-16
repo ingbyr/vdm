@@ -64,15 +64,24 @@ class GUI(QMainWindow):
         report_bugs_action.setStatusTip('Report bugs on GitHub')
         report_bugs_action.triggered.connect(self.report_bugs)
 
+        check_for_updates_action = QAction('&Check for updates', self)
+        check_for_updates_action.setStatusTip('Check for updates and get the latest')
+        check_for_updates_action.triggered.connect(self.check_for_updates)
+
         menu_bar = self.menuBar()
 
         setting_menu = menu_bar.addMenu('&Setting')
         setting_menu.addAction(file_path_action)
 
         help_menu = menu_bar.addMenu('&Help')
+        help_menu.addAction(check_for_updates_action)
         help_menu.addAction(report_bugs_action)
         help_menu.addAction(about_action)
         help_menu.addAction(exit_action)
+
+    def check_for_updates(self):
+        # todo: check for updates
+        pass
 
     def report_bugs(self):
         QDesktopServices.openUrl(QUrl('https://github.com/ingbyr/GUI-YouGet/issues'))

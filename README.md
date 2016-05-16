@@ -1,30 +1,39 @@
 # GUI-YouGet
 
-## Introduction
-Just a GUI based on the [you-get](https://github.com/soimort/you-get/)
+| Version        | Build Time          |   Download     | Release notes
+| :-------------: |:-------------:| :-------------:|:-------------:|
+| 0.0.1 | 2016-05-16| [Windows](https://sourceforge.net/projects/gui-youget/files/windows/YouGet%280.0.1%20Win%29.exe/download)	/	[Linux](https://sourceforge.net/projects/gui-youget/files/Linux/YouGet%280.0.1%20Linux%29/download)| [Notes](https://github.com/ingbyr/GUI-YouGet/wiki/Release-notes-Ver-0.0.1)
 
-Version 0.0.1
 
-What `GUI-YouGet` can do for you:
 
-* Download videos / audios from popular websites such as YouTube, Youku, Niconico, and a bunch more. (See the [full list of supported sites](#supported-sites))
+## What is it
+
+Just a GUI based on the [you-get](https://github.com/soimort/you-get/) run on the Windows and Linux. What `GUI-YouGet` can do for you:
+* Download videos / audios from popular websites such as YouTube, Youku, Niconico, and a bunch more. (See the full list of supported sites below)
 * More feature is comming...
 
-## How to use
-* [Click me]() to download the app
-* Then run YouGet to start download what you need
 
-## Known bugs
+
+
+![](http://ww2.sinaimg.cn/large/bca3b20djw1f3x7jsnn8pj20ji0eu0ss.jpg)
+![](http://ww4.sinaimg.cn/large/bca3b20djw1f3x7jswvpxj20jk0ewt9e.jpg)
+
+## How to use
+* Download and Run YouGet
+* Input the video url, then click the download button
+
+## Development
+This is a open source projects. The repository is [here](https://github.com/ingbyr/GUI-YouGet)
+
+## Feedback bugs
 
 If something is broken and `GUI-YouGet` can't get you things you want, don't panic. (Yes, this happens all the time!)
-Open a new issue, with detailed dev_log.log output attached.
+Open a new issue on [GitHub](https://github.com/ingbyr/GUI-YouGet/issues), with detailed `dev_log.log` output attached.
 
 ## Legal Issues
 
 This software is distributed under the [MIT license](https://raw.githubusercontent.com/ingbyr/GUI-YouGet/master/LICENSE.txt).
-
 In particular, please be aware that
-
 > THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -112,5 +121,4 @@ SOFTWARE.
 
 ## Authors
 
-Made by [@ingbyr](http://www.ingbyr.tk), who likes to play CS:GO ^_^
-
+Made by [@ingbyr](http://www.ingbyr.tk/about/)
