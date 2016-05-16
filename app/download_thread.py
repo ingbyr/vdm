@@ -32,8 +32,8 @@ class GetVideoInfoThread(QtCore.QThread):
         except Exception:
             for item in sys.exc_info():
                 mlog.error('>>>GetVideoInfoThread: ' + str(item))
-            show_inf = ['[ERROR] Get information of videos failed', '[ERROR] Stopped',
-                        '[TIP] Make sure you can watch the video by this url']
+            show_inf = ['[ERROR] Get information of files failed', '[ERROR] Stopped',
+                        '[ERROR] Make sure you can visit this url']
             can_download = False
         finally:
             # when finished, notify the main thread
@@ -62,10 +62,10 @@ class DownloadThread(QtCore.QThread):
             self.kwargs['info_only'] = False
             r_obj.flush()
             m_get_video(self.urls, **self.kwargs)
-            show_inf = '[INFO] ' + r_obj.get_buffer()
+            # show_inf = '[INFO] ' + r_obj.get_buffer()
         except Exception:
             for item in sys.exc_info():
                 mlog.error(">>>DownloadThread: " + str(item))
         finally:
             self.finishSignal.emit(
-                [show_inf, '[TIP] Saved file in the ' + self.kwargs['output_dir'], '[TIP] Finished<br><br>'])
+                ['[TIP] Files in the ' + self.kwargs['output_dir'], '[TIP] Finished<br><br>'])

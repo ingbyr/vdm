@@ -195,7 +195,7 @@ class InGMain(QWidget):
             progressDialog.setWindowModality(Qt.WindowModal)
             progressDialog.setMinimumDuration(5)
             progressDialog.setWindowTitle(self.tr('Progress'))
-            progressDialog.setLabelText(self.tr('Downloading file to ' + self.kwargs['output_dir'] + ' ...'))
+            progressDialog.setLabelText(self.tr('Downloading files to ' + self.kwargs['output_dir'] + ' ...'))
             progressDialog.setCancelButtonText(self.tr("Cancel"))
             progressDialog.setRange(0, 100)
 
@@ -209,7 +209,7 @@ class InGMain(QWidget):
                 QThread.msleep(100)
                 if progressDialog.wasCanceled():
                     # todo: can not cancel
-                    self.download_thread.exit()
+                    self.download_thread.exit(returnCode=1)
             self.update_inf_ui([show_inf])
         else:
             return
