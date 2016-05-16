@@ -211,6 +211,7 @@ class InGMain(QWidget):
                 progressDialog.setValue(percent)
                 QThread.msleep(100)
                 if progressDialog.wasCanceled():
+                    pass
                     # todo: can not cancel
                     # self.download_thread.terminate()
                     # self.download_thread.wait(200)
