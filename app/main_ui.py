@@ -37,8 +37,7 @@ class GUI(QMainWindow):
         self.setWindowIcon(QIcon(':res/favicon.ico'))
         self.show()
 
-        self.ing_main.update_inf_ui(['[TIP] Welcome to use YouGet',
-                                     '[TIP] Usage: Input the url, then click the download'])
+        self.ing_main.update_inf_ui(['[TIP] Input the url, then click the download button'])
 
     def init_main(self):
         self.ing_main = InGMain()
@@ -100,12 +99,13 @@ class InGMain(QWidget):
         search = QLabel('Search')
         information = QLabel('Information')
         download_btn = QPushButton('Download')
-        download_btn.setStatusTip('Downlaod into your PC')
+        download_btn.setStatusTip('Download videos')
         download_btn.clicked.connect(self.gui_download_by_url)
         search_btn = QPushButton('Search')
-        search_btn.setStatusTip('Search in Google and download auto')
+        search_btn.setStatusTip('Search on Google')
 
         # TODO: search viedo on
+        self.searchEdit.setStyleSheet("color:gray")
         self.searchEdit.insert('Don\'t work in this version')
         self.searchEdit.setReadOnly(True)
 
@@ -130,20 +130,15 @@ class InGMain(QWidget):
 
     def gui_download_by_url(self):
         status.set_default()
-        self.update_inf_ui(['[TIP] Ready to start download',
-                            '[INFO] Get the information of video...'])
+        self.update_inf_ui(['[TIP] Here we go ~',
+                            '[INFO] Get the information of video...',
+                            '[INFO] Please wait a moment...'])
 
         self.urls = str(self.urlEdit.text()).split(';')
 
-        # show the result first
-        try:
-            self.get_inf_thread = GetVideoInfoThread(self.informationEdit, self.urls, **self.kwargs)
-            self.get_inf_thread.finish_signal.connect(self.start_download)
-            self.get_inf_thread.start()
-        except Exception:
-            mlog.error(sys.exc_info()[0])
-        finally:
-            r_obj.flush()
+        self.get_inf_thread = GetVideoInfoThread(self.informationEdit, self.urls, **self.kwargs)
+        self.get_inf_thread.finish_signal.connect(self.start_download)
+        self.get_inf_thread.start()
 
     def update_inf_ui(self, ls):
         for inf in ls:
@@ -159,10 +154,11 @@ class InGMain(QWidget):
 
     def finish_download(self, ls):
         self.update_inf_ui(ls)
+        r_obj.flush()
 
     def start_download(self, ls, can_download):
+        r_obj.flush()
         self.update_inf_ui(ls)
-
         if can_download:
             self.update_inf_ui(['[INFO] Start downloading the video...'])
             self.download_thread = DownloadThread(self.informationEdit, self.urls, **self.kwargs)
@@ -233,11 +229,11 @@ class AboutMessage(QWidget):
         message = QLabel()
         message.setOpenExternalLinks(True)
         message.setText(
-            '<a>GUI-YouGet is a video download software written by ingbyr</a><br><br>'
-            '<a>Version 0.1 License </a><a href = "https://zh.wikipedia.org/wiki/MIT%E8%A8%B1%E5%8F%AF%E8%AD%89">MIT</a><br><br>'
+            '<a><a href ="http://www.ingbyr.tk/2016/05/16/youget/">GUI-YouGet</a> is a video download software written by ingbyr</a><br><br>'
+            '<a>Version 0.0.1 | License </a><a href = "https://zh.wikipedia.org/wiki/MIT%E8%A8%B1%E5%8F%AF%E8%AD%89">MIT</a><br><br>'
             '<a>Based on the open source program</a> <a href="https://github.com/soimort/you-get">you-get</a><br><br>'
-            '<a>About me: </a>'
-            '<br><a href="http://www.ingbyr.tk">My Blog</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.weibo.com/zwkv5">Sina Weibo</a>')
+            '<a>About me: &nbsp;&nbsp;&nbsp;</a>'
+            '<a href="http://www.ingbyr.tk">My Blog</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.weibo.com/zwkv5">Sina Weibo</a>')
 
         grid.addWidget(laber, 1, 0)
         grid.addWidget(message, 1, 1)
@@ -247,4 +243,7 @@ class AboutMessage(QWidget):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = GUI()
+    font = app.font()
+    font.setPointSize(12)
+    app.setFont(font)
     sys.exit(app.exec_())

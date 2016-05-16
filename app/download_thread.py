@@ -14,7 +14,6 @@ class GetVideoInfoThread(QtCore.QThread):
     show the information of video
     """
 
-    # a signal, return list
     finish_signal = QtCore.pyqtSignal(list, bool)
 
     def __init__(self, information_ui, urls, parent=None, **kwargs):
@@ -24,8 +23,7 @@ class GetVideoInfoThread(QtCore.QThread):
         self.kwargs = kwargs
 
     def run(self):
-        # download video
-        # time.sleep(2)
+        # time.sleep(10)
         self.kwargs['info_only'] = True
         try:
             m_get_video(self.urls, **self.kwargs)
@@ -33,8 +31,9 @@ class GetVideoInfoThread(QtCore.QThread):
             can_download = True
         except Exception:
             for item in sys.exc_info():
-                mlog.error('>>>' + str(item))
-            show_inf = ['[ERROR] Get information of videos failed', '[ERROR] Stopped', '[TIP] Please check your url']
+                mlog.error('>>>GetVideoInfoThread: ' + str(item))
+            show_inf = ['[ERROR] Get information of videos failed', '[ERROR] Stopped',
+                        '[TIP] Make sure you can watch the video by this url']
             can_download = False
         finally:
             # when finished, notify the main thread
@@ -45,7 +44,7 @@ class DownloadThread(QtCore.QThread):
     """
     start a thread to download the video
     """
-    # a signal, return list
+
     finishSignal = QtCore.pyqtSignal(list)
 
     def __init__(self, information_ui, urls, parent=None, **kwargs):
@@ -59,9 +58,14 @@ class DownloadThread(QtCore.QThread):
         Download the video
         :return: nothing
         """
-        self.kwargs['info_only'] = False
-        r_obj.flush()
-        m_get_video(self.urls, **self.kwargs)
-        show_inf = '[INFO] ' + r_obj.get_buffer()
-        # show_inf = '[TIP] Finished<br><br>'
-        self.finishSignal.emit([show_inf, '[TIP] Finished<br><br>'])
+        try:
+            self.kwargs['info_only'] = False
+            r_obj.flush()
+            m_get_video(self.urls, **self.kwargs)
+            show_inf = '[INFO] ' + r_obj.get_buffer()
+        except Exception:
+            for item in sys.exc_info():
+                mlog.error(">>>DownloadThread: " + str(item))
+        finally:
+            self.finishSignal.emit(
+                [show_inf, '[TIP] Saved file in the ' + self.kwargs['output_dir'], '[TIP] Finished<br><br>'])

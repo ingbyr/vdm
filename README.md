@@ -3,12 +3,16 @@
 ## Introduction
 Just a GUI based on the [you-get](https://github.com/soimort/you-get/)
 
-Version 0.1
+Version 0.0.1
 
 What `GUI-YouGet` can do for you:
 
 * Download videos / audios from popular websites such as YouTube, Youku, Niconico, and a bunch more. (See the [full list of supported sites](#supported-sites))
 * More feature is comming...
+
+## How to use
+* [Click me]() to download the app
+* Then run YouGet to start download what you need
 
 ## Known bugs
 
@@ -108,5 +112,5 @@ SOFTWARE.
 
 ## Authors
 
-Made by [@ingbyr](https://www.ingbyr.tk), who likes to play CS:GO ^_^
+Made by [@ingbyr](http://www.ingbyr.tk), who likes to play CS:GO ^_^
 
