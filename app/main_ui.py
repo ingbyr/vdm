@@ -51,7 +51,7 @@ class GUI(QMainWindow):
         about_action.triggered.connect(self.about_message.show)
 
         exit_action = QAction('&Exit', self)
-        exit_action.setShortcut('Ctrl+Q')
+        # exit_action.setShortcut('Ctrl+Q')
         exit_action.setStatusTip('Exit application')
         exit_action.triggered.connect(qApp.quit)
 
@@ -77,8 +77,9 @@ class GUI(QMainWindow):
     def get_file(self):
         fname = QFileDialog.getExistingDirectory(self, caption='Select Path', directory='',
                                                  options=QFileDialog.ShowDirsOnly)
-        self.ing_main.update_inf_ui(['[INFO] Set file path to: ' + fname])
-        self.ing_main.set_file_path(fname)
+        if fname:
+            self.ing_main.update_inf_ui(['[INFO] Set file path to: ' + fname])
+            self.ing_main.set_file_path(fname)
 
 
 class InGMain(QWidget):
@@ -187,7 +188,7 @@ class InGMain(QWidget):
                 progressDialog.setValue(percent)
                 QThread.msleep(100)
                 if progressDialog.wasCanceled():
-                    # todo: can not to cancel?
+                    # todo: can not cancel
                     self.download_thread.exit()
             self.update_inf_ui([show_inf])
         else:
@@ -229,11 +230,11 @@ class AboutMessage(QWidget):
         message = QLabel()
         message.setOpenExternalLinks(True)
         message.setText(
-            '<a><a href ="http://www.ingbyr.tk/2016/05/16/youget/">GUI-YouGet</a> is a video download software written by ingbyr</a><br><br>'
-            '<a>Version 0.0.1 | License </a><a href = "https://zh.wikipedia.org/wiki/MIT%E8%A8%B1%E5%8F%AF%E8%AD%89">MIT</a><br><br>'
+            '<a><a href ="http://www.ingbyr.tk/2016/05/16/youget/">GUI-YouGet</a> is a video download software made by ingbyr</a><br><br>'
+            '<a>Version 0.0.1 | License </a><a href = "https://raw.githubusercontent.com/ingbyr/GUI-YouGet/master/LICENSE.txt">MIT</a><br><br>'
             '<a>Based on the open source program</a> <a href="https://github.com/soimort/you-get">you-get</a><br><br>'
             '<a>About me: &nbsp;&nbsp;&nbsp;</a>'
-            '<a href="http://www.ingbyr.tk">My Blog</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.weibo.com/zwkv5">Sina Weibo</a>')
+            '<a href="http://www.ingbyr.tk">My Blog</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.weibo.com/zwkv5">Sina Weibo</a>')
 
         grid.addWidget(laber, 1, 0)
         grid.addWidget(message, 1, 1)

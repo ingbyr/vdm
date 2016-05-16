@@ -14,10 +14,6 @@ def m_get_video(urls, **kwargs):
         m.download(url, **kwargs)
 
 
-def m_get_download_progress(urls, **kwargs):
-    pass
-
-
 # if __name__ == '__main__':
 #     urls = ['https://www.youtube.com/watch?v=mM3dSR_qxcY']
 #     kwargs = {'output_dir': './tmpVideos',
