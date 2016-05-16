@@ -119,9 +119,9 @@ class InGMain(QWidget):
         url = QLabel('Url')
         search = QLabel('Search')
         information = QLabel('Information')
-        download_btn = QPushButton('Download')
-        download_btn.setStatusTip('Download videos')
-        download_btn.clicked.connect(self.gui_download_by_url)
+        self.download_btn = QPushButton('Download')
+        self.download_btn.setStatusTip('Download videos')
+        self.download_btn.clicked.connect(self.gui_download_by_url)
         search_btn = QPushButton('Search')
         search_btn.setStatusTip('Search on Google')
 
@@ -134,7 +134,7 @@ class InGMain(QWidget):
         grid.setSpacing(10)
         grid.addWidget(url, 1, 0)
         grid.addWidget(self.urlEdit, 1, 1)
-        grid.addWidget(download_btn, 1, 2)
+        grid.addWidget(self.download_btn, 1, 2)
         grid.addWidget(search, 2, 0)
         grid.addWidget(self.searchEdit, 2, 1)
         grid.addWidget(search_btn, 2, 2)
@@ -150,9 +150,10 @@ class InGMain(QWidget):
                        'caption': True}
 
     def gui_download_by_url(self):
+        self.download_btn.setEnabled(False)
         status.set_default()
-        self.update_inf_ui(['[TIP] Here we go ~',
-                            '[INFO] Get the information of video...',
+        self.update_inf_ui(['[INFO] Here we go ~',
+                            '[INFO] Get the information by url...',
                             '[INFO] Please wait a moment...'])
 
         self.urls = str(self.urlEdit.text()).split(';')
@@ -175,15 +176,17 @@ class InGMain(QWidget):
 
     def finish_download(self, ls):
         self.update_inf_ui(ls)
+        self.setEnabled(True)
         r_obj.flush()
 
     def start_download(self, ls, can_download):
         r_obj.flush()
         self.update_inf_ui(ls)
         if can_download:
-            self.update_inf_ui(['[INFO] Start downloading the video...'])
+            self.update_inf_ui(['[INFO] Start downloading the files...'])
             self.download_thread = DownloadThread(self.informationEdit, self.urls, **self.kwargs)
-            self.download_thread.finishSignal.connect(self.finish_download)
+            self.download_thread.setTerminationEnabled(True)
+            self.download_thread.finish_signal.connect(self.finish_download)
             self.download_thread.start()
 
             percent = 0
@@ -209,9 +212,12 @@ class InGMain(QWidget):
                 QThread.msleep(100)
                 if progressDialog.wasCanceled():
                     # todo: can not cancel
-                    self.download_thread.exit(returnCode=1)
+                    self.download_thread.wait(100)
+                    self.download_thread.quit()
+
             self.update_inf_ui([show_inf])
         else:
+            self.download_btn.setEnabled(True)
             return
 
     def edittext2bottom(self):
@@ -220,6 +226,10 @@ class InGMain(QWidget):
 
     def set_file_path(self, path):
         self.kwargs['output_dir'] = path
+
+    def stop_by_user(self):
+        self.update_inf_ui(['[TIP] Stopped by you'])
+        self.download_btn.setEnabled(True)
 
 
 class AboutMessage(QWidget):

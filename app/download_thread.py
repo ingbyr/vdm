@@ -45,7 +45,7 @@ class DownloadThread(QtCore.QThread):
     start a thread to download the video
     """
 
-    finishSignal = QtCore.pyqtSignal(list)
+    finish_signal = QtCore.pyqtSignal(list)
 
     def __init__(self, information_ui, urls, parent=None, **kwargs):
         super(DownloadThread, self).__init__(parent)
@@ -67,5 +67,5 @@ class DownloadThread(QtCore.QThread):
             for item in sys.exc_info():
                 mlog.error(">>>DownloadThread: " + str(item))
         finally:
-            self.finishSignal.emit(
+            self.finish_signal.emit(
                 ['[TIP] Files in the ' + self.kwargs['output_dir'], '[TIP] Finished<br><br>'])
