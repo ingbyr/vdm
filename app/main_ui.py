@@ -20,11 +20,12 @@ class GUI(QMainWindow):
         self.init_ui()
 
     def init_ui(self):
+        # init main
+        self.init_main()
+
         # menu
         self.init_menu()
 
-        # init main
-        self.init_main()
         # move to the center
         self.center()
 
@@ -43,9 +44,9 @@ class GUI(QMainWindow):
         self.ing_main = InGMain()
         self.setCentralWidget(self.ing_main)
 
-    def init_menu(self):
         self.about_message = AboutMessage()
 
+    def init_menu(self):
         about_action = QAction('&About', self)
         about_action.setStatusTip('About this application')
         about_action.triggered.connect(self.about_message.show)
@@ -59,12 +60,22 @@ class GUI(QMainWindow):
         file_path_action.setStatusTip('Set file path')
         file_path_action.triggered.connect(self.get_file)
 
+        report_bugs_action = QAction('&Report bugs', self)
+        report_bugs_action.setStatusTip('Report bugs on GitHub')
+        report_bugs_action.triggered.connect(self.report_bugs)
+
         menu_bar = self.menuBar()
+
         setting_menu = menu_bar.addMenu('&Setting')
-        help_menu = menu_bar.addMenu('&Help')
         setting_menu.addAction(file_path_action)
+
+        help_menu = menu_bar.addMenu('&Help')
+        help_menu.addAction(report_bugs_action)
         help_menu.addAction(about_action)
         help_menu.addAction(exit_action)
+
+    def report_bugs(self):
+        QDesktopServices.openUrl(QUrl('https://github.com/ingbyr/GUI-YouGet/issues'))
 
     # show the app in the center
     def center(self):
