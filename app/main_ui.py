@@ -10,6 +10,7 @@ from app.download_thread import *
 from app import mlog, base_dir
 import app.custom_you_get.status as status
 import app.images_qr
+from app.config import version
 
 __author__ = 'InG_byr'
 
@@ -81,16 +82,7 @@ class GUI(QMainWindow):
 
     def check_for_updates(self):
         self.ing_main.update_inf_ui(['[INFO] Check for updates, please wait a moment'])
-
-        try:
-            with open('version.json', 'r') as f:
-                local_inf = json.load(f)
-            self.ing_main.update_inf_ui(['[INFO] Local version is ' + local_inf['version']])
-        except Exception:
-            for item in sys.exc_info():
-                mlog.error('>>>main ui: ' + str(item))
-            self.ing_main.update_inf_ui(['[ERROR] Get local version failed'])
-            return
+        self.ing_main.update_inf_ui(['[INFO] Local version is ' + version])
 
         try:
             with request.urlopen('https://raw.githubusercontent.com/ingbyr/GUI-YouGet/master/version.json') as f:
@@ -105,7 +97,7 @@ class GUI(QMainWindow):
             self.ing_main.update_inf_ui(['[ERROR] Get latest version failed', '[ERROR] Check you internet'])
             return
 
-        if local_inf['version'] >= remote_inf['version']:
+        if version >= remote_inf['version']:
             self.ing_main.update_inf_ui(['[TIP] No available updates'])
         else:
             self.ing_main.update_inf_ui(['[TIP] Ready to get latest version'])
@@ -329,12 +321,9 @@ class AboutMessage(QWidget):
 
         message = QLabel()
         message.setOpenExternalLinks(True)
-        with open('version.json', 'r') as f:
-            inf = json.load(f)
-        ver = inf['version']
         message.setText(
             '<a><a href ="http://www.ingbyr.tk/2016/05/16/youget/">GUI-YouGet</a> is a video download software made by ingbyr</a><br><br>'
-            '<a>Version ' + ver + ' | License </a><a href = "https://raw.githubusercontent.com/ingbyr/GUI-YouGet/master/LICENSE.txt">MIT</a><br><br>'
+            '<a>Version ' + version + ' | License </a><a href = "https://raw.githubusercontent.com/ingbyr/GUI-YouGet/master/LICENSE.txt">MIT</a><br><br>'
                                   '<a>Based on the open source program</a> <a href="https://github.com/soimort/you-get">you-get</a><br><br>'
                                   '<a>About me: &nbsp;&nbsp;&nbsp;</a>'
                                   '<a href="http://www.ingbyr.tk">My Blog</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.weibo.com/zwkv5">Sina Weibo</a>')
