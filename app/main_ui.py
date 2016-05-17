@@ -164,7 +164,7 @@ class InGMain(QWidget):
         self.setLayout(grid)
 
     def init_data(self):
-        self.kwargs = {'output_dir': base_dir + '/YouGetVideos',
+        self.kwargs = {'output_dir': base_dir,
                        'merge': True,
                        'json_output': False,
                        'caption': True}
@@ -211,38 +211,7 @@ class InGMain(QWidget):
             self.download_thread.start()
 
             self.show_progress_bar()
-            # percent = 0
-            # is_exits = False
-            # show_inf = ''
-            #
-            # progressDialog = QProgressDialog(self)
-            # progressDialog.setAutoReset(True)
-            # progressDialog.setWindowModality(Qt.WindowModal)
-            # progressDialog.setMinimumDuration(5)
-            # progressDialog.setWindowTitle(self.tr('Progress'))
-            # progressDialog.setLabelText(self.tr('Downloading files to ' + self.kwargs['output_dir'] + ' ...'))
-            # progressDialog.setCancelButtonText(self.tr("Cancel"))
-            # progressDialog.setRange(0, 100)
-            #
-            # while percent < 100 and not is_exits:
-            #     percent = status.get_percent()
-            #     is_exits = status.get_exist()
-            #     if is_exits:
-            #         show_inf = '[TIP] Files already exists'
-            #         percent = 100
-            #     progressDialog.setValue(percent)
-            #     QThread.msleep(100)
-            #     if progressDialog.wasCanceled():
-            #         pass
-            #         # todo: can not cancel
-            #         status.set_stop_thread(True)
-            #         self.download_thread.wait()
-            #         mlog.debug('>>>main ui: stop the download thread')
-            #         mlog.debug('>>>main ui: download_thread.isRunning ' + str(self.download_thread.isRunning()))
-            #         percent = 100
-            #         self.stop_by_user()
-            #
-            # self.update_inf_ui([show_inf])
+
         else:
             self.download_btn.setEnabled(True)
             return
