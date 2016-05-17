@@ -1,8 +1,8 @@
 # !/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import json
-import sys
 
+import json
+from urllib import request
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -80,8 +80,36 @@ class GUI(QMainWindow):
         help_menu.addAction(exit_action)
 
     def check_for_updates(self):
-        # todo: check for updates
-        pass
+        self.ing_main.update_inf_ui(['[INFO] Check for updates, please wait a moment'])
+
+        try:
+            with open('version.json', 'r') as f:
+                local_inf = json.load(f)
+            self.ing_main.update_inf_ui(['[INFO] Local version is ' + local_inf['version']])
+        except Exception:
+            for item in sys.exc_info():
+                mlog.error('>>>main ui: ' + str(item))
+            self.ing_main.update_inf_ui(['[ERROR] Get local version failed'])
+            return
+
+        try:
+            with request.urlopen('https://raw.githubusercontent.com/ingbyr/GUI-YouGet/master/version.json') as f:
+                raw_inf = str(f.read())[2:-1]
+                mlog.debug(str(f.read())[2:-1])
+                remote_inf = json.loads(raw_inf)
+                mlog.debug('>>>main ui: remote version is ' + remote_inf['version'])
+            self.ing_main.update_inf_ui(['[INFO] Latest version is ' + remote_inf['version']])
+        except Exception:
+            for item in sys.exc_info():
+                mlog.error('>>>main ui: ' + str(item))
+            self.ing_main.update_inf_ui(['[ERROR] Get latest version failed', '[ERROR] Check you internet'])
+            return
+
+        if local_inf['version'] >= remote_inf['version']:
+            self.ing_main.update_inf_ui(['[TIP] No available updates'])
+        else:
+            self.ing_main.update_inf_ui(['[TIP] Ready to get latest version'])
+            QDesktopServices.openUrl(QUrl('http://www.ingbyr.tk/2016/05/16/youget/'))
 
     def report_bugs(self):
         QDesktopServices.openUrl(QUrl('https://github.com/ingbyr/GUI-YouGet/issues'))
@@ -306,10 +334,10 @@ class AboutMessage(QWidget):
         ver = inf['version']
         message.setText(
             '<a><a href ="http://www.ingbyr.tk/2016/05/16/youget/">GUI-YouGet</a> is a video download software made by ingbyr</a><br><br>'
-            '<a>Version '+ver+' | License </a><a href = "https://raw.githubusercontent.com/ingbyr/GUI-YouGet/master/LICENSE.txt">MIT</a><br><br>'
-            '<a>Based on the open source program</a> <a href="https://github.com/soimort/you-get">you-get</a><br><br>'
-            '<a>About me: &nbsp;&nbsp;&nbsp;</a>'
-            '<a href="http://www.ingbyr.tk">My Blog</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.weibo.com/zwkv5">Sina Weibo</a>')
+            '<a>Version ' + ver + ' | License </a><a href = "https://raw.githubusercontent.com/ingbyr/GUI-YouGet/master/LICENSE.txt">MIT</a><br><br>'
+                                  '<a>Based on the open source program</a> <a href="https://github.com/soimort/you-get">you-get</a><br><br>'
+                                  '<a>About me: &nbsp;&nbsp;&nbsp;</a>'
+                                  '<a href="http://www.ingbyr.tk">My Blog</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.weibo.com/zwkv5">Sina Weibo</a>')
 
         grid.addWidget(laber, 1, 0)
         grid.addWidget(message, 1, 1)
