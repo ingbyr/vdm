@@ -6,7 +6,7 @@ import os
 
 __author__ = 'InG_byr'
 
-logging.basicConfig(filename='dev_log.log', level='DEBUG')
+logging.basicConfig(filename='dev_log.log', level='ERROR')
 mlog = logging
 
 base_dir = os.getcwd()
