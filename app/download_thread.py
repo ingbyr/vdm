@@ -17,9 +17,8 @@ class GetVideoInfoThread(QtCore.QThread):
 
     finish_signal = QtCore.pyqtSignal(list, bool)
 
-    def __init__(self, information_ui, urls, parent=None, **kwargs):
+    def __init__(self, urls, parent=None, **kwargs):
         super(GetVideoInfoThread, self).__init__(parent)
-        self.information_ui = information_ui
         self.urls = urls
         self.kwargs = kwargs
 
@@ -48,9 +47,8 @@ class DownloadThread(QtCore.QThread):
 
     finish_signal = QtCore.pyqtSignal(list)
 
-    def __init__(self, information_ui, urls, parent=None, **kwargs):
+    def __init__(self, urls, parent=None, **kwargs):
         super(DownloadThread, self).__init__(parent)
-        self.information_ui = information_ui
         self.urls = urls
         self.kwargs = kwargs
 

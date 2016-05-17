@@ -178,7 +178,7 @@ class InGMain(QWidget):
 
         self.urls = str(self.urlEdit.text()).split(';')
 
-        self.get_inf_thread = GetVideoInfoThread(self.informationEdit, self.urls, **self.kwargs)
+        self.get_inf_thread = GetVideoInfoThread(self.urls, **self.kwargs)
         self.get_inf_thread.finish_signal.connect(self.start_download)
         self.get_inf_thread.start()
 
@@ -205,7 +205,7 @@ class InGMain(QWidget):
         self.update_inf_ui(ls)
         if can_download:
             self.update_inf_ui(['[INFO] Start downloading the files...'])
-            self.download_thread = DownloadThread(self.informationEdit, self.urls, **self.kwargs)
+            self.download_thread = DownloadThread(self.urls, **self.kwargs)
             self.download_thread.setTerminationEnabled(True)
             self.download_thread.finish_signal.connect(self.finish_download)
             self.download_thread.start()
@@ -293,9 +293,9 @@ class AboutMessage(QWidget):
         message.setText(
             '<a><a href ="http://www.ingbyr.tk/2016/05/16/youget/">GUI-YouGet</a> is a video download software made by ingbyr</a><br><br>'
             '<a>Version ' + version + ' | License </a><a href = "https://raw.githubusercontent.com/ingbyr/GUI-YouGet/master/LICENSE.txt">MIT</a><br><br>'
-                                  '<a>Based on the open source program</a> <a href="https://github.com/soimort/you-get">you-get</a><br><br>'
-                                  '<a>About me: &nbsp;&nbsp;&nbsp;</a>'
-                                  '<a href="http://www.ingbyr.tk">My Blog</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.weibo.com/zwkv5">Sina Weibo</a>')
+                                      '<a>Based on the open source program</a> <a href="https://github.com/soimort/you-get">you-get</a><br><br>'
+                                      '<a>About me: &nbsp;&nbsp;&nbsp;</a>'
+                                      '<a href="http://www.ingbyr.tk">My Blog</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.weibo.com/zwkv5">Sina Weibo</a>')
 
         grid.addWidget(laber, 1, 0)
         grid.addWidget(message, 1, 1)

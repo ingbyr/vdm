@@ -1310,14 +1310,19 @@ def google_search(url):
 
 
 def url_to_module(url):
-    try:
-        video_host = r1(r'https?://([^/]+)/', url)
-        video_url = r1(r'https?://[^/]+(.*)', url)
-        assert video_host and video_url
-    except:
-        url = google_search(url)
-        video_host = r1(r'https?://([^/]+)/', url)
-        video_url = r1(r'https?://[^/]+(.*)', url)
+    # todo: google search not finished
+    # try:
+    video_host = r1(r'https?://([^/]+)/', url)
+    video_url = r1(r'https?://[^/]+(.*)', url)
+    # assert video_host and video_url
+    if not video_host or not video_url:
+        raise Exception('Invailed Url')
+        return None, None
+    # except:
+    #
+    #     url = google_search(url)
+    #     video_host = r1(r'https?://([^/]+)/', url)
+    #     video_url = r1(r'https?://[^/]+(.*)', url)
 
     if video_host.endswith('.com.cn'):
         video_host = video_host[:-3]
