@@ -11,8 +11,8 @@ def m_get_video(urls, **kwargs):
     m_urls = ct.url2http(urls)
     for url in m_urls:
         m, url = url_to_module(url)
-        m.download(url, **kwargs)
-
+        if m and url:
+            m.download(url, **kwargs)
 
 # if __name__ == '__main__':
 #     urls = ['https://www.youtube.com/watch?v=mM3dSR_qxcY']
@@ -22,4 +22,3 @@ def m_get_video(urls, **kwargs):
 #               'caption': True}
 #     kwargs['info_only'] = False
 #     m_get_video(urls=urls, **kwargs)
-
