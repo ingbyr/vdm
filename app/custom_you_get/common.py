@@ -505,8 +505,11 @@ def url_save(url, filepath, bar, refer=None, is_part=False, faker=False, headers
             open_mode = 'wb'
 
         with open(temp_filepath, open_mode) as output:
+            # force_stop = status.get_stop_thread()
             while True:
                 buffer = response.read(1024 * 256)
+                if status.get_stop_thread():  # user maybe force to stop the downloading
+                    return
                 if not buffer:
                     if received == file_size:  # Download finished
                         break
@@ -616,6 +619,7 @@ class SimpleProgressBar:
             percent = 100
 
         status.set_percent(percent)
+        status.set_speed(self.speed)
 
         # dots = bar_size * int(percent) // 100
         # plus = int(percent) - dots // bar_size * 100

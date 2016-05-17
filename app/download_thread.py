@@ -1,5 +1,6 @@
 # !/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
 import time
 from PyQt5 import QtCore
 
@@ -24,8 +25,8 @@ class GetVideoInfoThread(QtCore.QThread):
 
     def run(self):
         # time.sleep(10)
-        self.kwargs['info_only'] = True
         try:
+            self.kwargs['info_only'] = True
             m_get_video(self.urls, **self.kwargs)
             show_inf = ['[INFO] ' + r_obj.get_buffer()]
             can_download = True

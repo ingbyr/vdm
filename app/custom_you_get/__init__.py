@@ -27,8 +27,9 @@ class __redirection__:
         self.buff += output_stream + '<br>'
 
     def to_console(self):
-        sys.stdout = self.__console__
-        print(self.buff)
+        pass
+        # sys.stdout = self.__console__
+        # print(self.buff)
 
     def to_file(self, file_path):
         f = open(file_path, 'w')

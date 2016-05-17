@@ -175,7 +175,8 @@ class InGMain(QWidget):
             self.edittext2bottom()
 
     def finish_download(self, ls):
-        self.update_inf_ui(ls)
+        if not status.get_stop_thread():
+            self.update_inf_ui(ls)
         self.download_btn.setEnabled(True)
         r_obj.flush()
 
@@ -206,16 +207,19 @@ class InGMain(QWidget):
                 percent = status.get_percent()
                 is_exits = status.get_exist()
                 if is_exits:
-                    show_inf = '[TIP] File already exists'
+                    show_inf = '[TIP] Files already exists'
                     percent = 100
                 progressDialog.setValue(percent)
                 QThread.msleep(100)
                 if progressDialog.wasCanceled():
                     pass
                     # todo: can not cancel
-                    # self.download_thread.terminate()
-                    # self.download_thread.wait(200)
-                    # self.stop_by_user()
+                    status.set_stop_thread(True)
+                    self.download_thread.wait()
+                    mlog.debug('>>>main ui: stop the download thread')
+                    mlog.debug('>>>main ui: download_thread.isRunning ' + str(self.download_thread.isRunning()))
+                    percent = 100
+                    self.stop_by_user()
 
             self.update_inf_ui([show_inf])
         else:
@@ -230,7 +234,7 @@ class InGMain(QWidget):
         self.kwargs['output_dir'] = path
 
     def stop_by_user(self):
-        self.update_inf_ui(['[TIP] Stopped by you'])
+        self.update_inf_ui(['[TIP] Force to stop the downloading', '[TIP] You can resume this download at any time'])
         self.download_btn.setEnabled(True)
 
 
