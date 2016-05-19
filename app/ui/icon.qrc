@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/new/prefix1">
+    <qresource prefix="/">
         <file>res/download.png</file>
         <file>res/favicon.ico</file>
     </qresource>
