@@ -24,7 +24,7 @@ class __redirection__:
         self.__console__ = sys.stdout
 
     def write(self, output_stream):
-        self.buff += output_stream + '<br>'
+        self.buff += output_stream
 
     def to_console(self):
         pass
