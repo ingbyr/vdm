@@ -6,7 +6,7 @@ from urllib import request
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
-from app.download_thread import *
+from app.util.download_thread import *
 from app import mlog, base_dir
 import app.custom_you_get.status as status
 import app.images_qr
