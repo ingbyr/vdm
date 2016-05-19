@@ -24,7 +24,7 @@
    <widget class="QLabel" name="label_url">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>20</x>
       <y>20</y>
       <width>31</width>
       <height>31</height>
@@ -57,7 +57,7 @@
    <widget class="QLabel" name="label_support_sites">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>20</x>
       <y>100</y>
       <width>121</width>
       <height>31</height>
@@ -73,9 +73,9 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>19</x>
       <y>130</y>
-      <width>480</width>
+      <width>461</width>
       <height>271</height>
      </rect>
     </property>
