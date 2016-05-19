@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="icon.qrc">
-    <normaloff>:/new/prefix1/res/favicon.ico</normaloff>:/new/prefix1/res/favicon.ico</iconset>
+    <normaloff>:/res/favicon.ico</normaloff>:/res/favicon.ico</iconset>
   </property>
   <property name="layoutDirection">
    <enum>Qt::LeftToRight</enum>
@@ -47,7 +47,7 @@
      <string>Here we go!</string>
     </property>
     <property name="styleSheet">
-     <string notr="true">border-image: url(:/new/prefix1/res/download.png);
+     <string notr="true">border-image: url(:/res/download.png);
 </string>
     </property>
     <property name="text">
@@ -791,6 +791,7 @@ p, li { white-space: pre-wrap; }
     <property name="title">
      <string>Help</string>
     </property>
+    <addaction name="action_check_for_updates_2"/>
     <addaction name="action_report_bugs"/>
     <addaction name="action_about"/>
    </widget>
@@ -820,6 +821,11 @@ p, li { white-space: pre-wrap; }
   <action name="action_about">
    <property name="text">
     <string>About</string>
+   </property>
+  </action>
+  <action name="action_check_for_updates_2">
+   <property name="text">
+    <string>Check for updates</string>
    </property>
   </action>
  </widget>

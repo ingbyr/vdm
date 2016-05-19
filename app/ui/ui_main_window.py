@@ -13,7 +13,7 @@ class Ui_MainWindow(object):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(500, 440)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/new/prefix1/res/favicon.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/res/favicon.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
         MainWindow.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.central_widget = QtWidgets.QWidget(MainWindow)
@@ -23,7 +23,7 @@ class Ui_MainWindow(object):
         self.label_url.setObjectName("label_url")
         self.button_download = QtWidgets.QPushButton(self.central_widget)
         self.button_download.setGeometry(QtCore.QRect(410, 20, 61, 61))
-        self.button_download.setStyleSheet("border-image: url(:/new/prefix1/res/download.png);\n"
+        self.button_download.setStyleSheet("border-image: url(:/res/download.png);\n"
 "")
         self.button_download.setText("")
         self.button_download.setObjectName("button_download")
@@ -60,7 +60,10 @@ class Ui_MainWindow(object):
         self.action_report_bugs.setObjectName("action_report_bugs")
         self.action_about = QtWidgets.QAction(MainWindow)
         self.action_about.setObjectName("action_about")
+        self.action_check_for_updates = QtWidgets.QAction(MainWindow)
+        self.action_check_for_updates.setObjectName("action_check_for_updates_2")
         self.menu_settings.addAction(self.action_file_path)
+        self.menu_help.addAction(self.action_check_for_updates)
         self.menu_help.addAction(self.action_report_bugs)
         self.menu_help.addAction(self.action_about)
         self.menu_bar.addAction(self.menu_settings.menuAction())
@@ -754,3 +757,6 @@ class Ui_MainWindow(object):
         self.action_check_for_updates.setText(_translate("MainWindow", "Check for updates"))
         self.action_report_bugs.setText(_translate("MainWindow", "Report bugs"))
         self.action_about.setText(_translate("MainWindow", "About"))
+        self.action_check_for_updates.setText(_translate("MainWindow", "Check for updates"))
+
+import app.ui.icon_rc
