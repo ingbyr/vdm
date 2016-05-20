@@ -39,7 +39,7 @@ class Ui_FilesListDialog(object):
         _translate = QtCore.QCoreApplication.translate
         FilesListDialog.setWindowTitle(_translate("FilesListDialog", "Files List"))
         self.label.setText(_translate("FilesListDialog", "Choose spicifed files to download by inputting options\n"
-"Without options, you will get default files"))
+"Without correct options, you will get default files"))
         self.label_2.setText(_translate("FilesListDialog", "options"))
         self.push_button_confirm.setText(_translate("FilesListDialog", "Confirm"))
         self.push_button_cancel.setText(_translate("FilesListDialog", "Cancel"))

@@ -2,6 +2,7 @@
 # This file is Python 2 compliant.
 
 import sys
+from app.config import add_stream
 
 if sys.version_info[0] == 3:
     # from .extractor import Extractor, VideoExtractor
@@ -26,7 +27,10 @@ class __redirection__:
     def write(self, output_stream):
         if str(output_stream).startswith('    # download-with:'):
             index = str(output_stream).find('=')
-            self.buff += '<br><font color=blue>    option is ' + str(output_stream)[(index + 1):-6] + '</p></font>'
+            options = str(output_stream)[(index + 1):-6]
+            self.buff += '<br><font color=blue>    option is ' + options + '</p></font>'
+            add_stream(options)
+
         else:
             self.buff += '<br>' + output_stream
 

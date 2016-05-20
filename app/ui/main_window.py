@@ -10,8 +10,7 @@ from PyQt5.QtGui import QDesktopServices
 
 from app.ui.ui_main_window import Ui_MainWindow
 from app.util.download_thread import GetVideoInfoThread
-from app import mconfig
-from app import mlog
+from app import mlog, mconfig
 
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox, QDesktopWidget
 from app.ui.about_widget import AboutWdiget
@@ -38,10 +37,10 @@ class MainWindow(Ui_MainWindow):
         self.action_report_bugs.triggered.connect(self.report_bugs)
 
     def get_info(self):
-        urls = (str(self.urls_text_edit.toPlainText())).split(';')
-        mlog.debug(urls[0])
+        self.urls = (str(self.urls_text_edit.toPlainText())).split(';')
+        mlog.debug(self.urls[0])
 
-        self.m_thread = GetVideoInfoThread(urls, **mconfig.kwargs)
+        self.m_thread = GetVideoInfoThread(self.urls, **mconfig.kwargs)
         self.m_thread.finish_signal.connect(self.finish_get_info)
         self.m_thread.start()
 
@@ -50,6 +49,7 @@ class MainWindow(Ui_MainWindow):
         if can_download:
             self.files_list_dialog = FilesListDialog()
             self.files_list_dialog.update_files_list(ls)
+            mconfig.set_urls(self.urls)
         else:
             self.show_msg(QMessageBox.Critical, 'Failed', 'Can\'t get the files list')
 

@@ -4,7 +4,7 @@
 import time
 from PyQt5 import QtCore
 
-from app import mlog
+from app import mlog, mconfig
 from app.custom_you_get.custom_youget import r_obj, m_get_video, sys
 
 __author__ = 'InG_byr'
@@ -23,7 +23,6 @@ class GetVideoInfoThread(QtCore.QThread):
         self.kwargs = kwargs
 
     def run(self):
-        # time.sleep(10)
         try:
             self.kwargs['info_only'] = True
             m_get_video(self.urls, **self.kwargs)
@@ -43,7 +42,7 @@ class DownloadThread(QtCore.QThread):
     start a thread to download the video
     """
 
-    finish_signal = QtCore.pyqtSignal(list)
+    finish_signal = QtCore.pyqtSignal(bool)
 
     def __init__(self, urls, parent=None, **kwargs):
         super(DownloadThread, self).__init__(parent)
@@ -55,14 +54,15 @@ class DownloadThread(QtCore.QThread):
         Download the video
         :return: nothing
         """
+        is_succeed = False
         try:
             self.kwargs['info_only'] = False
-            r_obj.flush()
+            mlog.debug(mconfig.get_file_itag())
             m_get_video(self.urls, **self.kwargs)
-            # show_inf = '[INFO] ' + r_obj.get_buffer()
+            is_succeed =True
         except Exception:
             for item in sys.exc_info():
-                mlog.error(">>>DownloadThread: " + str(item))
+                mlog.error(str(item))
+                is_succeed=False
         finally:
-            self.finish_signal.emit(
-                ['[TIP] Files in the ' + self.kwargs['output_dir'], '[TIP] Finished<br><br>'])
+            self.finish_signal.emit(is_succeed)
