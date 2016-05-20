@@ -70,8 +70,7 @@ def add_stream(data):
     streams.append(data)
 
 
-@property
-def get_stream():
+def get_streams():
     global streams
     return streams
 

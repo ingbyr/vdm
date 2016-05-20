@@ -57,7 +57,7 @@ class DownloadThread(QtCore.QThread):
         is_succeed = False
         try:
             self.kwargs['info_only'] = False
-            mlog.debug(mconfig.get_file_itag())
+            mlog.debug(mconfig.get_file_itag)
             m_get_video(self.urls, **self.kwargs)
             is_succeed =True
         except Exception:

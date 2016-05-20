@@ -7,7 +7,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from app.util.download_thread import *
-from app import mlog, base_dir
+from app import mlog, mconfig
 import app.custom_you_get.status as status
 import app.images_qr
 from app.config import version
@@ -35,7 +35,7 @@ class GUI(QMainWindow):
         self.statusBar().showMessage('Ready')
 
         self.setWindowTitle('YouGet')
-        mlog.debug('>>>base dir: ' + base_dir)
+        mlog.debug('>>>base dir: ' + mconfig.base_dir)
         self.setWindowIcon(QIcon(':res/favicon.ico'))
         self.show()
 
