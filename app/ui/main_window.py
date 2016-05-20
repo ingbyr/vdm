@@ -10,7 +10,7 @@ from PyQt5.QtGui import QDesktopServices
 
 from app.ui.ui_main_window import Ui_MainWindow
 from app.util.download_thread import GetVideoInfoThread
-from app.config import kwargs, set_file_path, base_dir, version
+from app import mconfig
 from app import mlog
 
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox, QDesktopWidget
@@ -41,7 +41,7 @@ class MainWindow(Ui_MainWindow):
         urls = (str(self.urls_text_edit.toPlainText())).split(';')
         mlog.debug(urls[0])
 
-        self.m_thread = GetVideoInfoThread(urls, **kwargs)
+        self.m_thread = GetVideoInfoThread(urls, **mconfig.kwargs)
         self.m_thread.finish_signal.connect(self.finish_get_info)
         self.m_thread.start()
 
@@ -63,12 +63,12 @@ class MainWindow(Ui_MainWindow):
         fname = QFileDialog.getExistingDirectory(self.main_window, caption='Select Path', directory='',
                                                  options=QFileDialog.ShowDirsOnly)
         if fname:
-            set_file_path(fname)
-            mlog.debug('changed file path to ' + kwargs['output_dir'])
+            mconfig.set_file_path(fname)
+            mlog.debug('changed file path to ' + mconfig.get_file_path())
             self.show_msg(QMessageBox.Information, 'Tip', 'Changed file path to:\n' + str(fname))
         else:
-            set_file_path(base_dir)
-            self.show_msg(QMessageBox.Information, 'Tip', 'Default file path:\n' + str(base_dir))
+            mconfig.set_file_path(mconfig.base_dir)
+            self.show_msg(QMessageBox.Information, 'Tip', 'Default file path:\n' + str(mconfig.base_dir))
 
     def show_msg(self, icon, title, text):
         self.msg.setWindowTitle(title)
