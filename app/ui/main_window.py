@@ -35,6 +35,7 @@ class MainWindow(Ui_MainWindow):
         self.action_about.triggered.connect(self.show_about)
         self.action_file_path.triggered.connect(self.set_file_path)
         self.action_check_for_updates.triggered.connect(self.check_for_updates)
+        self.action_report_bugs.triggered.connect(self.report_bugs)
 
     def get_info(self):
         urls = (str(self.urls_text_edit.toPlainText())).split(';')
@@ -93,8 +94,11 @@ class MainWindow(Ui_MainWindow):
         if version >= remote_inf['version']:
             self.show_msg(QMessageBox.Information, 'Check for updates', 'No available updates')
         else:
-            self.show_msg(QMessageBox.Information, 'Check for updates', 'There a new version')
+            self.show_msg(QMessageBox.Information, 'Check for updates', 'There is a new version')
             self.do_updates()
 
     def do_updates(self):
         QDesktopServices.openUrl(QUrl('http://www.ingbyr.tk/2016/05/16/youget/'))
+
+    def report_bugs(self):
+        QDesktopServices.openUrl(QUrl('https://github.com/ingbyr/GUI-YouGet/issues'))
