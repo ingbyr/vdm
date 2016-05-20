@@ -21,13 +21,30 @@ kwargs = {'output_dir': base_dir,
           'json_output': False,
           'caption': True}
 
+urls =''
+
 
 def set_file_path(path):
+    global kwargs
     kwargs['output_dir'] = path
 
 
+def get_file_path():
+    global kwargs
+    return kwargs['output_dir']
+
+
 def set_file_itag(stream_id):
+    global kwargs
     kwargs['stream_id'] = stream_id
+
+def get_urls():
+    global urls
+    return urls
+
+def set_urls(data):
+    global urls
+    urls = data
 
 
 if __name__ == '__main__':

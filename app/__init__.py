@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import app.config
 
 __author__ = 'InG_byr'
 
+mconfig = app.config
 
 logging.basicConfig(filename='dev.log',
                     level=logging.DEBUG,
