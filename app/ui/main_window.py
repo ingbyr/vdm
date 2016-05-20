@@ -91,7 +91,7 @@ class MainWindow(Ui_MainWindow):
                 self.show_msg(QMessageBox.Critical, 'Failed', 'Check for updates failed')
             return
 
-        if version >= remote_inf['version']:
+        if mconfig.version >= remote_inf['version']:
             self.show_msg(QMessageBox.Information, 'Check for updates', 'No available updates')
         else:
             self.show_msg(QMessageBox.Information, 'Check for updates', 'There is a new version')
