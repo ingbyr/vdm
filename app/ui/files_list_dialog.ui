@@ -37,7 +37,7 @@
    </property>
    <property name="text">
     <string>Choose spicifed files to download by inputting options
-Without options, you will get default files</string>
+Without correct options, you will get default files</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_2">

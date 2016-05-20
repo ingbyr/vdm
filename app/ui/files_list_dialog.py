@@ -3,8 +3,7 @@
 
 from app.ui.ui_files_list_dialog import Ui_FilesListDialog
 from PyQt5.QtWidgets import QDialog, QMessageBox
-from app import mlog
-from app.config import get_file_path,set_file_itag
+from app import mlog, mconfig
 from app.util.download_thread import DownloadThread
 
 __author__ = 'InG_byr'
@@ -27,16 +26,16 @@ class FilesListDialog(Ui_FilesListDialog):
 
     def start_download_files(self):
         options = str(self.line_edit_options.text()).strip(' ')
-        if options.startswith('--itag=') or options.startswith('--format='):
-            set_file_itag(options)
-            mlog.debug('options is ' + options)
-            self.download_thread = DownloadThread()
-            self.download_thread.finish_signal.connect(self.finish_download)
-            self.download_thread.start()
+        if (options in mconfig.streams) or options is None or options == '':
+            mconfig.set_file_itag(options)
         else:
-            mlog.debug('options is invalid')
-            self.show_msg(QMessageBox.Warning, 'Bad options',
-                          'The correct options maybe look like: \n--itag=xx\n--format=xx\n ...')
+            self.show_msg(QMessageBox.Warning, 'Bad options', 'The [options] may be in blue text:\n'
+                                                              'Option is [options]')
+            return
+
+        self.download_thread = DownloadThread(mconfig.get_urls(), **mconfig.kwargs)
+        self.download_thread.finish_signal.connect(self.finish_download)
+        self.download_thread.start()
 
     def show_msg(self, icon, title, text):
         self.msg.setWindowTitle(title)
@@ -45,5 +44,9 @@ class FilesListDialog(Ui_FilesListDialog):
         self.msg.setStandardButtons(QMessageBox.Ok)
         self.msg.show()
 
-    # def finish_download(self):
-    #     self.show_msg(QMessageBox.Information, 'Compelted', 'Download completed! Files are in:\n' + get_file_path())
+    def finish_download(self, is_succeed):
+        if is_succeed:
+            self.show_msg(QMessageBox.Information, 'completed',
+                          'Download completed! Files are in:\n' + mconfig.get_file_path())
+        else:
+            self.show_msg(QMessageBox.Critical, 'Failed', 'Download failed!')

@@ -21,7 +21,18 @@ kwargs = {'output_dir': base_dir,
           'json_output': False,
           'caption': True}
 
-urls =''
+urls = ''
+
+streams = []
+
+
+def set_default():
+    global kwargs
+    global urls
+    global streams
+    streams=[]
+    kwargs['stream_id'] = ''
+    urls = ''
 
 
 def set_file_path(path):
@@ -38,13 +49,31 @@ def set_file_itag(stream_id):
     global kwargs
     kwargs['stream_id'] = stream_id
 
+
+def get_file_itag():
+    global kwargs
+    return kwargs['stream_id']
+
+
 def get_urls():
     global urls
     return urls
 
+
 def set_urls(data):
     global urls
     urls = data
+
+
+def add_stream(data):
+    global streams
+    streams.append(data)
+
+
+@property
+def get_stream():
+    global streams
+    return streams
 
 
 if __name__ == '__main__':
