@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'mainwindow.ui'
+# Form implementation generated from reading ui file 'main_window.ui'
 #
 # Created by: PyQt5 UI code generator 5.6
 #
@@ -22,63 +22,19 @@ class Ui_MainWindow(object):
         self.label_url.setGeometry(QtCore.QRect(20, 20, 31, 31))
         self.label_url.setObjectName("label_url")
         self.button_download = QtWidgets.QPushButton(self.central_widget)
-        self.button_download.setGeometry(QtCore.QRect(410, 20, 61, 61))
+        self.button_download.setGeometry(QtCore.QRect(410, 20, 61, 60))
         self.button_download.setStyleSheet("border-image: url(:/res/download.png);\n"
 "")
         self.button_download.setText("")
         self.button_download.setObjectName("button_download")
         self.label_support_sites = QtWidgets.QLabel(self.central_widget)
-        self.label_support_sites.setGeometry(QtCore.QRect(20, 100, 121, 31))
+        self.label_support_sites.setGeometry(QtCore.QRect(20, 90, 121, 31))
         self.label_support_sites.setObjectName("label_support_sites")
         self.text_edit_urls = QtWidgets.QTextEdit(self.central_widget)
         self.text_edit_urls.setEnabled(True)
-        self.text_edit_urls.setGeometry(QtCore.QRect(19, 130, 461, 271))
+        self.text_edit_urls.setGeometry(QtCore.QRect(19, 120, 461, 281))
         self.text_edit_urls.setReadOnly(True)
-        self.text_edit_urls.setTextInteractionFlags(QtCore.Qt.TextBrowserInteraction)
-        self.text_edit_urls.setObjectName("text_edit_urls")
-        self.urls_text_edit = QtWidgets.QTextEdit(self.central_widget)
-        self.urls_text_edit.setGeometry(QtCore.QRect(60, 30, 321, 61))
-        self.urls_text_edit.setObjectName("urls_text_edit")
-        MainWindow.setCentralWidget(self.central_widget)
-        self.menu_bar = QtWidgets.QMenuBar(MainWindow)
-        self.menu_bar.setGeometry(QtCore.QRect(0, 0, 500, 19))
-        self.menu_bar.setObjectName("menu_bar")
-        self.menu_settings = QtWidgets.QMenu(self.menu_bar)
-        self.menu_settings.setObjectName("menu_settings")
-        self.menu_help = QtWidgets.QMenu(self.menu_bar)
-        self.menu_help.setObjectName("menu_help")
-        MainWindow.setMenuBar(self.menu_bar)
-        self.status_bar = QtWidgets.QStatusBar(MainWindow)
-        self.status_bar.setEnabled(True)
-        self.status_bar.setObjectName("status_bar")
-        MainWindow.setStatusBar(self.status_bar)
-        self.action_file_path = QtWidgets.QAction(MainWindow)
-        self.action_file_path.setObjectName("action_file_path")
-        self.action_check_for_updates = QtWidgets.QAction(MainWindow)
-        self.action_check_for_updates.setObjectName("action_check_for_updates")
-        self.action_report_bugs = QtWidgets.QAction(MainWindow)
-        self.action_report_bugs.setObjectName("action_report_bugs")
-        self.action_about = QtWidgets.QAction(MainWindow)
-        self.action_about.setObjectName("action_about")
-        self.action_check_for_updates = QtWidgets.QAction(MainWindow)
-        self.action_check_for_updates.setObjectName("action_check_for_updates_2")
-        self.menu_settings.addAction(self.action_file_path)
-        self.menu_help.addAction(self.action_check_for_updates)
-        self.menu_help.addAction(self.action_report_bugs)
-        self.menu_help.addAction(self.action_about)
-        self.menu_bar.addAction(self.menu_settings.menuAction())
-        self.menu_bar.addAction(self.menu_help.menuAction())
-
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
-    def retranslateUi(self, MainWindow):
-        _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "YouGet"))
-        self.label_url.setText(_translate("MainWindow", "URL"))
-        self.button_download.setStatusTip(_translate("MainWindow", "Here we go!"))
-        self.label_support_sites.setText(_translate("MainWindow", "Supported Sites"))
-        self.text_edit_urls.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.text_edit_urls.setHtml("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'Sans Serif\'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
@@ -750,13 +706,53 @@ class Ui_MainWindow(object):
 "<td></td>\n"
 "<td>\n"
 "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">✓</p></td>\n"
-"<td></td></tr></table></body></html>"))
+"<td></td></tr></table></body></html>")
+        self.text_edit_urls.setTextInteractionFlags(QtCore.Qt.TextBrowserInteraction)
+        self.text_edit_urls.setObjectName("text_edit_urls")
+        self.urls_text_edit = QtWidgets.QTextEdit(self.central_widget)
+        self.urls_text_edit.setGeometry(QtCore.QRect(60, 30, 321, 41))
+        self.urls_text_edit.setObjectName("urls_text_edit")
+        MainWindow.setCentralWidget(self.central_widget)
+        self.menu_bar = QtWidgets.QMenuBar(MainWindow)
+        self.menu_bar.setGeometry(QtCore.QRect(0, 0, 500, 19))
+        self.menu_bar.setObjectName("menu_bar")
+        self.menu_settings = QtWidgets.QMenu(self.menu_bar)
+        self.menu_settings.setObjectName("menu_settings")
+        self.menu_help = QtWidgets.QMenu(self.menu_bar)
+        self.menu_help.setObjectName("menu_help")
+        MainWindow.setMenuBar(self.menu_bar)
+        self.status_bar = QtWidgets.QStatusBar(MainWindow)
+        self.status_bar.setEnabled(True)
+        self.status_bar.setObjectName("status_bar")
+        MainWindow.setStatusBar(self.status_bar)
+        self.action_file_path = QtWidgets.QAction(MainWindow)
+        self.action_file_path.setObjectName("action_file_path")
+        self.action_report_bugs = QtWidgets.QAction(MainWindow)
+        self.action_report_bugs.setObjectName("action_report_bugs")
+        self.action_about = QtWidgets.QAction(MainWindow)
+        self.action_about.setObjectName("action_about")
+        self.action_check_for_updates = QtWidgets.QAction(MainWindow)
+        self.action_check_for_updates.setObjectName("action_check_for_updates")
+        self.menu_settings.addAction(self.action_file_path)
+        self.menu_help.addAction(self.action_check_for_updates)
+        self.menu_help.addAction(self.action_report_bugs)
+        self.menu_help.addAction(self.action_about)
+        self.menu_bar.addAction(self.menu_settings.menuAction())
+        self.menu_bar.addAction(self.menu_help.menuAction())
+
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def retranslateUi(self, MainWindow):
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "YouGet"))
+        self.label_url.setText(_translate("MainWindow", "URL"))
+        self.button_download.setStatusTip(_translate("MainWindow", "Here we go!"))
+        self.label_support_sites.setText(_translate("MainWindow", "Supported Sites"))
         self.menu_settings.setTitle(_translate("MainWindow", "Settings"))
         self.menu_help.setTitle(_translate("MainWindow", "Help"))
         self.action_file_path.setText(_translate("MainWindow", "File path"))
-        self.action_check_for_updates.setText(_translate("MainWindow", "Check for updates"))
         self.action_report_bugs.setText(_translate("MainWindow", "Report bugs"))
         self.action_about.setText(_translate("MainWindow", "About"))
         self.action_check_for_updates.setText(_translate("MainWindow", "Check for updates"))
 
-import app.ui.icon_rc

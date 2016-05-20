@@ -15,7 +15,7 @@ class GetVideoInfoThread(QtCore.QThread):
     show the information of video
     """
 
-    finish_signal = QtCore.pyqtSignal(list, bool)
+    finish_signal = QtCore.pyqtSignal(str, bool)
 
     def __init__(self, urls, parent=None, **kwargs):
         super(GetVideoInfoThread, self).__init__(parent)
@@ -27,17 +27,15 @@ class GetVideoInfoThread(QtCore.QThread):
         try:
             self.kwargs['info_only'] = True
             m_get_video(self.urls, **self.kwargs)
-            show_inf = ['[INFO] ' + r_obj.get_buffer()]
+            result = r_obj.get_buffer()
             can_download = True
         except Exception:
             for item in sys.exc_info():
-                mlog.error('>>>GetVideoInfoThread: ' + str(item))
-            show_inf = ['[ERROR] Get information of files failed', '[ERROR] Stopped',
-                        '[ERROR] Make sure you can visit this url']
+                mlog.error(str(item))
+            result = 'Get information of files failed'
             can_download = False
         finally:
-            # when finished, notify the main thread
-            self.finish_signal.emit(show_inf, can_download)
+            self.finish_signal.emit(result, can_download)
 
 
 class DownloadThread(QtCore.QThread):
