@@ -24,7 +24,11 @@ class __redirection__:
         self.__console__ = sys.stdout
 
     def write(self, output_stream):
-        self.buff += output_stream
+        if str(output_stream).startswith('    # download-with:'):
+            index = str(output_stream).find('--')
+            self.buff += '<br><font color=blue>    itag: ' + str(output_stream)[(index):-6] + '</p></font>'
+        else:
+            self.buff += '<br>' + output_stream
 
     def to_console(self):
         pass

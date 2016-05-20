@@ -21,6 +21,15 @@ kwargs = {'output_dir': base_dir,
           'json_output': False,
           'caption': True}
 
+
+def set_file_path(path):
+    kwargs['output_dir'] = path
+
+
+def set_file_itag(stream_id):
+    kwargs['stream_id'] = stream_id
+
+
 if __name__ == '__main__':
     with open('../version.json', 'w') as f:
         f.write(json.dumps(data))
