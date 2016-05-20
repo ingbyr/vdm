@@ -22,13 +22,17 @@ class Ui_AboutForm(object):
         self.label_info.setTextFormat(QtCore.Qt.RichText)
         self.label_info.setObjectName("label_info")
         self.label_title = QtWidgets.QLabel(AboutForm)
-        self.label_title.setGeometry(QtCore.QRect(180, 20, 121, 51))
+        self.label_title.setGeometry(QtCore.QRect(170, 20, 121, 41))
         font = QtGui.QFont()
         font.setPointSize(16)
         self.label_title.setFont(font)
         self.label_title.setTextFormat(QtCore.Qt.PlainText)
         self.label_title.setIndent(-1)
         self.label_title.setObjectName("label_title")
+        self.label_version = QtWidgets.QLabel(AboutForm)
+        self.label_version.setGeometry(QtCore.QRect(320, 30, 131, 20))
+        self.label_version.setText("")
+        self.label_version.setObjectName("label_version")
 
         self.retranslateUi(AboutForm)
         QtCore.QMetaObject.connectSlotsByName(AboutForm)
@@ -36,6 +40,6 @@ class Ui_AboutForm(object):
     def retranslateUi(self, AboutForm):
         _translate = QtCore.QCoreApplication.translate
         AboutForm.setWindowTitle(_translate("AboutForm", "About"))
-        self.label_info.setText(_translate("AboutForm", "<html><head/><body><p><a href=\"http://www.ingbyr.tk/2016/05/16/youget/\"><span style=\" font-size:11pt; text-decoration: underline; color:#0000ff;\">GUI-YouGet</span></a><span style=\" font-size:11pt;\"> is a video download software </span></p><p><span style=\" font-size:11pt;\">Version currnt_version  | License </span><a href=\"https://raw.githubusercontent.com/ingbyr/GUI-YouGet/master/LICENSE.txt\"><span style=\" font-size:11pt; text-decoration: underline; color:#0000ff;\">MIT</span></a><span style=\" font-size:11pt;\"><br/><br/>Based on the program </span><a href=\"https://github.com/soimort/you-get\"><span style=\" font-size:11pt; text-decoration: underline; color:#0000ff;\">you-get</span></a><span style=\" font-size:11pt;\"><br/></span></p><p><span style=\" font-size:11pt;\">Coder: InG_byr ( </span><a href=\"http://www.weibo.com/zwkv5\"><span style=\" font-size:11pt; text-decoration: underline; color:#0000ff;\">Sina Weibo</span></a><span style=\" font-size:11pt;\"> )</span></p></body></html>"))
+        self.label_info.setText(_translate("AboutForm", "<html><head/><body><p><a href=\"http://www.ingbyr.tk/2016/05/16/youget/\"><span style=\" font-size:11pt; text-decoration: underline; color:#0000ff;\">GUI-YouGet</span></a><span style=\" font-size:11pt;\"> is a video download software </span></p><p><span style=\" font-size:11pt;\">Follow open source License </span><a href=\"https://raw.githubusercontent.com/ingbyr/GUI-YouGet/master/LICENSE.txt\"><span style=\" font-size:11pt; text-decoration: underline; color:#0000ff;\">MIT</span></a><span style=\" font-size:11pt;\"><br/><br/>Based on the program </span><a href=\"https://github.com/soimort/you-get\"><span style=\" font-size:11pt; text-decoration: underline; color:#0000ff;\">you-get</span></a><span style=\" font-size:11pt;\"><br/></span></p><p><span style=\" font-size:11pt;\">Coder: InG_byr ( </span><a href=\"http://www.weibo.com/zwkv5\"><span style=\" font-size:11pt; text-decoration: underline; color:#0000ff;\">Sina Weibo</span></a><span style=\" font-size:11pt;\"> )</span></p></body></html>"))
         self.label_title.setText(_translate("AboutForm", "GUI-YouGet"))
 

@@ -3,6 +3,7 @@
 from PyQt5.QtWidgets import QWidget
 
 from app.ui.ui_about_widget import Ui_AboutForm
+from app.config import version
 
 __author__ = 'InG_byr'
 
@@ -12,7 +13,7 @@ class AboutWdiget(Ui_AboutForm):
         super().__init__()
         self.about_widget = QWidget()
         self.setupUi(self.about_widget)
-        self.replace_version()
+        self.set_version()
 
-    def replace_version(self):
-        pass
+    def set_version(self):
+        self.label_version.setText('Version ' + version)
