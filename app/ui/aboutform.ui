@@ -34,12 +34,15 @@
     <rect>
      <x>170</x>
      <y>80</y>
-     <width>301</width>
+     <width>311</width>
      <height>161</height>
     </rect>
    </property>
    <property name="text">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;http://www.ingbyr.tk/2016/05/16/youget/&quot;&gt;&lt;span style=&quot; font-size:11pt; text-decoration: underline; color:#0000ff;&quot;&gt;GUI-YouGet&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt; is a video download software &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;Version + version + | License &lt;/span&gt;&lt;a href=&quot;https://raw.githubusercontent.com/ingbyr/GUI-YouGet/master/LICENSE.txt&quot;&gt;&lt;span style=&quot; font-size:11pt; text-decoration: underline; color:#0000ff;&quot;&gt;MIT&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;&lt;br/&gt;&lt;br/&gt;Based on the program &lt;/span&gt;&lt;a href=&quot;https://github.com/soimort/you-get&quot;&gt;&lt;span style=&quot; font-size:11pt; text-decoration: underline; color:#0000ff;&quot;&gt;you-get&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;&lt;br/&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;Coder: InG_byr ( &lt;/span&gt;&lt;a href=&quot;http://www.ingbyr.tk&quot;&gt;&lt;span style=&quot; font-size:11pt; text-decoration: underline; color:#0000ff;&quot;&gt;Blog&lt;/span&gt;&lt;/a&gt;&lt;a href=&quot;http://www.weibo.com/zwkv5&quot;&gt;&lt;span style=&quot; font-size:11pt; text-decoration: underline; color:#0000ff;&quot;&gt;Sina Weibo&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt; )&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;http://www.ingbyr.tk/2016/05/16/youget/&quot;&gt;&lt;span style=&quot; font-size:11pt; text-decoration: underline; color:#0000ff;&quot;&gt;GUI-YouGet&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt; is a video download software &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;Version currnt_version  | License &lt;/span&gt;&lt;a href=&quot;https://raw.githubusercontent.com/ingbyr/GUI-YouGet/master/LICENSE.txt&quot;&gt;&lt;span style=&quot; font-size:11pt; text-decoration: underline; color:#0000ff;&quot;&gt;MIT&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;&lt;br/&gt;&lt;br/&gt;Based on the program &lt;/span&gt;&lt;a href=&quot;https://github.com/soimort/you-get&quot;&gt;&lt;span style=&quot; font-size:11pt; text-decoration: underline; color:#0000ff;&quot;&gt;you-get&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;&lt;br/&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;Coder: InG_byr ( &lt;/span&gt;&lt;a href=&quot;http://www.weibo.com/zwkv5&quot;&gt;&lt;span style=&quot; font-size:11pt; text-decoration: underline; color:#0000ff;&quot;&gt;Sina Weibo&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt; )&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="textFormat">
+    <enum>Qt::RichText</enum>
    </property>
   </widget>
   <widget class="QLabel" name="label_title">
@@ -47,7 +50,7 @@
     <rect>
      <x>180</x>
      <y>20</y>
-     <width>161</width>
+     <width>121</width>
      <height>51</height>
     </rect>
    </property>
@@ -58,6 +61,12 @@
    </property>
    <property name="text">
     <string>GUI-YouGet</string>
+   </property>
+   <property name="textFormat">
+    <enum>Qt::PlainText</enum>
+   </property>
+   <property name="indent">
+    <number>-1</number>
    </property>
   </widget>
  </widget>
