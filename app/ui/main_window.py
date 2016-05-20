@@ -3,10 +3,10 @@
 
 from app.ui.ui_main_window import Ui_MainWindow
 from app.util.download_thread import GetVideoInfoThread
-from app import kwargs
+from app.config import kwargs
 from app import mlog
 
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMainWindow, QFileDialog
 from app.ui.about_widget import AboutWdiget
 
 
@@ -20,6 +20,7 @@ class MainWindow(Ui_MainWindow):
     def set_slot(self):
         self.button_download.clicked.connect(self.get_info)
         self.action_about.triggered.connect(self.show_about)
+        self.action_file_path.triggered.connect(self.set_file_path)
 
     def get_info(self):
         urls = (str(self.urls_text_edit.toPlainText())).split(';')
@@ -37,3 +38,12 @@ class MainWindow(Ui_MainWindow):
         mlog.debug('show about widget')
         self.about_widget = AboutWdiget()
         self.about_widget.about_widget.show()
+
+    def set_file_path(self):
+        fname = QFileDialog.getExistingDirectory(self.main_window, caption='Select Path', directory='',
+                                                 options=QFileDialog.ShowDirsOnly)
+        if fname:
+            mlog.debug('set file path to ' + str(fname))
+
+        else:
+            pass
