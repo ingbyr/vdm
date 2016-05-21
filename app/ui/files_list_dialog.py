@@ -38,6 +38,7 @@ class FilesListDialog(Ui_FilesListDialog):
         # self.text_files_list.insertHtml(files_list)
 
     def start_download_files(self):
+        status.set_default()
         option = self.combo_box_options.currentText()
         mconfig.set_file_itag(option)
         mlog.debug('option is ' + option)
@@ -46,7 +47,7 @@ class FilesListDialog(Ui_FilesListDialog):
         self.download_thread.finish_signal.connect(self.finish_download)
         self.download_thread.start()
 
-        self.result_info = self.show_progress_bar()
+        self.show_progress_bar()
 
     def show_msg(self, icon, title, text):
         self.msg.setWindowTitle(title)
@@ -57,9 +58,9 @@ class FilesListDialog(Ui_FilesListDialog):
 
     def finish_download(self, is_succeed):
         if is_succeed:
-            if self.result_info:
+            if self.result:
                 self.show_msg(QMessageBox.Information, 'Tip',
-                              self.result_info + '\n\nFiles path: ' + mconfig.get_file_path())
+                              self.result + '\n\nFiles path: ' + mconfig.get_file_path())
             else:
                 self.show_msg(QMessageBox.Information, 'Completed',
                               'Download completed (ง •̀_•́)ง\n\nFiles path:' + mconfig.get_file_path())
@@ -69,7 +70,7 @@ class FilesListDialog(Ui_FilesListDialog):
     def show_progress_bar(self):
         percent = 0
         is_exits = False
-        result = None
+        self.result = None
         progressDialog = QProgressDialog(self.files_list_dialog)
         progressDialog.setAutoReset(True)
         progressDialog.setWindowModality(Qt.WindowModal)
@@ -83,19 +84,17 @@ class FilesListDialog(Ui_FilesListDialog):
             percent = status.get_percent()
             is_exits = status.get_exist()
             if is_exits:
-                result = 'Files already exists (..•˘_˘•..)'
-                percent = 100
+                self.result = 'Files already exists (..•˘_˘•..)'
+                progressDialog.close()
+                break
             progressDialog.setValue(percent)
             progressDialog.setLabelText('Current speed: ' + str(status.get_speed()))
             QThread.msleep(100)
             if progressDialog.wasCanceled():
-                pass
-                # todo: can not cancel
                 status.set_stop_thread(True)
                 self.download_thread.wait()
                 mlog.debug('stop the download thread')
                 mlog.debug('download_thread.isRunning ' + str(self.download_thread.isRunning()))
-                percent = 100
-                result = 'Paused Σ(っ °Д °;)っ'
-
-        return result
+                progressDialog.close()
+                self.result = 'Paused Σ(っ °Д °;)っ'
+                break
