@@ -36,8 +36,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Choose spicifed files to download by inputting options
-Without correct options, you will get default files</string>
+    <string>Please select a spicifed files to download.</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_2">
@@ -50,17 +49,7 @@ Without correct options, you will get default files</string>
     </rect>
    </property>
    <property name="text">
-    <string>options</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="line_edit_options">
-   <property name="geometry">
-    <rect>
-     <x>82</x>
-     <y>360</y>
-     <width>111</width>
-     <height>21</height>
-    </rect>
+    <string>Select</string>
    </property>
   </widget>
   <widget class="QPushButton" name="push_button_confirm">
@@ -73,7 +62,7 @@ Without correct options, you will get default files</string>
     </rect>
    </property>
    <property name="text">
-    <string>Confirm</string>
+    <string>Download</string>
    </property>
   </widget>
   <widget class="QPushButton" name="push_button_cancel">
@@ -87,6 +76,16 @@ Without correct options, you will get default files</string>
    </property>
    <property name="text">
     <string>Cancel</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="combo_box_options">
+   <property name="geometry">
+    <rect>
+     <x>78</x>
+     <y>360</y>
+     <width>101</width>
+     <height>22</height>
+    </rect>
    </property>
   </widget>
  </widget>

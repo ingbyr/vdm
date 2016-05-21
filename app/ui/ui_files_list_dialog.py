@@ -22,15 +22,15 @@ class Ui_FilesListDialog(object):
         self.label_2 = QtWidgets.QLabel(FilesListDialog)
         self.label_2.setGeometry(QtCore.QRect(20, 360, 51, 20))
         self.label_2.setObjectName("label_2")
-        self.line_edit_options = QtWidgets.QLineEdit(FilesListDialog)
-        self.line_edit_options.setGeometry(QtCore.QRect(82, 360, 111, 21))
-        self.line_edit_options.setObjectName("line_edit_options")
         self.push_button_confirm = QtWidgets.QPushButton(FilesListDialog)
         self.push_button_confirm.setGeometry(QtCore.QRect(220, 360, 80, 22))
         self.push_button_confirm.setObjectName("push_button_confirm")
         self.push_button_cancel = QtWidgets.QPushButton(FilesListDialog)
         self.push_button_cancel.setGeometry(QtCore.QRect(310, 360, 80, 22))
         self.push_button_cancel.setObjectName("push_button_cancel")
+        self.combo_box_options = QtWidgets.QComboBox(FilesListDialog)
+        self.combo_box_options.setGeometry(QtCore.QRect(78, 360, 101, 22))
+        self.combo_box_options.setObjectName("combo_box_options")
 
         self.retranslateUi(FilesListDialog)
         QtCore.QMetaObject.connectSlotsByName(FilesListDialog)
@@ -38,9 +38,8 @@ class Ui_FilesListDialog(object):
     def retranslateUi(self, FilesListDialog):
         _translate = QtCore.QCoreApplication.translate
         FilesListDialog.setWindowTitle(_translate("FilesListDialog", "Files List"))
-        self.label.setText(_translate("FilesListDialog", "Choose spicifed files to download by inputting options\n"
-"Without correct options, you will get default files"))
-        self.label_2.setText(_translate("FilesListDialog", "options"))
-        self.push_button_confirm.setText(_translate("FilesListDialog", "Confirm"))
+        self.label.setText(_translate("FilesListDialog", "Please select a spicifed files to download."))
+        self.label_2.setText(_translate("FilesListDialog", "Select"))
+        self.push_button_confirm.setText(_translate("FilesListDialog", "Download"))
         self.push_button_cancel.setText(_translate("FilesListDialog", "Cancel"))
 
