@@ -40,6 +40,7 @@ class FilesListDialog(Ui_FilesListDialog):
 
     def start_download_files(self):
         status.set_default()
+        self.push_button_confirm.setEnabled(False)
         option = self.combo_box_options.currentText()
         mconfig.set_file_itag(option)
         mlog.debug('option is ' + option)
@@ -58,6 +59,7 @@ class FilesListDialog(Ui_FilesListDialog):
         self.msg.show()
 
     def finish_download(self, is_succeed):
+        self.push_button_confirm.setEnabled(True)
         if is_succeed:
             if self.result:
                 self.show_msg(QMessageBox.Information, 'Tip',
