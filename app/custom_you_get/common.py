@@ -1316,7 +1316,7 @@ def url_to_module(url):
     video_url = r1(r'https?://[^/]+(.*)', url)
     # assert video_host and video_url
     if not video_host or not video_url:
-        raise Exception('Invailed Url')
+        raise Exception('Bad Url')
         return None, None
     # except:
     #
@@ -1326,22 +1326,27 @@ def url_to_module(url):
 
     if video_host.endswith('.com.cn'):
         video_host = video_host[:-3]
+    logging.debug('video host is '+video_host)
     domain = r1(r'(\.[^.]+\.[^.]+)$', video_host) or video_host
+    logging.debug('domain is '+domain)
     assert domain, 'unsupported url: ' + url
 
     k = r1(r'([^.]+)', domain)
+    logging.debug('k is '+k)
     if k in SITES:
         return import_module('app.' + '.'.join(['custom_you_get', 'extractors', SITES[k]])), url
     else:
-        import http.client
-        conn = http.client.HTTPConnection(video_host)
-        conn.request("HEAD", video_url, headers=fake_headers)
-        res = conn.getresponse()
-        location = res.getheader('location')
-        if location and location != url and not location.startswith('/'):
-            return url_to_module(location)
-        else:
-            return import_module('app.custom_you_get.extractors.universal'), url
+        raise Exception('Not support for this kind of url')
+        return None, None
+        # import http.client
+        # conn = http.client.HTTPConnection(video_host)
+        # conn.request("HEAD", video_url, headers=fake_headers)
+        # res = conn.getresponse()
+        # location = res.getheader('location')
+        # if location and location != url and not location.startswith('/'):
+        #     return url_to_module(location)
+        # else:
+        #     return import_module('app.custom_you_get.extractors.universal'), url
 
 
 def any_download(url, **kwargs):

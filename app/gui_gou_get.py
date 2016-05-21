@@ -12,6 +12,9 @@ __author__ = 'InG_byr'
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    font = app.font()
+    font.setPointSize(11)
+    app.setFont(font)
     ui = MainWindow()
     ui.main_window.show()
     sys.exit(app.exec_())

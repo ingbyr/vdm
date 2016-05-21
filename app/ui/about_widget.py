@@ -13,6 +13,7 @@ class AboutWdiget(Ui_AboutForm):
         super().__init__()
         self.about_widget = QWidget()
         self.setupUi(self.about_widget)
+        self.about_widget.setFixedSize(self.about_widget.width(),self.about_widget.height())
         self.set_version()
         self.label_info.setOpenExternalLinks(True)
 

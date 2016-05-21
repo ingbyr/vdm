@@ -1,6 +1,7 @@
 # !/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import json
+from PyQt5 import QtCore
 from urllib import request
 
 import sys
@@ -22,6 +23,7 @@ class MainWindow(Ui_MainWindow):
         super().__init__()
         self.main_window = QMainWindow()
         self.setupUi(self.main_window)
+        self.main_window.setFixedSize(self.main_window.width(), self.main_window.height())
         self.msg = QMessageBox()
         self.set_slot()
         self.qr = self.main_window.frameGeometry()  # move to center of screen
@@ -53,7 +55,7 @@ class MainWindow(Ui_MainWindow):
             self.files_list_dialog.update_files_list(ls)
             mconfig.set_urls(self.urls)
         else:
-            self.show_msg(QMessageBox.Critical, 'Failed', 'Can\'t get the files list')
+            self.show_msg(QMessageBox.Critical, 'Failed ', 'Can not get the files list (╯°Д°)╯︵ ┻━┻')
 
     def show_about(self):
         mlog.debug('show about widget')

@@ -17,6 +17,7 @@ class FilesListDialog(Ui_FilesListDialog):
         super().__init__()
         self.files_list_dialog = QDialog()
         self.setupUi(self.files_list_dialog)
+        self.files_list_dialog.setFixedSize(self.files_list_dialog.width(), self.files_list_dialog.height())
         self.files_list_dialog.show()
         self.msg = QMessageBox()
         self.set_slot()
