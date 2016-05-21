@@ -1,11 +1,11 @@
 # GUI-YouGet
 
+## Latest Version
 | Version        |   Download        |   Build Time     | Release notes
 | :-------------: |:-------------:| :-------------:|:-------------:|
-| 0.0.2 | [Windows](https://sourceforge.net/projects/gui-youget/files/windows/YouGet-0.0.2Win.exe/download)	/	[Linux](https://sourceforge.net/projects/gui-youget/files/Linux/YouGet-0.0.2Linux/download)| 2016-05-17| [Notes](https://github.com/ingbyr/GUI-YouGet/wiki/Release-notes-Ver-0.0.2)
-| 0.0.1 | [Windows](https://sourceforge.net/projects/gui-youget/files/windows/YouGet%280.0.1%20Win%29.exe/download)	/	[Linux](https://sourceforge.net/projects/gui-youget/files/Linux/YouGet%280.0.1%20Linux%29/download)| 2016-05-16| [Notes](https://github.com/ingbyr/GUI-YouGet/wiki/Release-notes-Ver-0.0.1)
+| 0.0.3 | [Windows](https://sourceforge.net/projects/gui-youget/files/windows/YouGet-0.0.3Win.exe/download)	/	[Linux](https://sourceforge.net/projects/gui-youget/files/Linux/YouGet-0.0.3Linux/download)| 2016-05-21| [Notes](https://github.com/ingbyr/GUI-YouGet/wiki/Release-notes-Ver-0.0.3)
 
-
+> [History version](https://github.com/ingbyr/GUI-YouGet/wiki/GUI-YouGet)
 
 ## What is it
 
