@@ -28,7 +28,7 @@ class __redirection__:
         if str(output_stream).startswith('    # download-with:'):
             index = str(output_stream).find('=')
             options = str(output_stream)[(index + 1):-6]
-            self.buff += '<br><font color=blue>    option is ' + options + '</p></font>'
+            self.buff += '<br><font color=blue>    Option is ' + options + '</p></font>'
             add_stream(options)
 
         else:

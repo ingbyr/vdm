@@ -28,6 +28,7 @@ class MainWindow(Ui_MainWindow):
         self.cp = QDesktopWidget().availableGeometry().center()
         self.qr.moveCenter(self.cp)
         self.main_window.move(self.qr.topLeft())
+        self.text_edit_urls.setAcceptRichText(False)
 
     def set_slot(self):
         self.button_download.clicked.connect(self.get_info)
@@ -37,7 +38,8 @@ class MainWindow(Ui_MainWindow):
         self.action_report_bugs.triggered.connect(self.report_bugs)
 
     def get_info(self):
-        self.urls = (str(self.urls_text_edit.toPlainText())).split(';')
+        mconfig.set_default()
+        self.urls = (str(self.text_edit_urls.toPlainText())).split(';')
         mlog.debug(self.urls[0])
 
         self.m_thread = GetVideoInfoThread(self.urls, **mconfig.kwargs)

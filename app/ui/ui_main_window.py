@@ -30,11 +30,11 @@ class Ui_MainWindow(object):
         self.label_support_sites = QtWidgets.QLabel(self.central_widget)
         self.label_support_sites.setGeometry(QtCore.QRect(20, 90, 121, 31))
         self.label_support_sites.setObjectName("label_support_sites")
-        self.text_edit_urls = QtWidgets.QTextEdit(self.central_widget)
-        self.text_edit_urls.setEnabled(True)
-        self.text_edit_urls.setGeometry(QtCore.QRect(19, 120, 461, 281))
-        self.text_edit_urls.setReadOnly(True)
-        self.text_edit_urls.setHtml("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.text_sites = QtWidgets.QTextEdit(self.central_widget)
+        self.text_sites.setEnabled(True)
+        self.text_sites.setGeometry(QtCore.QRect(19, 120, 461, 281))
+        self.text_sites.setReadOnly(True)
+        self.text_sites.setHtml("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'Sans Serif\'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
@@ -707,11 +707,11 @@ class Ui_MainWindow(object):
 "<td>\n"
 "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">✓</p></td>\n"
 "<td></td></tr></table></body></html>")
-        self.text_edit_urls.setTextInteractionFlags(QtCore.Qt.TextBrowserInteraction)
+        self.text_sites.setTextInteractionFlags(QtCore.Qt.TextBrowserInteraction)
+        self.text_sites.setObjectName("text_sites")
+        self.text_edit_urls = QtWidgets.QTextEdit(self.central_widget)
+        self.text_edit_urls.setGeometry(QtCore.QRect(60, 30, 321, 41))
         self.text_edit_urls.setObjectName("text_edit_urls")
-        self.urls_text_edit = QtWidgets.QTextEdit(self.central_widget)
-        self.urls_text_edit.setGeometry(QtCore.QRect(60, 30, 321, 41))
-        self.urls_text_edit.setObjectName("urls_text_edit")
         MainWindow.setCentralWidget(self.central_widget)
         self.menu_bar = QtWidgets.QMenuBar(MainWindow)
         self.menu_bar.setGeometry(QtCore.QRect(0, 0, 500, 19))
@@ -755,4 +755,3 @@ class Ui_MainWindow(object):
         self.action_report_bugs.setText(_translate("MainWindow", "Report bugs"))
         self.action_about.setText(_translate("MainWindow", "About"))
         self.action_check_for_updates.setText(_translate("MainWindow", "Check for updates"))
-

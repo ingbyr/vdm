@@ -20,27 +20,33 @@ class FilesListDialog(Ui_FilesListDialog):
         self.files_list_dialog.show()
         self.msg = QMessageBox()
         self.set_slot()
+        self.set_combo_box()
 
     def set_slot(self):
         self.push_button_confirm.clicked.connect(self.start_download_files)
+        self.push_button_cancel.clicked.connect(self.files_list_dialog.close)
+
+    def set_combo_box(self):
+        options = mconfig.get_streams()
+        if options:
+            self.combo_box_options.addItems(options)
+        else:
+            self.combo_box_options.addItem('default')
 
     def update_files_list(self, files_list):
-        self.text_files_list.insertHtml(files_list)
+        self.text_files_list.setHtml(files_list)
+        # self.text_files_list.insertHtml(files_list)
 
     def start_download_files(self):
-        options = str(self.line_edit_options.text()).strip(' ')
-        if (options in mconfig.get_streams()) or options is None or options == '':
-            mconfig.set_file_itag(options)
-        else:
-            self.show_msg(QMessageBox.Warning, 'Bad options', 'The [options] may be in blue text:\n'
-                                                              'Option is [options]')
-            return
+        option = self.combo_box_options.currentText()
+        mconfig.set_file_itag(option)
+        mlog.debug('option is ' + option)
 
         self.download_thread = DownloadThread(mconfig.get_urls(), **mconfig.kwargs)
         self.download_thread.finish_signal.connect(self.finish_download)
         self.download_thread.start()
 
-        self.show_progress_bar()
+        self.result_info = self.show_progress_bar()
 
     def show_msg(self, icon, title, text):
         self.msg.setWindowTitle(title)
@@ -51,15 +57,19 @@ class FilesListDialog(Ui_FilesListDialog):
 
     def finish_download(self, is_succeed):
         if is_succeed:
-            self.show_msg(QMessageBox.Information, 'completed',
-                          'Download completed! Files are in:\n' + mconfig.get_file_path())
+            if self.result_info:
+                self.show_msg(QMessageBox.Information, 'Tip',
+                              self.result_info + '\n\nFiles path: ' + mconfig.get_file_path())
+            else:
+                self.show_msg(QMessageBox.Information, 'Completed',
+                              'Download completed (ง •̀_•́)ง\n\nFiles path:' + mconfig.get_file_path())
         else:
-            self.show_msg(QMessageBox.Critical, 'Failed', 'Download failed!')
+            self.show_msg(QMessageBox.Critical, 'Failed', 'Download failed (╯°Д°)╯︵ ┻━┻')
 
     def show_progress_bar(self):
         percent = 0
         is_exits = False
-        result = ''
+        result = None
         progressDialog = QProgressDialog(self.files_list_dialog)
         progressDialog.setAutoReset(True)
         progressDialog.setWindowModality(Qt.WindowModal)
@@ -73,7 +83,7 @@ class FilesListDialog(Ui_FilesListDialog):
             percent = status.get_percent()
             is_exits = status.get_exist()
             if is_exits:
-                result = 'Files already exists'
+                result = 'Files already exists (..•˘_˘•..)'
                 percent = 100
             progressDialog.setValue(percent)
             progressDialog.setLabelText('Current speed: ' + str(status.get_speed()))
@@ -86,4 +96,6 @@ class FilesListDialog(Ui_FilesListDialog):
                 mlog.debug('stop the download thread')
                 mlog.debug('download_thread.isRunning ' + str(self.download_thread.isRunning()))
                 percent = 100
-                result = 'stop by user'
+                result = 'Paused Σ(っ °Д °;)っ'
+
+        return result

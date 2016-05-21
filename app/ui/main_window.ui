@@ -67,7 +67,7 @@
      <string>Supported Sites</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="text_edit_urls">
+   <widget class="QTextEdit" name="text_sites">
     <property name="enabled">
      <bool>true</bool>
     </property>
@@ -761,7 +761,7 @@ p, li { white-space: pre-wrap; }
      <set>Qt::TextBrowserInteraction</set>
     </property>
    </widget>
-   <widget class="QTextEdit" name="urls_text_edit">
+   <widget class="QTextEdit" name="text_edit_urls">
     <property name="geometry">
      <rect>
       <x>60</x>
