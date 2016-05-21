@@ -16,8 +16,8 @@ Just a GUI based on the [you-get](https://github.com/soimort/you-get/) run on th
 
 
 
-![](http://ww3.sinaimg.cn/mw690/bca3b20djw1f3yfa4tbo6j20jg0exwes.jpg)
-![](http://ww4.sinaimg.cn/mw690/bca3b20djw1f3yfa4847vj20j80etq49.jpg)
+![](http://ww3.sinaimg.cn/large/bca3b20djw1f431fi2sajj20dw0d9jsg.jpg)
+![](http://ww2.sinaimg.cn/large/bca3b20djw1f431fifks4j20b40c5gmg.jpg)
 
 ## How to use
 * Download and Run YouGet
