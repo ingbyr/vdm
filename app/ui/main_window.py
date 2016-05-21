@@ -41,6 +41,7 @@ class MainWindow(Ui_MainWindow):
 
     def get_info(self):
         mconfig.set_default()
+        self.button_download.setEnabled(False)
         self.urls = (str(self.text_edit_urls.toPlainText())).split(';')
         mlog.debug(self.urls[0])
 
@@ -50,6 +51,7 @@ class MainWindow(Ui_MainWindow):
 
     def finish_get_info(self, ls, can_download):
         mlog.debug('finish_get_info: ' + str(can_download))
+        self.button_download.setEnabled(True)
         if can_download:
             self.files_list_dialog = FilesListDialog()
             self.files_list_dialog.update_files_list(ls)
