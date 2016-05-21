@@ -3,7 +3,7 @@
 
 
 import sys
-from PyQt5.QtWidgets import QApplication, QDesktopWidget
+from PyQt5.QtWidgets import QApplication
 from app.ui.main_window import MainWindow
 
 from app.ui.icon_rc import *

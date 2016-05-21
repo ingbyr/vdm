@@ -14,6 +14,7 @@ class AboutWdiget(Ui_AboutForm):
         self.about_widget = QWidget()
         self.setupUi(self.about_widget)
         self.set_version()
+        self.label_info.setOpenExternalLinks(True)
 
     def set_version(self):
         self.label_version.setText('Version ' + mconfig.version)

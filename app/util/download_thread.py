@@ -24,6 +24,7 @@ class GetVideoInfoThread(QtCore.QThread):
 
     def run(self):
         try:
+            r_obj.flush()
             self.kwargs['info_only'] = True
             m_get_video(self.urls, **self.kwargs)
             result = r_obj.get_buffer()
@@ -54,15 +55,16 @@ class DownloadThread(QtCore.QThread):
         Download the video
         :return: nothing
         """
+        r_obj.flush()
         is_succeed = False
         try:
             self.kwargs['info_only'] = False
             mlog.debug(mconfig.get_file_itag)
             m_get_video(self.urls, **self.kwargs)
-            is_succeed =True
+            is_succeed = True
         except Exception:
             for item in sys.exc_info():
                 mlog.error(str(item))
-                is_succeed=False
+                is_succeed = False
         finally:
             self.finish_signal.emit(is_succeed)
