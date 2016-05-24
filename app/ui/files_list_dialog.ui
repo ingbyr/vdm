@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Files List</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="icon.qrc">
+    <normaloff>:/res/favicon.ico</normaloff>:/res/favicon.ico</iconset>
+  </property>
   <widget class="QTextEdit" name="text_files_list">
    <property name="geometry">
     <rect>
@@ -89,6 +93,8 @@
    </property>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="icon.qrc"/>
+ </resources>
  <connections/>
 </ui>

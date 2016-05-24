@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>About</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="icon.qrc">
+    <normaloff>:/res/favicon.ico</normaloff>:/res/favicon.ico</iconset>
+  </property>
   <widget class="QLabel" name="label_logo">
    <property name="geometry">
     <rect>
@@ -83,6 +87,8 @@
    </property>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="icon.qrc"/>
+ </resources>
  <connections/>
 </ui>
