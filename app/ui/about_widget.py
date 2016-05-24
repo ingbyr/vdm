@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QWidget
 
 from app.ui.ui_about_widget import Ui_AboutForm
 from app import mconfig
+from app.ui.icon_rc import *
 
 __author__ = 'InG_byr'
 

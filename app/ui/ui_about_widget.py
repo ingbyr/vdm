@@ -12,6 +12,9 @@ class Ui_AboutForm(object):
     def setupUi(self, AboutForm):
         AboutForm.setObjectName("AboutForm")
         AboutForm.resize(500, 250)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/res/favicon.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        AboutForm.setWindowIcon(icon)
         self.label_logo = QtWidgets.QLabel(AboutForm)
         self.label_logo.setGeometry(QtCore.QRect(10, 70, 131, 121))
         self.label_logo.setStyleSheet("image: url(:/res/favicon.ico);")
@@ -42,4 +45,3 @@ class Ui_AboutForm(object):
         self.label_logo.setText(_translate("AboutForm", "<html><head/><body><p><br/></p></body></html>"))
         self.label_info.setText(_translate("AboutForm", "<html><head/><body><p><a href=\"https://github.com/ingbyr/GUI-YouGet\"><span style=\" font-size:11pt; text-decoration: underline; color:#0000ff;\">GUI-YouGet </span></a><span style=\" font-size:11pt;\">is a video download software </span></p><p><span style=\" font-size:11pt;\">Follow open source License </span><a href=\"https://raw.githubusercontent.com/ingbyr/GUI-YouGet/master/LICENSE.txt\"><span style=\" font-size:11pt; text-decoration: underline; color:#0000ff;\">MIT</span></a></p><p><span style=\" font-size:11pt;\">Based on the program </span><a href=\"https://github.com/soimort/you-get\"><span style=\" font-size:11pt; text-decoration: underline; color:#0000ff;\">you-get</span></a></p><p><span style=\" font-size:11pt;\">Coder: InG_byr ( </span><a href=\"http://www.ingbyr.tk\"><span style=\" font-size:11pt; text-decoration: underline; color:#0000ff;\">Blog </span></a><span style=\" font-size:11pt;\">/ </span><a href=\"http://www.weibo.com/zwkv5\"><span style=\" font-size:11pt; text-decoration: underline; color:#0000ff;\">Weibo</span></a><span style=\" font-size:11pt;\"> )</span></p><p><span style=\" font-size:11pt;\">Designer: InG_byr ( </span><a href=\"http://www.ingbyr.tk\"><span style=\" font-size:11pt; text-decoration: underline; color:#0000ff;\">Blog </span></a><span style=\" font-size:11pt;\">/ </span><a href=\"http://www.weibo.com/zwkv5\"><span style=\" font-size:11pt; text-decoration: underline; color:#0000ff;\">Weibo</span></a><span style=\" font-size:11pt;\">)</span></p></body></html>"))
         self.label_title.setText(_translate("AboutForm", "GUI-YouGet"))
-

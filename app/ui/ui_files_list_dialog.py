@@ -12,6 +12,9 @@ class Ui_FilesListDialog(object):
     def setupUi(self, FilesListDialog):
         FilesListDialog.setObjectName("FilesListDialog")
         FilesListDialog.resize(400, 400)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/res/favicon.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        FilesListDialog.setWindowIcon(icon)
         self.text_files_list = QtWidgets.QTextEdit(FilesListDialog)
         self.text_files_list.setGeometry(QtCore.QRect(20, 20, 361, 291))
         self.text_files_list.setReadOnly(True)
@@ -42,4 +45,3 @@ class Ui_FilesListDialog(object):
         self.label_2.setText(_translate("FilesListDialog", "Select"))
         self.push_button_confirm.setText(_translate("FilesListDialog", "Download"))
         self.push_button_cancel.setText(_translate("FilesListDialog", "Cancel"))
-
