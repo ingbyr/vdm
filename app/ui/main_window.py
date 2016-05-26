@@ -1,9 +1,7 @@
 # !/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import json
-from PyQt5 import QtCore
 from urllib import request
-
 import sys
 
 from PyQt5.QtCore import QUrl
@@ -14,8 +12,10 @@ from app.util.download_thread import GetVideoInfoThread
 from app import mlog, mconfig
 
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox, QDesktopWidget
+from PyQt5.QtGui import QIcon
 from app.ui.about_widget import AboutWdiget
 from app.ui.files_list_dialog import FilesListDialog
+from app.ui.icon_rc import *
 
 
 class MainWindow(Ui_MainWindow):
@@ -78,6 +78,7 @@ class MainWindow(Ui_MainWindow):
 
     def show_msg(self, icon, title, text):
         self.msg.setWindowTitle(title)
+        self.msg.setWindowIcon(QIcon(':/res/favicon.ico'))
         self.msg.setIcon(icon)
         self.msg.setText(text)
         self.msg.setStandardButtons(QMessageBox.Ok)
