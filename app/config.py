@@ -7,12 +7,13 @@ import os
 
 __author__ = 'InG_byr'
 
-version = '0.0.3'
+version = '0.0.4'
 
 buildtime = date.today()
 
 data = {'version': version,
-        'time': str(buildtime)}
+        'build time': str(buildtime),
+        'you-get core version': '20160528-dev'}
 
 base_dir = os.getcwd()
 
