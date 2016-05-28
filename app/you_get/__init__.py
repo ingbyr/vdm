@@ -4,21 +4,6 @@
 import sys
 from app.config import add_stream
 
-if sys.version_info[0] == 3:
-    # from .extractor import Extractor, VideoExtractor
-    # from .util import log
-
-    from .__main__ import *
-
-    # from .common import *
-    # from .version import *
-    # from .cli_wrapper import *
-    # from .extractor import *
-else:
-    # Don't import anything.
-    pass
-
-
 class __redirection__:
     def __init__(self):
         self.buff = ''

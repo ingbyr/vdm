@@ -52,8 +52,10 @@ SITES = {
     'mixcloud': 'mixcloud',
     'mtv81': 'mtv81',
     'musicplayon': 'musicplayon',
+    'naver': 'naver',
     '7gogo': 'nanagogo',
     'nicovideo': 'nicovideo',
+    'panda': 'panda',
     'pinterest': 'pinterest',
     'pixnet': 'pixnet',
     'pptv': 'pptv',
@@ -96,6 +98,7 @@ import logging
 import os
 import platform
 import re
+import socket
 import sys
 import time
 from urllib import request, parse, error
@@ -107,9 +110,6 @@ from .util import log, term
 from .util.git import get_version
 from .util.strings import get_filename, unescape_html
 from . import json_output as json_output_
-
-from app.custom_you_get import r_obj
-import app.custom_you_get.status as status
 
 dry_run = False
 json_output = False
@@ -126,6 +126,9 @@ fake_headers = {
     'Accept-Language': 'en-US,en;q=0.8',
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:13.0) Gecko/20100101 Firefox/13.0'
 }
+
+from app.you_get import r_obj
+from app.you_get.status import set_percent, set_speed, set_exist, get_stop_thread
 
 sys.stdout = sys.__stdout__
 if sys.stdout.isatty():
@@ -330,7 +333,14 @@ def get_content(url, headers={}, decoded=True):
     if cookies:
         cookies.add_cookie_header(req)
         req.headers.update(req.unredirected_hdrs)
-    response = request.urlopen(req)
+
+    for i in range(10):
+        try:
+            response = request.urlopen(req)
+            break
+        except socket.timeout:
+            logging.debug('request attempt %s timeout' % str(i + 1))
+
     data = response.read()
 
     # Handle HTTP compression for gzip and deflate (zlib)
@@ -452,7 +462,7 @@ def url_save(url, filepath, bar, refer=None, is_part=False, faker=False, headers
                 if bar:
                     bar.done()
                 print('Skipping %s: file already exists' % tr(os.path.basename(filepath)))
-                status.set_exist(True)
+                set_exist(True)
             else:
                 if bar:
                     bar.update_received(file_size)
@@ -505,10 +515,9 @@ def url_save(url, filepath, bar, refer=None, is_part=False, faker=False, headers
             open_mode = 'wb'
 
         with open(temp_filepath, open_mode) as output:
-            # force_stop = status.get_stop_thread()
             while True:
                 buffer = response.read(1024 * 256)
-                if status.get_stop_thread():  # user maybe force to stop the downloading
+                if get_stop_thread():  # user maybe force to stop the downloading
                     return
                 if not buffer:
                     if received == file_size:  # Download finished
@@ -536,7 +545,7 @@ def url_save_chunked(url, filepath, bar, refer=None, is_part=False, faker=False,
                 if bar:
                     bar.done()
                 print('Skipping %s: file already exists' % tr(os.path.basename(filepath)))
-                status.set_exist(True)
+                set_exist(True)
             else:
                 if bar:
                     bar.update_received(os.path.getsize(filepath))
@@ -613,27 +622,10 @@ class SimpleProgressBar:
 
     def update(self):
         self.displayed = True
-        bar_size = self.bar_size
         percent = round(self.received * 100 / self.total_size, 1)
         if percent >= 100:
             percent = 100
-
-        status.set_percent(percent)
-        status.set_speed(self.speed)
-
-        # dots = bar_size * int(percent) // 100
-        # plus = int(percent) - dots // bar_size * 100
-        # if plus > 0.8:
-        #     plus = '█'
-        # elif plus > 0.4:
-        #     plus = '>'
-        # else:
-        #     plus = ''
-        # bar = '█' * dots + plus
-        # bar = self.bar.format(percent, round(self.received / 1048576, 1), bar, self.current_piece, self.total_pieces,
-        #                       self.speed)
-        # sys.stdout.write('\r' + bar)
-        # sys.stdout.flush()
+        set_percent(percent)
 
     def update_received(self, n):
         self.received += n
@@ -649,6 +641,7 @@ class SimpleProgressBar:
             self.speed = '{:4.0f}  B/s'.format(bytes_ps)
         self.last_updated = time.time()
         self.update()
+        set_speed(self.speed)
 
     def update_piece(self, n):
         self.current_piece = n
@@ -661,29 +654,20 @@ class SimpleProgressBar:
 
 class PiecesProgressBar:
     def __init__(self, total_size, total_pieces=1):
-        self.displayed = False
-        self.total_size = total_size
-        self.total_pieces = total_pieces
-        self.current_piece = 1
-        self.received = 0
+        pass
 
     def update(self):
-        self.displayed = True
-        bar = '{0:>5}%[{1:<40}] {2}/{3}'.format('', '=' * 40, self.current_piece, self.total_pieces)
-        sys.stdout.write('\r' + bar)
-        sys.stdout.flush()
+        pass
+
 
     def update_received(self, n):
-        self.received += n
-        self.update()
+        pass
 
     def update_piece(self, n):
-        self.current_piece = n
+        pass
 
     def done(self):
-        if self.displayed:
-            print()
-            self.displayed = False
+        pass
 
 
 class DummyProgressBar:
@@ -752,8 +736,8 @@ def download_urls(urls, title, ext, total_size, output_dir='.', refer=None, merg
     if total_size:
         if not force and os.path.exists(output_filepath) and os.path.getsize(output_filepath) >= total_size * 0.9:
             print('Skipping %s: file already exists' % output_filepath)
-            status.set_exist(True)
             print()
+            set_exist(True)
             return
         bar = SimpleProgressBar(total_size, len(urls))
     else:
@@ -787,7 +771,7 @@ def download_urls(urls, title, ext, total_size, output_dir='.', refer=None, merg
             if has_ffmpeg_installed():
                 from .processor.ffmpeg import ffmpeg_concat_av
                 ret = ffmpeg_concat_av(parts, output_filepath, ext)
-                print('Done.')
+                print('Merged into %s' % output_filename)
                 if ret == 0:
                     for part in parts: os.remove(part)
 
@@ -800,7 +784,7 @@ def download_urls(urls, title, ext, total_size, output_dir='.', refer=None, merg
                 else:
                     from .processor.join_flv import concat_flv
                     concat_flv(parts, output_filepath)
-                print('Done.')
+                print('Merged into %s' % output_filename)
             except:
                 raise
             else:
@@ -816,7 +800,7 @@ def download_urls(urls, title, ext, total_size, output_dir='.', refer=None, merg
                 else:
                     from .processor.join_mp4 import concat_mp4
                     concat_mp4(parts, output_filepath)
-                print('Done.')
+                print('Merged into %s' % output_filename)
             except:
                 raise
             else:
@@ -832,7 +816,7 @@ def download_urls(urls, title, ext, total_size, output_dir='.', refer=None, merg
                 else:
                     from .processor.join_ts import concat_ts
                     concat_ts(parts, output_filepath)
-                print('Done.')
+                print('Merged into %s' % output_filename)
             except:
                 raise
             else:
@@ -863,8 +847,8 @@ def download_urls_chunked(urls, title, ext, total_size, output_dir='.', refer=No
     if total_size and ext in ('ts'):
         if not force and os.path.exists(filepath[:-3] + '.mkv'):
             print('Skipping %s: file already exists' % filepath[:-3] + '.mkv')
-            status.set_exist(True)
             print()
+            set_exist(True)
             return
         bar = SimpleProgressBar(total_size, len(urls))
     else:
@@ -1094,259 +1078,33 @@ def download_main(download, download_playlist, urls, playlist, **kwargs):
             download(url, **kwargs)
 
 
-def script_main(script_name, download, download_playlist, **kwargs):
-    def version():
-        log.i('version %s, a tiny downloader that scrapes the web.'
-              % get_version(kwargs['repo_path']
-                            if 'repo_path' in kwargs else __version__))
-
-    logging.basicConfig(format='[%(levelname)s] %(message)s')
-
-    help = 'Usage: %s [OPTION]... [URL]...\n\n' % script_name
-    help += '''Startup options:
-    -V | --version                      Print version and exit.
-    -h | --help                         Print help and exit.
-    \n'''
-    help += '''Dry-run options: (no actual downloading)
-    -i | --info                         Print extracted information.
-    -u | --url                          Print extracted information with URLs.
-         --json                         Print extracted URLs in JSON format.
-    \n'''
-    help += '''Download options:
-    -n | --no-merge                     Do not merge video parts.
-         --no-caption                   Do not download captions.
-                                        (subtitles, lyrics, danmaku, ...)
-    -f | --force                        Force overwriting existed files.
-    -F | --format <STREAM_ID>           Set video format to STREAM_ID.
-    -O | --output-filename <FILE>       Set output filename.
-    -o | --output-dir <PATH>            Set output directory.
-    -p | --player <PLAYER [OPTIONS]>    Stream extracted URL to a PLAYER.
-    -c | --cookies <COOKIES_FILE>       Load cookies.txt or cookies.sqlite.
-    -x | --http-proxy <HOST:PORT>       Use an HTTP proxy for downloading.
-    -y | --extractor-proxy <HOST:PORT>  Use an HTTP proxy for extracting only.
-         --no-proxy                     Never use a proxy.
-    -d | --debug                        Show traceback and other debug info.
-    '''
-
-    short_opts = 'Vhfiuc:ndF:O:o:p:x:y:'
-    opts = ['version', 'help', 'force', 'info', 'url', 'cookies', 'no-caption', 'no-merge', 'no-proxy', 'debug', 'json',
-            'format=', 'stream=', 'itag=', 'output-filename=', 'output-dir=', 'player=', 'http-proxy=',
-            'extractor-proxy=', 'lang=']
-    if download_playlist:
-        short_opts = 'l' + short_opts
-        opts = ['playlist'] + opts
-
-    try:
-        opts, args = getopt.getopt(sys.argv[1:], short_opts, opts)
-    except getopt.GetoptError as err:
-        log.e(err)
-        log.e("try 'you-get --help' for more options")
-        sys.exit(2)
-
-    global force
-    global dry_run
-    global json_output
-    global player
-    global extractor_proxy
-    global cookies
-    global output_filename
-
-    info_only = False
-    playlist = False
-    caption = True
-    merge = True
-    stream_id = None
-    lang = None
-    output_dir = '.'
-    proxy = None
-    extractor_proxy = None
-    traceback = False
-    for o, a in opts:
-        if o in ('-V', '--version'):
-            version()
-            sys.exit()
-        elif o in ('-h', '--help'):
-            version()
-            print(help)
-            sys.exit()
-        elif o in ('-f', '--force'):
-            force = True
-        elif o in ('-i', '--info'):
-            info_only = True
-        elif o in ('-u', '--url'):
-            dry_run = True
-        elif o in ('--json',):
-            json_output = True
-            # to fix extractors not use VideoExtractor
-            dry_run = True
-            info_only = False
-        elif o in ('-c', '--cookies'):
-            try:
-                cookies = cookiejar.MozillaCookieJar(a)
-                cookies.load()
-            except:
-                import sqlite3
-                cookies = cookiejar.MozillaCookieJar()
-                con = sqlite3.connect(a)
-                cur = con.cursor()
-                try:
-                    cur.execute("SELECT host, path, isSecure, expiry, name, value FROM moz_cookies")
-                    for item in cur.fetchall():
-                        c = cookiejar.Cookie(0, item[4], item[5],
-                                             None, False,
-                                             item[0],
-                                             item[0].startswith('.'),
-                                             item[0].startswith('.'),
-                                             item[1], False,
-                                             item[2],
-                                             item[3], item[3] == "",
-                                             None, None, {})
-                        cookies.set_cookie(c)
-                except:
-                    pass
-                    # TODO: Chromium Cookies
-                    # SELECT host_key, path, secure, expires_utc, name, encrypted_value FROM cookies
-                    # http://n8henrie.com/2013/11/use-chromes-cookies-for-easier-downloading-with-python-requests/
-
-        elif o in ('-l', '--playlist'):
-            playlist = True
-        elif o in ('--no-caption',):
-            caption = False
-        elif o in ('-n', '--no-merge'):
-            merge = False
-        elif o in ('--no-proxy',):
-            proxy = ''
-        elif o in ('-d', '--debug'):
-            traceback = True
-            # Set level of root logger to DEBUG
-            logging.getLogger().setLevel(logging.DEBUG)
-        elif o in ('-F', '--format', '--stream', '--itag'):
-            stream_id = a
-        elif o in ('-O', '--output-filename'):
-            output_filename = a
-        elif o in ('-o', '--output-dir'):
-            output_dir = a
-        elif o in ('-p', '--player'):
-            player = a
-            caption = False
-        elif o in ('-x', '--http-proxy'):
-            proxy = a
-        elif o in ('-y', '--extractor-proxy'):
-            extractor_proxy = a
-        elif o in ('--lang',):
-            lang = a
-        else:
-            log.e("try 'you-get --help' for more options")
-            sys.exit(2)
-    if not args:
-        print(help)
-        sys.exit()
-
-    set_http_proxy(proxy)
-
-    try:
-        if stream_id:
-            if not extractor_proxy:
-                download_main(download, download_playlist, args, playlist, stream_id=stream_id, output_dir=output_dir,
-                              merge=merge, info_only=info_only, json_output=json_output, caption=caption)
-            else:
-                download_main(download, download_playlist, args, playlist, stream_id=stream_id,
-                              extractor_proxy=extractor_proxy, output_dir=output_dir, merge=merge, info_only=info_only,
-                              json_output=json_output, caption=caption)
-        else:
-            if not extractor_proxy:
-                download_main(download, download_playlist, args, playlist, output_dir=output_dir, merge=merge,
-                              info_only=info_only, json_output=json_output, caption=caption)
-            else:
-                download_main(download, download_playlist, args, playlist, extractor_proxy=extractor_proxy,
-                              output_dir=output_dir, merge=merge, info_only=info_only, json_output=json_output,
-                              caption=caption)
-    except KeyboardInterrupt:
-        if traceback:
-            raise
-        else:
-            sys.exit(1)
-    except UnicodeEncodeError:
-        log.e('[error] oops, the current environment does not seem to support Unicode.')
-        log.e('please set it to a UTF-8-aware locale first,')
-        log.e('so as to save the video (with some Unicode characters) correctly.')
-        log.e('you can do it like this:')
-        log.e('    (Windows)    % chcp 65001 ')
-        log.e('    (Linux)      $ LC_CTYPE=en_US.UTF-8')
-        sys.exit(1)
-    except Exception:
-        if not traceback:
-            log.e('[error] oops, something went wrong.')
-            log.e('don\'t panic, c\'est la vie. please try the following steps:')
-            log.e('  (1) Rule out any network problem.')
-            log.e('  (2) Make sure you-get is up-to-date.')
-            log.e('  (3) Check if the issue is already known, on')
-            log.e('        https://github.com/soimort/you-get/wiki/Known-Bugs')
-            log.e('        https://github.com/soimort/you-get/issues')
-            log.e('  (4) Run the command with \'--debug\' option,')
-            log.e('      and report this issue with the full output.')
-        else:
-            version()
-            log.i(args)
-            raise
-        sys.exit(1)
-
-
-def google_search(url):
-    keywords = r1(r'https?://(.*)', url)
-    url = 'https://www.google.com/search?tbm=vid&q=%s' % parse.quote(keywords)
-    page = get_content(url, headers=fake_headers)
-    videos = re.findall(r'<a href="(https?://[^"]+)" onmousedown="[^"]+">([^<]+)<', page)
-    vdurs = re.findall(r'<span class="vdur _dwc">([^<]+)<', page)
-    durs = [r1(r'(\d+:\d+)', unescape_html(dur)) for dur in vdurs]
-    print("Google Videos search:")
-    for v in zip(videos, durs):
-        print("- video:  %s [%s]" % (unescape_html(v[0][1]),
-                                     v[1] if v[1] else '?'))
-        print("# you-get %s" % log.sprint(v[0][0], log.UNDERLINE))
-        print()
-    print("Best matched result:")
-    return (videos[0][0])
-
-
 def url_to_module(url):
-    # todo: google search not finished
-    # try:
-    video_host = r1(r'https?://([^/]+)/', url)
-    video_url = r1(r'https?://[^/]+(.*)', url)
-    # assert video_host and video_url
-    if not video_host or not video_url:
-        raise Exception('Bad Url')
+    try:
+        video_host = r1(r'https?://([^/]+)/', url)
+        video_url = r1(r'https?://[^/]+(.*)', url)
+        assert video_host and video_url
+    except:
         return None, None
-    # except:
-    #
-    #     url = google_search(url)
-    #     video_host = r1(r'https?://([^/]+)/', url)
-    #     video_url = r1(r'https?://[^/]+(.*)', url)
 
     if video_host.endswith('.com.cn'):
         video_host = video_host[:-3]
-    logging.debug('video host is '+video_host)
     domain = r1(r'(\.[^.]+\.[^.]+)$', video_host) or video_host
-    logging.debug('domain is '+domain)
     assert domain, 'unsupported url: ' + url
 
     k = r1(r'([^.]+)', domain)
-    logging.debug('k is '+k)
     if k in SITES:
-        return import_module('app.' + '.'.join(['custom_you_get', 'extractors', SITES[k]])), url
+        logging.debug('import ' + '.'.join(['you_get', 'extractors', SITES[k]]))
+        return import_module('.'.join(['you_get', 'extractors', SITES[k]])), url
     else:
-        raise Exception('Not support for this kind of url')
-        return None, None
-        # import http.client
-        # conn = http.client.HTTPConnection(video_host)
-        # conn.request("HEAD", video_url, headers=fake_headers)
-        # res = conn.getresponse()
-        # location = res.getheader('location')
-        # if location and location != url and not location.startswith('/'):
-        #     return url_to_module(location)
-        # else:
-        #     return import_module('app.custom_you_get.extractors.universal'), url
+        import http.client
+        conn = http.client.HTTPConnection(video_host)
+        conn.request("HEAD", video_url, headers=fake_headers)
+        res = conn.getresponse()
+        location = res.getheader('location')
+        if location and location != url and not location.startswith('/'):
+            return url_to_module(location)
+        else:
+            return import_module('you_get.extractors.universal'), url
 
 
 def any_download(url, **kwargs):
@@ -1357,7 +1115,3 @@ def any_download(url, **kwargs):
 def any_download_playlist(url, **kwargs):
     m, url = url_to_module(url)
     m.download_playlist(url, **kwargs)
-
-
-def main(**kwargs):
-    script_main('you-get', any_download, any_download_playlist, **kwargs)

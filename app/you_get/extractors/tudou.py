@@ -2,11 +2,9 @@
 
 __all__ = ['tudou_download', 'tudou_download_playlist', 'tudou_download_by_id', 'tudou_download_by_iid']
 
-from xml.dom.minidom import parseString
-
-import app.custom_you_get.extractors.acfun
 from ..common import *
-
+from xml.dom.minidom import parseString
+import you_get.extractors.acfun
 
 def tudou_download_by_iid(iid, title, output_dir = '.', merge = True, info_only = False):
     data = json.loads(get_decoded_html('http://www.tudou.com/outplay/goto/getItemSegs.action?iid=%s' % iid))
@@ -34,9 +32,9 @@ def tudou_download_by_id(id, title, output_dir = '.', merge = True, info_only = 
 def tudou_download(url, output_dir = '.', merge = True, info_only = False, **kwargs):
     if 'acfun.tudou.com' in url:  #wrong way!
         url = url.replace('acfun.tudou.com', 'www.acfun.tv')
-        app.custom_you_get.extractors.acfun.acfun_download(url, output_dir,
-                                                           merge,
-                                                           info_only)
+        you_get.extractors.acfun.acfun_download(url, output_dir, 
+                                               merge, 
+                                               info_only)
         return  #throw you back
     
     # Embedded player

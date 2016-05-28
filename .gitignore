@@ -93,6 +93,7 @@ ENV/
 app/tmp.py
 app/build/
 app/dist/
+app/dev.log
 
 
 

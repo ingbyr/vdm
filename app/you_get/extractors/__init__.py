@@ -45,12 +45,15 @@ from .mixcloud import *
 from .mtv81 import *
 from .musicplayon import *
 from .nanagogo import *
+from .naver import *
 from .netease import *
 from .nicovideo import *
+from .panda import *
 from .pinterest import *
 from .pixnet import *
 from .pptv import *
 from .qianmo import *
+from .qie import *
 from .qq import *
 from .sina import *
 from .sohu import *
