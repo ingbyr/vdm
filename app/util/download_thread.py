@@ -5,7 +5,7 @@ import time
 from PyQt5 import QtCore
 
 from app import mlog, mconfig
-from app.custom_you_get.custom_youget import r_obj, m_get_video, sys
+from app.you_get.custom_youget import r_obj, m_get_video, sys
 
 __author__ = 'InG_byr'
 

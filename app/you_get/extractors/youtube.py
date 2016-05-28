@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 
-from xml.dom.minidom import parseString
-
 from ..common import *
 from ..extractor import VideoExtractor
 
+from xml.dom.minidom import parseString
 
 class YouTube(VideoExtractor):
     name = "YouTube"
