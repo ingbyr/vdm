@@ -1,5 +1,6 @@
 # !/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from PyQt5.QtGui import QIcon
 
 from app.ui.ui_files_list_dialog import Ui_FilesListDialog
 from app import mlog, mconfig
@@ -36,7 +37,6 @@ class FilesListDialog(Ui_FilesListDialog):
 
     def update_files_list(self, files_list):
         self.text_files_list.setHtml(files_list)
-        # self.text_files_list.insertHtml(files_list)
 
     def start_download_files(self):
         status.set_default()
@@ -53,6 +53,7 @@ class FilesListDialog(Ui_FilesListDialog):
 
     def show_msg(self, icon, title, text):
         self.msg.setWindowTitle(title)
+        self.msg.setWindowIcon(QIcon(':/res/favicon.ico'))
         self.msg.setIcon(icon)
         self.msg.setText(text)
         self.msg.setStandardButtons(QMessageBox.Ok)
@@ -79,6 +80,7 @@ class FilesListDialog(Ui_FilesListDialog):
         progressDialog.setWindowModality(Qt.WindowModal)
         progressDialog.setMinimumDuration(5)
         progressDialog.setWindowTitle('Downloading')
+        progressDialog.setWindowIcon(QIcon(':/res/favicon.ico'))
         progressDialog.setLabelText('Current speed: ')
         progressDialog.setCancelButtonText('Cancel')
         progressDialog.setRange(0, 100)

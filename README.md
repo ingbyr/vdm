@@ -3,7 +3,7 @@
 ## Latest Version
 | Version        |  Build Time        |   Download       | Release notes
 | :-------------: |:-------------:| :-------------:|:-------------:|
-| 0.0.3 | 2016-05-21| [Windows](https://sourceforge.net/projects/gui-youget/files/windows/YouGet-0.0.3Win.exe/download)	/	[Linux](https://sourceforge.net/projects/gui-youget/files/Linux/YouGet-0.0.3Linux/download)| [Notes](https://github.com/ingbyr/GUI-YouGet/wiki/Release-notes)
+| 0.0.4 | 2016-05-29| [Windows](https://sourceforge.net/projects/gui-youget/files/windows/YouGet-0.0.4Win.exe/download)	/	[Linux](https://sourceforge.net/projects/gui-youget/files/Linux/YouGet-0.0.4Linux/download)| [Notes](https://github.com/ingbyr/GUI-YouGet/wiki/Release-notes)
 
 
 ## What is it
