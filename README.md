@@ -1,11 +1,10 @@
 # GUI-YouGet
 
 ## Latest Version
-| Version        |   Download        |   Build Time     | Release notes
+| Version        |  Build Time        |   Download       | Release notes
 | :-------------: |:-------------:| :-------------:|:-------------:|
-| 0.0.3 | [Windows](https://sourceforge.net/projects/gui-youget/files/windows/YouGet-0.0.3Win.exe/download)	/	[Linux](https://sourceforge.net/projects/gui-youget/files/Linux/YouGet-0.0.3Linux/download)| 2016-05-21| [Notes](https://github.com/ingbyr/GUI-YouGet/wiki/Release-notes-Ver-0.0.3)
+| 0.0.3 | 2016-05-21| [Windows](https://sourceforge.net/projects/gui-youget/files/windows/YouGet-0.0.3Win.exe/download)	/	[Linux](https://sourceforge.net/projects/gui-youget/files/Linux/YouGet-0.0.3Linux/download)| [Notes](https://github.com/ingbyr/GUI-YouGet/wiki/Release-notes)
 
-> [History version](https://github.com/ingbyr/GUI-YouGet/wiki/GUI-YouGet)
 
 ## What is it
 
@@ -13,11 +12,10 @@ Just a GUI based on the [you-get](https://github.com/soimort/you-get/) run on th
 * Download videos / audios from popular websites such as YouTube, Youku, Niconico, and a bunch more. (See the full list of supported sites below)
 * More feature is comming...
 
-
-
-
 ![](http://ww3.sinaimg.cn/large/bca3b20djw1f431fi2sajj20dw0d9jsg.jpg)
 ![](http://ww2.sinaimg.cn/large/bca3b20djw1f431fifks4j20b40c5gmg.jpg)
+
+
 
 ## How to use
 * Download and Run YouGet
