@@ -8,10 +8,10 @@ from .sina import sina_download_by_vid
 from .tudou import tudou_download_by_id
 from .youku import youku_download_by_vid
 
-from app.you_get.status import write2buf
-
 import hashlib
 import re
+
+from app.you_get.status import write2buf
 
 appkey='f3bb208b3d081dc8'
 
