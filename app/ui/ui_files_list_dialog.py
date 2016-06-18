@@ -41,7 +41,7 @@ class Ui_FilesListDialog(object):
     def retranslateUi(self, FilesListDialog):
         _translate = QtCore.QCoreApplication.translate
         FilesListDialog.setWindowTitle(_translate("FilesListDialog", "Files List"))
-        self.label.setText(_translate("FilesListDialog", "Please select a spicifed files to download."))
+        self.label.setText(_translate("FilesListDialog", "Choose someone to download."))
         self.label_2.setText(_translate("FilesListDialog", "Select"))
         self.push_button_confirm.setText(_translate("FilesListDialog", "Download"))
         self.push_button_cancel.setText(_translate("FilesListDialog", "Cancel"))

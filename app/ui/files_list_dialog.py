@@ -67,7 +67,7 @@ class FilesListDialog(Ui_FilesListDialog):
                               self.result + '\n\nFiles path: ' + mconfig.get_file_path())
             else:
                 self.show_msg(QMessageBox.Information, 'Completed',
-                              'Download completed (ง •̀_•́)ง\n\nFiles path:' + mconfig.get_file_path())
+                              'Download completed (ง •̀_•́)ง\n\nFiles path: ' + mconfig.get_file_path())
         else:
             self.show_msg(QMessageBox.Critical, 'Failed', 'Download failed (╯°Д°)╯︵ ┻━┻')
 
