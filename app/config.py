@@ -7,7 +7,7 @@ import os
 
 __author__ = 'InG_byr'
 
-version = '0.0.4'
+version = '0.0.5'
 
 buildtime = date.today()
 

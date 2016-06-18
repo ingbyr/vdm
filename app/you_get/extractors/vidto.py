@@ -6,6 +6,7 @@ from ..common import *
 import pdb
 import time
 
+from app.you_get.status import write2buf
 
 def vidto_download(url, output_dir='.', merge=True, info_only=False, **kwargs):
     html = get_content(url)
@@ -31,7 +32,7 @@ def vidto_download(url, output_dir='.', merge=True, info_only=False, **kwargs):
         if not info_only:
             download_urls([url], title, ext, size, output_dir, merge=merge)
     else:
-        print("cannot find link, please review")
+        write2buf("cannot find link, please review")
         pdb.set_trace()
 
 

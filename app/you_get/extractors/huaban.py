@@ -9,6 +9,8 @@ import urllib.parse as urlparse
 
 from ..common import *
 
+from app.you_get.status import write2buf
+
 __all__ = ['huaban_download']
 
 site_info = '花瓣 (Huaban)'
@@ -77,8 +79,8 @@ def huaban_download(url, output_dir='.', **kwargs):
     if re.match(r'http://huaban\.com/boards/\d+/', url):
         huaban_download_board(url, output_dir, **kwargs)
     else:
-        print('Only board (画板) pages are supported currently')
-        print('ex: http://huaban.com/boards/12345678/')
+        write2buf('Only board (画板) pages are supported currently')
+        write2buf('ex: http://huaban.com/boards/12345678/')
 
 
 download = huaban_download
