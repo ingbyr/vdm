@@ -29,7 +29,7 @@ This is a open source projects. The repository is [here](https://github.com/ingb
 ## Feedback bugs
 
 If something is broken and `GUI-YouGet` can't get you things you want, don't panic. (Yes, this happens all the time!)
-Open a new issue on [GitHub](https://github.com/ingbyr/GUI-YouGet/issues), with detailed `dev_log.log` output attached.
+Open a new issue on [GitHub](https://github.com/ingbyr/GUI-YouGet/issues), with detailed `GUI-YouGet.log` output attached.
 
 ## Legal Issues
 
