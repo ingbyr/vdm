@@ -4,6 +4,7 @@
 import json
 from datetime import date
 import os
+from app.you_get.version import script_name, __version__
 
 __author__ = 'InG_byr'
 
@@ -13,7 +14,7 @@ buildtime = date.today()
 
 data = {'version': version,
         'build time': str(buildtime),
-        'you-get core version': '20160528-dev'}
+        script_name: __version__}
 
 base_dir = os.getcwd()
 
