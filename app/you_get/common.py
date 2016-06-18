@@ -99,7 +99,7 @@ import os
 import platform
 import re
 import socket
-import sys
+# import sys
 import time
 from urllib import request, parse, error
 from http import cookiejar
@@ -110,6 +110,9 @@ from .util import log, term
 from .util.git import get_version
 from .util.strings import get_filename, unescape_html
 from . import json_output as json_output_
+
+from app.you_get.status import write2buf
+from app import mlog
 
 dry_run = False
 json_output = False
@@ -127,30 +130,29 @@ fake_headers = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:13.0) Gecko/20100101 Firefox/13.0'
 }
 
-from app.you_get import r_obj
 from app.you_get.status import set_percent, set_speed, set_exist, get_stop_thread
 
-sys.stdout = sys.__stdout__
-if sys.stdout.isatty():
-    default_encoding = sys.stdout.encoding.lower()
-else:
-    default_encoding = locale.getpreferredencoding().lower()
-sys.stdout = r_obj
+# if sys.stdout.isatty():
+#     default_encoding = sys.stdout.encoding.lower()
+# else:
+#     default_encoding = locale.getpreferredencoding().lower()
+
 
 
 def maybe_print(*s):
     try:
-        print(*s)
+        write2buf(*s)
     except:
         pass
 
 
 def tr(s):
-    if default_encoding == 'utf-8':
-        return s
-    else:
-        return s
-        # return str(s.encode('utf-8'))[2:-1]
+    return s
+    # if default_encoding == 'utf-8':
+    #     return s
+    # else:
+    #     return s
+    #     # return str(s.encode('utf-8'))[2:-1]
 
 
 # DEPRECATED in favor of match1()
@@ -461,7 +463,7 @@ def url_save(url, filepath, bar, refer=None, is_part=False, faker=False, headers
             if not is_part:
                 if bar:
                     bar.done()
-                print('Skipping %s: file already exists' % tr(os.path.basename(filepath)))
+                write2buf('Skipping %s: file already exists' % tr(os.path.basename(filepath)))
                 set_exist(True)
             else:
                 if bar:
@@ -471,7 +473,7 @@ def url_save(url, filepath, bar, refer=None, is_part=False, faker=False, headers
             if not is_part:
                 if bar:
                     bar.done()
-                print('Overwriting %s' % tr(os.path.basename(filepath)), '...')
+                write2buf('Overwriting %s' % tr(os.path.basename(filepath)), '...')
     elif not os.path.exists(os.path.dirname(filepath)):
         os.mkdir(os.path.dirname(filepath))
 
@@ -544,7 +546,7 @@ def url_save_chunked(url, filepath, bar, refer=None, is_part=False, faker=False,
             if not is_part:
                 if bar:
                     bar.done()
-                print('Skipping %s: file already exists' % tr(os.path.basename(filepath)))
+                write2buf('Skipping %s: file already exists' % tr(os.path.basename(filepath)))
                 set_exist(True)
             else:
                 if bar:
@@ -554,7 +556,7 @@ def url_save_chunked(url, filepath, bar, refer=None, is_part=False, faker=False,
             if not is_part:
                 if bar:
                     bar.done()
-                print('Overwriting %s' % tr(os.path.basename(filepath)), '...')
+                write2buf('Overwriting %s' % tr(os.path.basename(filepath)), '...')
     elif not os.path.exists(os.path.dirname(filepath)):
         os.mkdir(os.path.dirname(filepath))
 
@@ -648,7 +650,7 @@ class SimpleProgressBar:
 
     def done(self):
         if self.displayed:
-            print()
+            write2buf()
             self.displayed = False
 
 
@@ -714,7 +716,7 @@ def download_urls(urls, title, ext, total_size, output_dir='.', refer=None, merg
         json_output_.download_urls(urls=urls, title=title, ext=ext, total_size=total_size, refer=refer)
         return
     if dry_run:
-        print('Real URLs:\n%s' % '\n'.join(urls))
+        write2buf('Real URLs:\n%s' % '\n'.join(urls))
         return
 
     if player:
@@ -725,9 +727,10 @@ def download_urls(urls, title, ext, total_size, output_dir='.', refer=None, merg
         try:
             total_size = urls_size(urls, faker=faker, headers=headers)
         except:
-            import traceback
-            traceback.print_exc(file=sys.stdout)
-            pass
+            mlog.error('failed')
+            # import traceback
+            # traceback.print_exc(file=sys.stdout)
+            # pass
 
     title = tr(get_filename(title))
     output_filename = get_output_filename(urls, title, ext, output_dir, merge)
@@ -735,8 +738,8 @@ def download_urls(urls, title, ext, total_size, output_dir='.', refer=None, merg
 
     if total_size:
         if not force and os.path.exists(output_filepath) and os.path.getsize(output_filepath) >= total_size * 0.9:
-            print('Skipping %s: file already exists' % output_filepath)
-            print()
+            write2buf('Skipping %s: file already exists' % output_filepath)
+            write2buf()
             set_exist(True)
             return
         bar = SimpleProgressBar(total_size, len(urls))
@@ -745,13 +748,13 @@ def download_urls(urls, title, ext, total_size, output_dir='.', refer=None, merg
 
     if len(urls) == 1:
         url = urls[0]
-        print('Downloading %s ...' % tr(output_filename))
+        write2buf('Downloading %s ...' % tr(output_filename))
         bar.update()
         url_save(url, output_filepath, bar, refer=refer, faker=faker, headers=headers)
         bar.done()
     else:
         parts = []
-        print('Downloading %s.%s ...' % (tr(title), ext))
+        write2buf('Downloading %s.%s ...' % (tr(title), ext))
         bar.update()
         for i, url in enumerate(urls):
             filename = '%s[%02d].%s' % (title, i, ext)
@@ -763,7 +766,7 @@ def download_urls(urls, title, ext, total_size, output_dir='.', refer=None, merg
         bar.done()
 
         if not merge:
-            print()
+            write2buf()
             return
 
         if 'av' in kwargs and kwargs['av']:
@@ -771,7 +774,7 @@ def download_urls(urls, title, ext, total_size, output_dir='.', refer=None, merg
             if has_ffmpeg_installed():
                 from .processor.ffmpeg import ffmpeg_concat_av
                 ret = ffmpeg_concat_av(parts, output_filepath, ext)
-                print('Merged into %s' % output_filename)
+                write2buf('Merged into %s' % output_filename)
                 if ret == 0:
                     for part in parts: os.remove(part)
 
@@ -784,7 +787,7 @@ def download_urls(urls, title, ext, total_size, output_dir='.', refer=None, merg
                 else:
                     from .processor.join_flv import concat_flv
                     concat_flv(parts, output_filepath)
-                print('Merged into %s' % output_filename)
+                write2buf('Merged into %s' % output_filename)
             except:
                 raise
             else:
@@ -800,7 +803,7 @@ def download_urls(urls, title, ext, total_size, output_dir='.', refer=None, merg
                 else:
                     from .processor.join_mp4 import concat_mp4
                     concat_mp4(parts, output_filepath)
-                print('Merged into %s' % output_filename)
+                write2buf('Merged into %s' % output_filename)
             except:
                 raise
             else:
@@ -816,7 +819,7 @@ def download_urls(urls, title, ext, total_size, output_dir='.', refer=None, merg
                 else:
                     from .processor.join_ts import concat_ts
                     concat_ts(parts, output_filepath)
-                print('Merged into %s' % output_filename)
+                write2buf('Merged into %s' % output_filename)
             except:
                 raise
             else:
@@ -824,16 +827,16 @@ def download_urls(urls, title, ext, total_size, output_dir='.', refer=None, merg
                     os.remove(part)
 
         else:
-            print("Can't merge %s files" % ext)
+            write2buf("Can't merge %s files" % ext)
 
-    print()
+    write2buf()
 
 
 def download_urls_chunked(urls, title, ext, total_size, output_dir='.', refer=None, merge=True, faker=False,
                           headers={}):
     assert urls
     if dry_run:
-        print('Real URLs:\n%s\n' % urls)
+        write2buf('Real URLs:\n%s\n' % urls)
         return
 
     if player:
@@ -846,8 +849,8 @@ def download_urls_chunked(urls, title, ext, total_size, output_dir='.', refer=No
     filepath = os.path.join(output_dir, filename)
     if total_size and ext in ('ts'):
         if not force and os.path.exists(filepath[:-3] + '.mkv'):
-            print('Skipping %s: file already exists' % filepath[:-3] + '.mkv')
-            print()
+            write2buf('Skipping %s: file already exists' % filepath[:-3] + '.mkv')
+            write2buf()
             set_exist(True)
             return
         bar = SimpleProgressBar(total_size, len(urls))
@@ -857,14 +860,14 @@ def download_urls_chunked(urls, title, ext, total_size, output_dir='.', refer=No
     if len(urls) == 1:
         parts = []
         url = urls[0]
-        print('Downloading %s ...' % tr(filename))
+        write2buf('Downloading %s ...' % tr(filename))
         filepath = os.path.join(output_dir, filename)
         parts.append(filepath)
         url_save_chunked(url, filepath, bar, refer=refer, faker=faker, headers=headers)
         bar.done()
 
         if not merge:
-            print()
+            write2buf()
             return
         if ext == 'ts':
             from .processor.ffmpeg import has_ffmpeg_installed
@@ -876,12 +879,12 @@ def download_urls_chunked(urls, title, ext, total_size, output_dir='.', refer=No
                 else:
                     os.remove(os.path.join(output_dir, title + '.mkv'))
             else:
-                print('No ffmpeg is found. Conversion aborted.')
+                write2buf('No ffmpeg is found. Conversion aborted.')
         else:
-            print("Can't convert %s files" % ext)
+            write2buf("Can't convert %s files" % ext)
     else:
         parts = []
-        print('Downloading %s.%s ...' % (tr(title), ext))
+        write2buf('Downloading %s.%s ...' % (tr(title), ext))
         for i, url in enumerate(urls):
             filename = '%s[%02d].%s' % (title, i, ext)
             filepath = os.path.join(output_dir, filename)
@@ -892,7 +895,7 @@ def download_urls_chunked(urls, title, ext, total_size, output_dir='.', refer=No
         bar.done()
 
         if not merge:
-            print()
+            write2buf()
             return
         if ext == 'ts':
             from .processor.ffmpeg import has_ffmpeg_installed
@@ -904,19 +907,19 @@ def download_urls_chunked(urls, title, ext, total_size, output_dir='.', refer=No
                 else:
                     os.remove(os.path.join(output_dir, title + '.mkv'))
             else:
-                print('No ffmpeg is found. Merging aborted.')
+                write2buf('No ffmpeg is found. Merging aborted.')
         else:
-            print("Can't merge %s files" % ext)
+            write2buf("Can't merge %s files" % ext)
 
-    print()
+    write2buf()
 
 
 def download_rtmp_url(url, title, ext, params={}, total_size=0, output_dir='.', refer=None, merge=True, faker=False):
     assert url
     if dry_run:
-        print('Real URL:\n%s\n' % [url])
+        write2buf('Real URL:\n%s\n' % [url])
         if params.get("-y", False):  # None or unset ->False
-            print('Real Playpath:\n%s\n' % [params.get("-y")])
+            write2buf('Real Playpath:\n%s\n' % [params.get("-y")])
         return
 
     if player:
@@ -1007,9 +1010,9 @@ def print_info(site_info, title, type, size):
 
     maybe_print("Site:      ", site_info)
     maybe_print("Title:     ", unescape_html(tr(title)))
-    print("Type:      ", type_info)
-    print("Size:      ", round(size / 1048576, 2), "MiB (" + str(size) + " Bytes)")
-    print()
+    write2buf("Type:      ", type_info)
+    write2buf("Size:      ", round(size / 1048576, 2), "MiB (" + str(size) + " Bytes)")
+    write2buf()
 
 
 def mime_to_container(mime):

@@ -8,6 +8,7 @@
 
 import struct
 from io import BytesIO
+from app.you_get.status import write2buf
 
 def skip(stream, n):
     stream.seek(stream.tell() + n)
@@ -434,7 +435,7 @@ def read_stsc(stream, size, left, type):
     #total = 0
     #for c, s in zip(chunks[1:], samples):
     #	total += c*s
-    #print 'total', total
+    #write2buf 'total', total
     
     assert left == 0
     #return Atom('stsc', size, None)
@@ -713,7 +714,7 @@ def parse_atoms(stream):
     return atoms
 
 def read_mp4(stream):
-    print(stream.name)
+    write2buf(stream.name)
     atoms = parse_atoms(stream)
     moov = list(filter(lambda x: x.type == b'moov', atoms))
     mdat = list(filter(lambda x: x.type == b'mdat', atoms))
@@ -910,13 +911,13 @@ def concat_mp4(mp4s, output = None):
     elif os.path.isdir(output):
         output = os.path.join(output, guess_output(mp4s))
     
-    print('Merging video parts...')
+    write2buf('Merging video parts...')
     merge_mp4s(mp4s, output)
     
     return output
 
 def usage():
-    print('Usage: [python3] join_mp4.py --output TARGET.mp4 mp4...')
+    write2buf('Usage: [python3] join_mp4.py --output TARGET.mp4 mp4...')
 
 def main():
     import sys, getopt

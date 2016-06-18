@@ -5,7 +5,8 @@ import time
 from PyQt5 import QtCore
 
 from app import mlog, mconfig
-from app.you_get.custom_youget import r_obj, m_get_video, sys
+from app.you_get.custom_you_get import m_get_video
+from app.you_get.status import get_buffer
 
 __author__ = 'InG_byr'
 
@@ -24,14 +25,12 @@ class GetVideoInfoThread(QtCore.QThread):
 
     def run(self):
         try:
-            r_obj.flush()
             self.kwargs['info_only'] = True
             m_get_video(self.urls, **self.kwargs)
-            result = r_obj.get_buffer()
+            result = ''.join(get_buffer())
             can_download = True
         except Exception:
-            for item in sys.exc_info():
-                mlog.error(str(item))
+            mlog.error('run get files thread failed')
             result = 'Get information of files failed'
             can_download = False
         finally:
@@ -55,7 +54,6 @@ class DownloadThread(QtCore.QThread):
         Download the video
         :return: nothing
         """
-        r_obj.flush()
         is_succeed = False
         try:
             self.kwargs['info_only'] = False
@@ -63,8 +61,7 @@ class DownloadThread(QtCore.QThread):
             m_get_video(self.urls, **self.kwargs)
             is_succeed = True
         except Exception:
-            for item in sys.exc_info():
-                mlog.error(str(item))
-                is_succeed = False
+            mlog.error('run download thread failed')
+            is_succeed = False
         finally:
             self.finish_signal.emit(is_succeed)

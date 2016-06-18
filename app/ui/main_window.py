@@ -17,6 +17,8 @@ from app.ui.about_widget import AboutWdiget
 from app.ui.files_list_dialog import FilesListDialog
 from app.ui.icon_rc import *
 
+from app.you_get.status import set_default
+
 
 class MainWindow(Ui_MainWindow):
     def __init__(self):
@@ -41,6 +43,7 @@ class MainWindow(Ui_MainWindow):
 
     def get_info(self):
         mconfig.set_default()
+        set_default()
         self.button_download.setEnabled(False)
         self.urls = (str(self.text_edit_urls.toPlainText())).split(';')
         mlog.debug(self.urls[0])
