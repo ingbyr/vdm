@@ -1,6 +1,7 @@
 # GUI-YouGet
 
-> [中文说明](http://www.ingbyr.tk/2016/06/18/youget-zh/)
+> [中文说明](http://www.ingbyr.tk/2016/06/18/youget-zh/)  
+
 ## Latest Version
 | Version        |  Build Time        |   Download       | Release notes
 | :-------------: |:-------------:| :-------------:|:-------------:|
