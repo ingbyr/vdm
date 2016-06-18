@@ -12,7 +12,7 @@
 
 Just a GUI based on the [you-get](https://github.com/soimort/you-get/) run on the Windows and Linux. What `GUI-YouGet` can do for you:
 * Download videos / audios from popular websites such as YouTube, Youku, Niconico, and a bunch more. (See the full list of supported sites below)
-* More feature is comming...
+* More feature is coming...
 
 ![](http://ww3.sinaimg.cn/large/bca3b20djw1f431fi2sajj20dw0d9jsg.jpg)
 ![](http://ww2.sinaimg.cn/large/bca3b20djw1f431fifks4j20b40c5gmg.jpg)
