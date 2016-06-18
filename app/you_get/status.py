@@ -71,12 +71,12 @@ def write2buf(*data):
     global buffer
     if data:
         for item in data:
-            if item.startswith('    # download-with:'):
+            if str(item).startswith('    # download-with:'):
                 index = item.find('=')
                 options = item[(index + 1):-6]
                 add_stream(options)
                 item += '<br><font color=blue>    Option is ' + options + '</p></font>'
-            buffer.append(item + '<br>')
+            buffer.append(str(item) + '<br>')
     else:
         buffer.append('<br>')
 
