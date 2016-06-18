@@ -40,7 +40,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Choose someone to download.</string>
+    <string>Choose one to download.</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_2">
