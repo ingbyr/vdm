@@ -9,6 +9,8 @@ import hashlib
 import base64
 import os
 
+from app.you_get.status import write2buf
+
 def netease_hymn():
     return """
     player's Game Over,
@@ -88,11 +90,11 @@ def netease_lyric_download(song, lyric, output_dir='.', info_only=False):
 
     title = "%s. %s" % (song['position'], song['name'])
     filename = '%s.lrc' % get_filename(title)
-    print('Saving %s ...' % filename, end="", flush=True)
+    write2buf('Saving %s ...' % filename, end="", flush=True)
     with open(os.path.join(output_dir, filename),
               'w', encoding='utf-8') as x:
         x.write(lyric)
-        print('Done.')
+        write2buf('Done.')
 
 def netease_video_download(vinfo, output_dir='.', info_only=False):
     title = "%s - %s" % (vinfo['name'], vinfo['artistName'])

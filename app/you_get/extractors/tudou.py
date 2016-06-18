@@ -6,6 +6,8 @@ from ..common import *
 from xml.dom.minidom import parseString
 import you_get.extractors.acfun
 
+from app.you_get.status import write2buf
+
 def tudou_download_by_iid(iid, title, output_dir = '.', merge = True, info_only = False):
     data = json.loads(get_decoded_html('http://www.tudou.com/outplay/goto/getItemSegs.action?iid=%s' % iid))
     temp = max([data[i] for i in data if 'size' in data[i][0]], key=lambda x:sum([part['size'] for part in x]))
@@ -87,7 +89,7 @@ def parse_plist(url):
 def tudou_download_playlist(url, output_dir = '.', merge = True, info_only = False, **kwargs):
     videos = parse_plist(url)
     for i, (title, id) in enumerate(videos):
-        print('Processing %s of %s videos...' % (i + 1, len(videos)))
+        write2buf('Processing %s of %s videos...' % (i + 1, len(videos)))
         tudou_download_by_iid(id, title, output_dir = output_dir, merge = merge, info_only = info_only)
 
 site_info = "Tudou.com"

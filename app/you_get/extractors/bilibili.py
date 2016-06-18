@@ -8,6 +8,8 @@ from .sina import sina_download_by_vid
 from .tudou import tudou_download_by_id
 from .youku import youku_download_by_vid
 
+from app.you_get.status import write2buf
+
 import hashlib
 import re
 
@@ -165,10 +167,10 @@ def bilibili_download(url, output_dir='.', merge=True, info_only=False, **kwargs
 
     if not info_only and not dry_run:
         if not kwargs['caption']:
-            print('Skipping danmaku.')
+            write2buf('Skipping danmaku.')
             return
         title = get_filename(title)
-        print('Downloading %s ...\n' % (title + '.cmt.xml'))
+        write2buf('Downloading %s ...\n' % (title + '.cmt.xml'))
         xml = get_srt_xml(cid)
         with open(os.path.join(output_dir, title + '.cmt.xml'), 'w', encoding='utf-8') as x:
             x.write(xml)
