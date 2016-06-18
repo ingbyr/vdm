@@ -8,7 +8,7 @@ __author__ = 'InG_byr'
 
 mconfig = app.config
 
-logging.basicConfig(filename='dev.log',
+logging.basicConfig(filename='GUI-YouGet.log',
                     level=logging.ERROR,
                     format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s >>> %(message)s',
                     datefmt='%b%d %Y %H:%M:%S',
