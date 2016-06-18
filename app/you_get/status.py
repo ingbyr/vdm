@@ -67,10 +67,10 @@ def get_speed():
     return SPEED
 
 
-def write2buf(*data):
+def write2buf(*arg, **kwargs):
     global buffer
-    if data:
-        for item in data:
+    if arg:
+        for item in arg:
             if str(item).startswith('    # download-with:'):
                 index = item.find('=')
                 options = item[(index + 1):-6]
