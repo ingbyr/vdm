@@ -29,8 +29,8 @@ class GetVideoInfoThread(QtCore.QThread):
             m_get_video(self.urls, **self.kwargs)
             result = ''.join(get_buffer())
             can_download = True
-        except Exception:
-            mlog.error('run get files thread failed')
+        except Exception as e:
+            mlog.exception(e)
             result = 'Get information of files failed'
             can_download = False
         finally:
@@ -60,8 +60,8 @@ class DownloadThread(QtCore.QThread):
             mlog.debug(mconfig.get_file_itag)
             m_get_video(self.urls, **self.kwargs)
             is_succeed = True
-        except Exception:
-            mlog.error('run download thread failed')
+        except Exception as e:
+            mlog.exception(e)
             is_succeed = False
         finally:
             self.finish_signal.emit(is_succeed)
