@@ -4,6 +4,8 @@ import os.path
 import subprocess
 from ..util.strings import parameterize
 
+from app.you_get.status import write2buf
+
 def get_usable_ffmpeg(cmd):
     try:
         p = subprocess.Popen([cmd, '-version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -26,7 +28,7 @@ def has_ffmpeg_installed():
     return FFMPEG is not None
 
 def ffmpeg_concat_av(files, output, ext):
-    print('Merging video parts... ', end="", flush=True)
+    write2buf('Merging video parts... ', end="", flush=True)
     params = [FFMPEG] + LOGLEVEL
     for file in files:
         if os.path.isfile(file): params.extend(['-i', file])
@@ -94,7 +96,7 @@ def ffmpeg_concat_mp4_to_mpg(files, output='output.mpg'):
         raise
 
 def ffmpeg_concat_ts_to_mkv(files, output='output.mkv'):
-    print('Merging video parts... ', end="", flush=True)
+    write2buf('Merging video parts... ', end="", flush=True)
     params = [FFMPEG] + LOGLEVEL + ['-isync', '-y', '-i']
     params.append('concat:')
     for file in files:
@@ -111,7 +113,7 @@ def ffmpeg_concat_ts_to_mkv(files, output='output.mkv'):
         return False
 
 def ffmpeg_concat_flv_to_mp4(files, output='output.mp4'):
-    print('Merging video parts... ', end="", flush=True)
+    write2buf('Merging video parts... ', end="", flush=True)
     # Use concat demuxer on FFmpeg >= 1.1
     if FFMPEG == 'ffmpeg' and (FFMPEG_VERSION[0] >= 2 or (FFMPEG_VERSION[0] == 1 and FFMPEG_VERSION[1] >= 1)):
         concat_list = open(output + '.txt', 'w', encoding="utf-8")
@@ -158,7 +160,7 @@ def ffmpeg_concat_flv_to_mp4(files, output='output.mp4'):
         raise
 
 def ffmpeg_concat_mp4_to_mp4(files, output='output.mp4'):
-    print('Merging video parts... ', end="", flush=True)
+    write2buf('Merging video parts... ', end="", flush=True)
     # Use concat demuxer on FFmpeg >= 1.1
     if FFMPEG == 'ffmpeg' and (FFMPEG_VERSION[0] >= 2 or (FFMPEG_VERSION[0] == 1 and FFMPEG_VERSION[1] >= 1)):
         concat_list = open(output + '.txt', 'w', encoding="utf-8")

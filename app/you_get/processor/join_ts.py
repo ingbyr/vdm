@@ -2,6 +2,7 @@
 
 import struct
 from io import BytesIO
+from app.you_get.status import write2buf
 
 ##################################################
 # main
@@ -24,7 +25,7 @@ def concat_ts(ts_parts, output = None):
     elif os.path.isdir(output):
         output = os.path.join(output, guess_output(ts_parts))
     
-    print('Merging video parts...')
+    write2buf('Merging video parts...')
     
     ts_out_file = open(output, "wb")
     for ts_in in ts_parts:
@@ -36,7 +37,7 @@ def concat_ts(ts_parts, output = None):
     return output
 
 def usage():
-    print('Usage: [python3] join_ts.py --output TARGET.ts ts...')
+    write2buf('Usage: [python3] join_ts.py --output TARGET.ts ts...')
 
 def main():
     import sys, getopt

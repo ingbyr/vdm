@@ -1,7 +1,7 @@
 # !/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-
+from app.config import add_stream
 
 __author__ = 'InG_byr'
 
@@ -9,6 +9,8 @@ SPEED = ''
 PERCENT = 0.0
 EXIST = False
 STOP_THREAD = False
+
+buffer = []
 
 
 def set_default():
@@ -20,6 +22,9 @@ def set_default():
     PERCENT = 0.0
     EXIST = False
     STOP_THREAD = False
+
+    global buffer
+    buffer = []
 
 
 def set_percent(data):
@@ -60,3 +65,22 @@ def set_speed(data):
 def get_speed():
     global SPEED
     return SPEED
+
+
+def write2buf(*data):
+    global buffer
+    if data:
+        for item in data:
+            if item.startswith('    # download-with:'):
+                index = item.find('=')
+                options = item[(index + 1):-6]
+                add_stream(options)
+                item += '<br><font color=blue>    Option is ' + options + '</p></font>'
+            buffer.append(item + '<br>')
+    else:
+        buffer.append('<br>')
+
+
+def get_buffer():
+    global buffer
+    return buffer
