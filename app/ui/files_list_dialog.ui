@@ -40,7 +40,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Please select a spicifed files to download.</string>
+    <string>Choose someone to download.</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_2">
