@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import json
 from urllib import request
-import sys
 
 from PyQt5.QtCore import QUrl
 from PyQt5.QtGui import QDesktopServices
@@ -88,17 +87,15 @@ class MainWindow(Ui_MainWindow):
         self.msg.show()
 
     def check_for_updates(self):
-        mlog.debug('check_for_updates')
         try:
             with request.urlopen('https://raw.githubusercontent.com/ingbyr/GUI-YouGet/master/version.json') as f:
                 raw_inf = str(f.read())[2:-1]
                 mlog.debug(str(f.read())[2:-1])
                 remote_inf = json.loads(raw_inf)
                 mlog.debug('remote version is ' + remote_inf['version'])
-        except Exception:
-            for item in sys.exc_info():
-                mlog.error(str(item))
-                self.show_msg(QMessageBox.Critical, 'Failed', 'Check for updates failed')
+        except Exception as e:
+            mlog.exception(e)
+            self.show_msg(QMessageBox.Critical, 'Failed', 'Check for updates failed')
             return
 
         if mconfig.version >= remote_inf['version']:
