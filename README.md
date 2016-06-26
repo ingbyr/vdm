@@ -1,33 +1,24 @@
 # GUI-YouGet
 
-> [中文说明](http://www.ingbyr.tk/2016/06/18/youget-zh/)  
+> [中文说明](http://www.ingbyr.tk/2016/06/18/youget-zh/)
 
-## Latest Version
-| Version        |  Build Time        |   Download       | Release notes
-| :-------------: |:-------------:| :-------------:|:-------------:|
-| 0.0.5 | 2016-06-18| [Windows](https://sourceforge.net/projects/gui-youget/files/windows/YouGet-0.0.5Win.exe/download)	/	[Linux](https://sourceforge.net/projects/gui-youget/files/Linux/YouGet-0.0.5Linux/download)| [Notes](https://github.com/ingbyr/GUI-YouGet/wiki/Release-notes)
+## Download
+[GUI-YouGet Releases](https://github.com/ingbyr/GUI-YouGet/releases)
 
+
+** NOTICE: ** : The Releases page only shows the Windows10-64bit version and Ubuntu16.04-64bit version. If you want to run on your platform, you need to install
+the [Qt5](http://doc.qt.io/qt-5/) and (Pyinstaller)[http://pyinstaller.readthedocs.io/en/stable/]. And then compile the sources by yourself.
 
 ## What is it
 
 Just a GUI based on the [you-get](https://github.com/soimort/you-get/) run on the Windows and Linux. What `GUI-YouGet` can do for you:
-* Download videos / audios from popular websites such as YouTube, Youku, Niconico, and a bunch more. (See the full list of supported sites below)
-* More feature is comming...
+* Download videos / audios from popular websites such as YouTube, Youku and a bunch more. (See the full list of supported sites below)
+* More features are comming...
 
 ![](http://ww3.sinaimg.cn/large/bca3b20djw1f431fi2sajj20dw0d9jsg.jpg)
 ![](http://ww2.sinaimg.cn/large/bca3b20djw1f431fifks4j20b40c5gmg.jpg)
 
-
-
-## How to use
-* Download and Run YouGet
-* Input the video url, then click the download button
-
-## Development
-This is a open source projects. The repository is [here](https://github.com/ingbyr/GUI-YouGet)
-
 ## Feedback bugs
-
 If something is broken and `GUI-YouGet` can't get you things you want, don't panic. (Yes, this happens all the time!)
 Open a new issue on [GitHub](https://github.com/ingbyr/GUI-YouGet/issues), with detailed `dev_log.log` output attached.
 
@@ -83,7 +74,6 @@ SOFTWARE.
 | AliveThai   | <http://alive.in.th/>         |✓| | |
 | interest.me | <http://ch.interest.me/tvn>   |✓| | |
 | **755<br/>ナナゴーゴー** | <http://7gogo.jp/> |✓|✓| |
-| **niconico<br/>ニコニコ動画** | <http://www.nicovideo.jp/> |✓| | |
 | **163<br/>网易视频<br/>网易云音乐** | <http://v.163.com/><br/><http://music.163.com/> |✓| |✓|
 | 56网     | <http://www.56.com/>           |✓| | |
 | **AcFun** | <http://www.acfun.tv/>        |✓| | |
@@ -121,5 +111,4 @@ SOFTWARE.
 | 花瓣     | <http://huaban.com/>           | |✓| |
 
 ## Authors
-
 Made by [@ingbyr](http://www.ingbyr.tk/about/)
