@@ -11,7 +11,7 @@ the [Qt5](http://doc.qt.io/qt-5/) and [Pyinstaller](http://pyinstaller.readthedo
 
 Just a GUI based on the [you-get](https://github.com/soimort/you-get/) run on the cross-platform. What `GUI-YouGet` can do for you:
 * Download videos / audios from popular websites such as YouTube, Youku and a bunch more. (See the full list of supported sites below)
-* More features are comming...
+* More features are coming...
 
 ![](http://ww4.sinaimg.cn/large/bca3b20dgw1f4zsnkqspkj20dy0d4jtk.jpg)
 ![](http://ww3.sinaimg.cn/large/bca3b20dgw1f4zsnmcstlj20ee0domz8.jpg)
@@ -19,7 +19,7 @@ Just a GUI based on the [you-get](https://github.com/soimort/you-get/) run on th
 
 ## Feedback bugs
 If something is broken and `GUI-YouGet` can't get you things you want, don't panic. (Yes, this happens all the time!)
-Open a new issue on [GitHub](https://github.com/ingbyr/GUI-YouGet/issues), with detailed `dev_log.log` output attached.
+Open a new issue on [GitHub](https://github.com/ingbyr/GUI-YouGet/issues), with detailed `GUI-YouGet.log` output attached.
 
 ## Legal Issues
 
