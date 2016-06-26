@@ -3,11 +3,9 @@
 > [中文说明](http://www.ingbyr.tk/2016/06/18/youget-zh/)
 
 ## Download
-[GUI-YouGet Releases](https://github.com/ingbyr/GUI-YouGet/releases)
-
-
-** NOTICE: ** : The Releases page only shows the Windows10-64bit version and Ubuntu16.04-64bit version. If you want to run on your platform, you need to install
-the [Qt5](http://doc.qt.io/qt-5/) and (Pyinstaller)[http://pyinstaller.readthedocs.io/en/stable/]. And then compile the sources by yourself.
+[GUI-YouGet Download Page](https://github.com/ingbyr/GUI-YouGet/releases)
+> **NOTICE:** The download page only shows the Windows10-64bit version and Ubuntu16.04-64bit version. If you want to run on your platform, you need to install
+the [Qt5](http://doc.qt.io/qt-5/) and [Pyinstaller](http://pyinstaller.readthedocs.io/en/stable/). Then compile the [source code](https://github.com/ingbyr/GUI-YouGet/releases) by yourself.
 
 ## What is it
 
@@ -15,8 +13,9 @@ Just a GUI based on the [you-get](https://github.com/soimort/you-get/) run on th
 * Download videos / audios from popular websites such as YouTube, Youku and a bunch more. (See the full list of supported sites below)
 * More features are comming...
 
-![](http://ww3.sinaimg.cn/large/bca3b20djw1f431fi2sajj20dw0d9jsg.jpg)
-![](http://ww2.sinaimg.cn/large/bca3b20djw1f431fifks4j20b40c5gmg.jpg)
+![](http://ww4.sinaimg.cn/large/bca3b20dgw1f4zsnkqspkj20dy0d4jtk.jpg)
+![](http://ww3.sinaimg.cn/large/bca3b20dgw1f4zsnmcstlj20ee0domz8.jpg)
+![](http://ww3.sinaimg.cn/large/bca3b20dgw1f4zsnnn9bpj20e30dijta.jpg)
 
 ## Feedback bugs
 If something is broken and `GUI-YouGet` can't get you things you want, don't panic. (Yes, this happens all the time!)
