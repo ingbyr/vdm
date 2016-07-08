@@ -60,7 +60,7 @@ def thvideo_download(url, output_dir = '.', merge = False, info_only = False, **
             _, type_, temp = url_info(url)
             size += temp
         
-        print_info(site_info, title, type_, size)
+        write2buf_info(site_info, title, type_, size)
         if not info_only:
             download_urls(urls, title, type_, total_size=None, output_dir=output_dir, merge=merge)
 

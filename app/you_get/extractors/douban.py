@@ -25,7 +25,7 @@ def douban_download(url, output_dir = '.', merge = True, info_only = False, **kw
                 resp_data = json.loads(resp.read().decode('utf-8'))
                 real_url = resp_data['r']
                 type, ext, size = url_info(real_url)
-                print_info(site_info, title, type, size)
+                write2buf_info(site_info, title, type, size)
             except:
                 pass
 
@@ -45,7 +45,7 @@ def douban_download(url, output_dir = '.', merge = True, info_only = False, **kw
             
             type, ext, size = url_info(real_url)
             
-            print_info(site_info, title, type, size)
+            write2buf_info(site_info, title, type, size)
             if not info_only:
                 download_urls([real_url], title, ext, size, output_dir, merge = merge)
 

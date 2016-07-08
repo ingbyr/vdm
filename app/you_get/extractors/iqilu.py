@@ -16,7 +16,7 @@ def iqilu_download(url, output_dir = '.', merge = False, info_only = False, **kw
         title = match1(html, r'<meta name="description" content="(.*?)\"\W')
 
         type_, ext, size = url_info(url)
-        print_info(site_info, title, type_, size)
+        write2buf_info(site_info, title, type_, size)
         if not info_only:
             download_urls([url], title, ext, total_size=None, output_dir=output_dir, merge=merge)
 

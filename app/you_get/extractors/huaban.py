@@ -7,9 +7,9 @@ import math
 import traceback
 import urllib.parse as urlparse
 
-from ..common import *
-
 from app.you_get.status import write2buf
+
+from ..common import *
 
 __all__ = ['huaban_download']
 
@@ -69,7 +69,7 @@ def huaban_download_board(url, output_dir, **kwargs):
     kwargs['merge'] = False
     board = extract_board_data(url)
     output_dir = os.path.join(output_dir, board.title)
-    print_info(site_info, board.title, 'jpg', float('Inf'))
+    write2buf_info(site_info, board.title, 'jpg', float('Inf'))
     for pin in board.pins:
         download_urls([pin.url], pin.id, pin.ext, float('Inf'),
                       output_dir=output_dir, faker=True, **kwargs)

@@ -3,17 +3,17 @@ import json
 
 from app.you_get.status import write2buf
 
-# save info from common.print_info()
+# save info from common.write2buf_info()
 last_info = None
 
-def output(video_extractor, pretty_print=True):
+def output(video_extractor, pretty_write2buf=True):
     ve = video_extractor
     out = {}
     out['url'] = ve.url
     out['title'] = ve.title
     out['site'] = ve.name
     out['streams'] = ve.streams
-    if pretty_print:
+    if pretty_write2buf:
         write2buf(json.dumps(out, indent=4, sort_keys=True, ensure_ascii=False))
     else:
         write2buf(json.dumps(out))
@@ -22,7 +22,7 @@ def output(video_extractor, pretty_print=True):
 class VideoExtractor(object):
     pass
 
-def print_info(site_info=None, title=None, type=None, size=None):
+def write2buf_info(site_info=None, title=None, type=None, size=None):
     global last_info
     # create a VideoExtractor and save info for download_urls()
     ve = VideoExtractor()

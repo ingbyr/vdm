@@ -1,4 +1,3 @@
-Linux: pyinstaller gui_you_get.py -F --hiddenimport app.you_get.extractors --noconsole -n YouGet-0.0.5Linux --icon /home/ing/PycharmProjects/GUI-YouGet/app/favicon.ico
+Linux: pyinstaller gui_you_get.py -F --hiddenimport app.you_get.extractors --noconsole -n YouGet-0.1.0Linux --icon /home/ing/PythonProjects/GUI-YouGet/app/favicon.ico
 
-Windows: pyinstaller gui_you_get.py -F --windowed --hiddenimport app.you_get.extractors  --name YouGet-0.0.5Win --icon G:\\GUI-YouGet\\app\\favicon.ico
-
+Windows: pyinstaller gui_you_get.py -F --windowed --hiddenimport app.you_get.extractors  --name YouGet-0.1.0Win --icon G:\\GUI-YouGet\\app\\favicon.ico

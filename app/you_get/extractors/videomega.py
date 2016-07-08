@@ -35,7 +35,7 @@ def videomega_download(url, output_dir='.', merge=True, info_only=False, **kwarg
 
     type, ext, size = url_info(src, faker=True)
 
-    print_info(site_info, title, type, size)
+    write2buf_info(site_info, title, type, size)
     if not info_only:
         download_urls([src], title, ext, size, output_dir, merge=merge, faker=True)
 

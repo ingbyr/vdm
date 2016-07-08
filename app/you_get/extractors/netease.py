@@ -119,7 +119,7 @@ def netease_song_download(song, output_dir='.', info_only=False):
 
 def netease_download_common(title, url_best, output_dir, info_only):
     songtype, ext, size = url_info(url_best)
-    print_info(site_info, title, songtype, size)
+    write2buf_info(site_info, title, songtype, size)
     if not info_only:
         download_urls([url_best], title, ext, size, output_dir)
 
@@ -150,7 +150,7 @@ def netease_download(url, output_dir = '.', merge = True, info_only = False, **k
             _, _, size = url_info(url)
             ext = 'mp4'
 
-        print_info(site_info, title, ext, size)
+        write2buf_info(site_info, title, ext, size)
         if not info_only:
             download_urls([url], title, ext, size, output_dir = output_dir, merge = merge)
 

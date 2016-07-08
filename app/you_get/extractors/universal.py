@@ -72,7 +72,7 @@ def universal_download(url, output_dir='.', merge=True, info_only=False, **kwarg
             except:
                 continue
             else:
-                print_info(site_info, candy['title'], ext, size)
+                write2buf_info(site_info, candy['title'], ext, size)
                 if not info_only:
                     download_urls([candy['url']], candy['title'], ext, size,
                                   output_dir=output_dir, merge=merge,
@@ -85,7 +85,7 @@ def universal_download(url, output_dir='.', merge=True, info_only=False, **kwarg
         title = '.'.join(filename.split('.')[:-1])
         ext = filename.split('.')[-1]
         _, _, size = url_info(url, faker=True)
-        print_info(site_info, title, ext, size)
+        write2buf_info(site_info, title, ext, size)
         if not info_only:
             download_urls([url], title, ext, size,
                           output_dir=output_dir, merge=merge,

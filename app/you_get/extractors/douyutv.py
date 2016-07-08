@@ -24,7 +24,7 @@ def douyutv_download(url, output_dir = '.', merge = True, info_only = False, **k
         raise ValueError("The live stream is not online! (Errno:%s)" % server_status)
     real_url = data.get('rtmp_url')+'/'+data.get('rtmp_live')
 
-    print_info(site_info, title, 'flv', float('inf'))
+    write2buf_info(site_info, title, 'flv', float('inf'))
     if not info_only:
         download_urls([real_url], title, 'flv', None, output_dir, merge = merge)
 

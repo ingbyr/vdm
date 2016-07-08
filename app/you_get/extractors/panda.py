@@ -23,7 +23,7 @@ def panda_download(url, output_dir = '.', merge = True, info_only = False, **kwa
         raise ValueError("The live stream is not online! (status:%s)" % status)
     real_url = 'http://pl3.live.panda.tv/live_panda/{}.flv'.format(room_key)
 
-    print_info(site_info, title, 'flv', float('inf'))
+    write2buf_info(site_info, title, 'flv', float('inf'))
     if not info_only:
         download_urls([real_url], title, 'flv', None, output_dir, merge = merge)
 

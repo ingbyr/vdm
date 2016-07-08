@@ -26,7 +26,7 @@ def miaopai_download_by_url(url, output_dir = '.', merge = False, info_only = Fa
         title = match1(b, r'<meta name="description" content="([\s\S]*?)\"\W')
 
         type_, ext, size = url_info(url)
-        print_info(site_info, title, type_, size)
+        write2buf_info(site_info, title, type_, size)
         if not info_only:
             download_urls([url], title, ext, total_size=None, output_dir=output_dir, merge=merge)
 
@@ -37,7 +37,7 @@ def miaopai_download(url, output_dir = '.', merge = False, info_only = False, **
         miaopai_download_by_url(url, output_dir, merge, info_only)
     elif re.match(r'http://weibo.com/p/230444\w+', url):
         _fid = match1(url, r'http://weibo.com/p/230444(\w+)')
-        miaopai_download_by_url('http://video.weibo.com/show?fid=1034:{_fid}'.format(_fid = _fid))
+        miaopai_download_by_url('http://video.weibo.com/show?fid=1034:{_fid}'.format(_fid = _fid), output_dir, merge, info_only)
 
 site_info = "miaopai"
 download = miaopai_download

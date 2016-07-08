@@ -20,7 +20,7 @@ def tudou_download_by_iid(iid, title, output_dir = '.', merge = True, info_only 
 
     ext = r1(r'http://[\w.]*/(\w+)/[\w.]*', urls[0])
 
-    print_info(site_info, title, ext, size)
+    write2buf_info(site_info, title, ext, size)
     if not info_only:
         download_urls(urls, title, ext, size, output_dir=output_dir, merge = merge)
 

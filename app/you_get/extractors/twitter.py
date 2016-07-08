@@ -35,7 +35,7 @@ def twitter_download(url, output_dir='.', merge=True, info_only=False, **kwargs)
                            'ext': ext,
                            'size': size})
         size = sum([image['size'] for image in images])
-        print_info(site_info, page_title, images[0]['ext'], size)
+        write2buf_info(site_info, page_title, images[0]['ext'], size)
 
         if not info_only:
             for image in images:
@@ -43,7 +43,7 @@ def twitter_download(url, output_dir='.', merge=True, info_only=False, **kwargs)
                 ext = image['ext']
                 size = image['size']
                 url = image['url']
-                print_info(site_info, title, ext, size)
+                write2buf_info(site_info, title, ext, size)
                 download_urls([url], title, ext, size,
                               output_dir=output_dir)
 
@@ -80,7 +80,7 @@ def twitter_download(url, output_dir='.', merge=True, info_only=False, **kwargs)
         size = urls_size(urls)
         mime, ext = 'video/mp4', 'mp4'
 
-        print_info(site_info, page_title, mime, size)
+        write2buf_info(site_info, page_title, mime, size)
         if not info_only:
             download_urls(urls, page_title, ext, size, output_dir, merge=merge)
 

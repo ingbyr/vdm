@@ -59,7 +59,7 @@ def xiami_download_song(sid, output_dir = '.', merge = True, info_only = False):
     if not ext:
         ext = 'mp3'
     
-    print_info(site_info, song_title, ext, size)
+    write2buf_info(site_info, song_title, ext, size)
     if not info_only:
         file_name = "%s - %s - %s" % (song_title, artist, album_name)
         download_urls([url], file_name, ext, size, output_dir, merge = merge, faker = True)
@@ -96,7 +96,7 @@ def xiami_download_showcollect(cid, output_dir = '.', merge = True, info_only = 
         if not ext:
             ext = 'mp3'
         
-        print_info(site_info, song_title, type, size)
+        write2buf_info(site_info, song_title, type, size)
         if not info_only:
             file_name = "%02d.%s - %s - %s" % (track_nr, song_title, artist, album_name)
             download_urls([url], file_name, ext, size, output_dir, merge = merge, faker = True)
@@ -129,7 +129,7 @@ def xiami_download_album(aid, output_dir = '.', merge = True, info_only = False)
         if not ext:
             ext = 'mp3'
 
-        print_info(site_info, song_title, type, size)
+        write2buf_info(site_info, song_title, type, size)
         if not info_only:
             file_name = "%02d.%s" % (track_nr, song_title)
             download_urls([url], file_name, ext, size, output_dir, merge = merge, faker = True)

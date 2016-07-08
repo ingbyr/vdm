@@ -36,7 +36,7 @@ def joy_download(url, output_dir = '.', merge = True, info_only = False, **kwarg
         _, ext, temp = url_info(url)
         size += temp
     
-    print_info(site_info, title, ext, size)
+    write2buf_info(site_info, title, ext, size)
     if not info_only:
         download_urls(urls, title, ext, size, output_dir = output_dir, merge = merge)
 

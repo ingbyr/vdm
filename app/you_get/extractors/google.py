@@ -92,7 +92,7 @@ def google_download(url, output_dir = '.', merge = True, info_only = False, **kw
             type, ext, size = url_info(real_url)
             if ext is None: ext = 'mp4'
 
-            print_info(site_info, title_i, ext, size)
+            write2buf_info(site_info, title_i, ext, size)
             if not info_only:
                 download_urls([real_url], title_i, ext, size, output_dir, merge = merge)
 
@@ -113,7 +113,7 @@ def google_download(url, output_dir = '.', merge = True, info_only = False, **kw
 
         type, ext, size = url_info(real_url)
 
-        print_info(site_info, title, ext, size)
+        write2buf_info(site_info, title, ext, size)
         if not info_only:
             download_urls([real_url], title, ext, size, output_dir, merge = merge)
 

@@ -14,7 +14,7 @@ def jpopsuki_download(url, output_dir='.', merge=True, info_only=False, **kwargs
     url = "http://jpopsuki.tv%s" % r1(r'<source src="([^"]*)"', html)
     type, ext, size = url_info(url, faker=True)
     
-    print_info(site_info, title, type, size)
+    write2buf_info(site_info, title, type, size)
     if not info_only:
         download_urls([url], title, ext, size, output_dir, merge=merge, faker=True)
 
