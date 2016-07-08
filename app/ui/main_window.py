@@ -105,7 +105,7 @@ class MainWindow(Ui_MainWindow):
             self.do_updates()
 
     def do_updates(self):
-        QDesktopServices.openUrl(QUrl('http://www.ingbyr.tk/2016/05/16/youget/'))
+        QDesktopServices.openUrl(QUrl('https://github.com/ingbyr/GUI-YouGet/releases'))
 
     def report_bugs(self):
         QDesktopServices.openUrl(QUrl('https://github.com/ingbyr/GUI-YouGet/issues'))
