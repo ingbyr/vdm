@@ -1,4 +1,10 @@
 # GUI-YouGet
+![](https://img.shields.io/badge/v0.1.0-pass-green.svg)
+![](https://img.shields.io/github/forks/ingbyr/GUI-YouGet.svg)
+![](https://img.shields.io/github/stars/ingbyr/GUI-YouGet.svg)
+![](https://img.shields.io/badge/license-MIT-blue.svg)
+![](https://img.shields.io/github/issues/ingbyr/GUI-YouGet.svg)
+
 
 > [中文说明](http://www.ingbyr.tk/2016/06/18/youget-zh/)
 
@@ -73,6 +79,7 @@ SOFTWARE.
 | AliveThai   | <http://alive.in.th/>         |✓| | |
 | interest.me | <http://ch.interest.me/tvn>   |✓| | |
 | **755<br/>ナナゴーゴー** | <http://7gogo.jp/> |✓|✓| |
+| **niconico<br/>ニコニコ動画** | <http://www.nicovideo.jp/> |✓| | |
 | **163<br/>网易视频<br/>网易云音乐** | <http://v.163.com/><br/><http://music.163.com/> |✓| |✓|
 | 56网     | <http://www.56.com/>           |✓| | |
 | **AcFun** | <http://www.acfun.tv/>        |✓| | |
@@ -81,6 +88,8 @@ SOFTWARE.
 | **bilibili<br/>哔哩哔哩** | <http://www.bilibili.com/> |✓| | |
 | Dilidili | <http://www.dilidili.com/>     |✓| | |
 | 豆瓣     | <http://www.douban.com/>       | | |✓|
+| 斗鱼     | <http://www.douyutv.com/>      |✓| | |
+| Panda<br/>熊猫 | <http://www.panda.tv/>      |✓| | |
 | 凤凰视频 | <http://v.ifeng.com/>          |✓| | |
 | 风行网   | <http://www.fun.tv/>           |✓| | |
 | iQIYI<br/>爱奇艺 | <http://www.iqiyi.com/> |✓| | |
@@ -96,6 +105,7 @@ SOFTWARE.
 | PPTV聚力 | <http://www.pptv.com/>         |✓| | |
 | 齐鲁网   | <http://v.iqilu.com/>          |✓| | |
 | QQ<br/>腾讯视频 | <http://v.qq.com/>      |✓| | |
+| 企鹅直播 | <http://live.qq.com/>          |✓| | |
 | 阡陌视频 | <http://qianmo.com/>           |✓| | |
 | THVideo  | <http://thvideo.tv/>           |✓| | |
 | Sina<br/>新浪视频<br/>微博秒拍视频 | <http://video.sina.com.cn/><br/><http://video.weibo.com/> |✓| | |
@@ -106,8 +116,11 @@ SOFTWARE.
 | 阳光卫视 | <http://www.isuntv.com/>       |✓| | |
 | **音悦Tai** | <http://www.yinyuetai.com/> |✓| | |
 | **Youku<br/>优酷** | <http://www.youku.com/> |✓| | |
+| 战旗TV   | <http://www.zhanqi.tv/lives>   |✓| | |
 | 央视网   | <http://www.cntv.cn/>          |✓| | |
 | 花瓣     | <http://huaban.com/>           | |✓| |
+| Naver<br/>네이버 | <http://tvcast.naver.com/>     |✓| | |
+| 芒果TV   | <http://www.mgtv.com/>         |✓| | |
 
 ## Authors
 Made by [@ingbyr](http://www.ingbyr.tk/about/)
