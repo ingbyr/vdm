@@ -31,7 +31,7 @@ def miomio_download(url, output_dir = '.', merge = True, info_only = False, **kw
             type_, ext, size = url_info(url, headers=fake_headers)
             size_full += size
 
-        print_info(site_info, title, type_, size_full)
+        write2buf_info(site_info, title, type_, size_full)
         if not info_only:
             download_urls(url_list, title, ext, total_size=size_full, output_dir=output_dir, merge=merge, headers=fake_headers)
     else:

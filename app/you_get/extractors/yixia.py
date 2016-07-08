@@ -21,7 +21,7 @@ def yixia_miaopai_download_by_scid(scid, output_dir = '.', merge = True, info_on
     
     type, ext, size = url_info(video_url)
 
-    print_info(site_info, title, type, size)
+    write2buf_info(site_info, title, type, size)
     if not info_only:
         download_urls([video_url], title, ext, size, output_dir, merge=merge)
 
@@ -39,7 +39,7 @@ def yixia_xiaokaxiu_download_by_scid(scid, output_dir = '.', merge = True, info_
     
     type, ext, size = url_info(video_url)
 
-    print_info(site_info, title, type, size)
+    write2buf_info(site_info, title, type, size)
     if not info_only:
         download_urls([video_url], title, ext, size, output_dir, merge=merge)
 
@@ -94,6 +94,6 @@ download_playlist = playlist_not_supported('yixia')
 
     #type, ext, size = url_info(video_url)
 
-    #print_info(site_info, title, type, size)
+    #write2buf_info(site_info, title, type, size)
     #if not info_only:
         #download_urls([video_url], title, ext, size, output_dir, merge=merge)

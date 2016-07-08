@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 
+from .common import match1, maybe_write2buf, download_urls, get_filename, parse_host, set_proxy, unset_proxy
+from .util import log
+from . import json_output
 import os
 
-from . import json_output
-from .common import maybe_print, download_urls, get_filename, parse_host, set_proxy, unset_proxy
-from .util import log
-
 from app.you_get.status import write2buf
-
 
 class Extractor():
     def __init__(self, *args):
@@ -88,15 +86,15 @@ class VideoExtractor():
             stream = self.dash_streams[stream_id]
 
         if 'itag' in stream:
-            write2buf("    - itag:          %s" % log.sprint(stream_id, log.NEGATIVE))
+            write2buf("    - itag:          %s" % log.swrite2buf(stream_id, log.NEGATIVE))
         else:
-            write2buf("    - format:        %s" % log.sprint(stream_id, log.NEGATIVE))
+            write2buf("    - format:        %s" % log.swrite2buf(stream_id, log.NEGATIVE))
 
         if 'container' in stream:
             write2buf("      container:     %s" % stream['container'])
 
         if 'video_profile' in stream:
-            maybe_print("      video-profile: %s" % stream['video_profile'])
+            maybe_write2buf("      video-profile: %s" % stream['video_profile'])
 
         if 'quality' in stream:
             write2buf("      quality:       %s" % stream['quality'])
@@ -105,9 +103,9 @@ class VideoExtractor():
             write2buf("      size:          %s MiB (%s bytes)" % (round(stream['size'] / 1048576, 1), stream['size']))
 
         if 'itag' in stream:
-            write2buf("    # download-with: %s" % log.sprint("you-get --itag=%s [URL]" % stream_id, log.UNDERLINE))
+            write2buf("    # download-with: %s" % log.swrite2buf("you-get --itag=%s [URL]" % stream_id, log.UNDERLINE))
         else:
-            write2buf("    # download-with: %s" % log.sprint("you-get --format=%s [URL]" % stream_id, log.UNDERLINE))
+            write2buf("    # download-with: %s" % log.swrite2buf("you-get --format=%s [URL]" % stream_id, log.UNDERLINE))
 
         write2buf()
 
@@ -117,14 +115,14 @@ class VideoExtractor():
         else:
             stream = self.dash_streams[stream_id]
 
-        maybe_print("    - title:         %s" % self.title)
+        maybe_write2buf("    - title:         %s" % self.title)
         write2buf("       size:         %s MiB (%s bytes)" % (round(stream['size'] / 1048576, 1), stream['size']))
         write2buf("        url:         %s" % self.url)
         write2buf()
 
     def p(self, stream_id=None):
-        maybe_print("site:                %s" % self.__class__.name)
-        maybe_print("title:               %s" % self.title)
+        maybe_write2buf("site:                %s" % self.__class__.name)
+        maybe_write2buf("title:               %s" % self.title)
         if stream_id:
             # write2buf the stream
             write2buf("stream:")
@@ -157,7 +155,7 @@ class VideoExtractor():
                 write2buf("      download-url:  {}\n".format(i['url']))
 
     def p_playlist(self, stream_id=None):
-        maybe_print("site:                %s" % self.__class__.name)
+        maybe_write2buf("site:                %s" % self.__class__.name)
         write2buf("playlist:            %s" % self.title)
         write2buf("videos:")
 

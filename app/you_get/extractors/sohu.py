@@ -70,7 +70,7 @@ def sohu_download(url, output_dir = '.', merge = True, info_only = False, extrac
             clipURL = urlparse(clip).path
             urls.append(real_url(host,vid,tvid,new,clipURL,ck))
 
-    print_info(site_info, title, 'mp4', size)
+    write2buf_info(site_info, title, 'mp4', size)
     if not info_only:
         download_urls(urls, title, 'mp4', size, output_dir, refer = url, merge = merge)
 

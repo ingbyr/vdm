@@ -31,7 +31,7 @@ def qianmo_download(url, output_dir = '.', merge = False, info_only = False, **k
             size += temp
 
         type, ext, size = url_info(url)
-        print_info(site_info, title, type_, size)
+        write2buf_info(site_info, title, type_, size)
         if not info_only:
             download_urls(url_list, title, type_, total_size=None, output_dir=output_dir, merge=merge)
 

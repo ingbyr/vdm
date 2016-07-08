@@ -49,13 +49,13 @@ def baidu_download_song(sid, output_dir='.', merge=True, info_only=False):
         file_name = title
 
     type, ext, size = url_info(url, faker=True)
-    print_info(site_info, title, type, size)
+    write2buf_info(site_info, title, type, size)
     if not info_only:
         download_urls([url], file_name, ext, size, output_dir, merge=merge, faker=True)
 
     try:
         type, ext, size = url_info(lrc, faker=True)
-        print_info(site_info, title, type, size)
+        write2buf_info(site_info, title, type, size)
         if not info_only:
             download_urls([lrc], file_name, ext, size, output_dir, faker=True)
     except:
@@ -76,13 +76,13 @@ def baidu_download_album(aid, output_dir = '.', merge = True, info_only = False)
         file_name = '%02d.%s' % (track_nr, song_title)
 
         type, ext, size = url_info(song_url, faker = True)
-        print_info(site_info, song_title, type, size)
+        write2buf_info(site_info, song_title, type, size)
         if not info_only:
             download_urls([song_url], file_name, ext, size, output_dir, merge = merge, faker = True)
 
         if song_lrc:
             type, ext, size = url_info(song_lrc, faker = True)
-            print_info(site_info, song_title, type, size)
+            write2buf_info(site_info, song_title, type, size)
             if not info_only:
                 download_urls([song_lrc], file_name, ext, size, output_dir, faker = True)
 
@@ -103,7 +103,7 @@ def baidu_download(url, output_dir = '.', stream_type = None, merge = True, info
         real_url = r1(r'\\"dlink\\":\\"([^"]*)\\"', html).replace('\\\\/', '/')
         type, ext, size = url_info(real_url, faker = True)
 
-        print_info(site_info, title, ext, size)
+        write2buf_info(site_info, title, ext, size)
         if not info_only:
             download_urls([real_url], title, ext, size, output_dir, merge = merge)
 
@@ -138,7 +138,7 @@ def baidu_download(url, output_dir = '.', stream_type = None, merge = True, info
 
             ext = 'jpg'
             size = float('Inf')
-            print_info(site_info, title, ext, size)
+            write2buf_info(site_info, title, ext, size)
 
             if not info_only:
                 download_urls(urls, title, ext, size,

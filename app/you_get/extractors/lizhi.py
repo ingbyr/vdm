@@ -16,7 +16,7 @@ def lizhi_download_playlist(url, output_dir = '.', merge = True, info_only = Fal
         title = sound["name"]
         res_url = sound["url"]
         songtype, ext, size = url_info(res_url,faker=True)
-        print_info(site_info, title, songtype, size)
+        write2buf_info(site_info, title, songtype, size)
         if not info_only:
             #no referer no speed!
             download_urls([res_url], title, ext, size, output_dir, merge=merge ,refer = 'http://www.lizhi.fm',faker=True)    
@@ -30,7 +30,7 @@ def lizhi_download(url, output_dir = '.', merge = True, info_only = False, **kwa
     title = content_json["audio"]["name"]
     res_url = content_json["audio"]["url"]
     songtype, ext, size = url_info(res_url,faker=True)
-    print_info(site_info, title, songtype, size)
+    write2buf_info(site_info, title, songtype, size)
     if not info_only:
         #no referer no speed!
         download_urls([res_url], title, ext, size, output_dir, merge=merge ,refer = 'http://www.lizhi.fm',faker=True)    

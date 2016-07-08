@@ -28,7 +28,7 @@ def veoh_download_by_id(item_id, output_dir = '.', merge = False, info_only = Fa
     title = match1(a, r'<meta property="og:title" content="([^"]*)"')
 
     type_, ext, size = url_info(url)
-    print_info(site_info, title, type_, size)
+    write2buf_info(site_info, title, type_, size)
     if not info_only:
         download_urls([url], title, ext, total_size=None, output_dir=output_dir, merge=merge)
 

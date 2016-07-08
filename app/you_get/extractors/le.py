@@ -8,6 +8,7 @@ import xml.etree.ElementTree as ET
 import base64, hashlib, urllib, time, re
 
 from ..common import *
+
 from app.you_get.status import write2buf
 
 #@DEPRECATED
@@ -94,7 +95,7 @@ def letv_download_by_vid(vid,title, output_dir='.', merge=True, info_only=False,
         _, _, tmp = url_info(i)
         size += tmp
 
-    print_info(site_info, title, ext, size)
+    write2buf_info(site_info, title, ext, size)
     if not info_only:
         download_urls(urls, title, ext, size, output_dir=output_dir, merge=merge)
 
@@ -115,7 +116,7 @@ def letvcloud_download_by_vu(vu, uu, title=None, output_dir='.', merge=True, inf
     urls = [base64.b64decode(sorted(type_available, key = lambda x:x['video_quality'])[-1]['video_url']).decode("utf-8")]
     size = urls_size(urls)
     ext = 'mp4'
-    print_info(site_info, title, ext, size)
+    write2buf_info(site_info, title, ext, size)
     if not info_only:
         download_urls(urls, title, ext, size, output_dir=output_dir, merge=merge)
 

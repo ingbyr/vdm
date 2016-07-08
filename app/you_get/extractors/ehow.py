@@ -28,7 +28,7 @@ def ehow_download(url, output_dir = '.', merge = True, info_only = False, **kwar
 	assert title 
 
 	type, ext, size = url_info(url)
-	print_info(site_info, title, type, size)
+	write2buf_info(site_info, title, type, size)
 	
 	if not info_only:
 		download_urls([url], title, ext, size, output_dir, merge = merge)

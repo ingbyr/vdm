@@ -126,7 +126,7 @@ class Youku(VideoExtractor):
                 raise
             except:
                 exc_type, exc_value, exc_traceback = sys.exc_info()
-                traceback.print_exception(exc_type, exc_value, exc_traceback)
+                traceback.write2buf_exception(exc_type, exc_value, exc_traceback)
 
     def prepare(self, **kwargs):
         # Hot-plug cookie handler
@@ -182,7 +182,7 @@ class Youku(VideoExtractor):
                 if data['error']['code'] == -202:
                     # Password protected
                     self.password_protected = True
-                    self.password = input(log.sprint('Password: ', log.YELLOW))
+                    self.password = input(log.swrite2buf('Password: ', log.YELLOW))
                     api_url += '&pwd={}'.format(self.password)
                     api12_url += '&pwd={}'.format(self.password)
                     meta = json.loads(get_content(
@@ -271,7 +271,7 @@ class Youku(VideoExtractor):
 
             if stream_id not in self.streams:
                 log.e('[Error] Invalid video format.')
-                log.e('Run \'-i\' command.txt with no specific video format to view all available formats.')
+                log.e('Run \'-i\' command with no specific video format to view all available formats.')
                 exit(2)
         else:
             # Extract stream with the best quality

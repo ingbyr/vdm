@@ -133,7 +133,7 @@ def pptv_download_by_id(id, title = None, output_dir = '.', merge = True, info_o
 
     total_size = sum(map(int, fs))
     assert rid.endswith('.mp4')
-    print_info(site_info, title, 'mp4', total_size)
+    write2buf_info(site_info, title, 'mp4', total_size)
 
     if not info_only:
         try:

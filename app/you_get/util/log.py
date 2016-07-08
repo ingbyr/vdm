@@ -57,42 +57,42 @@ LIGHT_MAGENTA_BACKGROUND = 105 # xterm
 LIGHT_CYAN_BACKGROUND = 106    # xterm
 WHITE_BACKGROUND = 107         # xterm
 
-def sprint(text, *colors):
+def swrite2buf(text, *colors):
     """Format text with color or other effects into ANSI escaped string."""
     return "\33[{}m{content}\33[{}m".format(";".join([str(color) for color in colors]), RESET, content=text) if IS_ANSI_TERMINAL and colors else text
 
-def println(text, *colors):
-    """Print text to standard output."""
-    sys.stdout.write(sprint(text, *colors) + "\n")
+def write2bufln(text, *colors):
+    """write2buf text to standard output."""
+    sys.stdout.write(swrite2buf(text, *colors) + "\n")
 
-def print_err(text, *colors):
-    """Print text to standard error."""
-    sys.stderr.write(sprint(text, *colors) + "\n")
+def write2buf_err(text, *colors):
+    """write2buf text to standard error."""
+    sys.stderr.write(swrite2buf(text, *colors) + "\n")
 
-def print_log(text, *colors):
-    """Print a log message to standard error."""
-    sys.stderr.write(sprint("{}: {}".format(script_name, text), *colors) + "\n")
+def write2buf_log(text, *colors):
+    """write2buf a log message to standard error."""
+    sys.stderr.write(swrite2buf("{}: {}".format(script_name, text), *colors) + "\n")
 
 def i(message):
-    """Print a normal log message."""
-    print_log(message)
+    """write2buf a normal log message."""
+    write2buf_log(message)
 
 def d(message):
-    """Print a debug log message."""
-    print_log(message, BLUE)
+    """write2buf a debug log message."""
+    write2buf_log(message, BLUE)
 
 def w(message):
-    """Print a warning log message."""
-    print_log(message, YELLOW)
+    """write2buf a warning log message."""
+    write2buf_log(message, YELLOW)
 
 def e(message, exit_code=None):
-    """Print an error log message."""
-    print_log(message, YELLOW, BOLD)
+    """write2buf an error log message."""
+    write2buf_log(message, YELLOW, BOLD)
     if exit_code is not None:
         exit(exit_code)
 
 def wtf(message, exit_code=1):
     """What a Terrible Failure!"""
-    print_log(message, RED, BOLD)
+    write2buf_log(message, RED, BOLD)
     if exit_code is not None:
         exit(exit_code)

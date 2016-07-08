@@ -94,12 +94,10 @@ SITES = {
 import getopt
 import json
 import locale
-import logging
 import os
 import platform
 import re
 import socket
-# import sys
 import time
 from urllib import request, parse, error
 from http import cookiejar
@@ -113,6 +111,7 @@ from . import json_output as json_output_
 
 from app.you_get.status import write2buf
 from app import mlog
+from app.you_get.status import set_percent, set_speed, set_exist, get_stop_thread
 
 dry_run = False
 json_output = False
@@ -130,16 +129,7 @@ fake_headers = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:13.0) Gecko/20100101 Firefox/13.0'
 }
 
-from app.you_get.status import set_percent, set_speed, set_exist, get_stop_thread
-
-# if sys.stdout.isatty():
-#     default_encoding = sys.stdout.encoding.lower()
-# else:
-#     default_encoding = locale.getpreferredencoding().lower()
-
-
-
-def maybe_print(*s):
+def maybe_write2buf(*s):
     try:
         write2buf(*s)
     except:
@@ -148,11 +138,6 @@ def maybe_print(*s):
 
 def tr(s):
     return s
-    # if default_encoding == 'utf-8':
-    #     return s
-    # else:
-    #     return s
-    #     # return str(s.encode('utf-8'))[2:-1]
 
 
 # DEPRECATED in favor of match1()
@@ -329,7 +314,7 @@ def get_content(url, headers={}, decoded=True):
         The content as a string.
     """
 
-    logging.debug('get_content: %s' % url)
+    mlog.debug('get_content: %s' % url)
 
     req = request.Request(url, headers=headers)
     if cookies:
@@ -341,7 +326,7 @@ def get_content(url, headers={}, decoded=True):
             response = request.urlopen(req)
             break
         except socket.timeout:
-            logging.debug('request attempt %s timeout' % str(i + 1))
+            mlog.debug('request attempt %s timeout' % str(i + 1))
 
     data = response.read()
 
@@ -533,7 +518,7 @@ def url_save(url, filepath, bar, refer=None, is_part=False, faker=False, headers
                     bar.update_received(len(buffer))
 
     assert received == os.path.getsize(temp_filepath), '%s == %s == %s' % (
-        received, os.path.getsize(temp_filepath), temp_filepath)
+    received, os.path.getsize(temp_filepath), temp_filepath)
 
     if os.access(filepath, os.W_OK):
         os.remove(filepath)  # on Windows rename could fail if destination filepath exists
@@ -624,6 +609,7 @@ class SimpleProgressBar:
 
     def update(self):
         self.displayed = True
+        bar_size = self.bar_size
         percent = round(self.received * 100 / self.total_size, 1)
         if percent >= 100:
             percent = 100
@@ -660,7 +646,6 @@ class PiecesProgressBar:
 
     def update(self):
         pass
-
 
     def update_received(self, n):
         pass
@@ -726,11 +711,9 @@ def download_urls(urls, title, ext, total_size, output_dir='.', refer=None, merg
     if not total_size:
         try:
             total_size = urls_size(urls, faker=faker, headers=headers)
-        except:
-            mlog.error('failed')
-            # import traceback
-            # traceback.print_exc(file=sys.stdout)
-            # pass
+        except Exception as e:
+            mlog.exception(e)
+
 
     title = tr(get_filename(title))
     output_filename = get_output_filename(urls, title, ext, output_dir, merge)
@@ -760,7 +743,7 @@ def download_urls(urls, title, ext, total_size, output_dir='.', refer=None, merg
             filename = '%s[%02d].%s' % (title, i, ext)
             filepath = os.path.join(output_dir, filename)
             parts.append(filepath)
-            # print 'Downloading %s [%s/%s]...' % (tr(filename), i + 1, len(urls))
+            # write2buf 'Downloading %s [%s/%s]...' % (tr(filename), i + 1, len(urls))
             bar.update_piece(i + 1)
             url_save(url, filepath, bar, refer=refer, is_part=True, faker=faker, headers=headers)
         bar.done()
@@ -889,7 +872,7 @@ def download_urls_chunked(urls, title, ext, total_size, output_dir='.', refer=No
             filename = '%s[%02d].%s' % (title, i, ext)
             filepath = os.path.join(output_dir, filename)
             parts.append(filepath)
-            # print 'Downloading %s [%s/%s]...' % (tr(filename), i + 1, len(urls))
+            # write2buf 'Downloading %s [%s/%s]...' % (tr(filename), i + 1, len(urls))
             bar.update_piece(i + 1)
             url_save_chunked(url, filepath, bar, refer=refer, is_part=True, faker=faker, headers=headers)
         bar.done()
@@ -939,9 +922,9 @@ def playlist_not_supported(name):
     return f
 
 
-def print_info(site_info, title, type, size):
+def write2buf_info(site_info, title, type, size):
     if json_output:
-        json_output_.print_info(site_info=site_info, title=title, type=type, size=size)
+        json_output_.write2buf_info(site_info=site_info, title=title, type=type, size=size)
         return
     if type:
         type = type.lower()
@@ -1008,8 +991,8 @@ def print_info(site_info, title, type, size):
     else:
         type_info = "Unknown type (%s)" % type
 
-    maybe_print("Site:      ", site_info)
-    maybe_print("Title:     ", unescape_html(tr(title)))
+    maybe_write2buf("Site:      ", site_info)
+    maybe_write2buf("Title:     ", unescape_html(tr(title)))
     write2buf("Type:      ", type_info)
     write2buf("Size:      ", round(size / 1048576, 2), "MiB (" + str(size) + " Bytes)")
     write2buf()
@@ -1080,6 +1063,22 @@ def download_main(download, download_playlist, urls, playlist, **kwargs):
         else:
             download(url, **kwargs)
 
+# def google_search(url):
+#     keywords = r1(r'https?://(.*)', url)
+#     url = 'https://www.google.com/search?tbm=vid&q=%s' % parse.quote(keywords)
+#     page = get_content(url, headers=fake_headers)
+#     videos = re.findall(r'<a href="(https?://[^"]+)" onmousedown="[^"]+">([^<]+)<', page)
+#     vdurs = re.findall(r'<span class="vdur _dwc">([^<]+)<', page)
+#     durs = [r1(r'(\d+:\d+)', unescape_html(dur)) for dur in vdurs]
+#     write2buf("Google Videos search:")
+#     for v in zip(videos, durs):
+#         write2buf("- video:  %s [%s]" % (unescape_html(v[0][1]),
+#                                      v[1] if v[1] else '?'))
+#         write2buf("# you-get %s" % log.swrite2buf(v[0][0], log.UNDERLINE))
+#         write2buf()
+#     write2buf("Best matched result:")
+#     return (videos[0][0])
+
 
 def url_to_module(url):
     try:
@@ -1088,6 +1087,9 @@ def url_to_module(url):
         assert video_host and video_url
     except:
         return None, None
+        # url = google_search(url)
+        # video_host = r1(r'https?://([^/]+)/', url)
+        # video_url = r1(r'https?://[^/]+(.*)', url)
 
     if video_host.endswith('.com.cn'):
         video_host = video_host[:-3]
@@ -1096,7 +1098,6 @@ def url_to_module(url):
 
     k = r1(r'([^.]+)', domain)
     if k in SITES:
-        logging.debug('import ' + '.'.join(['you_get', 'extractors', SITES[k]]))
         return import_module('.'.join(['you_get', 'extractors', SITES[k]])), url
     else:
         import http.client

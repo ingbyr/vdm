@@ -31,7 +31,7 @@ def suntv_download(url, output_dir = '.', merge = True, info_only = False, **kwa
         size = 0
         type, ext, size = url_info(video_url)
         
-        print_info(site_info, title, type, size)
+        write2buf_info(site_info, title, type, size)
         if not info_only:
             download_urls([url], title, 'mp4', size, output_dir, merge=merge)
 

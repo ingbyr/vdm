@@ -46,7 +46,7 @@ def zhanqi_download(url, output_dir = '.', merge = True, info_only = False, **kw
         time_hex = hex(int(time.time()))[2:]
         key = hashlib.md5(bytes(key + "/zqlive/" + rtmp_id + time_hex, "utf-8")).hexdigest()
         real_url = rtmp_real_base + '/' + rtmp_id + "?k=" + key + "&t=" + time_hex
-        print_info(site_info, title, 'flv', float('inf'))
+        write2buf_info(site_info, title, 'flv', float('inf'))
         if not info_only:
             download_rtmp_url(real_url, title, 'flv', {}, output_dir, merge = merge)
             #download_urls([real_url], title, 'flv', None, output_dir, merge = merge)
@@ -64,7 +64,7 @@ def zhanqi_download(url, output_dir = '.', merge = True, info_only = False, **kw
             _, type_, temp = url_info(url)
             size += temp or 0
 
-        print_info(site_info, title, type_ or 'ts', size)
+        write2buf_info(site_info, title, type_ or 'ts', size)
         if not info_only:
             download_urls(real_url, title, type_ or 'ts', size, output_dir, merge = merge)
     else:

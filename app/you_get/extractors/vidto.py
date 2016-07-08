@@ -6,7 +6,6 @@ from ..common import *
 import pdb
 import time
 
-from app.you_get.status import write2buf
 
 def vidto_download(url, output_dir='.', merge=True, info_only=False, **kwargs):
     html = get_content(url)
@@ -17,9 +16,9 @@ def vidto_download(url, output_dir='.', merge=True, info_only=False, **kwargs):
         params[name] = value
     data = parse.urlencode(params).encode('utf-8')
     req = request.Request(url)
-    print("Please wait for 6 seconds...")
+    write2buf("Please wait for 6 seconds...")
     time.sleep(6)
-    print("Starting")
+    write2buf("Starting")
     new_html = request.urlopen(req, data).read().decode('utf-8', 'replace')
     new_stff = re.search('lnk_download" href="(.*?)">', new_html)
     if(new_stff):
@@ -28,7 +27,7 @@ def vidto_download(url, output_dir='.', merge=True, info_only=False, **kwargs):
         type = ""
         ext = ""
         a, b, size = url_info(url)
-        print_info(site_info, title, type, size)
+        write2buf_info(site_info, title, type, size)
         if not info_only:
             download_urls([url], title, ext, size, output_dir, merge=merge)
     else:

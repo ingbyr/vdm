@@ -20,7 +20,7 @@ def tucao_single_download(type_link, title, output_dir=".", merge=True, info_onl
     if "file" in type_link:
         url=type_link[type_link.find("file=")+5:]
         vtype, ext, size=url_info(url)
-        print_info(site_info, title, vtype, size)
+        write2buf_info(site_info, title, vtype, size)
         if not info_only:
             download_urls([url], title, ext, size, output_dir)
     #fix for 189 video source, see raw list types 7
@@ -29,7 +29,7 @@ def tucao_single_download(type_link, title, output_dir=".", merge=True, info_onl
         assert vid, "vid not exsits"
         url = "http://api.tucao.tv/api/down/{}".format(vid)
         vtype, ext, size=url_info(url)
-        print_info(site_info, title, vtype, size)
+        write2buf_info(site_info, title, vtype, size)
         if not info_only:
             download_urls([url], title, ext, size, output_dir)
     else:
@@ -41,7 +41,7 @@ def tucao_single_download(type_link, title, output_dir=".", merge=True, info_onl
             urls.append(i.firstChild.nodeValue)
             vtype, ext, _size=url_info(i.firstChild.nodeValue)
             size+=_size
-        print_info(site_info, title, vtype, size)
+        write2buf_info(site_info, title, vtype, size)
         if not info_only:
             download_urls(urls, title, ext, size, output_dir)
 

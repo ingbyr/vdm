@@ -36,10 +36,10 @@ def nanagogo_download(url, output_dir='.', merge=True, info_only=False, **kwargs
 
     size = sum([i['size'] for i in items])
     if size == 0: return # do not fail the whole process
-    print_info(site_info, title, ext, size)
+    write2buf_info(site_info, title, ext, size)
     if not info_only:
         for i in items:
-            print_info(site_info, i['title'], i['ext'], i['size'])
+            write2buf_info(site_info, i['title'], i['ext'], i['size'])
             download_urls([i['url']], i['title'], i['ext'], i['size'],
                           output_dir=output_dir,
                           merge=merge)

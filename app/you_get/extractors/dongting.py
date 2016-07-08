@@ -33,7 +33,7 @@ def dongting_download_song(sid, output_dir = '.', merge = True, info_only = Fals
     size = parse_size(info['data']['itemList'][-1]['size'])
     url = info['data']['itemList'][-1]['downUrl']
 
-    print_info(site_info, song_title, ext, size)
+    write2buf_info(site_info, song_title, ext, size)
     if not info_only:
         file_name = "%s - %s - %s" % (song_title, album_name, artist)
         download_urls([url], file_name, ext, size, output_dir, merge = merge)

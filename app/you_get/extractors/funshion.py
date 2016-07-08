@@ -37,7 +37,7 @@ def funshion_download_by_vid(vid, output_dir = '.', merge = False, info_only = F
     
     for url in url_list:
         type, ext, size = url_info(url)
-        print_info(site_info, title, type, size)
+        write2buf_info(site_info, title, type, size)
     
     if not info_only:
         download_urls(url_list, title, ext, total_size=None, output_dir=output_dir, merge=merge)
@@ -84,7 +84,7 @@ def funshion_download_by_id(vid_id_tuple, output_dir = '.', merge = False, info_
     
     for url in url_list:
         type, ext, size = url_info(url)
-        print_info(site_info, title, type, size)
+        write2buf_info(site_info, title, type, size)
     
     if not info_only:
         download_urls(url_list, title, ext, total_size=None, output_dir=output_dir, merge=merge)

@@ -24,7 +24,7 @@ def mtv81_download(url, output_dir='.', merge=True, info_only=False, **kwargs):
         key=lambda x: int(match1(x, r'_(\d+?)_')))[-1]
 
     mediatype, ext, size = 'mp4', 'mp4', 0
-    print_info(site_info, title, mediatype, size)
+    write2buf_info(site_info, title, mediatype, size)
     #
     # rtmpdump  -r 'rtmpe://cp30865.edgefcs.net/ondemand/mtviestor/_!/intlod/MTVInternational/MBUS/GeoLocals/00JP/VIAMTVI/PYC/201304/7122HVAQ4/00JPVIAMTVIPYC7122HVAQ4_640x_360_1200_m30.mp4' -o "title.mp4" --swfVfy http://media.mtvnservices.com/player/prime/mediaplayerprime.1.10.8.swf
     #

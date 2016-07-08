@@ -13,7 +13,7 @@ def soundcloud_download_by_id(id, title = None, output_dir = '.', merge = True, 
     assert url
     type, ext, size = url_info(url)
     
-    print_info(site_info, title, type, size)
+    write2buf_info(site_info, title, type, size)
     if not info_only:
         download_urls([url], title, ext, size, output_dir, merge = merge)
 

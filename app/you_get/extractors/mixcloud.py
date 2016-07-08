@@ -20,7 +20,7 @@ def mixcloud_download(url, output_dir='.', merge=True, info_only=False, **kwargs
             break
         except: continue
 
-    print_info(site_info, title, ext, size)
+    write2buf_info(site_info, title, ext, size)
     if not info_only:
         download_urls([url], title, ext, size, output_dir=output_dir, merge=merge)
 
