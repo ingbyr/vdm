@@ -9,6 +9,7 @@ SITES = {
     'bandcamp': 'bandcamp',
     'baomihua': 'baomihua',
     'bilibili': 'bilibili',
+    'cctv': 'cntv',
     'cntv': 'cntv',
     'cbs': 'cbs',
     'dailymotion': 'dailymotion',
@@ -61,6 +62,7 @@ SITES = {
     'pptv': 'pptv',
     'qianmo': 'qianmo',
     'qq': 'qq',
+    'showroom-live': 'showroom',
     'sina': 'sina',
     'smgbb': 'bilibili',
     'sohu': 'sohu',
@@ -128,6 +130,7 @@ fake_headers = {
     'Accept-Language': 'en-US,en;q=0.8',
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:13.0) Gecko/20100101 Firefox/13.0'
 }
+
 
 def maybe_write2buf(*s):
     try:
@@ -518,7 +521,7 @@ def url_save(url, filepath, bar, refer=None, is_part=False, faker=False, headers
                     bar.update_received(len(buffer))
 
     assert received == os.path.getsize(temp_filepath), '%s == %s == %s' % (
-    received, os.path.getsize(temp_filepath), temp_filepath)
+        received, os.path.getsize(temp_filepath), temp_filepath)
 
     if os.access(filepath, os.W_OK):
         os.remove(filepath)  # on Windows rename could fail if destination filepath exists
@@ -713,7 +716,6 @@ def download_urls(urls, title, ext, total_size, output_dir='.', refer=None, merg
             total_size = urls_size(urls, faker=faker, headers=headers)
         except Exception as e:
             mlog.exception(e)
-
 
     title = tr(get_filename(title))
     output_filename = get_output_filename(urls, title, ext, output_dir, merge)
@@ -915,6 +917,24 @@ def download_rtmp_url(url, title, ext, params={}, total_size=0, output_dir='.', 
     download_rtmpdump_stream(url, title, ext, params, output_dir)
 
 
+def download_url_ffmpeg(url, title, ext, params={}, total_size=0, output_dir='.', refer=None, merge=True, faker=False):
+    assert url
+    if dry_run:
+        print('Real URL:\n%s\n' % [url])
+        if params.get("-y", False):  # None or unset ->False
+            print('Real Playpath:\n%s\n' % [params.get("-y")])
+        return
+
+    if player:
+        from .processor.ffmpeg import ffmpeg_play_stream
+        ffmpeg_play_stream(player, url, params)
+        return
+
+    from .processor.ffmpeg import has_ffmpeg_installed, ffmpeg_download_stream
+    assert has_ffmpeg_installed(), "FFmpeg not installed."
+    ffmpeg_download_stream(url, title, ext, params, output_dir)
+
+
 def playlist_not_supported(name):
     def f(*args, **kwargs):
         raise NotImplementedError('Playlist is not supported for ' + name)
@@ -1062,6 +1082,7 @@ def download_main(download, download_playlist, urls, playlist, **kwargs):
             download_playlist(url, **kwargs)
         else:
             download(url, **kwargs)
+
 
 # def google_search(url):
 #     keywords = r1(r'https?://(.*)', url)

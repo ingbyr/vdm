@@ -7,9 +7,9 @@ import math
 import traceback
 import urllib.parse as urlparse
 
-from app.you_get.status import write2buf
-
 from ..common import *
+
+from app.you_get.status import write2buf
 
 __all__ = ['huaban_download']
 

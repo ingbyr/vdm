@@ -6,13 +6,14 @@ from ..util.strings import parameterize
 
 from app.you_get.status import write2buf
 
+
 def get_usable_ffmpeg(cmd):
     try:
         p = subprocess.Popen([cmd, '-version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = p.communicate()
         vers = str(out, 'utf-8').split('\n')[0].split()
         assert (vers[0] == 'ffmpeg' and vers[2][0] > '0') or (vers[0] == 'avconv')
-        #if the version is strange like 'N-1234-gd1111', set version to 2.0
+        # if the version is strange like 'N-1234-gd1111', set version to 2.0
         try:
             version = [int(i) for i in vers[2].split('.')]
         except:
@@ -21,11 +22,14 @@ def get_usable_ffmpeg(cmd):
     except:
         return None
 
+
 FFMPEG, FFMPEG_VERSION = get_usable_ffmpeg('ffmpeg') or get_usable_ffmpeg('avconv') or (None, None)
 LOGLEVEL = ['-loglevel', 'quiet']
 
+
 def has_ffmpeg_installed():
     return FFMPEG is not None
+
 
 def ffmpeg_concat_av(files, output, ext):
     write2buf('Merging video parts... ', end="", flush=True)
@@ -41,6 +45,7 @@ def ffmpeg_concat_av(files, output, ext):
     params.append(output)
     return subprocess.call(params)
 
+
 def ffmpeg_convert_ts_to_mkv(files, output='output.mkv'):
     for file in files:
         if os.path.isfile(file):
@@ -49,6 +54,7 @@ def ffmpeg_convert_ts_to_mkv(files, output='output.mkv'):
             subprocess.call(params)
 
     return
+
 
 def ffmpeg_concat_mp4_to_mpg(files, output='output.mpg'):
     # Use concat demuxer on FFmpeg >= 1.1
@@ -95,6 +101,7 @@ def ffmpeg_concat_mp4_to_mpg(files, output='output.mpg'):
     else:
         raise
 
+
 def ffmpeg_concat_ts_to_mkv(files, output='output.mkv'):
     write2buf('Merging video parts... ', end="", flush=True)
     params = [FFMPEG] + LOGLEVEL + ['-isync', '-y', '-i']
@@ -111,6 +118,7 @@ def ffmpeg_concat_ts_to_mkv(files, output='output.mkv'):
             return False
     except:
         return False
+
 
 def ffmpeg_concat_flv_to_mp4(files, output='output.mp4'):
     write2buf('Merging video parts... ', end="", flush=True)
@@ -159,6 +167,7 @@ def ffmpeg_concat_flv_to_mp4(files, output='output.mp4'):
     else:
         raise
 
+
 def ffmpeg_concat_mp4_to_mp4(files, output='output.mp4'):
     write2buf('Merging video parts... ', end="", flush=True)
     # Use concat demuxer on FFmpeg >= 1.1
@@ -200,4 +209,84 @@ def ffmpeg_concat_mp4_to_mp4(files, output='output.mp4'):
     subprocess.check_call(params)
     for file in files:
         os.remove(file + '.ts')
+    return True
+
+
+def ffmpeg_download_stream(files, title, ext, params={}, output_dir='.'):
+    """str, str->True
+    WARNING: NOT THE SAME PARMS AS OTHER FUNCTIONS!!!!!!
+    You can basicly download anything with this function
+    but better leave it alone with 
+    """
+    output = title + '.' + ext
+
+    if not (output_dir == '.'):
+        output = output_dir + output
+
+    ffmpeg_params = []
+    # should these exist...
+    if len(params) > 0:
+        for k, v in params:
+            ffmpeg_params.append(k)
+            ffmpeg_params.append(v)
+
+    write2buf('Downloading streaming content with FFmpeg, press q to stop recording...')
+    ffmpeg_params = [FFMPEG] + ['-y', '-re', '-i']
+    ffmpeg_params.append(files)  # not the same here!!!!
+
+    if FFMPEG == 'avconv':  # who cares?
+        ffmpeg_params += ['-c', 'copy', output]
+    else:
+        ffmpeg_params += ['-c', 'copy', '-bsf:a', 'aac_adtstoasc']
+
+    ffmpeg_params.append(output)
+
+    write2buf(' '.join(ffmpeg_params))
+
+    try:
+        a = subprocess.Popen(ffmpeg_params, stdin=subprocess.PIPE)
+        a.communicate()
+    except KeyboardInterrupt:
+        try:
+            a.stdin.write('q'.encode('utf-8'))
+        except:
+            pass
+
+    return True
+
+
+#
+# To be refactor
+# Direct copy of rtmpdump.py
+#
+def ffmpeg_play_stream(player, url, params={}):
+    ffmpeg_params = []
+    # should these exist...
+    if len(params) > 0:
+        for k, v in params:
+            ffmpeg_params.append(k)
+            ffmpeg_params.append(v)
+
+    write2buf('Playing streaming content with FFmpeg, press 1 to stop recording...')
+    ffmpeg_params = [FFMPEG] + LOGLEVEL + ['-y', '-re', '-i']
+    ffmpeg_params.append(url)  # not the same here!!!!
+
+    if FFMPEG == 'avconv':  # who cares?
+        ffmpeg_params += ['-c', 'copy', '|']
+    else:
+        ffmpeg_params += ['-c', 'copy', '-bsf:a', 'aac_adtstoasc', '|']
+
+    ffmpeg_params += [player, '-']
+
+    write2buf(' '.join(ffmpeg_params))
+
+    try:
+        a = subprocess.Popen(ffmpeg_params, stdin=subprocess.PIPE)
+        a.communicate()
+    except KeyboardInterrupt:
+        try:
+            a.stdin.write('q'.encode('utf-8'))
+        except:
+            pass
+
     return True

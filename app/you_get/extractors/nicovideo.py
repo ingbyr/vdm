@@ -3,6 +3,7 @@
 __all__ = ['nicovideo_download']
 
 from ..common import *
+
 from app.you_get.status import write2buf
 
 def nicovideo_login(user, password):
