@@ -75,7 +75,7 @@ def write2buf(*arg, **kwargs):
                 index = item.find('=')
                 options = item[(index + 1):-6]
                 add_stream(options)
-                item += '<br><font color=blue>    Option is ' + options + '</p></font>'
+                item = '<font color=blue>The option is [ ' + options + ' ]</p></font>'
             buffer.append(str(item) + '<br>')
     else:
         buffer.append('<br>')
