@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'about_widget.ui'
 #
-# Created by: PyQt5 UI code generator 5.6
+# Created by: PyQt5 UI code generator 5.5.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -45,3 +45,4 @@ class Ui_AboutForm(object):
         self.label_logo.setText(_translate("AboutForm", "<html><head/><body><p><br/></p></body></html>"))
         self.label_info.setText(_translate("AboutForm", "<html><head/><body><p><a href=\"https://github.com/ingbyr/GUI-YouGet\"><span style=\" font-size:11pt; text-decoration: underline; color:#0000ff;\">GUI-YouGet </span></a><span style=\" font-size:11pt;\">is a video download software </span></p><p><span style=\" font-size:11pt;\">Follow open source License </span><a href=\"https://raw.githubusercontent.com/ingbyr/GUI-YouGet/master/LICENSE.txt\"><span style=\" font-size:11pt; text-decoration: underline; color:#0000ff;\">MIT</span></a></p><p><span style=\" font-size:11pt;\">Based on the program </span><a href=\"https://github.com/soimort/you-get\"><span style=\" font-size:11pt; text-decoration: underline; color:#0000ff;\">you-get</span></a></p><p><span style=\" font-size:11pt;\">Coder: InG_byr ( </span><a href=\"http://www.ingbyr.tk\"><span style=\" font-size:11pt; text-decoration: underline; color:#0000ff;\">Blog </span></a><span style=\" font-size:11pt;\">/ </span><a href=\"http://www.weibo.com/zwkv5\"><span style=\" font-size:11pt; text-decoration: underline; color:#0000ff;\">Weibo</span></a><span style=\" font-size:11pt;\"> )</span></p><p><span style=\" font-size:11pt;\">Designer: InG_byr ( </span><a href=\"http://www.ingbyr.tk\"><span style=\" font-size:11pt; text-decoration: underline; color:#0000ff;\">Blog </span></a><span style=\" font-size:11pt;\">/ </span><a href=\"http://www.weibo.com/zwkv5\"><span style=\" font-size:11pt; text-decoration: underline; color:#0000ff;\">Weibo</span></a><span style=\" font-size:11pt;\">)</span></p></body></html>"))
         self.label_title.setText(_translate("AboutForm", "GUI-YouGet"))
+

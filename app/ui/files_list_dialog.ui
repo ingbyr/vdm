@@ -59,7 +59,7 @@
   <widget class="QPushButton" name="push_button_confirm">
    <property name="geometry">
     <rect>
-     <x>220</x>
+     <x>300</x>
      <y>360</y>
      <width>80</width>
      <height>22</height>
@@ -72,7 +72,7 @@
   <widget class="QPushButton" name="push_button_cancel">
    <property name="geometry">
     <rect>
-     <x>310</x>
+     <x>210</x>
      <y>360</y>
      <width>80</width>
      <height>22</height>
