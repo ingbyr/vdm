@@ -920,9 +920,9 @@ def download_rtmp_url(url, title, ext, params={}, total_size=0, output_dir='.', 
 def download_url_ffmpeg(url, title, ext, params={}, total_size=0, output_dir='.', refer=None, merge=True, faker=False):
     assert url
     if dry_run:
-        print('Real URL:\n%s\n' % [url])
+        write2buf('Real URL:\n%s\n' % [url])
         if params.get("-y", False):  # None or unset ->False
-            print('Real Playpath:\n%s\n' % [params.get("-y")])
+            write2buf('Real Playpath:\n%s\n' % [params.get("-y")])
         return
 
     if player:
