@@ -8,7 +8,7 @@ from app.you_get.version import script_name, __version__
 
 __author__ = 'InG_byr'
 
-version = '0.1.0'
+version = '0.1.1'
 
 buildtime = date.today()
 

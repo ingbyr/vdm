@@ -94,6 +94,9 @@ app/tmp.py
 app/build/
 app/dist/
 app/*.log
+*.mp4
+*.flv
+*.xml
 
 
 
