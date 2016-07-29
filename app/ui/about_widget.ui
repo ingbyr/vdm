@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>500</width>
-    <height>250</height>
+    <width>450</width>
+    <height>200</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,8 +20,8 @@
   <widget class="QLabel" name="label_logo">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>70</y>
+     <x>20</x>
+     <y>60</y>
      <width>131</width>
      <height>121</height>
     </rect>
@@ -36,14 +36,14 @@
   <widget class="QLabel" name="label_info">
    <property name="geometry">
     <rect>
-     <x>170</x>
-     <y>50</y>
-     <width>311</width>
-     <height>191</height>
+     <x>190</x>
+     <y>60</y>
+     <width>231</width>
+     <height>131</height>
     </rect>
    </property>
    <property name="text">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/ingbyr/GUI-YouGet&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GUI-YouGet &lt;/span&gt;&lt;/a&gt;is a video download software &lt;/p&gt;&lt;p&gt;Follow open source License &lt;a href=&quot;https://raw.githubusercontent.com/ingbyr/GUI-YouGet/master/LICENSE.txt&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;MIT&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p&gt;Based on the program &lt;a href=&quot;https://github.com/soimort/you-get&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;you-get&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p&gt;Coder: InG_byr ( &lt;a href=&quot;http://www.ingbyr.tk&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Blog &lt;/span&gt;&lt;/a&gt;/ &lt;a href=&quot;http://www.weibo.com/zwkv5&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Weibo&lt;/span&gt;&lt;/a&gt; )&lt;/p&gt;&lt;p&gt;UI Designer: No one&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;GitHub Repository:  &lt;a href=&quot;https://github.com/ingbyr/GUI-YouGet&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GUI-YouGet&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p&gt;License:  &lt;a href=&quot;https://raw.githubusercontent.com/ingbyr/GUI-YouGet/master/LICENSE.txt&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;MIT&lt;/span&gt;&lt;/a&gt;  | Based on:  &lt;a href=&quot;https://github.com/soimort/you-get&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;you-get&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p&gt;Coder: InG_byr ( &lt;a href=&quot;http://www.ingbyr.tk&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Blog&lt;/span&gt;&lt;/a&gt;  |  &lt;a href=&quot;http://www.weibo.com/zwkv5&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Weibo&lt;/span&gt;&lt;/a&gt; )&lt;/p&gt;&lt;p&gt;UI Designer: No one&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="textFormat">
     <enum>Qt::RichText</enum>
@@ -54,7 +54,7 @@
     <rect>
      <x>170</x>
      <y>10</y>
-     <width>121</width>
+     <width>111</width>
      <height>41</height>
     </rect>
    </property>
@@ -76,11 +76,48 @@
   <widget class="QLabel" name="label_version">
    <property name="geometry">
     <rect>
-     <x>309</x>
-     <y>25</y>
+     <x>300</x>
+     <y>20</y>
      <width>131</width>
      <height>20</height>
     </rect>
+   </property>
+   <property name="palette">
+    <palette>
+     <active>
+      <colorrole role="Text">
+       <brush brushstyle="SolidPattern">
+        <color alpha="255">
+         <red>121</red>
+         <green>121</green>
+         <blue>121</blue>
+        </color>
+       </brush>
+      </colorrole>
+     </active>
+     <inactive>
+      <colorrole role="Text">
+       <brush brushstyle="SolidPattern">
+        <color alpha="255">
+         <red>121</red>
+         <green>121</green>
+         <blue>121</blue>
+        </color>
+       </brush>
+      </colorrole>
+     </inactive>
+     <disabled>
+      <colorrole role="Text">
+       <brush brushstyle="SolidPattern">
+        <color alpha="255">
+         <red>159</red>
+         <green>158</green>
+         <blue>158</blue>
+        </color>
+       </brush>
+      </colorrole>
+     </disabled>
+    </palette>
    </property>
    <property name="text">
     <string/>
