@@ -39,10 +39,10 @@ class MainWindow(Ui_MainWindow):
         self.action_file_path.triggered.connect(self.set_file_path)
         self.action_check_for_updates.triggered.connect(self.check_for_updates)
         self.action_report_bugs.triggered.connect(self.report_bugs)
-        self.action_supported_sites.triggered.connect(self.get_supported_sites)
+        # self.action_supported_sites.triggered.connect(self.get_supported_sites)
 
-    def get_supported_sites(self):
-        QDesktopServices.openUrl(QUrl('https://github.com/ingbyr/GUI-YouGet/wiki/Supported-Sites'))
+    # def get_supported_sites(self):
+    #     QDesktopServices.openUrl(QUrl('https://github.com/ingbyr/GUI-YouGet/wiki/Supported-Sites'))
 
     def get_info(self):
         mconfig.set_default()
