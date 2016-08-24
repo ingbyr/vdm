@@ -80,9 +80,6 @@ def write2buf(*arg, **kwargs):
     else:
         buffer.append('<br>')
 
-def task_info():
-    pass
-
 
 def get_buffer():
     global buffer

@@ -2,17 +2,16 @@
 
 from ..common import *
 from ..extractor import VideoExtractor
+from ..util import log
+from .. import json_output
+
 from uuid import uuid4
 from random import random,randint
 import json
 from math import floor
 from zlib import decompress
 import hashlib
-from ..util import log
-
 import time
-
-from app.you_get.status import write2buf
 
 '''
 Changelog:
@@ -204,16 +203,16 @@ class Iqiyi(VideoExtractor):
                           merge=kwargs['merge'],)
 
             if not kwargs['caption']:
-                write2buf('Skipping captions.')
+                # write2buf('Skipping captions.')
                 return
             for lang in self.caption_tracks:
                 filename = '%s.%s.srt' % (get_filename(self.title), lang)
-                write2buf('Saving %s ... ' % filename, end="", flush=True)
+                # write2buf('Saving %s ... ' % filename, end="", flush=True)
                 srt = self.caption_tracks[lang]
                 with open(os.path.join(kwargs['output_dir'], filename),
                           'w', encoding='utf-8') as x:
                     x.write(srt)
-                write2buf('Done.')
+                # write2buf('Done.')
 
 '''
         if info["code"] != "A000000":

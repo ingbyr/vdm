@@ -7,8 +7,6 @@ from ..common import *
 from .embed import *
 from .universal import *
 
-from app.you_get.status import write2buf
-
 def baidu_get_song_data(sid):
     data = json.loads(get_html('http://music.baidu.com/data/music/fmlink?songIds=%s' % sid, faker = True))['data']
 

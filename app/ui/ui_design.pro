@@ -19,7 +19,8 @@ HEADERS  += mainwindow.h
 
 FORMS    += main_window.ui \
     about_widget.ui \
-    files_list_dialog.ui
+    files_list_dialog.ui \
+    task_item.ui
 
 RESOURCES += \
     icon.qrc

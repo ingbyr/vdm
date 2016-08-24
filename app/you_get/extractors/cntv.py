@@ -7,8 +7,6 @@ from ..common import *
 import json
 import re
 
-from app.you_get.status import write2buf
-
 
 def cntv_download_by_id(id, title = None, output_dir = '.', merge = True, info_only = False):
     assert id
