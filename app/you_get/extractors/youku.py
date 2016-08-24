@@ -8,6 +8,7 @@ import base64
 import ssl
 import time
 import traceback
+import json
 
 
 class Youku(VideoExtractor):

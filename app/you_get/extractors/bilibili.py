@@ -21,7 +21,7 @@ def bilibili_download_by_api(url, output_dir='.', merge=True, info_only=False, *
             _, type_, temp = url_info(url)
             size += temp or 0
     except error.URLError:
-        log.wtf('[Failed] DNS not resolved. Please change your DNS server settings.')
+        mlog.wtf('[Failed] DNS not resolved. Please change your DNS server settings.')
 
     write2buf_info(site_info, title, type_, size)
     if not info_only:

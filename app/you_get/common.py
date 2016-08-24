@@ -35,7 +35,8 @@ SITES = {
     'instagram': 'instagram',
     'interest': 'interest',
     'iqilu': 'iqilu',
-    'iqiyi': 'iqiyi',
+    # todo 爱奇艺下载方式很奇怪
+    # 'iqiyi': 'iqiyi',
     'isuntv': 'suntv',
     'joy': 'joy',
     'jpopsuki': 'jpopsuki',
@@ -94,10 +95,6 @@ SITES = {
     'zhanqi': 'zhanqi',
 }
 
-import getopt
-import json
-import locale
-import logging
 import os
 import platform
 import re
@@ -107,10 +104,10 @@ import time
 from urllib import request, parse, error
 from importlib import import_module
 
-from .util import log, term
 from .util.strings import get_filename, unescape_html
 from . import json_output as json_output_
 
+from app import mlog
 from app.you_get.status import write2buf
 from app.you_get.status import set_percent, set_speed, set_exist, get_stop_thread
 
@@ -316,7 +313,7 @@ def get_content(url, headers={}, decoded=True):
         The content as a string.
     """
 
-    logging.debug('get_content: %s' % url)
+    mlog.debug('get_content: %s' % url)
 
     req = request.Request(url, headers=headers)
     if cookies:
@@ -328,7 +325,7 @@ def get_content(url, headers={}, decoded=True):
             response = request.urlopen(req)
             break
         except socket.timeout:
-            logging.debug('request attempt %s timeout' % str(i + 1))
+            mlog.debug('request attempt %s timeout' % str(i + 1))
 
     data = response.read()
 
@@ -590,8 +587,6 @@ def url_save_chunked(url, filepath, bar, refer=None, is_part=False, faker=False,
 
 
 class SimpleProgressBar:
-    term_size = term.get_terminal_size()[1]
-
     def __init__(self, total_size, total_pieces=1):
         self.displayed = False
         self.total_size = total_size
