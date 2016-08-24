@@ -1066,7 +1066,7 @@ def url_to_module(url):
         video_url = r1(r'https?://[^/]+(.*)', url)
         assert video_host and video_url
     except:
-        raise Exception('Bad URL')
+        raise Exception('It\'s not a correct URL')
 
     if video_host.endswith('.com.cn'):
         video_host = video_host[:-3]
@@ -1077,7 +1077,7 @@ def url_to_module(url):
     if k in SITES:
         return import_module('.'.join(['app', 'you_get', 'extractors', SITES[k]])), url
     else:
-        raise Exception('目前不支持该网站下载')
+        raise Exception('We are not supported for this site')
 
 
 def any_download(url, **kwargs):
