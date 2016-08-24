@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
 from .common import match1, maybe_write2buf, download_urls, get_filename, parse_host, set_proxy, unset_proxy
-from .util import log
 from . import json_output
 import os
 
+from app import mlog
 from app.you_get.status import write2buf
 
 class Extractor():
@@ -86,9 +86,9 @@ class VideoExtractor():
             stream = self.dash_streams[stream_id]
 
         if 'itag' in stream:
-            write2buf("    - itag:          %s" % log.swrite2buf(stream_id, log.NEGATIVE))
+            write2buf("    - itag:          %s" % stream_id)
         else:
-            write2buf("    - format:        %s" % log.swrite2buf(stream_id, log.NEGATIVE))
+            write2buf("    - format:        %s" % stream_id)
 
         if 'container' in stream:
             write2buf("      container:     %s" % stream['container'])
@@ -103,9 +103,9 @@ class VideoExtractor():
             write2buf("      size:          %s MiB (%s bytes)" % (round(stream['size'] / 1048576, 1), stream['size']))
 
         if 'itag' in stream:
-            write2buf("    # download-with: %s" % log.swrite2buf("you-get --itag=%s [URL]" % stream_id, log.UNDERLINE))
+            write2buf("    # download-with: %s" % ("you-get --itag=%s [URL]" % stream_id))
         else:
-            write2buf("    # download-with: %s" % log.swrite2buf("you-get --format=%s [URL]" % stream_id, log.UNDERLINE))
+            write2buf("    # download-with: %s" % ("you-get --format=%s [URL]" % stream_id))
 
         write2buf()
 
@@ -201,7 +201,7 @@ class VideoExtractor():
                 total_size = self.dash_streams[stream_id]['size']
 
             if not urls:
-                log.wtf('[Failed] Cannot extract video source.')
+                mlog.error('[Failed] Cannot extract video source.')
             # For legacy main()
             download_urls(urls, self.title, ext, total_size,
                           output_dir=kwargs['output_dir'],
