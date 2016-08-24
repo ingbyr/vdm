@@ -64,7 +64,8 @@ class MainWindow(Ui_MainWindow):
             self.files_list_dialog.update_files_list(ls)
             mconfig.set_urls(self.urls)
         else:
-            self.show_msg(QMessageBox.Critical, 'Failed ', 'Can not get the files list (╯°Д°)╯︵ ┻━┻')
+            # self.show_msg(QMessageBox.Critical, 'Failed ', 'Can not get the files list (╯°Д°)╯︵ ┻━┻')
+            self.show_msg(QMessageBox.Critical, 'Failed ', ls)
 
     def show_about(self):
         mlog.debug('show about widget')

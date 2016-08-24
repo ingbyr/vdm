@@ -16,7 +16,7 @@ def m_get_video(urls, **kwargs):
         if m and url:
             m.download(url, **kwargs)
         else:
-            raise Exception('bad url')
+            raise Exception('It\'s not a correct URL')
 
 # if __name__ == '__main__':
 #     urls = ['https://www.youtube.com/watch?v=mM3dSR_qxcY']

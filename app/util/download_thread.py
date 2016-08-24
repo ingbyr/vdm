@@ -31,7 +31,7 @@ class GetVideoInfoThread(QtCore.QThread):
             can_download = True
         except Exception as e:
             mlog.exception(e)
-            result = 'Get information of files failed'
+            result = str(e)
             can_download = False
         finally:
             self.finish_signal.emit(result, can_download)
