@@ -8,6 +8,7 @@ SITES = {
     'baidu': 'baidu',
     'bandcamp': 'bandcamp',
     'baomihua': 'baomihua',
+    'bigthink': 'bigthink',
     'bilibili': 'bilibili',
     'cctv': 'cntv',
     'cntv': 'cntv',
@@ -96,23 +97,21 @@ SITES = {
 import getopt
 import json
 import locale
+import logging
 import os
 import platform
 import re
 import socket
+import sys
 import time
 from urllib import request, parse, error
-from http import cookiejar
 from importlib import import_module
 
-from .version import __version__
 from .util import log, term
-from .util.git import get_version
 from .util.strings import get_filename, unescape_html
 from . import json_output as json_output_
 
 from app.you_get.status import write2buf
-from app import mlog
 from app.you_get.status import set_percent, set_speed, set_exist, get_stop_thread
 
 dry_run = False
@@ -317,7 +316,7 @@ def get_content(url, headers={}, decoded=True):
         The content as a string.
     """
 
-    mlog.debug('get_content: %s' % url)
+    logging.debug('get_content: %s' % url)
 
     req = request.Request(url, headers=headers)
     if cookies:
@@ -329,7 +328,7 @@ def get_content(url, headers={}, decoded=True):
             response = request.urlopen(req)
             break
         except socket.timeout:
-            mlog.debug('request attempt %s timeout' % str(i + 1))
+            logging.debug('request attempt %s timeout' % str(i + 1))
 
     data = response.read()
 
@@ -451,7 +450,7 @@ def url_save(url, filepath, bar, refer=None, is_part=False, faker=False, headers
             if not is_part:
                 if bar:
                     bar.done()
-                write2buf('Skipping %s: file already exists' % tr(os.path.basename(filepath)))
+                # write2buf('Skipping %s: file already exists' % tr(os.path.basename(filepath)))
                 set_exist(True)
             else:
                 if bar:
@@ -534,7 +533,7 @@ def url_save_chunked(url, filepath, bar, refer=None, is_part=False, faker=False,
             if not is_part:
                 if bar:
                     bar.done()
-                write2buf('Skipping %s: file already exists' % tr(os.path.basename(filepath)))
+                # write2buf('Skipping %s: file already exists' % tr(os.path.basename(filepath)))
                 set_exist(True)
             else:
                 if bar:
@@ -602,21 +601,16 @@ class SimpleProgressBar:
         self.speed = ''
         self.last_updated = time.time()
 
-        total_pieces_len = len(str(total_pieces))
         # 38 is the size of all statically known size in self.bar
         total_str = '%5s' % round(self.total_size / 1048576, 1)
-        total_str_width = max(len(total_str), 5)
-        self.bar_size = self.term_size - 27 - 2 * total_pieces_len - 2 * total_str_width
-        self.bar = '{:>4}%% ({:>%s}/%sMB) ├{:─<%s}┤[{:>%s}/{:>%s}] {}' % (
-            total_str_width, total_str, self.bar_size, total_pieces_len, total_pieces_len)
 
     def update(self):
         self.displayed = True
-        bar_size = self.bar_size
         percent = round(self.received * 100 / self.total_size, 1)
         if percent >= 100:
             percent = 100
         set_percent(percent)
+        set_speed(self.speed)
 
     def update_received(self, n):
         self.received += n
@@ -632,31 +626,17 @@ class SimpleProgressBar:
             self.speed = '{:4.0f}  B/s'.format(bytes_ps)
         self.last_updated = time.time()
         self.update()
-        set_speed(self.speed)
 
     def update_piece(self, n):
         self.current_piece = n
 
     def done(self):
-        if self.displayed:
-            write2buf()
-            self.displayed = False
+        # todo media下载完成时应该通知task更新
+        pass
 
 
 class PiecesProgressBar:
     def __init__(self, total_size, total_pieces=1):
-        pass
-
-    def update(self):
-        pass
-
-    def update_received(self, n):
-        pass
-
-    def update_piece(self, n):
-        pass
-
-    def done(self):
         pass
 
 
@@ -714,8 +694,10 @@ def download_urls(urls, title, ext, total_size, output_dir='.', refer=None, merg
     if not total_size:
         try:
             total_size = urls_size(urls, faker=faker, headers=headers)
-        except Exception as e:
-            mlog.exception(e)
+        except:
+            import traceback
+            traceback.write2buf_exc(file=sys.stdout)
+            pass
 
     title = tr(get_filename(title))
     output_filename = get_output_filename(urls, title, ext, output_dir, merge)
@@ -723,8 +705,8 @@ def download_urls(urls, title, ext, total_size, output_dir='.', refer=None, merg
 
     if total_size:
         if not force and os.path.exists(output_filepath) and os.path.getsize(output_filepath) >= total_size * 0.9:
-            write2buf('Skipping %s: file already exists' % output_filepath)
-            write2buf()
+            # write2buf('Skipping %s: file already exists' % output_filepath)
+            # write2buf()
             set_exist(True)
             return
         bar = SimpleProgressBar(total_size, len(urls))
@@ -834,8 +816,8 @@ def download_urls_chunked(urls, title, ext, total_size, output_dir='.', refer=No
     filepath = os.path.join(output_dir, filename)
     if total_size and ext in ('ts'):
         if not force and os.path.exists(filepath[:-3] + '.mkv'):
-            write2buf('Skipping %s: file already exists' % filepath[:-3] + '.mkv')
-            write2buf()
+            # write2buf('Skipping %s: file already exists' % filepath[:-3] + '.mkv')
+            # write2buf()
             set_exist(True)
             return
         bar = SimpleProgressBar(total_size, len(urls))
@@ -926,8 +908,7 @@ def download_url_ffmpeg(url, title, ext, params={}, total_size=0, output_dir='.'
         return
 
     if player:
-        from .processor.ffmpeg import ffmpeg_play_stream
-        ffmpeg_play_stream(player, url, params)
+        launch_player(player, [url])
         return
 
     from .processor.ffmpeg import has_ffmpeg_installed, ffmpeg_download_stream
@@ -1071,34 +1052,17 @@ def set_http_proxy(proxy):
     request.install_opener(opener)
 
 
-def download_main(download, download_playlist, urls, playlist, **kwargs):
-    for url in urls:
-        if url.startswith('https://'):
-            url = url[8:]
-        if not url.startswith('http://'):
-            url = 'http://' + url
-
-        if playlist:
-            download_playlist(url, **kwargs)
-        else:
-            download(url, **kwargs)
-
-
-# def google_search(url):
-#     keywords = r1(r'https?://(.*)', url)
-#     url = 'https://www.google.com/search?tbm=vid&q=%s' % parse.quote(keywords)
-#     page = get_content(url, headers=fake_headers)
-#     videos = re.findall(r'<a href="(https?://[^"]+)" onmousedown="[^"]+">([^<]+)<', page)
-#     vdurs = re.findall(r'<span class="vdur _dwc">([^<]+)<', page)
-#     durs = [r1(r'(\d+:\d+)', unescape_html(dur)) for dur in vdurs]
-#     write2buf("Google Videos search:")
-#     for v in zip(videos, durs):
-#         write2buf("- video:  %s [%s]" % (unescape_html(v[0][1]),
-#                                      v[1] if v[1] else '?'))
-#         write2buf("# you-get %s" % log.swrite2buf(v[0][0], log.UNDERLINE))
-#         write2buf()
-#     write2buf("Best matched result:")
-#     return (videos[0][0])
+# def download_main(download, download_playlist, urls, playlist, **kwargs):
+#     for url in urls:
+#         if url.startswith('https://'):
+#             url = url[8:]
+#         if not url.startswith('http://'):
+#             url = 'http://' + url
+#
+#         if playlist:
+#             download_playlist(url, **kwargs)
+#         else:
+#             download(url, **kwargs)
 
 
 def url_to_module(url):
@@ -1107,10 +1071,7 @@ def url_to_module(url):
         video_url = r1(r'https?://[^/]+(.*)', url)
         assert video_host and video_url
     except:
-        return None, None
-        # url = google_search(url)
-        # video_host = r1(r'https?://([^/]+)/', url)
-        # video_url = r1(r'https?://[^/]+(.*)', url)
+        raise Exception('Bad URL')
 
     if video_host.endswith('.com.cn'):
         video_host = video_host[:-3]
@@ -1119,17 +1080,9 @@ def url_to_module(url):
 
     k = r1(r'([^.]+)', domain)
     if k in SITES:
-        return import_module('.'.join(['you_get', 'extractors', SITES[k]])), url
+        return import_module('.'.join(['app', 'you_get', 'extractors', SITES[k]])), url
     else:
-        import http.client
-        conn = http.client.HTTPConnection(video_host)
-        conn.request("HEAD", video_url, headers=fake_headers)
-        res = conn.getresponse()
-        location = res.getheader('location')
-        if location and location != url and not location.startswith('/'):
-            return url_to_module(location)
-        else:
-            return import_module('you_get.extractors.universal'), url
+        raise Exception('目前不支持该网站下载')
 
 
 def any_download(url, **kwargs):
