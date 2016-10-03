@@ -123,4 +123,4 @@ SOFTWARE.
 | 芒果TV   | <http://www.mgtv.com/>         |✓| | |
 
 ## Authors
-Made by [@ingbyr](http://www.ingbyr.tk/about/)
+Made by [@ingbyr](http://www.ingbyr.com)
