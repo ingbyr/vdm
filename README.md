@@ -6,7 +6,8 @@
 ![](https://img.shields.io/github/issues/ingbyr/GUI-YouGet.svg)
 
 
-> [中文说明](http://www.ingbyr.tk/2016/06/18/youget-zh/)
+> [中文说明](http://www.ingbyr.com/2016/06/18/youget-zh/)
+
 
 ## Download
 [GUI-YouGet Download Page](https://github.com/ingbyr/GUI-YouGet/releases)
