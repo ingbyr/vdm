@@ -10,6 +10,7 @@ from PyQt5.QtGui import QDesktopServices
 from app.config import set_default
 from app.ui.proxy_dialog import ProxyDialog
 from app.ui.ui_main_window import Ui_MainWindow
+from app.util.config_utils import s2b
 from app.util.download_thread import GetVideoInfoThread
 from app import mlog, mconfig
 
@@ -44,7 +45,7 @@ class MainWindow(Ui_MainWindow):
 
         # 界面更新
         self.file_path_label.setText(mconfig.get_file_path())
-        self.proxy_checkBox.setChecked(bool(enable_proxy))
+        self.proxy_checkBox.setChecked(s2b(enable_proxy))
 
     def set_slot(self):
         self.button_download.clicked.connect(self.get_info)
