@@ -41,7 +41,7 @@ def dilidili_download(url, output_dir = '.', merge = False, info_only = False, *
         
         # player loaded via internal iframe
         frame_url = re.search(r'<iframe src=\"(.+?)\"', html).group(1)
-        #write2buf(frame_url)
+        #print(frame_url)
         
         #https://player.005.tv:60000/?vid=a8760f03fd:a04808d307&v=yun&sign=a68f8110cacd892bc5b094c8e5348432
         html = get_content(frame_url, headers=headers, decoded=False).decode('utf-8')
@@ -68,7 +68,7 @@ def dilidili_download(url, output_dir = '.', merge = False, info_only = False, *
         #size = 0
 
         #type_, ext, size = url_info(url)
-        #write2buf_info(site_info, title, type_, size)
+        #print_info(site_info, title, type_, size)
         #if not info_only:
             #download_urls([url], title, ext, total_size=None, output_dir=output_dir, merge=merge)
 

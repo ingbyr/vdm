@@ -42,7 +42,7 @@ def sina_download_by_xml(xml, title, output_dir, merge, info_only):
         _, _, temp = url_info(url)
         size += temp
 
-    write2buf_info(site_info, title, 'flv', size)
+    print_gui_info(site_info, title, 'flv', size)
     if not info_only:
         download_urls(urls, title, 'flv', size, output_dir = output_dir, merge = merge)
 
@@ -54,7 +54,7 @@ def sina_download_by_vkey(vkey, title=None, output_dir='.', merge=True, info_onl
     url = 'http://video.sina.com/v/flvideo/%s_0.flv' % vkey
     type, ext, size = url_info(url)
 
-    write2buf_info(site_info, title, 'flv', size)
+    print_gui_info(site_info, title, 'flv', size)
     if not info_only:
         download_urls([url], title, 'flv', size, output_dir = output_dir, merge = merge)
 

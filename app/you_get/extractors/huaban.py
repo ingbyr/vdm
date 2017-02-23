@@ -67,7 +67,7 @@ def huaban_download_board(url, output_dir, **kwargs):
     kwargs['merge'] = False
     board = extract_board_data(url)
     output_dir = os.path.join(output_dir, board.title)
-    write2buf_info(site_info, board.title, 'jpg', float('Inf'))
+    print_gui_info(site_info, board.title, 'jpg', float('Inf'))
     for pin in board.pins:
         download_urls([pin.url], pin.id, pin.ext, float('Inf'),
                       output_dir=output_dir, faker=True, **kwargs)
@@ -77,9 +77,8 @@ def huaban_download(url, output_dir='.', **kwargs):
     if re.match(r'http://huaban\.com/boards/\d+/', url):
         huaban_download_board(url, output_dir, **kwargs)
     else:
-        raise Exception('Only board (画板) pages are supported currently')
-        # write2buf('Only board (画板) pages are supported currently')
-        # write2buf('ex: http://huaban.com/boards/12345678/')
+        print_gui('Only board (画板) pages are supported currently')
+        print_gui('ex: http://huaban.com/boards/12345678/')
 
 
 download = huaban_download

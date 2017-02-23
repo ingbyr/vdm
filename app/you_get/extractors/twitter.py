@@ -35,7 +35,7 @@ def twitter_download(url, output_dir='.', merge=True, info_only=False, **kwargs)
                            'ext': ext,
                            'size': size})
         size = sum([image['size'] for image in images])
-        write2buf_info(site_info, page_title, images[0]['ext'], size)
+        print_gui_info(site_info, page_title, images[0]['ext'], size)
 
         if not info_only:
             for image in images:
@@ -43,7 +43,7 @@ def twitter_download(url, output_dir='.', merge=True, info_only=False, **kwargs)
                 ext = image['ext']
                 size = image['size']
                 url = image['url']
-                write2buf_info(site_info, title, ext, size)
+                print_gui_info(site_info, title, ext, size)
                 download_urls([url], title, ext, size,
                               output_dir=output_dir)
 
@@ -73,14 +73,14 @@ def twitter_download(url, output_dir='.', merge=True, info_only=False, **kwargs)
             scribe_playlist_url = i['scribe_playlist_url']
             return vine_download(scribe_playlist_url, output_dir, merge=merge, info_only=info_only)
 
-        if source.endswith('.mp4'):
-            urls = [source]
-        else:
+        try:
             urls = extract_m3u(source)
+        except:
+            urls = [source]
         size = urls_size(urls)
         mime, ext = 'video/mp4', 'mp4'
 
-        write2buf_info(site_info, page_title, mime, size)
+        print_gui_info(site_info, page_title, mime, size)
         if not info_only:
             download_urls(urls, page_title, ext, size, output_dir, merge=merge)
 

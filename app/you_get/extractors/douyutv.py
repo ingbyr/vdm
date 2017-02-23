@@ -47,7 +47,7 @@ def douyutv_download(url, output_dir = '.', merge = True, info_only = False, **k
 
     real_url = data.get('rtmp_url')+'/'+data.get('rtmp_live')
 
-    write2buf_info(site_info, title, 'flv', float('inf'))
+    print_gui_info(site_info, title, 'flv', float('inf'))
     if not info_only:
         download_url_ffmpeg(real_url, title, 'flv', None, output_dir = output_dir, merge = merge)
 

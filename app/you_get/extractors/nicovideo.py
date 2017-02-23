@@ -23,13 +23,11 @@ context=ssl.SSLContext(ssl.PROTOCOL_TLSv1))
     except:
         info = None
     if info is None:
-        # todo niconico的登陆界面
-        raise Exception('登陆功能尚未完成')
-        # user = input("User:     ")
-        # password = getpass.getpass("Password: ")
+        user = input("User:     ")
+        password = getpass.getpass("Password: ")
     else:
         user, password = info[0], info[2]
-    # write2buf("Logging in...")
+    print_gui("Logging in...")
     nicovideo_login(user, password)
 
     html = get_html(url) # necessary!
@@ -41,7 +39,7 @@ context=ssl.SSLContext(ssl.PROTOCOL_TLSv1))
 
     type, ext, size = url_info(real_url)
 
-    write2buf_info(site_info, title, type, size)
+    print_gui_info(site_info, title, type, size)
     if not info_only:
         download_urls([real_url], title, ext, size, output_dir, merge = merge)
 

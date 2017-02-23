@@ -20,7 +20,7 @@ def vimeo_download_by_channel_id(channel_id, output_dir='.', merge=False, info_o
     data = loads(html)
     id_list = []
 
-    #write2buf(data)
+    #print(data)
     for i in data['data']:
         id_list.append(match1(i['uri'], r'/videos/(\w+)'))
 
@@ -50,7 +50,7 @@ def vimeo_download_by_id(id, title=None, output_dir='.', merge=True, info_only=F
 
     type, ext, size = url_info(url, faker=True)
 
-    write2buf_info(site_info, title, type, size)
+    print_gui_info(site_info, title, type, size)
     if not info_only:
         download_urls([url], title, ext, size, output_dir, merge=merge, faker=True)
 

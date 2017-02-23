@@ -19,7 +19,7 @@ def instagram_download(url, output_dir='.', merge=True, info_only=False, **kwarg
         ext = 'jpg'
         _, _, size = url_info(image)
 
-    write2buf_info(site_info, title, ext, size)
+    print_gui_info(site_info, title, ext, size)
     url = stream if stream else image
     if not info_only:
         download_urls([url], title, ext, size, output_dir, merge=merge)

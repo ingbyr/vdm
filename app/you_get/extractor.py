@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 
-from .common import match1, maybe_write2buf, download_urls, get_filename, parse_host, set_proxy, unset_proxy
+from .common import match1, maybe_print_gui, download_urls, get_filename, parse_host, set_proxy, unset_proxy
+from .common import print_gui_more_compatible as print_gui
+from .util import log
 from . import json_output
 import os
-
-from app import mlog
-from app.you_get.status import write2buf
 
 class Extractor():
     def __init__(self, *args):
@@ -86,28 +85,28 @@ class VideoExtractor():
             stream = self.dash_streams[stream_id]
 
         if 'itag' in stream:
-            write2buf("    - itag:          %s" % stream_id)
+            print_gui("    - itag:          %s" % log.sprint_gui(stream_id, log.NEGATIVE))
         else:
-            write2buf("    - format:        %s" % stream_id)
+            print_gui("    - format:        %s" % log.sprint_gui(stream_id, log.NEGATIVE))
 
         if 'container' in stream:
-            write2buf("      container:     %s" % stream['container'])
+            print_gui("      container:     %s" % stream['container'])
 
         if 'video_profile' in stream:
-            maybe_write2buf("      video-profile: %s" % stream['video_profile'])
+            maybe_print_gui("      video-profile: %s" % stream['video_profile'])
 
         if 'quality' in stream:
-            write2buf("      quality:       %s" % stream['quality'])
+            print_gui("      quality:       %s" % stream['quality'])
 
         if 'size' in stream:
-            write2buf("      size:          %s MiB (%s bytes)" % (round(stream['size'] / 1048576, 1), stream['size']))
+            print_gui("      size:          %s MiB (%s bytes)" % (round(stream['size'] / 1048576, 1), stream['size']))
 
         if 'itag' in stream:
-            write2buf("    # download-with: %s" % ("you-get --itag=%s [URL]" % stream_id))
+            print_gui("    # download-with: %s" % log.sprint_gui("you-get --itag=%s [URL]" % stream_id, log.UNDERLINE))
         else:
-            write2buf("    # download-with: %s" % ("you-get --format=%s [URL]" % stream_id))
+            print_gui("    # download-with: %s" % log.sprint_gui("you-get --format=%s [URL]" % stream_id, log.UNDERLINE))
 
-        write2buf()
+        print_gui()
 
     def p_i(self, stream_id):
         if stream_id in self.streams:
@@ -115,49 +114,49 @@ class VideoExtractor():
         else:
             stream = self.dash_streams[stream_id]
 
-        maybe_write2buf("    - title:         %s" % self.title)
-        write2buf("       size:         %s MiB (%s bytes)" % (round(stream['size'] / 1048576, 1), stream['size']))
-        write2buf("        url:         %s" % self.url)
-        write2buf()
+        maybe_print_gui("    - title:         %s" % self.title)
+        print_gui("       size:         %s MiB (%s bytes)" % (round(stream['size'] / 1048576, 1), stream['size']))
+        print_gui("        url:         %s" % self.url)
+        print_gui()
 
     def p(self, stream_id=None):
-        maybe_write2buf("site:                %s" % self.__class__.name)
-        maybe_write2buf("title:               %s" % self.title)
+        maybe_print_gui("site:                %s" % self.__class__.name)
+        maybe_print_gui("title:               %s" % self.title)
         if stream_id:
-            # write2buf the stream
-            write2buf("stream:")
+            # Print the stream
+            print_gui("stream:")
             self.p_stream(stream_id)
 
         elif stream_id is None:
-            # write2buf stream with best quality
-            write2buf("stream:              # Best quality")
+            # Print stream with best quality
+            print_gui("stream:              # Best quality")
             stream_id = self.streams_sorted[0]['id'] if 'id' in self.streams_sorted[0] else self.streams_sorted[0]['itag']
             self.p_stream(stream_id)
 
         elif stream_id == []:
-            write2buf("streams:             # Available quality and codecs")
-            # write2buf DASH streams
+            print_gui("streams:             # Available quality and codecs")
+            # Print DASH streams
             if self.dash_streams:
-                write2buf("    [ DASH ] %s" % ('_' * 36))
+                print_gui("    [ DASH ] %s" % ('_' * 36))
                 itags = sorted(self.dash_streams,
                                key=lambda i: -self.dash_streams[i]['size'])
                 for stream in itags:
                     self.p_stream(stream)
-            # write2buf all other available streams
-            write2buf("    [ DEFAULT ] %s" % ('_' * 33))
+            # Print all other available streams
+            print_gui("    [ DEFAULT ] %s" % ('_' * 33))
             for stream in self.streams_sorted:
                 self.p_stream(stream['id'] if 'id' in stream else stream['itag'])
 
         if self.audiolang:
-            write2buf("audio-languages:")
+            print_gui("audio-languages:")
             for i in self.audiolang:
-                write2buf("    - lang:          {}".format(i['lang']))
-                write2buf("      download-url:  {}\n".format(i['url']))
+                print_gui("    - lang:          {}".format(i['lang']))
+                print_gui("      download-url:  {}\n".format(i['url']))
 
     def p_playlist(self, stream_id=None):
-        maybe_write2buf("site:                %s" % self.__class__.name)
-        write2buf("playlist:            %s" % self.title)
-        write2buf("videos:")
+        maybe_print_gui("site:                %s" % self.__class__.name)
+        print_gui("playlist:            %s" % self.title)
+        print_gui("videos:")
 
     def download(self, **kwargs):
         if 'json_output' in kwargs and kwargs['json_output']:
@@ -201,23 +200,23 @@ class VideoExtractor():
                 total_size = self.dash_streams[stream_id]['size']
 
             if not urls:
-                mlog.error('[Failed] Cannot extract video source.')
+                log.wtf('[Failed] Cannot extract video source.')
             # For legacy main()
             download_urls(urls, self.title, ext, total_size,
                           output_dir=kwargs['output_dir'],
                           merge=kwargs['merge'],
                           av=stream_id in self.dash_streams)
-            if not kwargs['caption']:
-                write2buf('Skipping captions.')
+            if 'caption' not in kwargs or not kwargs['caption']:
+                print_gui('Skipping captions.')
                 return
             for lang in self.caption_tracks:
                 filename = '%s.%s.srt' % (get_filename(self.title), lang)
-                write2buf('Saving %s ... ' % filename, end="", flush=True)
+                print_gui('Saving %s ... ' % filename, end="", flush=True)
                 srt = self.caption_tracks[lang]
                 with open(os.path.join(kwargs['output_dir'], filename),
                           'w', encoding='utf-8') as x:
                     x.write(srt)
-                write2buf('Done.')
+                print_gui('Done.')
 
             # For main_dev()
             #download_urls(urls, self.title, self.streams[stream_id]['container'], self.streams[stream_id]['size'])

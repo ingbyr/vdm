@@ -17,7 +17,7 @@ def kugou_download(url, output_dir=".", merge=True, info_only=False, **kwargs):
         url=j['file']
         title=j['songName']
         songtype, ext, size = url_info(url)
-        write2buf_info(site_info, title, songtype, size)
+        print_gui_info(site_info, title, songtype, size)
         if not info_only:
             download_urls([url], title, ext, size, output_dir, merge=merge)
     else:
@@ -35,7 +35,7 @@ def kugou_download_by_hash(title,hash_val,output_dir = '.', merge = True, info_o
     j=loads(html)
     url=j['url']
     songtype, ext, size = url_info(url)
-    write2buf_info(site_info, title, songtype, size)
+    print_gui_info(site_info, title, songtype, size)
     if not info_only:
         download_urls([url], title, ext, size, output_dir, merge=merge)
 
