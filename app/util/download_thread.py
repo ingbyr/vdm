@@ -3,8 +3,10 @@
 
 import time
 from PyQt5 import QtCore
+from PyQt5.QtCore import QSettings
 
 from app import mlog, mconfig
+from app.util.proxy import m_set_http_proxy, m_set_socks_proxy
 from app.util.status import get_buffer
 
 from app.you_get.common import any_download_playlist, any_download, download_main
@@ -23,6 +25,15 @@ class GetVideoInfoThread(QtCore.QThread):
         super(GetVideoInfoThread, self).__init__(parent)
         self.urls = urls
         self.kwargs = kwargs
+        self.config = QSettings('config.ini', QSettings.IniFormat)
+
+        if bool(self.config.value('enable_proxy', False)):
+            if bool(self.config.value('s_http_proxy', False)):
+                m_set_http_proxy(self.config.value('ip', '127.0.0.1'), self.config.value('port', '1080'))
+                mlog.debug("enable http proxy")
+            if bool(self.config.value('is_socks_proxy', False)):
+                m_set_socks_proxy(self.config.value('ip', '127.0.0.1'), self.config.value('port', '1080'))
+                mlog.debug("enable socks proxy")
 
     def run(self):
         try:
@@ -32,7 +43,7 @@ class GetVideoInfoThread(QtCore.QThread):
             can_download = True
         except Exception as e:
             mlog.exception(e)
-            result = str(e)
+            result = "Get information failed."
             can_download = False
         finally:
             self.finish_signal.emit(result, can_download)

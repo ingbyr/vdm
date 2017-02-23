@@ -3,10 +3,12 @@
 import json
 from urllib import request
 
+from PyQt5.QtCore import QSettings
 from PyQt5.QtCore import QUrl
 from PyQt5.QtGui import QDesktopServices
 
 from app.config import set_default
+from app.ui.proxy_dialog import ProxyDialog
 from app.ui.ui_main_window import Ui_MainWindow
 from app.util.download_thread import GetVideoInfoThread
 from app import mlog, mconfig
@@ -18,7 +20,6 @@ from app.ui.files_list_dialog import FilesListDialog
 from app.ui.icon_rc import *
 
 
-
 class MainWindow(Ui_MainWindow):
     def __init__(self):
         super().__init__()
@@ -26,15 +27,34 @@ class MainWindow(Ui_MainWindow):
         self.setupUi(self.main_window)
         self.main_window.setFixedSize(self.main_window.width(), self.main_window.height())
         self.msg = QMessageBox()
-        self.set_slot()
         self.qr = self.main_window.frameGeometry()  # move to center of screen
         self.cp = QDesktopWidget().availableGeometry().center()
         self.qr.moveCenter(self.cp)
         self.main_window.move(self.qr.topLeft())
         self.text_edit_urls.setAcceptRichText(False)
 
+        self.config = QSettings('config.ini', QSettings.IniFormat)
+        self.init_config()
+        self.set_slot()
+
+    def init_config(self):
+        # 读取设置
+        mconfig.set_file_path(self.config.value(mconfig.file_path, mconfig.base_dir))
+        enable_proxy = self.config.value('enable_proxy', False)
+
+        # 界面更新
+        self.file_path_label.setText(mconfig.get_file_path())
+        self.proxy_checkBox.setChecked(bool(enable_proxy))
+
     def set_slot(self):
         self.button_download.clicked.connect(self.get_info)
+        self.check_update_button.clicked.connect(self.check_for_updates)
+        self.about_button.clicked.connect(self.show_about)
+        self.set_path_button.clicked.connect(self.set_file_path)
+        self.set_proxy_button.clicked.connect(self.show_proxy_dialog)
+
+        self.proxy_checkBox.stateChanged.connect(self.save_config)
+
         self.action_about.triggered.connect(self.show_about)
         self.action_file_path.triggered.connect(self.set_file_path)
         self.action_check_for_updates.triggered.connect(self.check_for_updates)
@@ -76,12 +96,12 @@ class MainWindow(Ui_MainWindow):
         fname = QFileDialog.getExistingDirectory(self.main_window, caption='Select Path', directory='',
                                                  options=QFileDialog.ShowDirsOnly)
         if fname:
-            mconfig.set_file_path(fname)
+            self.config.setValue(mconfig.file_path, fname)
+            self.file_path_label.setText(fname)
             mlog.debug('changed file path to ' + mconfig.get_file_path())
-            self.show_msg(QMessageBox.Information, 'Tip', 'Changed file path to:\n' + str(fname))
         else:
-            mconfig.set_file_path(mconfig.base_dir)
-            self.show_msg(QMessageBox.Information, 'Tip', 'Default file path:\n' + str(mconfig.base_dir))
+            self.file_path_label.setText(mconfig.base_dir)
+            self.config.setValue(mconfig.file_path, mconfig.base_dir)
 
     def show_msg(self, icon, title, text):
         self.msg.setWindowTitle(title)
@@ -114,3 +134,13 @@ class MainWindow(Ui_MainWindow):
 
     def report_bugs(self):
         QDesktopServices.openUrl(QUrl('https://github.com/ingbyr/GUI-YouGet/issues'))
+
+    def get_more_infomation(self):
+        QDesktopServices.openUrl(QUrl('https://github.com/ingbyr/GUI-YouGet'))
+
+    def show_proxy_dialog(self):
+        self.proxy_dialog = ProxyDialog()
+
+    def save_config(self):
+        enable_proxy = self.proxy_checkBox.isChecked()
+        self.config.setValue('enable_proxy', enable_proxy)

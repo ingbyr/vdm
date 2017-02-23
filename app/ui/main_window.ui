@@ -31,27 +31,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>URL</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="button_download">
-    <property name="geometry">
-     <rect>
-      <x>300</x>
-      <y>20</y>
-      <width>41</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="statusTip">
-     <string>Here we go!</string>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">border-image: url(:/res/download.png);
-</string>
-    </property>
-    <property name="text">
-     <string/>
+     <string>Url</string>
     </property>
    </widget>
    <widget class="QTextEdit" name="text_edit_urls">
@@ -59,19 +39,178 @@
      <rect>
       <x>50</x>
       <y>20</y>
-      <width>241</width>
+      <width>291</width>
       <height>41</height>
      </rect>
     </property>
    </widget>
-   <widget class="QListWidget" name="task_widget">
+   <widget class="QGroupBox" name="settingsBox">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>120</y>
+      <width>351</width>
+      <height>351</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string/>
+    </property>
+    <widget class="QCheckBox" name="proxy_checkBox">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>150</y>
+       <width>151</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Enable the proxy</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="file_path_label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>50</y>
+       <width>331</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Path</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="set_path_button">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>80</y>
+       <width>331</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Set Path</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="set_proxy_button">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>190</y>
+       <width>331</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Set Proxy</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="check_update_button">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>260</y>
+       <width>151</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Check for Updates</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="about_button">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>260</y>
+       <width>161</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>About</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>321</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Storage path:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>130</y>
+       <width>231</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Proxy:</string>
+     </property>
+    </widget>
+    <widget class="Line" name="line_2">
+     <property name="geometry">
+      <rect>
+       <x>-10</x>
+       <y>230</y>
+       <width>361</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="Line" name="line_3">
+     <property name="geometry">
+      <rect>
+       <x>-10</x>
+       <y>120</y>
+       <width>361</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QPushButton" name="button_download">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>90</y>
+      <y>80</y>
       <width>331</width>
-      <height>351</height>
+      <height>41</height>
      </rect>
+    </property>
+    <property name="text">
+     <string>Download</string>
+    </property>
+   </widget>
+   <widget class="Line" name="line">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>130</y>
+      <width>351</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
     </property>
    </widget>
   </widget>
@@ -81,7 +220,7 @@
      <x>0</x>
      <y>0</y>
      <width>350</width>
-     <height>22</height>
+     <height>31</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_settings">
@@ -101,11 +240,6 @@
    </widget>
    <addaction name="menu_settings"/>
    <addaction name="menu_help"/>
-  </widget>
-  <widget class="QStatusBar" name="status_bar">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
   </widget>
   <action name="action_file_path">
    <property name="text">
