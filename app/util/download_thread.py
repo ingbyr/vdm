@@ -6,6 +6,7 @@ from PyQt5 import QtCore
 from PyQt5.QtCore import QSettings
 
 from app import mlog, mconfig
+from app.util.config_utils import s2b
 from app.util.proxy import m_set_http_proxy, m_set_socks_proxy
 from app.util.status import get_buffer
 
@@ -27,11 +28,11 @@ class GetVideoInfoThread(QtCore.QThread):
         self.kwargs = kwargs
         self.config = QSettings('config.ini', QSettings.IniFormat)
 
-        if bool(self.config.value('enable_proxy', False)):
-            if bool(self.config.value('s_http_proxy', False)):
+        if s2b(self.config.value('enable_proxy', 'false')):
+            if s2b(self.config.value('s_http_proxy', 'false')):
                 m_set_http_proxy(self.config.value('ip', '127.0.0.1'), self.config.value('port', '1080'))
                 mlog.debug("enable http proxy")
-            if bool(self.config.value('is_socks_proxy', False)):
+            if s2b(self.config.value('is_socks_proxy', 'false')):
                 m_set_socks_proxy(self.config.value('ip', '127.0.0.1'), self.config.value('port', '1080'))
                 mlog.debug("enable socks proxy")
 

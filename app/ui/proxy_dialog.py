@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QButtonGroup
 from PyQt5.QtWidgets import QDialog
 
 from app.ui.ui_proxy_dialog import Ui_Dialog
+from app.util.config_utils import s2b
 
 __author__ = "ingbyr"
 
@@ -33,10 +34,10 @@ class ProxyDialog(Ui_Dialog):
         self.ip_text_edit.setText(ip)
         self.port_text_edit.setText(port)
 
-        is_socks_proxy = self.config.value('is_socks_proxy', True)
-        is_http_proxy = self.config.value('is_http_proxy', False)
-        self.socks5_checkbox.setChecked(bool(is_socks_proxy))
-        self.http_checkbox.setChecked(bool(is_http_proxy))
+        is_socks_proxy = self.config.value('is_socks_proxy', 'true')
+        is_http_proxy = self.config.value('is_http_proxy', 'false')
+        self.socks5_checkbox.setChecked(s2b(is_socks_proxy))
+        self.http_checkbox.setChecked(s2b(is_http_proxy))
 
     def save_config(self):
         ip = self.ip_text_edit.text()
