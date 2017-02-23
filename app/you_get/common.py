@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from app.util.status import print_gui, set_percent, set_speed
+from app.util.status import print_gui, set_percent, set_speed, get_stop_thread
 
 SITES = {
     '163': 'netease',
@@ -571,6 +571,11 @@ def url_save(url, filepath, bar, refer=None, is_part=False, faker=False, headers
         with open(temp_filepath, open_mode) as output:
             while True:
                 buffer = response.read(1024 * 256)
+
+                # GUI 允许中断下载
+                if get_stop_thread():
+                    return
+
                 if not buffer:
                     if received == file_size:  # Download finished
                         break
@@ -732,7 +737,7 @@ class SimpleProgressBar:
 
 
 class PiecesProgressBar:
-    # 无法获取总大小时调用？
+    # GUI 无法获取总大小时调用？
     def __init__(self, total_size, total_pieces=1):
         set_speed('未知文件大小')
         #     self.displayed = False
@@ -1435,9 +1440,10 @@ def url_to_module(url):
         video_url = r1(r'https?://[^/]+(.*)', url)
         assert video_host and video_url
     except:
-        url = google_search(url)
-        video_host = r1(r'https?://([^/]+)/', url)
-        video_url = r1(r'https?://[^/]+(.*)', url)
+        return None, None
+        # url = google_search(url)
+        # video_host = r1(r'https?://([^/]+)/', url)
+        # video_url = r1(r'https?://[^/]+(.*)', url)
 
     if video_host.endswith('.com.cn'):
         video_host = video_host[:-3]
