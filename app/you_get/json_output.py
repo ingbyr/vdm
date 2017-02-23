@@ -1,28 +1,26 @@
 
 import json
 
-from app.you_get.status import write2buf
-
-# save info from common.write2buf_info()
+# save info from common.print_info()
 last_info = None
 
-def output(video_extractor, pretty_write2buf=True):
+def output(video_extractor, pretty_print_gui=True):
     ve = video_extractor
     out = {}
     out['url'] = ve.url
     out['title'] = ve.title
     out['site'] = ve.name
     out['streams'] = ve.streams
-    if pretty_write2buf:
-        write2buf(json.dumps(out, indent=4, sort_keys=True, ensure_ascii=False))
+    if pretty_print_gui:
+        print_gui(json.dumps(out, indent=4, sort_keys=True, ensure_ascii=False))
     else:
-        write2buf(json.dumps(out))
+        print_gui(json.dumps(out))
 
 # a fake VideoExtractor object to save info
 class VideoExtractor(object):
     pass
 
-def write2buf_info(site_info=None, title=None, type=None, size=None):
+def print_gui_info(site_info=None, title=None, type=None, size=None):
     global last_info
     # create a VideoExtractor and save info for download_urls()
     ve = VideoExtractor()
@@ -33,6 +31,11 @@ def write2buf_info(site_info=None, title=None, type=None, size=None):
 
 def download_urls(urls=None, title=None, ext=None, total_size=None, refer=None):
     ve = last_info
+    if not ve:
+        ve = VideoExtractor()
+        ve.name = ''
+        ve.url = urls
+        ve.title=title
     # save download info in streams
     stream = {}
     stream['container'] = ext

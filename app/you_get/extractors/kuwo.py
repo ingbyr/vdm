@@ -12,7 +12,7 @@ def kuwo_download_by_rid(rid, output_dir = '.', merge = True, info_only = False)
     #format =aac|mp3 ->to get aac format=mp3 ->to get mp3
     url=get_content("http://antiserver.kuwo.cn/anti.s?format=mp3&rid=MUSIC_%s&type=convert_url&response=url"%rid)
     songtype, ext, size = url_info(url)
-    write2buf_info(site_info, title, songtype, size)
+    print_gui_info(site_info, title, songtype, size)
     if not info_only:
         download_urls([url], title, ext, size, output_dir)
 

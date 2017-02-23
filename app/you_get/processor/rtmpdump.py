@@ -3,8 +3,6 @@
 import os.path
 import subprocess
 
-from app.you_get.status import write2buf
-
 def get_usable_rtmpdump(cmd):
     try:
         p = subprocess.Popen([cmd], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -39,7 +37,7 @@ def download_rtmpdump_stream(url, title, ext,params={},output_dir='.'):
 
     # cmdline.append('-y')
     # cmdline.append(playpath)
-    write2buf("Call rtmpdump:\n"+" ".join(cmdline)+"\n")
+    print_gui("Call rtmpdump:\n"+" ".join(cmdline)+"\n")
     subprocess.call(cmdline)
     return
 
@@ -65,7 +63,7 @@ def play_rtmpdump_stream(player, url, params={}):
     cmdline.append('-')
 
     #logging
-    write2buf("Call rtmpdump:\n"+" ".join(cmdline)+"\n")
+    print_gui("Call rtmpdump:\n"+" ".join(cmdline)+"\n")
 
     #call RTMPDump!
     subprocess.call(cmdline)

@@ -16,7 +16,7 @@ def ifeng_download_by_id(id, title = None, output_dir = '.', merge = True, info_
     url = url.replace('http://wideo.ifeng.com/', 'http://ips.ifeng.com/wideo.ifeng.com/')
     type, ext, size = url_info(url)
 
-    write2buf_info(site_info, title, ext, size)
+    print_gui_info(site_info, title, ext, size)
     if not info_only:
         download_urls([url], title, ext, size, output_dir, merge = merge)
 

@@ -21,7 +21,7 @@ def flickr_download(url, output_dir='.', merge=True, info_only=False, **kwargs):
 
         mime, ext, size = url_info(url)
 
-        write2buf_info(site_info, title, mime, size)
+        print_gui_info(site_info, title, mime, size)
         if not info_only:
             download_urls([url], title, ext, size, output_dir, merge=merge, faker=True)
 
@@ -30,7 +30,7 @@ def flickr_download(url, output_dir='.', merge=True, info_only=False, **kwargs):
         ext = 'jpg'
         _, _, size = url_info(image)
 
-        write2buf_info(site_info, title, ext, size)
+        print_gui_info(site_info, title, ext, size)
         if not info_only:
             download_urls([image], title, ext, size, output_dir, merge=merge)
 

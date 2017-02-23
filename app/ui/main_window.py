@@ -6,6 +6,7 @@ from urllib import request
 from PyQt5.QtCore import QUrl
 from PyQt5.QtGui import QDesktopServices
 
+from app.config import set_default
 from app.ui.ui_main_window import Ui_MainWindow
 from app.util.download_thread import GetVideoInfoThread
 from app import mlog, mconfig
@@ -16,7 +17,6 @@ from app.ui.about_widget import AboutWdiget
 from app.ui.files_list_dialog import FilesListDialog
 from app.ui.icon_rc import *
 
-from app.you_get.status import set_default
 
 
 class MainWindow(Ui_MainWindow):
@@ -39,7 +39,6 @@ class MainWindow(Ui_MainWindow):
         self.action_file_path.triggered.connect(self.set_file_path)
         self.action_check_for_updates.triggered.connect(self.check_for_updates)
         self.action_report_bugs.triggered.connect(self.report_bugs)
-        # todo 增加网站支持列表
         self.action_supported_sites.triggered.connect(self.get_supported_sites)
 
     def get_supported_sites(self):

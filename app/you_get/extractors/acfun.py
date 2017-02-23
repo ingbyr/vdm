@@ -58,11 +58,11 @@ def acfun_download_by_vid(vid, title, output_dir='.', merge=True, info_only=Fals
 
     if not info_only and not dry_run:
         if not kwargs['caption']:
-            # write2buf('Skipping danmaku.')
+            print_gui('Skipping danmaku.')
             return
         try:
             title = get_filename(title)
-            # write2buf('Downloading %s ...\n' % (title + '.cmt.json'))
+            print_gui('Downloading %s ...\n' % (title + '.cmt.json'))
             cmt = get_srt_json(vid)
             with open(os.path.join(output_dir, title + '.cmt.json'), 'w', encoding='utf-8') as x:
                 x.write(cmt)
@@ -73,14 +73,16 @@ def acfun_download(url, output_dir='.', merge=True, info_only=False, **kwargs):
     assert re.match(r'http://[^\.]+.acfun.[^\.]+/\D/\D\D(\d+)', url)
     html = get_html(url)
 
-    title = r1(r'<h1 id="txt-title-view">([^<>]+)<', html)
+    title = r1(r'data-title="([^"]+)"', html)
     title = unescape_html(title)
     title = escape_file_path(title)
     assert title
+    if match1(url, r'_(\d+)$'): # current P
+        title = title + " " + r1(r'active">([^<]*)', html)
 
-    video = re.search('data-vid="(\d+)"\s*data-scode="".*>([^<]+)</a>', html)
-    vid = video.group(1)
-    title = title + ' - ' + video.group(2)
+    vid = r1('data-vid="(\d+)"', html)
+    up = r1('data-name="([^"]+)"', html)
+    title = title + ' - ' + up
     acfun_download_by_vid(vid, title,
                           output_dir=output_dir,
                           merge=merge,

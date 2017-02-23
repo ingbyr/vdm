@@ -21,7 +21,8 @@ base_dir = os.getcwd()
 kwargs = {'output_dir': base_dir,
           'merge': True,
           'json_output': False,
-          'caption': True}
+          'caption': True,
+          'playlist': False}
 
 urls = ''
 
@@ -32,7 +33,7 @@ def set_default():
     global kwargs
     global urls
     global streams
-    streams=[]
+    streams = []
     kwargs['stream_id'] = ''
     urls = ''
 

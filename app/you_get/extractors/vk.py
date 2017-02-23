@@ -17,7 +17,7 @@ def get_video_info(url):
                 break
     assert url
     type, ext, size = url_info(url)
-    write2buf_info(site_info, title, type, size)
+    print_gui_info(site_info, title, type, size)
 
     return url, title, ext, size
 
@@ -32,7 +32,7 @@ def get_image_info(url):
     title = (' ').join(page_of + photo_date)
     image_link = r1(r'href="([^"]+)" class=\"mva_item\" target="_blank">Download full size', image_page)
     type, ext, size = url_info(image_link)
-    write2buf_info(site_info, title, type, size)
+    print_gui_info(site_info, title, type, size)
 
     return image_link, title, ext, size
 

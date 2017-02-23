@@ -13,7 +13,7 @@ def bandcamp_download(url, output_dir='.', merge=True, info_only=False, **kwargs
         file_url = 'http:' + track['file']['mp3-128']
         mime, ext, size = url_info(file_url)
 
-        write2buf_info(site_info, title, mime, size)
+        print_gui_info(site_info, title, mime, size)
         if not info_only:
             download_urls([file_url], title, ext, size, output_dir, merge=merge)
 

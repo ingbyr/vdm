@@ -18,7 +18,7 @@ def tudou_download_by_iid(iid, title, output_dir = '.', merge = True, info_only 
 
     ext = r1(r'http://[\w.]*/(\w+)/[\w.]*', urls[0])
 
-    write2buf_info(site_info, title, ext, size)
+    print_gui_info(site_info, title, ext, size)
     if not info_only:
         download_urls(urls, title, ext, size, output_dir=output_dir, merge = merge)
 
@@ -32,11 +32,11 @@ def tudou_download_by_id(id, title, output_dir = '.', merge = True, info_only = 
 def tudou_download(url, output_dir = '.', merge = True, info_only = False, **kwargs):
     if 'acfun.tudou.com' in url:  #wrong way!
         url = url.replace('acfun.tudou.com', 'www.acfun.tv')
-        you_get.extractors.acfun.acfun_download(url, output_dir, 
-                                               merge, 
+        you_get.extractors.acfun.acfun_download(url, output_dir,
+                                               merge,
                                                info_only)
         return  #throw you back
-    
+
     # Embedded player
     id = r1(r'http://www.tudou.com/v/([^/]+)/', url)
     if id:
@@ -44,7 +44,7 @@ def tudou_download(url, output_dir = '.', merge = True, info_only = False, **kwa
 
     html = get_decoded_html(url)
 
-    title = r1(r'kw\s*[:=]\s*[\'\"]([^\n]+?)\'\s*\n', html).replace("\\'", "\'")
+    title = r1(r'\Wkw\s*[:=]\s*[\'\"]([^\n]+?)\'\s*\n', html).replace("\\'", "\'")
     assert title
     title = unescape_html(title)
 
@@ -87,7 +87,7 @@ def parse_plist(url):
 def tudou_download_playlist(url, output_dir = '.', merge = True, info_only = False, **kwargs):
     videos = parse_plist(url)
     for i, (title, id) in enumerate(videos):
-        # write2buf('Processing %s of %s videos...' % (i + 1, len(videos)))
+        print_gui('Processing %s of %s videos...' % (i + 1, len(videos)))
         tudou_download_by_iid(id, title, output_dir = output_dir, merge = merge, info_only = info_only)
 
 site_info = "Tudou.com"

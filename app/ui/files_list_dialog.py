@@ -4,8 +4,8 @@ from PyQt5.QtGui import QIcon
 
 from app.ui.ui_files_list_dialog import Ui_FilesListDialog
 from app import mlog, mconfig
+from app.util import status
 from app.util.download_thread import DownloadThread
-import app.you_get.status as status
 from PyQt5.QtWidgets import QDialog, QMessageBox, QProgressDialog
 from PyQt5.QtCore import QThread, Qt
 from app.ui.icon_rc import *

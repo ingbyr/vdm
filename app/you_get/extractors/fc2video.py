@@ -38,7 +38,7 @@ def fc2video_download_by_upid(upid, output_dir = '.', merge = True, info_only = 
 
     type, ext, size = url_info(video_url, headers=fake_headers)
 
-    write2buf_info(site_info, title, type, size)
+    print_gui_info(site_info, title, type, size)
     if not info_only:
         download_urls([video_url], title, ext, size, output_dir, merge=merge, headers = fake_headers)
 
