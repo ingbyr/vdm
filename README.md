@@ -1,5 +1,5 @@
 # GUI-YouGet
-![](https://img.shields.io/badge/v0.1.0-pass-green.svg)
+![](https://img.shields.io/badge/v0.1.2-pass-green.svg)
 ![](https://img.shields.io/github/forks/ingbyr/GUI-YouGet.svg)
 ![](https://img.shields.io/github/stars/ingbyr/GUI-YouGet.svg)
 ![](https://img.shields.io/badge/license-MIT-blue.svg)
