@@ -36,14 +36,14 @@
   <widget class="QLabel" name="label_info">
    <property name="geometry">
     <rect>
-     <x>190</x>
-     <y>60</y>
-     <width>231</width>
-     <height>131</height>
+     <x>180</x>
+     <y>50</y>
+     <width>251</width>
+     <height>141</height>
     </rect>
    </property>
    <property name="text">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;GitHub Repository:  &lt;a href=&quot;https://github.com/ingbyr/GUI-YouGet&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GUI-YouGet&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p&gt;License:  &lt;a href=&quot;https://raw.githubusercontent.com/ingbyr/GUI-YouGet/master/LICENSE.txt&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;MIT&lt;/span&gt;&lt;/a&gt;  | Based on:  &lt;a href=&quot;https://github.com/soimort/you-get&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;you-get&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p&gt;Coder: InG_byr ( &lt;a href=&quot;http://www.ingbyr.tk&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Blog&lt;/span&gt;&lt;/a&gt;  |  &lt;a href=&quot;http://www.weibo.com/zwkv5&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Weibo&lt;/span&gt;&lt;/a&gt; )&lt;/p&gt;&lt;p&gt;UI Designer: No one&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;GitHub Repository: &lt;a href=&quot;https://github.com/ingbyr/GUI-YouGet&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GUI-YouGet&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p&gt;License: &lt;a href=&quot;https://raw.githubusercontent.com/ingbyr/GUI-YouGet/master/LICENSE.txt&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;MIT&lt;/span&gt;&lt;/a&gt; | Based on: &lt;a href=&quot;https://github.com/soimort/you-get&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;you-get&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p&gt;Coder: ingbyr ( &lt;a href=&quot;http://www.ingbyr.tk&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Blog&lt;/span&gt;&lt;/a&gt; | &lt;a href=&quot;http://www.weibo.com/zwkv5&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Weibo&lt;/span&gt;&lt;/a&gt; )&lt;/p&gt;&lt;p&gt;UI Designer: Nobody&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="textFormat">
     <enum>Qt::RichText</enum>
@@ -53,7 +53,7 @@
    <property name="geometry">
     <rect>
      <x>170</x>
-     <y>10</y>
+     <y>0</y>
      <width>111</width>
      <height>41</height>
     </rect>

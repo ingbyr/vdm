@@ -13,4 +13,4 @@ def s2b(str):
     elif str == 'true':
         return True
     else:
-        print('s2b fail: ' + str)
+        return None
