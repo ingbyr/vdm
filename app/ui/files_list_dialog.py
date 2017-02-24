@@ -4,8 +4,8 @@ from PyQt5.QtGui import QIcon
 
 from app.ui.ui_files_list_dialog import Ui_FilesListDialog
 from app import mlog, mconfig
+from app.util import status
 from app.util.download_thread import DownloadThread
-import app.you_get.status as status
 from PyQt5.QtWidgets import QDialog, QMessageBox, QProgressDialog
 from PyQt5.QtCore import QThread, Qt
 from app.ui.icon_rc import *
@@ -48,7 +48,6 @@ class FilesListDialog(Ui_FilesListDialog):
         self.download_thread = DownloadThread(mconfig.get_urls(), **mconfig.kwargs)
         self.download_thread.finish_signal.connect(self.finish_download)
         self.download_thread.start()
-
         self.show_progress_bar()
 
     def show_msg(self, icon, title, text):
@@ -84,6 +83,8 @@ class FilesListDialog(Ui_FilesListDialog):
         progressDialog.setLabelText('Current speed: ')
         progressDialog.setCancelButtonText('Cancel')
         progressDialog.setRange(0, 100)
+        progressDialog.setValue(0)
+        progressDialog.show()
 
         while percent < 100 and not is_exits:
             percent = status.get_percent()

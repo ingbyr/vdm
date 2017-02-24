@@ -73,7 +73,7 @@ def ckplayer_download_by_xml(ckinfo, output_dir = '.', merge = False, info_only 
         for i in video_info['links'][1:]:  #save 1st one
             size += url_info(i)[2]
     
-    write2buf_info(site_info, title, type_, size)
+    print_gui_info(site_info, title, type_, size)
     if not info_only:
         download_urls(video_info['links'], title, _ext, size, output_dir=output_dir, merge=merge)
 

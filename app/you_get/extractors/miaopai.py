@@ -26,7 +26,7 @@ def miaopai_download_by_url(url, output_dir = '.', merge = False, info_only = Fa
         title = match1(b, r'<meta name="description" content="([\s\S]*?)\"\W')
 
         type_, ext, size = url_info(url)
-        write2buf_info(site_info, title, type_, size)
+        print_gui_info(site_info, title, type_, size)
         if not info_only:
             download_urls([url], title, ext, total_size=None, output_dir=output_dir, merge=merge)
 

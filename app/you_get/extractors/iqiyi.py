@@ -1,18 +1,18 @@
 #!/usr/bin/env python
 
 from ..common import *
+from ..common import print_gui_more_compatible as print_gui
 from ..extractor import VideoExtractor
+from ..util import log
+from .. import json_output
+
 from uuid import uuid4
 from random import random,randint
 import json
 from math import floor
 from zlib import decompress
 import hashlib
-from ..util import log
-
 import time
-
-from app.you_get.status import write2buf
 
 '''
 Changelog:
@@ -204,16 +204,16 @@ class Iqiyi(VideoExtractor):
                           merge=kwargs['merge'],)
 
             if not kwargs['caption']:
-                write2buf('Skipping captions.')
+                print_gui('Skipping captions.')
                 return
             for lang in self.caption_tracks:
                 filename = '%s.%s.srt' % (get_filename(self.title), lang)
-                write2buf('Saving %s ... ' % filename, end="", flush=True)
+                print_gui('Saving %s ... ' % filename, end="", flush=True)
                 srt = self.caption_tracks[lang]
                 with open(os.path.join(kwargs['output_dir'], filename),
                           'w', encoding='utf-8') as x:
                     x.write(srt)
-                write2buf('Done.')
+                print_gui('Done.')
 
 '''
         if info["code"] != "A000000":

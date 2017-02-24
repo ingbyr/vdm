@@ -39,7 +39,7 @@ def naver_download(url, output_dir = '.', merge = True, info_only = False, **kwa
 			real_url= domain_node.firstChild.data+ '/' +uri_node.firstChild.data
 
 	type, ext, size = url_info(real_url)
-	write2buf_info(site_info, title, type, size)
+	print_gui_info(site_info, title, type, size)
 	if not info_only:
 		download_urls([real_url], title, ext, size, output_dir, merge = merge)
 

@@ -23,7 +23,7 @@ def interest_download(url, output_dir='.', merge=True, info_only=False, **kwargs
 
     type, ext, size = 'mp4', 'mp4', 0
 
-    write2buf_info(site_info, title, type, size)
+    print_gui_info(site_info, title, type, size)
     if not info_only:
         download_rtmp_url(url=serverurl, title=title, ext=ext, output_dir=output_dir)
 

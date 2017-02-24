@@ -22,7 +22,7 @@ def w56_download_by_id(id, title = None, output_dir = '.', merge = True, info_on
     url = files[0]['url'] + '&prod=56'
     ext = 'mp4'
 
-    write2buf_info(site_info, title, ext, size)
+    print_gui_info(site_info, title, ext, size)
     if not info_only:
         download_urls([url], title, ext, size, output_dir = output_dir, merge = merge)
 
