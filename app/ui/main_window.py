@@ -7,7 +7,7 @@ from PyQt5.QtCore import QSettings
 from PyQt5.QtCore import QUrl
 from PyQt5.QtGui import QDesktopServices
 
-from app.config import set_default
+from app.config import set_default, set_file_path
 from app.ui.proxy_dialog import ProxyDialog
 from app.ui.ui_main_window import Ui_MainWindow
 from app.util.config_utils import s2b
@@ -102,8 +102,10 @@ class MainWindow(Ui_MainWindow):
         if fname:
             self.config.setValue(mconfig.file_path, fname)
             self.file_path_label.setText(fname)
+            set_file_path(fname)
             mlog.debug('changed file path to ' + mconfig.get_file_path())
         else:
+            set_file_path(mconfig.base_dir)
             self.file_path_label.setText(mconfig.base_dir)
             self.config.setValue(mconfig.file_path, mconfig.base_dir)
 
