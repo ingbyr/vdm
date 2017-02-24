@@ -11,7 +11,7 @@ from app.you_get.version import script_name, __version__
 
 __author__ = 'InG_byr'
 
-version = '0.1.1'
+version = '0.1.2'
 
 buildtime = date.today()
 
