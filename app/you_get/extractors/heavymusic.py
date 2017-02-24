@@ -14,7 +14,7 @@ def heavymusic_download(url, output_dir='.', merge=True, info_only=False, **kwar
         file_url = 'http://www.heavy-music.ru/online2.php?band=%s&album=%s&track=%s' % (parse.quote(band), parse.quote(album), parse.quote(title))
         _, _, size = url_info(file_url)
 
-        write2buf_info(site_info, title, 'mp3', size)
+        print_gui_info(site_info, title, 'mp3', size)
         if not info_only:
             download_urls([file_url], title[:-4], 'mp3', size, output_dir, merge=merge)
 

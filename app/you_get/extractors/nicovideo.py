@@ -4,8 +4,6 @@ __all__ = ['nicovideo_download']
 
 from ..common import *
 
-from app.you_get.status import write2buf
-
 def nicovideo_login(user, password):
     data = "current_form=login&mail=" + user +"&password=" + password + "&login_submit=Log+In"
     response = request.urlopen(request.Request("https://secure.nicovideo.jp/secure/login?site=niconico", headers=fake_headers, data=data.encode('utf-8')))
@@ -29,7 +27,7 @@ context=ssl.SSLContext(ssl.PROTOCOL_TLSv1))
         password = getpass.getpass("Password: ")
     else:
         user, password = info[0], info[2]
-    write2buf("Logging in...")
+    print_gui("Logging in...")
     nicovideo_login(user, password)
 
     html = get_html(url) # necessary!
@@ -41,7 +39,7 @@ context=ssl.SSLContext(ssl.PROTOCOL_TLSv1))
 
     type, ext, size = url_info(real_url)
 
-    write2buf_info(site_info, title, type, size)
+    print_gui_info(site_info, title, type, size)
     if not info_only:
         download_urls([real_url], title, ext, size, output_dir, merge = merge)
 

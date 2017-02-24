@@ -7,19 +7,22 @@ from .embed import *
 
 def universal_download(url, output_dir='.', merge=True, info_only=False, **kwargs):
     try:
-        embed_download(url, output_dir, merge=merge, info_only=info_only)
-    except: pass
-    else: return
+        content_type = get_head(url, headers=fake_headers)['Content-Type']
+    except:
+        content_type = get_head(url, headers=fake_headers, get_method='GET')['Content-Type']
+    if content_type.startswith('text/html'):
+        try:
+            embed_download(url, output_dir, merge=merge, info_only=info_only)
+        except: pass
+        else: return
 
     domains = url.split('/')[2].split('.')
     if len(domains) > 2: domains = domains[1:]
     site_info = '.'.join(domains)
 
-    response = get_response(url, faker=True)
-    content_type = response.headers['Content-Type']
-
     if content_type.startswith('text/html'):
         # extract an HTML page
+        response = get_response(url, faker=True)
         page = str(response.data)
 
         page_title = r1(r'<title>([^<]*)', page)
@@ -72,7 +75,7 @@ def universal_download(url, output_dir='.', merge=True, info_only=False, **kwarg
             except:
                 continue
             else:
-                write2buf_info(site_info, candy['title'], ext, size)
+                print_gui_info(site_info, candy['title'], ext, size)
                 if not info_only:
                     download_urls([candy['url']], candy['title'], ext, size,
                                   output_dir=output_dir, merge=merge,
@@ -85,7 +88,7 @@ def universal_download(url, output_dir='.', merge=True, info_only=False, **kwarg
         title = '.'.join(filename.split('.')[:-1])
         ext = filename.split('.')[-1]
         _, _, size = url_info(url, faker=True)
-        write2buf_info(site_info, title, ext, size)
+        print_gui_info(site_info, title, ext, size)
         if not info_only:
             download_urls([url], title, ext, size,
                           output_dir=output_dir, merge=merge,

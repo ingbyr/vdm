@@ -22,7 +22,7 @@ def ku6_download_by_id(id, title = None, output_dir = '.', merge = True, info_on
         _, _, temp = url_info(url)
         size += temp
     
-    write2buf_info(site_info, title, ext, size)
+    print_gui_info(site_info, title, ext, size)
     if not info_only:
         download_urls(urls, title, ext, size, output_dir, merge = merge)
 

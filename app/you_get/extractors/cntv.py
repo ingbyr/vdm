@@ -7,8 +7,6 @@ from ..common import *
 import json
 import re
 
-from app.you_get.status import write2buf
-
 
 def cntv_download_by_id(id, title = None, output_dir = '.', merge = True, info_only = False):
     assert id
@@ -26,7 +24,7 @@ def cntv_download_by_id(id, title = None, output_dir = '.', merge = True, info_o
         _, _, temp = url_info(url)
         size += temp
 
-    write2buf_info(site_info, title, ext, size)
+    print_gui_info(site_info, title, ext, size)
     if not info_only:
         # avoid corrupted files - don't merge
         download_urls(urls, title, ext, size, output_dir = output_dir, merge = False)

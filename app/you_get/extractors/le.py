@@ -9,8 +9,6 @@ import base64, hashlib, urllib, time, re
 
 from ..common import *
 
-from app.you_get.status import write2buf
-
 #@DEPRECATED
 def get_timestamp():
     tn = random.random()
@@ -64,9 +62,9 @@ def video_info(vid,**kwargs):
     if "stream_id" in kwargs and kwargs["stream_id"].lower() in support_stream_id:
         stream_id = kwargs["stream_id"]
     else:
-        write2buf("Current Video Supports:")
+        print_gui("Current Video Supports:")
         for i in support_stream_id:
-            write2buf("\t--format",i,"<URL>")
+            print_gui("\t--format",i,"<URL>")
         if "1080p" in support_stream_id:
             stream_id = '1080p'
         elif "720p" in support_stream_id:
@@ -95,7 +93,7 @@ def letv_download_by_vid(vid,title, output_dir='.', merge=True, info_only=False,
         _, _, tmp = url_info(i)
         size += tmp
 
-    write2buf_info(site_info, title, ext, size)
+    print_gui_info(site_info, title, ext, size)
     if not info_only:
         download_urls(urls, title, ext, size, output_dir=output_dir, merge=merge)
 
@@ -116,7 +114,7 @@ def letvcloud_download_by_vu(vu, uu, title=None, output_dir='.', merge=True, inf
     urls = [base64.b64decode(sorted(type_available, key = lambda x:x['video_quality'])[-1]['video_url']).decode("utf-8")]
     size = urls_size(urls)
     ext = 'mp4'
-    write2buf_info(site_info, title, ext, size)
+    print_gui_info(site_info, title, ext, size)
     if not info_only:
         download_urls(urls, title, ext, size, output_dir=output_dir, merge=merge)
 

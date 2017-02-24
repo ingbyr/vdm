@@ -1,9 +1,8 @@
 # !/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 from app.config import add_stream
 
-__author__ = 'InG_byr'
+__author__ = "ingbyr"
 
 SPEED = ''
 PERCENT = 0.0
@@ -67,7 +66,7 @@ def get_speed():
     return SPEED
 
 
-def write2buf(*arg, **kwargs):
+def print_gui(*arg, **kwargs):
     global buffer
     if arg:
         for item in arg:
@@ -84,3 +83,7 @@ def write2buf(*arg, **kwargs):
 def get_buffer():
     global buffer
     return buffer
+
+def clear_buffer():
+    global buffer
+    buffer = []

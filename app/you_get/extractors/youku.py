@@ -76,7 +76,7 @@ class Youku(VideoExtractor):
         for x in xs:
             if x not in mem:
                 mem.add(x)
-                yield(x)
+        return mem
 
     def get_vid_from_url(url):
         """Extracts video ID from URL.
@@ -89,7 +89,7 @@ class Youku(VideoExtractor):
     def get_playlist_id_from_url(url):
         """Extracts playlist ID from URL.
         """
-        return match1(url, r'youku\.com/playlist_show/id_([a-zA-Z0-9=]+)')
+        return match1(url, r'youku\.com/albumlist/show\?id=([a-zA-Z0-9=]+)')
 
     def download_playlist_by_url(self, url, **kwargs):
         self.url = url
@@ -97,15 +97,17 @@ class Youku(VideoExtractor):
         try:
             playlist_id = self.__class__.get_playlist_id_from_url(self.url)
             assert playlist_id
-
-            video_page = get_content('http://www.youku.com/playlist_show/id_%s' % playlist_id)
+            video_page = get_content('http://list.youku.com/albumlist/show?id=%s' % playlist_id)
             videos = Youku.oset(re.findall(r'href="(http://v\.youku\.com/[^?"]+)', video_page))
-
             # Parse multi-page playlists
-            for extra_page_url in Youku.oset(re.findall('href="(http://www\.youku\.com/playlist_show/id_%s_[^?"]+)' % playlist_id, video_page)):
-                extra_page = get_content(extra_page_url)
-                videos |= Youku.oset(re.findall(r'href="(http://v\.youku\.com/[^?"]+)', extra_page))
-
+            last_page_url = re.findall(r'href="(/albumlist/show\?id=%s[^"]+)" title="末页"' % playlist_id, video_page)[0]
+            num_pages = int(re.findall(r'page=([0-9]+)\.htm', last_page_url)[0])
+            if (num_pages > 0):
+                # download one by one
+                for pn in range(2, num_pages + 1):
+                    extra_page_url = re.sub(r'page=([0-9]+)\.htm', r'page=%s.htm' % pn, last_page_url)
+                    extra_page = get_content('http://list.youku.com' + extra_page_url)
+                    videos |= Youku.oset(re.findall(r'href="(http://v\.youku\.com/[^?"]+)', extra_page))
         except:
             # Show full list of episodes
             if match1(url, r'youku\.com/show_page/id_([a-zA-Z0-9=]+)'):
@@ -126,7 +128,7 @@ class Youku(VideoExtractor):
                 raise
             except:
                 exc_type, exc_value, exc_traceback = sys.exc_info()
-                traceback.write2buf_exception(exc_type, exc_value, exc_traceback)
+                traceback.print_gui_exception(exc_type, exc_value, exc_traceback)
 
     def prepare(self, **kwargs):
         # Hot-plug cookie handler
@@ -141,9 +143,12 @@ class Youku(VideoExtractor):
             })
         else:
             proxy_handler = request.ProxyHandler({})
-        opener = request.build_opener(ssl_context, cookie_handler, proxy_handler)
-        opener.addheaders = [('Cookie','__ysuid={}'.format(time.time()))]
-        request.install_opener(opener)
+        if not request._opener:
+            opener = request.build_opener(proxy_handler)
+            request.install_opener(opener)
+        for handler in (ssl_context, cookie_handler, proxy_handler):
+            request._opener.add_handler(handler)
+        request._opener.addheaders = [('Cookie','__ysuid={}'.format(time.time()))]
 
         assert self.url or self.vid
 
@@ -160,7 +165,7 @@ class Youku(VideoExtractor):
             api12_url = kwargs['api12_url']  #86
             self.ctype = kwargs['ctype']
             self.title = kwargs['title']
-            
+
         else:
             api_url = 'http://play.youku.com/play/get.json?vid=%s&ct=10' % self.vid
             api12_url = 'http://play.youku.com/play/get.json?vid=%s&ct=12' % self.vid
@@ -182,7 +187,7 @@ class Youku(VideoExtractor):
                 if data['error']['code'] == -202:
                     # Password protected
                     self.password_protected = True
-                    self.password = input(log.swrite2buf('Password: ', log.YELLOW))
+                    self.password = input(log.sprint_gui('Password: ', log.YELLOW))
                     api_url += '&pwd={}'.format(self.password)
                     api12_url += '&pwd={}'.format(self.password)
                     meta = json.loads(get_content(
@@ -328,22 +333,51 @@ class Youku(VideoExtractor):
 
     def open_download_by_vid(self, client_id, vid, **kwargs):
         """self, str, str, **kwargs->None
+
+        Arguments:
+        client_id:        An ID per client. For now we only know Acfun's
+                          such ID.
+
+        vid:              An video ID for each video, starts with "C".
+
+        kwargs['embsig']: Youku COOP's anti hotlinking.
+                          For Acfun, an API call must be done to Acfun's
+                          server, or the "playsign" of the content of sign_url
+                          shall be empty.
+
+        Misc:
         Override the original one with VideoExtractor.
-        Most of the credit are to @ERioK, who gave his POC."""
+
+        Author:
+        Most of the credit are to @ERioK, who gave his POC.
+
+        History:
+        Jul.28.2016 Youku COOP now have anti hotlinking via embsig. """
         self.f_code_1 = '10ehfkbv'  #can be retrived by running r.translate with the keys and the list e
         self.f_code_2 = 'msjv7h2b'
+
+        # as in VideoExtractor
         self.url = None
         self.vid = vid
         self.name = "优酷开放平台 (Youku COOP)"
 
         #A little bit of work before self.prepare
-        sign_url = "https://api.youku.com/players/custom.json?client_id={client_id}&video_id={video_id}".format(client_id = client_id, video_id = vid)
+
+        #Change as Jul.28.2016 Youku COOP updates its platform to add ant hotlinking
+        if kwargs['embsig']:
+            sign_url = "https://api.youku.com/players/custom.json?client_id={client_id}&video_id={video_id}&embsig={embsig}".format(client_id = client_id, video_id = vid, embsig = kwargs['embsig'])
+        else:
+            sign_url = "https://api.youku.com/players/custom.json?client_id={client_id}&video_id={video_id}".format(client_id = client_id, video_id = vid)
+
         playsign = json.loads(get_content(sign_url))['playsign']
-    
+
+        #to be injected and replace ct10 and 12
         api85_url = 'http://play.youku.com/partner/get.json?cid={client_id}&vid={vid}&ct=85&sign={playsign}'.format(client_id = client_id, vid = vid, playsign = playsign)
         api86_url = 'http://play.youku.com/partner/get.json?cid={client_id}&vid={vid}&ct=86&sign={playsign}'.format(client_id = client_id, vid = vid, playsign = playsign)
-        
+
         self.prepare(api_url = api85_url, api12_url = api86_url, ctype = 86, **kwargs)
+
+        #exact copy from original VideoExtractor
         if 'extractor_proxy' in kwargs and kwargs['extractor_proxy']:
             unset_proxy()
 

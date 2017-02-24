@@ -3,8 +3,6 @@
 import struct
 from io import BytesIO
 
-from app.you_get.status import write2buf
-
 TAG_TYPE_METADATA = 18
 
 ##################################################
@@ -302,7 +300,7 @@ def concat_flv(flvs, output = None):
     elif os.path.isdir(output):
         output = os.path.join(output, guess_output(flvs))
     
-    write2buf('Merging video parts...')
+    print_gui('Merging video parts...')
     ins = [open(flv, 'rb') for flv in flvs]
     for stream in ins:
         read_flv_header(stream)
@@ -338,7 +336,7 @@ def concat_flv(flvs, output = None):
     return output
 
 def usage():
-    write2buf('Usage: [python3] join_flv.py --output TARGET.flv flv...')
+    print_gui('Usage: [python3] join_flv.py --output TARGET.flv flv...')
 
 def main():
     import sys, getopt
