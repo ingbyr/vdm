@@ -29,7 +29,7 @@ class GetVideoInfoThread(QtCore.QThread):
         self.config = QSettings('config.ini', QSettings.IniFormat)
 
         if s2b(self.config.value('enable_proxy', 'false')):
-            if s2b(self.config.value('s_http_proxy', 'false')):
+            if s2b(self.config.value('is_http_proxy', 'false')):
                 m_set_http_proxy(self.config.value('ip', '127.0.0.1'), self.config.value('port', '1080'))
                 mlog.debug("enable http proxy")
             if s2b(self.config.value('is_socks_proxy', 'false')):
@@ -61,6 +61,15 @@ class DownloadThread(QtCore.QThread):
         super(DownloadThread, self).__init__(parent)
         self.urls = urls
         self.kwargs = kwargs
+        self.config = QSettings('config.ini', QSettings.IniFormat)
+
+        if s2b(self.config.value('enable_proxy', 'false')):
+            if s2b(self.config.value('is_http_proxy', 'false')):
+                m_set_http_proxy(self.config.value('ip', '127.0.0.1'), self.config.value('port', '1080'))
+                mlog.debug("enable http proxy")
+            if s2b(self.config.value('is_socks_proxy', 'false')):
+                m_set_socks_proxy(self.config.value('ip', '127.0.0.1'), self.config.value('port', '1080'))
+                mlog.debug("enable socks proxy")
 
     def run(self):
         """

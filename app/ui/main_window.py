@@ -145,3 +145,8 @@ class MainWindow(Ui_MainWindow):
     def save_config(self):
         enable_proxy = self.proxy_checkBox.isChecked()
         self.config.setValue('enable_proxy', enable_proxy)
+        is_http_proxy = self.config.value('is_http_proxy')
+        is_socks_proxy = self.config.value('is_socks_proxy')
+
+        if is_http_proxy is None or is_socks_proxy is None:
+            self.show_proxy_dialog()
