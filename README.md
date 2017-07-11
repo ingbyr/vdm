@@ -1,3 +1,5 @@
+** dev分支正在重写GUI-YouGet，期望能实现自动更新you-get核心库 --by ingbyr 2017.07 **
+
 # GUI-YouGet
 ![](https://img.shields.io/badge/v0.1.2-pass-green.svg)
 ![](https://img.shields.io/github/forks/ingbyr/GUI-YouGet.svg)
@@ -12,7 +14,7 @@
 ## Download
 [GUI-YouGet Download Page](https://github.com/ingbyr/GUI-YouGet/releases)
 > **NOTICE:** The download page only shows the Windows10-64bit version and Ubuntu16.04-64bit version. If you want to run on your platform, you need to install
-the [Qt5](http://doc.qt.io/qt-5/) and [Pyinstaller](http://pyinstaller.readthedocs.io/en/stable/). Then compile the [source code](https://github.com/ingbyr/GUI-YouGet/releases) by yourself.
+the [PyQt5](https://www.riverbankcomputing.com/software/pyqt/download5) and [Pyinstaller](http://pyinstaller.readthedocs.io/en/stable/). Then compile the [source code](https://github.com/ingbyr/GUI-YouGet/releases) by yourself.
 
 ## What is it
 
