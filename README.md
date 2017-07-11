@@ -1,4 +1,4 @@
-** dev分支正在重写GUI-YouGet，期望能实现自动更新you-get核心库 --by ingbyr 2017.07 **
+**dev分支正在重写GUI-YouGet，期望能实现自动更新you-get核心库 --by ingbyr 2017.07**
 
 # GUI-YouGet
 ![](https://img.shields.io/badge/v0.1.2-pass-green.svg)
