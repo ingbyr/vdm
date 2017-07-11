@@ -33,6 +33,6 @@ class GetVideoInfoThread(QThread):
         self.result = ""
 
     def run(self):
-        result = get_output(*self.args)
-        log.debug(self.result)
-        self.finish_signal.emit(result.decode("GBK"))
+        result = get_output(*self.args).decode("GBK")
+        log.debug(result)
+        self.finish_signal.emit(result)
