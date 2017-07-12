@@ -13,7 +13,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5.uic import loadUi
 
 from app.file_list_dialog import FileListDialog
-from app.youget_helper import GetVideoInfoThread
+from app.youget_helper import GetMediaInfoThread
 
 
 class MainWindow(QMainWindow):

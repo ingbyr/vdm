@@ -6,6 +6,7 @@ author: ingbyr
 website: www.ingbyr.com
 """
 import os
+import re
 import subprocess
 
 from PyQt5.QtCore import QThread, pyqtSignal
@@ -24,15 +25,60 @@ def get_output(*args):
     return result
 
 
-class GetVideoInfoThread(QThread):
-    finish_signal = pyqtSignal(str)
+def get_itag(msg):
+    """
+    get the tag of media
+    :param msg:
+    :return:
+    """
+    tag = re.search(r"--\w*=\w*", msg).group()
+    return tag
+
+
+def options_filter(msg):
+    """
+    generate file lists
+    :param msg:
+    :return:
+    """
+    options = re.split(r'\n\s*\n', msg)
+    return options
+
+
+class GetMediaInfoThread(QThread):
+    """
+    get the media info
+    """
+    finish_signal = pyqtSignal(list)
 
     def __init__(self, *args):
-        super(GetVideoInfoThread, self).__init__()
+        super(GetMediaInfoThread, self).__init__()
         self.args = args
         self.result = ""
 
     def run(self):
-        result = get_output(*self.args).decode("GBK")
-        log.debug(result)
+        output = get_output(*self.args).decode("GBK")
+        log.debug(output)
+        result = options_filter(output)
+        for res in result:
+            log.debug(res)
+        self.finish_signal.emit(result)
+
+
+class DowloadMediaThread(QThread):
+    """
+    download media
+    """
+    finish_signal = pyqtSignal(list)
+
+    def __init__(self, *args):
+        super(DowloadMediaThread, self).__init__()
+        self.args = args
+
+    def run(self):
+        output = get_output(*self.args).decode("GBK")
+        log.debug(output)
+        result = options_filter(output)
+        for res in result:
+            log.debug(res)
         self.finish_signal.emit(result)
