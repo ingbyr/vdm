@@ -1,0 +1,21 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
+"""
+author: ingbyr
+website: www.ingbyr.com
+"""
+import os
+
+from PyQt5.QtWidgets import QWidget
+from PyQt5.uic import loadUi
+
+
+class AboutWiget(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.init_ui()
+
+    def init_ui(self):
+        self.about_widget = loadUi(os.path.join("ui", "about_widget.ui"), self)
+        self.show()
