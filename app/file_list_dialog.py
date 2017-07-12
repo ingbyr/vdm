@@ -7,6 +7,7 @@ website: www.ingbyr.com
 """
 import os
 
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QDialog, QListWidgetItem, QMessageBox
 from PyQt5.uic import loadUi
 
@@ -24,6 +25,7 @@ class FileListDialog(QDialog):
     def init_ui(self):
         default_item = QListWidgetItem(self.tr("Loading..."))
         self.list_widget.addItem(default_item)
+        self.setWindowIcon(QIcon(os.path.join("imgs", "logo.jpg")))
         self.show()
 
         self.info_thread = GetMediaInfoThread("-i", self.url)

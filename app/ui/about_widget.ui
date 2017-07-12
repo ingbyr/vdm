@@ -14,7 +14,7 @@
    <string>About</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="icon.qrc">
+   <iconset>
     <normaloff>:/res/favicon.ico</normaloff>:/res/favicon.ico</iconset>
   </property>
   <widget class="QLabel" name="label_logo">
@@ -60,7 +60,7 @@
    </property>
    <property name="font">
     <font>
-     <pointsize>16</pointsize>
+     <pointsize>14</pointsize>
     </font>
    </property>
    <property name="text">
