@@ -28,6 +28,7 @@ class MainWindow(QMainWindow):
     def init_ui(self):
         # read the settings
         self.file_path_label.setText(config["common"]["out_put_dir"])
+        self.setWindowIcon(QIcon(os.path.join("imgs", "logo.jpg")))
 
         self.show()
 
