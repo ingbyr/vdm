@@ -17,19 +17,6 @@
    <iconset>
     <normaloff>:/res/favicon.ico</normaloff>:/res/favicon.ico</iconset>
   </property>
-  <widget class="QTextEdit" name="text_files_list">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>20</y>
-     <width>361</width>
-     <height>291</height>
-    </rect>
-   </property>
-   <property name="readOnly">
-    <bool>true</bool>
-   </property>
-  </widget>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
@@ -89,6 +76,16 @@
      <y>360</y>
      <width>101</width>
      <height>22</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QListWidget" name="list_widget">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>10</y>
+     <width>361</width>
+     <height>331</height>
     </rect>
    </property>
   </widget>
