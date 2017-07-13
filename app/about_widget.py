@@ -7,6 +7,7 @@ website: www.ingbyr.com
 """
 import os
 
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import QWidget
 from PyQt5.uic import loadUi
@@ -22,4 +23,4 @@ class AboutWiget(QWidget):
         self.setWindowIcon(QIcon(os.path.join("imgs", "logo.jpg")))
         self.label_logo.setScaledContents(True)
         self.label_logo.setPixmap(QPixmap(os.path.join("imgs", "logo.jpg")))
-        self.show()
+        self.setAttribute(Qt.WA_QuitOnClose, False)
