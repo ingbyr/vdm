@@ -7,6 +7,7 @@ website: www.ingbyr.com
 """
 import sys
 
+from PyQt5.QtCore import pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QApplication
 

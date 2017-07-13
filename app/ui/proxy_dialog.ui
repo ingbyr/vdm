@@ -92,14 +92,14 @@
   <widget class="QRadioButton" name="socks5_checkbox">
    <property name="geometry">
     <rect>
-     <x>200</x>
+     <x>160</x>
      <y>190</y>
-     <width>141</width>
+     <width>221</width>
      <height>30</height>
     </rect>
    </property>
    <property name="text">
-    <string>Socks5 proxy</string>
+    <string>Socks5 proxy (Not available)</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="ip_text_edit">
