@@ -20,8 +20,18 @@ def youget(*args):
         cmd.append(arg)
     log.debug(cmd)
 
+    # with open("files.txt", "w") as f:
+    #     proc = subprocess.Popen(cmd, shell=True, stdout=f,
+    #                             stderr=subprocess.STDOUT,
+    #                             stdin=subprocess.PIPE)
+    #     ret = proc.wait()
+    #     log.debug("you-get core run result code: " + str(ret))
+
     with subprocess.Popen(cmd, stdout=subprocess.PIPE) as proc:
         result = proc.stdout.read()
+    return result
+
+    # return b"file.txt test"
     return result
 
 

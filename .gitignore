@@ -97,7 +97,4 @@ app/*.log
 *.mp4
 *.flv
 *.xml
-
-
-
-
+*.txt

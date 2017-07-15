@@ -74,10 +74,6 @@ class FileListDialog(QDialog):
         self.msg.show()
 
     def closeEvent(self, QCloseEvent):
-        log.debug("clean the threads")
-        # todo fix this thread quit error
-
-        print(self.info_thread.isRunning())
         if self.info_thread and self.info_thread.isRunning():
             self.info_thread.quit()
             log.debug("clean the info_thread")
