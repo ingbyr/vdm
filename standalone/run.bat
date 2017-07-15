@@ -1,1 +1,1 @@
-.\dist\youget.exe
+.\bin\youget.exe
