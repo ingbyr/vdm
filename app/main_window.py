@@ -23,9 +23,9 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         # todo use the abs path, this not work in pyinstaller
-        self.main_window = loadUi(os.path.join("ui", "main_window.ui"), self)
-        self.msg_box = QMessageBox()
+        self.main_window = loadUi(os.path.join(os.getcwd(), "ui", "main_window.ui"), self)
         self.init_ui()
+        self.msg_box = QMessageBox()
         self.file_list_dialog = FileListDialog()
         self.about_widget = AboutWiget()
         self.proxy_dialog = ProxyDialog()
@@ -36,7 +36,7 @@ class MainWindow(QMainWindow):
     def init_ui(self):
         # read the settings
         self.file_path_label.setText(config["common"]["out_put_dir"])
-        self.setWindowIcon(QIcon(os.path.join("imgs", "logo.jpg")))
+        self.setWindowIcon(QIcon(os.path.join(os.getcwd(), "imgs", "logo.jpg")))
         self.show()
 
         # set button slot
@@ -69,7 +69,8 @@ class MainWindow(QMainWindow):
         else:
             self.file_path_label.setText(config["common"]["out_put_dir"])
 
-    def get_supported_sites(self):
+    @staticmethod
+    def get_supported_sites():
         QDesktopServices.openUrl(QUrl("https://github.com/ingbyr/GUI-YouGet/wiki/Supported-Sites"))
 
     def show_about(self):
@@ -94,17 +95,21 @@ class MainWindow(QMainWindow):
             self.msg_box.setText("There is a new version : " + remote_inf["version"])
             self.do_updates()
 
-    def do_updates(self):
+    @staticmethod
+    def do_updates():
         # todo auto download latest version auto
         QDesktopServices.openUrl(QUrl("https://github.com/ingbyr/GUI-YouGet/releases"))
 
-    def report_bugs(self):
+    @staticmethod
+    def report_bugs():
         QDesktopServices.openUrl(QUrl("https://github.com/ingbyr/GUI-YouGet/issues"))
 
-    def get_more_infomation(self):
+    @staticmethod
+    def get_more_information():
         QDesktopServices.openUrl(QUrl("https://github.com/ingbyr/GUI-YouGet"))
 
-    def get_supported_sites(self):
+    @staticmethod
+    def get_supported_sites():
         QDesktopServices.openUrl(QUrl("https://github.com/ingbyr/GUI-YouGet/wiki/Supported-Sites"))
 
     def show_msg(self, icon, title, text):

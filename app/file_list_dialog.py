@@ -19,10 +19,13 @@ from app.youget_helper import GetMediaInfoThread, get_media_args, DowloadMediaTh
 class FileListDialog(QDialog):
     def __init__(self):
         super().__init__()
-        self.dialog = loadUi(os.path.join("ui", "files_list_dialog.ui"), self)
+        self.dialog = loadUi(os.path.join(os.getcwd(), "ui", "files_list_dialog.ui"), self)
         self.setAttribute(Qt.WA_QuitOnClose, False)
-        self.msg = QMessageBox()
         self.init_ui()
+
+        self.msg = QMessageBox()
+        self.info_thread = None
+        self.download_thread = None
 
     @property
     def url(self):
@@ -35,9 +38,12 @@ class FileListDialog(QDialog):
     def init_ui(self):
         default_item = QListWidgetItem(self.tr("Loading..."))
         self.list_widget.addItem(default_item)
-        self.setWindowIcon(QIcon(os.path.join("imgs", "logo.jpg")))
+        self.setWindowIcon(QIcon(os.path.join(os.getcwd(), "imgs", "logo.jpg")))
 
     def get_media_info(self):
+        self.list_widget.clear()
+        default_item = QListWidgetItem(self.tr("Loading..."))
+        self.list_widget.addItem(default_item)
         self.info_thread = GetMediaInfoThread("-i", self._url)
         self.info_thread.finish_signal.connect(self.show_info)
         self.info_thread.start()
@@ -70,12 +76,11 @@ class FileListDialog(QDialog):
     def closeEvent(self, QCloseEvent):
         log.debug("clean the threads")
         # todo fix this thread quit error
-        if self.info_thread.isRunning():
-            try:
-                log.debug("clean the info thread")
-                self.info_thread.quit()
-            except Exception as e:
-                log.error("Clean info thread failed")
-                log.exception(e)
-        if self.download_thread.isRunning():
+
+        print(self.info_thread.isRunning())
+        if self.info_thread and self.info_thread.isRunning():
+            self.info_thread.quit()
+            log.debug("clean the info_thread")
+        if self.download_thread and self.download_thread.isRunning():
             self.download_thread.quit()
+            log.debug("clean the download_thread")
