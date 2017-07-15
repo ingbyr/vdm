@@ -16,11 +16,11 @@ from PyQt5.uic import loadUi
 class AboutWiget(QWidget):
     def __init__(self):
         super().__init__()
+        self.about_widget = loadUi(os.path.join(os.getcwd(), "ui", "about_widget.ui"), self)
         self.init_ui()
 
     def init_ui(self):
-        self.about_widget = loadUi(os.path.join("ui", "about_widget.ui"), self)
-        self.setWindowIcon(QIcon(os.path.join("imgs", "logo.jpg")))
+        self.setWindowIcon(QIcon(os.path.join(os.getcwd(), "imgs", "logo.jpg")))
         self.label_logo.setScaledContents(True)
-        self.label_logo.setPixmap(QPixmap(os.path.join("imgs", "logo.jpg")))
+        self.label_logo.setPixmap(QPixmap(os.path.join(os.getcwd(), "imgs", "logo.jpg")))
         self.setAttribute(Qt.WA_QuitOnClose, False)

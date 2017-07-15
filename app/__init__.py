@@ -27,8 +27,12 @@ log = logging
 
 # app config init
 config = configparser.ConfigParser()
-config.read("config.ini")
+
+config_p = os.path.join(os.getcwd(), "config.ini")
+
+config.read(config_p)
+
 if not config.has_option("common", "out_put_dir"):
     config["common"]["out_put_dir"] = os.getcwd()
-    with open('config.ini', 'w') as configfile:
+    with open(config_p, 'w') as configfile:
         config.write(configfile)

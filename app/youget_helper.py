@@ -75,18 +75,3 @@ class DowloadMediaThread(QThread):
         output = youget(*self.args).decode("GBK")
         log.debug(output)
         self.finish_signal.emit(output)
-
-# if __name__ == '__main__':
-#     msg = """site:                优酷 (Youku)
-# title:               辣眼睛万万没想到你是这样的杜飞!
-# stream:
-#     - format:        flvhd
-#       container:     flv
-#       video-profile: 标清
-#       size:          3.7 MiB (3852571 bytes)
-#     # download-with: you-get --format=flvhd [URL]
-# """
-#
-#     tag, size = get_media_args(msg)
-#     print("tag: ", tag)
-#     print("size: ", size)
