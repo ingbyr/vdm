@@ -13,7 +13,7 @@ from PyQt5.QtWidgets import QDialog, QListWidgetItem, QMessageBox
 from PyQt5.uic import loadUi
 
 from app import log, config
-from app.youget_helper import GetMediaInfoThread, get_media_args, DowloadMediaThread
+from app.youget_helper import GetMediaInfoThread, get_media_tag, DowloadMediaThread
 
 
 class FileListDialog(QDialog):
@@ -57,8 +57,7 @@ class FileListDialog(QDialog):
 
     def start_download(self, item):
         self.show_msg(item.text())
-        tag, size = get_media_args(item.text())
-        log.debug("tag: " + tag + "size: " + size)
+        tag = get_media_tag(item.text())
         self.download_thread = DowloadMediaThread(tag, "-o", config["common"]["output_dir"]
                                                   , self.url)
         self.download_thread.finish_signal.connect(self.downloaded)

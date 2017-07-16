@@ -12,7 +12,7 @@ import os
 __author__ = 'InG_byr'
 
 # log settings
-# todo log to file when finished
+# todo master分支日志输出到文件
 # filename='youget.log'
 logging.basicConfig(
                     level=logging.DEBUG,
@@ -24,7 +24,7 @@ log = logging
 
 
 # app config init
-# todo config delete options when finished
+# todo master分支清空config文件
 def save_config(sect, op, v):
     config[sect][op] = v
     with open(config_p, 'w') as f:
