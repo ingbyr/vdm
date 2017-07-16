@@ -5,7 +5,6 @@
 author: ingbyr
 website: www.ingbyr.com
 """
-import json
 import os
 import re
 import subprocess
@@ -16,20 +15,22 @@ from app import log, config
 
 
 def youget(*args):
+    # todo utf-8 设置后没有作用
+    # todo core换为youtube-dl，youget编码问题严重
     cmd = [os.path.join("core", config["core"]["youget"])]
+    # cmd = ["chcp", "65001", "&&", "you-get"]
     for arg in args:
         cmd.append(arg)
     log.debug(cmd)
 
-    with subprocess.Popen(cmd, stdout=subprocess.PIPE) as proc:
+    with subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT) as proc:
         result = proc.stdout.read()
     return result
 
 
-def get_media_args(msg):
+def get_media_tag(msg):
     tag = re.search(r"--\w*=\w*", msg).group()
-    size = re.search(r"\d*\sbytes", msg).group()
-    return tag, size
+    return tag
 
 
 def options_filter(msg):
@@ -53,6 +54,7 @@ class GetMediaInfoThread(QThread):
         self.args = args
 
     def run(self):
+        # todo 不应该只支持GBK编码
         output = youget(*self.args).decode("GBK")
         log.debug(output)
         result = options_filter(output)
@@ -72,16 +74,7 @@ class DowloadMediaThread(QThread):
         self.args = args
 
     def run(self):
+        # todo 不应该只支持GBK编码
         output = youget(*self.args).decode("GBK")
         log.debug(output)
         self.finish_signal.emit(output)
-
-
-if __name__ == '__main__':
-    with open(os.path.join(os.path.pardir, "version.json"), "w") as f:
-        v = {
-            "version": config["app"]["version"],
-            "you-get-core-version": "0.4.775",
-            "core-url": "https://github.com/soimort/you-get/releases/download/v0.4.775/youget-core.exe"
-        }
-        f.write(json.dumps(v))

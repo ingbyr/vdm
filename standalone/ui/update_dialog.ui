@@ -10,6 +10,12 @@
     <height>240</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <family>Century Gothic</family>
+    <pointsize>10</pointsize>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
@@ -114,7 +120,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Cancel</string>
+    <string>Close</string>
    </property>
   </widget>
  </widget>

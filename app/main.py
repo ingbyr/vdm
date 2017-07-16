@@ -7,7 +7,6 @@ website: www.ingbyr.com
 """
 import sys
 
-from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QApplication
 
 from app.main_window import MainWindow
@@ -41,8 +40,8 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     main_window = MainWindow()
 
-    if sys.platform.lower().startswith('win'):
-        if getattr(sys, 'frozen', False):
-            hideConsole()
+    # if sys.platform.lower().startswith('win'):
+    #     if getattr(sys, 'frozen', False):
+    #         hideConsole()
 
     sys.exit(app.exec_())
