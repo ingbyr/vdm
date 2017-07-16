@@ -10,6 +10,12 @@
     <height>400</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <family>Century Gothic</family>
+    <pointsize>11</pointsize>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>Files List</string>
   </property>
@@ -17,76 +23,19 @@
    <iconset>
     <normaloff>:/res/favicon.ico</normaloff>:/res/favicon.ico</iconset>
   </property>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>310</y>
-     <width>361</width>
-     <height>51</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Choose one to download.</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_2">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>360</y>
-     <width>51</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Select</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="push_button_confirm">
-   <property name="geometry">
-    <rect>
-     <x>300</x>
-     <y>360</y>
-     <width>80</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Download</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="push_button_cancel">
-   <property name="geometry">
-    <rect>
-     <x>210</x>
-     <y>360</y>
-     <width>80</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Cancel</string>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="combo_box_options">
-   <property name="geometry">
-    <rect>
-     <x>78</x>
-     <y>360</y>
-     <width>101</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
   <widget class="QListWidget" name="list_widget">
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>10</x>
      <y>10</y>
-     <width>361</width>
-     <height>331</height>
+     <width>380</width>
+     <height>380</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>9</pointsize>
+    </font>
    </property>
   </widget>
  </widget>

@@ -39,8 +39,6 @@ if sys.platform.lower().startswith('win'):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    font = QFont("Century Gothic", 10)
-    app.setFont(font)
     main_window = MainWindow()
 
     if sys.platform.lower().startswith('win'):

@@ -23,7 +23,7 @@ class CheckUpdateThread(QThread):
     def run(self):
         remote_inf = {}
         try:
-            with request.urlopen("https://raw.githubusercontent.com/ingbyr/GUI-YouGet/master/version.json") as f:
+            with request.urlopen("https://raw.githubusercontent.com/ingbyr/GUI-YouGet/dev/version.json") as f:
                 raw_inf = str(f.read())[2:-1]
                 log.debug("raw_info: " + raw_inf)
                 remote_inf = json.loads(raw_inf)
