@@ -14,11 +14,11 @@ __author__ = 'InG_byr'
 # log settings
 # todo log to file when finished
 # filename='youget.log'
-logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s >>> %(message)s',
-    datefmt='%b%d %Y %H:%M:%S',
-    filemode='w')
+logging.basicConfig(filename='youget.log',
+                    level=logging.DEBUG,
+                    format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s >>> %(message)s',
+                    datefmt='%b%d %Y %H:%M:%S',
+                    filemode='w')
 
 log = logging
 
