@@ -12,6 +12,8 @@ from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import QWidget
 from PyQt5.uic import loadUi
 
+from app import config
+
 
 class AboutWiget(QWidget):
     def __init__(self):
@@ -24,4 +26,5 @@ class AboutWiget(QWidget):
         self.setWindowIcon(QIcon(os.path.join(os.getcwd(), "imgs", "logo.jpg")))
         self.label_logo.setScaledContents(True)
         self.label_logo.setPixmap(QPixmap(os.path.join(os.getcwd(), "imgs", "logo.jpg")))
-        self.setAttribute(Qt.WA_QuitOnClose, False)
+        self.label_version.setText(config["app"]["version"])
+        self.label_info.setOpenExternalLinks(True)

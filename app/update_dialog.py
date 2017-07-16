@@ -60,6 +60,7 @@ class UpdateDialog(QDialog):
 
     def update_core(self):
         log.debug("start update core thread")
+        self.update_core_button.setDisabled(True)
         self.update_core_thread = UpdateCoreThread(os.path.join(os.getcwd(), "core", config["core"]["youget"]),
                                                    self.update_core_url, self.update_core_cbf)
         self.update_core_thread.finish_signal.connect(self.finish_updating_core)
