@@ -23,7 +23,7 @@ class CheckUpdateThread(QThread):
     def run(self):
         remote_inf = {}
         try:
-            with request.urlopen("https://raw.githubusercontent.com/ingbyr/GUI-YouGet/dev/version.json") as f:
+            with request.urlopen("https://raw.githubusercontent.com/ingbyr/GUI-YouGet/master/version.json") as f:
                 raw_inf = str(f.read())[2:-1]
                 log.debug("raw_info: " + raw_inf)
                 remote_inf = json.loads(raw_inf)
@@ -34,7 +34,7 @@ class CheckUpdateThread(QThread):
 
 
 class UpdateCoreThread(QThread):
-    # finish_signal = pyqtSignal(bool)
+    finish_signal = pyqtSignal(bool)
 
     def __init__(self, filename, url, callback):
         super(UpdateCoreThread, self).__init__()
@@ -45,7 +45,7 @@ class UpdateCoreThread(QThread):
     def run(self):
         try:
             urlretrieve(self.url, self.fn, self.callback)
-            # return True
+            self.finish_signal.emit(True)
         except Exception as e:
             log.exception(e)
-            # return False
+            self.finish_signal.emit(False)

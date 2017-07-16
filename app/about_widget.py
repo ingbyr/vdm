@@ -17,6 +17,7 @@ class AboutWiget(QWidget):
     def __init__(self):
         super().__init__()
         self.about_widget = loadUi(os.path.join(os.getcwd(), "ui", "about_widget.ui"), self)
+        self.setAttribute(Qt.WA_QuitOnClose, False)
         self.init_ui()
 
     def init_ui(self):
