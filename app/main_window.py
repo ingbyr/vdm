@@ -16,7 +16,7 @@ from app.about_widget import AboutWiget
 from app.file_list_dialog import FileListDialog
 from app import config, log, save_config
 from app.proxy_dialog import ProxyDialog
-from app.utils import CheckUpdateThread
+from app.utils import CheckUpdateThread, UpdateCoreThread
 
 
 class MainWindow(QMainWindow):
@@ -85,17 +85,39 @@ class MainWindow(QMainWindow):
         self.check_update_thread.start()
 
     def finish_checking_update(self, remote_inf):
+        msg = ""
         log.debug("local_version: " + config["app"]["version"])
         log.debug("remote_inf: " + remote_inf["version"])
         if config["app"]["version"] >= remote_inf["version"]:
-            self.msg_box.setText("No available updates")
+            msg += "GUI-YouGet: no available updates\n\n"
         else:
-            self.msg_box.setText("There is a new version : " + remote_inf["version"])
-            self.do_updates()
+            msg += "GUI-YouGet: new version " + remote_inf["version"] + "\n\n"
+        self.msg_box.setText(msg)
+
+        # todo edit config.ini core version to test update func
+        if config["app"]["youget_core_version"] >= remote_inf["you-get-core-version"]:
+            msg += "you-get core: no available updates\n"
+
+        else:
+            msg += "you-get core: new version " + remote_inf["you-get-core-version"] + "\n"
+            self.update_core(remote_inf["core-url"])
+        self.msg_box.setText(msg)
+
+    def update_core(self, url):
+        # todo update core and update app func
+        self.update_core_thread = UpdateCoreThread(os.path.join(os.getcwd(), "core", config["core"]["youget"]),
+                                                   url, self.callbackfunc)
+        self.update_core_thread.start()
+
+    def callbackfunc(blocknum, blocksize, totalsize):
+        percent = 100.0 * blocknum * blocksize / totalsize
+        if percent > 100:
+            percent = 100
+        print("%.2f%%" % percent)
 
     @staticmethod
-    def do_updates():
-        # todo auto download latest version auto
+    def update_app():
+        # todo auto download latest version
         QDesktopServices.openUrl(QUrl("https://github.com/ingbyr/GUI-YouGet/releases"))
 
     @staticmethod

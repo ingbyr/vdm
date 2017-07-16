@@ -16,7 +16,7 @@ from app import log, config
 
 
 def youget(*args):
-    cmd = [os.path.join("core", "you-get.exe")]
+    cmd = [os.path.join("core", config["app"]["youget_core"])]
     for arg in args:
         cmd.append(arg)
     log.debug(cmd)
@@ -92,6 +92,6 @@ if __name__ == '__main__':
         v = {
             "version": config["app"]["version"],
             "you-get-core-version": "0.4.775",
-            "core-url": "https://github.com/soimort/you-get/releases/download/v0.4.775/you-get.exe"
+            "core-url": "https://github.com/soimort/you-get/releases/download/v0.4.775/youget-core.exe"
         }
         f.write(json.dumps(v))
