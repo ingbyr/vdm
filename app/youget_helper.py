@@ -5,17 +5,18 @@
 author: ingbyr
 website: www.ingbyr.com
 """
+import json
 import os
 import re
 import subprocess
 
 from PyQt5.QtCore import QThread, pyqtSignal
 
-from app import log
+from app import log, config
 
 
 def youget(*args):
-    cmd = [os.path.join("core", "you-get-0.4.775-win32.exe")]
+    cmd = [os.path.join("core", "you-get.exe")]
     for arg in args:
         cmd.append(arg)
     log.debug(cmd)
@@ -60,7 +61,6 @@ class GetMediaInfoThread(QThread):
     def __init__(self, *args):
         super(GetMediaInfoThread, self).__init__()
         self.args = args
-        self.result = ""
 
     def run(self):
         output = youget(*self.args).decode("GBK")
@@ -85,3 +85,13 @@ class DowloadMediaThread(QThread):
         output = youget(*self.args).decode("GBK")
         log.debug(output)
         self.finish_signal.emit(output)
+
+
+if __name__ == '__main__':
+    with open(os.path.join(os.path.pardir, "version.json"), "w") as f:
+        v = {
+            "version": config["app"]["version"],
+            "you-get-core-version": "0.4.775",
+            "core-url": "https://github.com/soimort/you-get/releases/download/v0.4.775/you-get.exe"
+        }
+        f.write(json.dumps(v))

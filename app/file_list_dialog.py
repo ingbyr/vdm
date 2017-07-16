@@ -59,7 +59,7 @@ class FileListDialog(QDialog):
         self.show_msg(item.text())
         tag, size = get_media_args(item.text())
         log.debug("tag: " + tag + "size: " + size)
-        self.download_thread = DowloadMediaThread(tag, "-o", config["common"]["out_put_dir"]
+        self.download_thread = DowloadMediaThread(tag, "-o", config["common"]["output_dir"]
                                                   , self.url)
         self.download_thread.finish_signal.connect(self.downloaded)
         self.download_thread.start()
