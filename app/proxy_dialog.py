@@ -27,8 +27,8 @@ class ProxyDialog(QDialog):
         self.load_settings()
 
     def load_settings(self):
-        self.ip_text_edit.setText(config["common"]["proxy_ip"])
-        self.port_text_edit.setText(config["common"]["proxy_port"])
+        self.ip_text_edit.setText(config["proxy"]["ip"])
+        self.port_text_edit.setText(config["proxy"]["port"])
 
         # only http proxy is available on windows, need you-get support this
         self.http_checkbox.setChecked(True)

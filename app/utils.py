@@ -13,11 +13,6 @@ from PyQt5.QtCore import QThread, pyqtSignal
 from app import log
 
 
-def save_config(config):
-    with open('config.ini', 'w') as configfile:
-        config.write(configfile)
-
-
 class CheckUpdateThread(QThread):
     finish_signal = pyqtSignal(dict)
 

@@ -14,15 +14,14 @@ from PyQt5.uic import loadUi
 
 from app.about_widget import AboutWiget
 from app.file_list_dialog import FileListDialog
-from app import config, log
+from app import config, log, save_config
 from app.proxy_dialog import ProxyDialog
-from app.utils import save_config, CheckUpdateThread
+from app.utils import CheckUpdateThread
 
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        # todo use the abs path, this not work in pyinstaller
         self.main_window = loadUi(os.path.join(os.getcwd(), "ui", "main_window.ui"), self)
         self.init_ui()
         self.msg_box = QMessageBox()
@@ -35,7 +34,7 @@ class MainWindow(QMainWindow):
 
     def init_ui(self):
         # read the settings
-        self.file_path_label.setText(config["common"]["out_put_dir"])
+        self.file_path_label.setText(config["common"]["output_dir"])
         self.setWindowIcon(QIcon(os.path.join(os.getcwd(), "imgs", "logo.jpg")))
         self.show()
 
@@ -63,11 +62,10 @@ class MainWindow(QMainWindow):
         file_name = QFileDialog.getExistingDirectory(self.main_window, caption="Select Path", directory="",
                                                      options=QFileDialog.ShowDirsOnly)
         if file_name:
-            config["common"]["out_put_dir"] = file_name
-            save_config(config)
+            save_config("common", "output_dir", file_name)
             self.file_path_label.setText(file_name)
         else:
-            self.file_path_label.setText(config["common"]["out_put_dir"])
+            self.file_path_label.setText(config["common"]["output_dir"])
 
     @staticmethod
     def get_supported_sites():
@@ -87,9 +85,9 @@ class MainWindow(QMainWindow):
         self.check_update_thread.start()
 
     def finish_checking_update(self, remote_inf):
-        log.debug("local_version: " + config["common"]["version"])
+        log.debug("local_version: " + config["app"]["version"])
         log.debug("remote_inf: " + remote_inf["version"])
-        if config["common"]["version"] >= remote_inf["version"]:
+        if config["app"]["version"] >= remote_inf["version"]:
             self.msg_box.setText("No available updates")
         else:
             self.msg_box.setText("There is a new version : " + remote_inf["version"])
