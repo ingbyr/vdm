@@ -47,11 +47,11 @@ class UpdateDialog(QDialog):
             self.app_update_label.setText("new version " + str(remote_inf["version"]))
             self.update_app_button.setDisabled(False)
 
-        if config["core"]["youget_version"] >= remote_inf["you-get-core-version"]:
+        if config["core"]["youtube-dl_verison"] >= remote_inf["core-version"]:
             self.core_update_label.setText("No available updates")
         else:
-            self.remote_youget_core_version = str(remote_inf["you-get-core-version"])
-            self.core_update_label.setText("new version " + self.remote_youget_core_version)
+            self.remote_core_version = str(remote_inf["core-version"])
+            self.core_update_label.setText("new version " + self.remote_core_version)
             self.update_core_url = remote_inf["core-url"]
             self.update_core_button.setDisabled(False)
 
@@ -61,7 +61,7 @@ class UpdateDialog(QDialog):
     def update_core(self):
         log.debug("start update core thread")
         self.update_core_button.setDisabled(True)
-        self.update_core_thread = UpdateCoreThread(os.path.join(os.getcwd(), "core", config["core"]["youget"]),
+        self.update_core_thread = UpdateCoreThread(os.path.join(os.getcwd(), "core", config["core"]["youtube-dl"]),
                                                    self.update_core_url, self.update_core_cbf)
         self.update_core_thread.finish_signal.connect(self.finish_updating_core)
         self.update_core_thread.start()
@@ -77,7 +77,7 @@ class UpdateDialog(QDialog):
     def finish_updating_core(self, succeeded):
         if succeeded:
             self.update_core_button.setDisabled(True)
-            save_config("core", "youget_version", self.remote_youget_core_version)
+            save_config("core", "youtube-dl_verison", self.remote_core_version)
         else:
             self.update_core_button.setDisabled(False)
             self.progress_bar.setValue(0)

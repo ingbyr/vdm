@@ -41,3 +41,4 @@ var/
 # youget test file
 *.mp4
 *.flv
+app/info.json

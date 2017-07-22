@@ -60,16 +60,20 @@
     <property name="font">
      <font>
       <family>Century Gothic</family>
+      <pointsize>9</pointsize>
      </font>
+    </property>
+    <property name="acceptRichText">
+     <bool>false</bool>
     </property>
    </widget>
    <widget class="QGroupBox" name="settingsBox">
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>120</y>
+      <y>140</y>
       <width>351</width>
-      <height>351</height>
+      <height>331</height>
      </rect>
     </property>
     <property name="title">
@@ -98,7 +102,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>50</y>
+       <y>40</y>
        <width>331</width>
        <height>21</height>
       </rect>
@@ -117,7 +121,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>80</y>
+       <y>70</y>
        <width>330</width>
        <height>35</height>
       </rect>
@@ -193,7 +197,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>20</y>
+       <y>10</y>
        <width>321</width>
        <height>25</height>
       </rect>
@@ -248,7 +252,7 @@
      <property name="geometry">
       <rect>
        <x>-10</x>
-       <y>120</y>
+       <y>110</y>
        <width>361</width>
        <height>20</height>
       </rect>
