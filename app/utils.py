@@ -24,7 +24,7 @@ class CheckUpdateThread(QThread):
         remote_inf = {}
         try:
             with request.urlopen("https://raw.githubusercontent.com/ingbyr/GUI-YouGet/dev/version.json") as f:
-                raw_inf = str(f.read())[2:-1]
+                raw_inf = f.read().decode('utf-8')
                 log.debug("raw_info: " + raw_inf)
                 remote_inf = json.loads(raw_inf)
         except Exception as e:

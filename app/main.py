@@ -40,8 +40,8 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     main_window = MainWindow()
 
-    # if sys.platform.lower().startswith('win'):
-    #     if getattr(sys, 'frozen', False):
-    #         hideConsole()
+    if sys.platform.lower().startswith('win'):
+        if getattr(sys, 'frozen', False):
+            hideConsole()
 
     sys.exit(app.exec_())

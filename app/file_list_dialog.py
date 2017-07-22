@@ -13,7 +13,7 @@ from PyQt5.QtWidgets import QDialog, QListWidgetItem, QMessageBox
 from PyQt5.uic import loadUi
 
 from app import log, config
-from app.youget_helper import GetMediaInfoThread, get_media_tag, DowloadMediaThread
+from app.core_cli_helper import GetMediaInfoThread, get_media_tag, DowloadMediaThread, format2str
 
 
 class FileListDialog(QDialog):
@@ -23,7 +23,6 @@ class FileListDialog(QDialog):
         self.setAttribute(Qt.WA_QuitOnClose, False)
         self.init_ui()
 
-        self.msg = QMessageBox()
         self.info_thread = None
         self.download_thread = None
 
@@ -44,33 +43,33 @@ class FileListDialog(QDialog):
         self.list_widget.clear()
         default_item = QListWidgetItem(self.tr("Loading..."))
         self.list_widget.addItem(default_item)
-        self.info_thread = GetMediaInfoThread("-i", self._url)
+        self.info_thread = GetMediaInfoThread("-j", self._url)
         self.info_thread.finish_signal.connect(self.show_info)
         self.info_thread.start()
 
-    def show_info(self, result):
+    def show_info(self, options):
         self.list_widget.clear()
-        for op in result:
-            item = QListWidgetItem(self.tr(op))
+        item = QListWidgetItem(self.tr('Title: ' + options['title']))
+        self.dialog.list_widget.addItem(item)
+
+        for format in options['formats']:
+            item = QListWidgetItem()
+            item.setText(format2str(format))
             self.dialog.list_widget.addItem(item)
+
         self.list_widget.itemClicked.connect(self.start_download)
 
     def start_download(self, item):
-        self.show_msg(item.text())
         tag = get_media_tag(item.text())
-        self.download_thread = DowloadMediaThread(tag, "-o", config["common"]["output_dir"]
+        self.download_thread = DowloadMediaThread('-f', tag,
+                                                  "-o", config["common"]["output_dir"] + '/%(title)s-%(id)s.%(ext)s'
                                                   , self.url)
         self.download_thread.finish_signal.connect(self.downloaded)
         self.download_thread.start()
 
     def downloaded(self, output):
-        self.show_msg(output)
-
-    def show_msg(self, text, title="Debug"):
-        self.msg.setWindowTitle(title)
-        self.msg.setText(text)
-        self.msg.setStandardButtons(QMessageBox.Ok)
-        self.msg.show()
+        print(output)
+        print('Downloaded!!!')
 
     def closeEvent(self, QCloseEvent):
         if self.info_thread and self.info_thread.isRunning():

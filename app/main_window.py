@@ -17,7 +17,6 @@ from app.file_list_dialog import FileListDialog
 from app import config, log, save_config
 from app.proxy_dialog import ProxyDialog
 from app.update_dialog import UpdateDialog
-from app.utils import CheckUpdateThread, UpdateCoreThread
 
 
 class MainWindow(QMainWindow):
