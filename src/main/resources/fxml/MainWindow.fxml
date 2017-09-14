@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.shape.*?>
+<?import com.jfoenix.controls.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<VBox prefHeight="450.0" prefWidth="550.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <AnchorPane fx:id="apBorder" maxHeight="120.0" prefHeight="120.0" style="-fx-background-color: #303f9f;">
+         <children>
+            <Pane fx:id="paneExit" layoutX="526.0" layoutY="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
+               <children>
+                  <javafx.scene.shape.SVGPath content="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" fill="white" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+               </children>
+            </Pane>
+            <Label layoutX="14.0" layoutY="12.0" text="GUI-YouGet" textFill="WHITE" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+      <AnchorPane prefHeight="140.0" style="-fx-background-color: #3f51b5;">
+         <children>
+            <JFXTextField fx:id="tfURL" focusColor="#448aff" layoutX="52.0" layoutY="11.0" prefHeight="23.0" prefWidth="356.0" style="-fx-text-inner-color: white;" unFocusColor="#448aff" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="130.0" AnchorPane.topAnchor="25.0">
+               <HBox.margin>
+                  <Insets bottom="10.0" top="10.0" />
+               </HBox.margin>
+            </JFXTextField>
+            <Label layoutY="11.0" text="URL" textFill="WHITE" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="500.0" AnchorPane.topAnchor="20.0">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+               <HBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </HBox.margin>
+            </Label>
+            <JFXButton fx:id="btnDownload" buttonType="RAISED" layoutX="426.0" layoutY="11.0" prefHeight="43.0" prefWidth="99.0" style="-fx-background-color: #448AFF;" text="Download" textFill="WHITE" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+               <HBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </HBox.margin>
+            </JFXButton>
+         </children>
+      </AnchorPane>
+      <AnchorPane prefHeight="445.0" prefWidth="550.0">
+         <children>
+            <JFXTabPane prefHeight="254.0" prefWidth="550.0" stylesheets="@../css/ui.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <tabs>
+                  <Tab text="General Settings">
+                    <content>
+                        <VBox>
+                           <children>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <Label layoutX="14.0" layoutY="14.0" prefHeight="29.0" prefWidth="510.0" text="Storage Path" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                       <font>
+                                          <Font name="System Bold" size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="labelStoragePath" layoutX="14.0" layoutY="43.0" prefHeight="15.0" prefWidth="523.0" text="Label" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="55.0">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <JFXButton fx:id="btnChangePath" layoutX="125.0" layoutY="8.0" style="-fx-background-color: #c5cae9;" text="Change Path" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </JFXButton>
+                                    <Line endX="999999.0" fill="#bdbdbd" layoutY="100.0" opacity="0.5" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-1.0" />
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <Label layoutX="14.0" layoutY="14.0" prefHeight="29.0" prefWidth="510.0" text="Donwnloading Core" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                       <font>
+                                          <Font name="System Bold" size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="labelCoreVersion" layoutX="14.0" layoutY="43.0" prefHeight="15.0" prefWidth="523.0" text="Label" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="55.0">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <JFXButton fx:id="btnUpdateCore" layoutX="125.0" layoutY="8.0" style="-fx-background-color: #c5cae9;" text="Check for Updates" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </JFXButton>
+                                    <Line endX="999999.0" fill="#bdbdbd" layoutY="100.0" opacity="0.5" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-1.0" />
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <Label layoutX="14.0" layoutY="14.0" prefHeight="29.0" prefWidth="510.0" text="GUI-YouGet" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                       <font>
+                                          <Font name="System Bold" size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="labelVersion" layoutX="14.0" layoutY="43.0" prefHeight="15.0" prefWidth="523.0" text="Label" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="55.0">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <JFXButton fx:id="btnUpdate" layoutX="125.0" layoutY="8.0" style="-fx-background-color: #c5cae9;" text="Check for Updates" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </JFXButton>
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                        </VBox>
+                    </content>
+                  </Tab>
+                  <Tab text="Proxy Settings">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <VBox prefHeight="346.0" prefWidth="550.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <Label fx:id="labelStoragePath1" layoutX="14.0" layoutY="43.0" text="Address" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="60.0">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <Line endX="999999.0" fill="#bdbdbd" layoutY="100.0" opacity="0.5" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-1.0">
+                                             <cursor>
+                                                <Cursor fx:constant="DEFAULT" />
+                                             </cursor></Line>
+                                          <JFXCheckBox layoutX="14.0" layoutY="24.0" style="-jfx-checked-color: #448aff;" text="Socks5 Proxy" AnchorPane.topAnchor="20.0">
+                                             <font>
+                                                <Font name="System Bold" size="14.0" />
+                                             </font>
+                                          </JFXCheckBox>
+                                          <JFXTextField focusColor="#448aff" layoutX="89.0" layoutY="58.0" prefHeight="23.0" prefWidth="438.0" unFocusColor="#3f51b5" AnchorPane.leftAnchor="90.0" AnchorPane.rightAnchor="20.0" />
+                                          <JFXTextField focusColor="#448aff" layoutX="79.0" layoutY="101.0" prefHeight="23.0" prefWidth="438.0" unFocusColor="#3f51b5" AnchorPane.leftAnchor="90.0" AnchorPane.rightAnchor="20.0" />
+                                          <Label fx:id="labelStoragePath11" layoutX="20.0" layoutY="103.0" text="Port" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="110.0">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <Label fx:id="labelStoragePath11" layoutX="14.0" layoutY="43.0" text="Address" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="60.0">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <JFXCheckBox layoutX="14.0" layoutY="24.0" style="-jfx-checked-color: #448aff;" text="HTTP Proxy" AnchorPane.topAnchor="20.0">
+                                             <font>
+                                                <Font name="System Bold" size="14.0" />
+                                             </font>
+                                          </JFXCheckBox>
+                                          <JFXTextField focusColor="#448aff" layoutX="89.0" layoutY="58.0" prefHeight="23.0" prefWidth="438.0" unFocusColor="#3f51b5" AnchorPane.leftAnchor="90.0" AnchorPane.rightAnchor="20.0" />
+                                          <JFXTextField focusColor="#448aff" layoutX="79.0" layoutY="101.0" prefHeight="23.0" prefWidth="438.0" unFocusColor="#3f51b5" AnchorPane.leftAnchor="90.0" AnchorPane.rightAnchor="20.0" />
+                                          <Label fx:id="labelStoragePath111" layoutX="20.0" layoutY="103.0" text="Port" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="110.0">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </AnchorPane>
+                                 </children>
+                              </VBox>
+                           </children></AnchorPane>
+                    </content>
+                  </Tab>
+                  <Tab text="About">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                    </content>
+                  </Tab>
+               </tabs>
+               <cursor>
+                  <Cursor fx:constant="DEFAULT" />
+               </cursor>
+            </JFXTabPane>
+         </children>
+      </AnchorPane>
+   </children>
+</VBox>
