@@ -1,5 +1,8 @@
 package com.ingbyr.guiyouget.views
 
+import com.beust.klaxon.JsonArray
+import com.beust.klaxon.JsonObject
+import com.beust.klaxon.array
 import com.beust.klaxon.string
 import com.ingbyr.guiyouget.controllers.MediaListController
 import com.ingbyr.guiyouget.events.MediaListEvent
@@ -22,6 +25,15 @@ class MediaListWindow() : View("My View") {
         subscribe<MediaListEvent> {
             labelTitle.text = it.mediaList.string("title")
             labelDescription.text = it.mediaList.string("description")
+            addMediaItems(it.mediaList.array<JsonObject>("formats"))
+        }
+    }
+
+    private fun addMediaItems(formats: JsonArray<JsonObject>?) {
+        if (formats != null) {
+            for (format in formats) {
+                listViewMedia.items.add(Label("${format.string("format_note")}"))
+            }
         }
     }
 }
