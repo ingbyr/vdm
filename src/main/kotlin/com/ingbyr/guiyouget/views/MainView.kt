@@ -63,7 +63,7 @@ class MainView : View("My View") {
             }
         }
 
-        // Donload media
+        // Get media list
         btnDownload.setOnMouseClicked {
             if (tfURL.text != null && tfURL.text.trim() != "") {
                 MediaListWindow().openWindow()
