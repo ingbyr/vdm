@@ -9,8 +9,8 @@ import javafx.scene.control.Label
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.Pane
-import javafx.scene.layout.VBox
 import javafx.stage.DirectoryChooser
+import javafx.stage.StageStyle
 import tornadofx.*
 
 class MainView : View("My View") {
@@ -18,7 +18,7 @@ class MainView : View("My View") {
     var yOffset = 0.0
     lateinit var args: Array<String>
 
-    override val root: VBox by fxml("/fxml/MainWindow.fxml")
+    override val root: AnchorPane by fxml("/fxml/MainWindow.fxml")
 
     val controller: MainController by inject()
 
@@ -39,6 +39,7 @@ class MainView : View("My View") {
 
     init {
         // Window boarder
+        primaryStage.initStyle(StageStyle.UNDECORATED)
         paneExit.setOnMouseClicked {
             Platform.exit()
         }
@@ -66,7 +67,8 @@ class MainView : View("My View") {
         // Get media list
         btnDownload.setOnMouseClicked {
             if (tfURL.text != null && tfURL.text.trim() != "") {
-                MediaListWindow().openWindow()
+                replaceWith(MediaListWindow::class, ViewTransition.Slide(0.3.seconds, ViewTransition.Direction.LEFT))
+//                MediaListWindow().openWindow(StageStyle.UNDECORATED)
                 args = arrayOf(tfURL.text, "-j", "--proxy", "socks5://127.0.0.1:1080/")
                 fire(LoadMediaListRequest(args))
             }
