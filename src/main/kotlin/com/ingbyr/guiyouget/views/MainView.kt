@@ -13,7 +13,7 @@ import javafx.stage.DirectoryChooser
 import javafx.stage.StageStyle
 import tornadofx.*
 
-class MainView : View("My View") {
+class MainView : View("GUI-YouGet") {
     var xOffset = 0.0
     var yOffset = 0.0
     lateinit var args: Array<String>
@@ -45,13 +45,17 @@ class MainView : View("My View") {
         }
 
         apBorder.setOnMousePressed { event: MouseEvent? ->
-            xOffset = event!!.sceneX
-            yOffset = event!!.sceneY
+            event?.let {
+                xOffset = event.sceneX
+                yOffset = event.sceneY
+            }
         }
 
         apBorder.setOnMouseDragged { event: MouseEvent? ->
-            primaryStage.x = event!!.screenX - xOffset
-            primaryStage.y = event!!.screenY - yOffset
+            event?.let {
+                primaryStage.x = event.screenX - xOffset
+                primaryStage.y = event.screenY - yOffset
+            }
         }
 
         // Storage path
@@ -60,7 +64,7 @@ class MainView : View("My View") {
             val file = DirectoryChooser().showDialog(primaryStage)
             if (file != null) {
                 controller.saveStoragePath(file.absolutePath.toString())
-                labelStoragePath.text = controller.storagePath.toString()
+                labelStoragePath.text = file.absolutePath.toString()
             }
         }
 
@@ -68,10 +72,15 @@ class MainView : View("My View") {
         btnDownload.setOnMouseClicked {
             if (tfURL.text != null && tfURL.text.trim() != "") {
                 replaceWith(MediaListWindow::class, ViewTransition.Slide(0.3.seconds, ViewTransition.Direction.LEFT))
-//                MediaListWindow().openWindow(StageStyle.UNDECORATED)
+                // todo delete proxy args
                 args = arrayOf(tfURL.text, "-j", "--proxy", "socks5://127.0.0.1:1080/")
                 fire(LoadMediaListRequest(args))
             }
         }
+    }
+
+    // clean the url textfield
+    override fun onDock() {
+        tfURL.text = ""
     }
 }
