@@ -32,7 +32,7 @@
          <children>
             <AnchorPane prefHeight="100.0" prefWidth="600.0" style="-fx-background-color: #3f51b5;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <Label fx:id="labelTitle" layoutX="25.0" layoutY="29.0" text="Loading" textFill="WHITE" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="20.0">
+                  <Label fx:id="labelTitle" layoutX="25.0" layoutY="29.0" text="Loading..." textFill="WHITE" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="20.0">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>
@@ -44,7 +44,7 @@
                   </Label>
                </children>
             </AnchorPane>
-            <JFXListView fx:id="listViewMedia" layoutY="100.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="100.0" />
+            <JFXListView fx:id="listViewMedia" layoutY="100.0" prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/ui.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="100.0" />
          </children>
       </AnchorPane>
    </children>

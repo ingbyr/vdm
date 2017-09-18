@@ -7,7 +7,7 @@ class MainController : Controller() {
     val storagePath = config.string("storagePath", Paths.get("").toAbsolutePath().toString())
 
     fun saveStoragePath(strPath: String) {
-        config.set("storagePath", strPath)
+        config["storagePath"] = strPath
         config.save()
     }
 

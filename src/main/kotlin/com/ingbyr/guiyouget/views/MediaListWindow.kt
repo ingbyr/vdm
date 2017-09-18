@@ -12,7 +12,7 @@ import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.Pane
 import tornadofx.*
 
-class MediaListWindow : View("My View") {
+class MediaListWindow : View("GUI-YouGet") {
 
     override val root: AnchorPane by fxml("/fxml/MediaListWindow.fxml")
 
@@ -33,15 +33,18 @@ class MediaListWindow : View("My View") {
     init {
         // Window boarder
         apBorder.setOnMousePressed { event: MouseEvent? ->
-            xOffset = event!!.sceneX
-            yOffset = event!!.sceneY
+            event?.let {
+                xOffset = event.sceneX
+                yOffset = event.sceneY
+            }
         }
 
         apBorder.setOnMouseDragged { event: MouseEvent? ->
-            primaryStage.x = event!!.screenX - xOffset
-            primaryStage.y = event!!.screenY - yOffset
+            event?.let {
+                primaryStage.x = event.screenX - xOffset
+                primaryStage.y = event.screenY - yOffset
+            }
         }
-
         paneExit.setOnMouseClicked {
             Platform.exit()
         }
@@ -74,5 +77,12 @@ class MediaListWindow : View("My View") {
             }
 
         }
+    }
+
+    // reset the ui
+    override fun onUndock() {
+        listViewMedia.items.clear()
+        labelTitle.text = "Loading..."
+        labelDescription.text = ""
     }
 }
