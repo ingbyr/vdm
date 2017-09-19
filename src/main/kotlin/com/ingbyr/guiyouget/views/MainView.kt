@@ -1,7 +1,6 @@
 package com.ingbyr.guiyouget.views
 
 import com.ingbyr.guiyouget.controllers.MainController
-import com.ingbyr.guiyouget.events.LoadMediaListRequest
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXTextField
 import javafx.application.Platform
@@ -33,7 +32,6 @@ class MainView : View("GUI-YouGet") {
     val btnUpdateCore: JFXButton by fxid()
     val btnUpdate: JFXButton by fxid()
 
-
     val paneExit: Pane by fxid()
     val apBorder: AnchorPane by fxid()
 
@@ -63,7 +61,8 @@ class MainView : View("GUI-YouGet") {
         btnChangePath.setOnMouseClicked {
             val file = DirectoryChooser().showDialog(primaryStage)
             if (file != null) {
-                controller.saveStoragePath(file.absolutePath.toString())
+                config["storagePath"] = file.absolutePath.toString()
+                config.save()
                 labelStoragePath.text = file.absolutePath.toString()
             }
         }
@@ -72,9 +71,7 @@ class MainView : View("GUI-YouGet") {
         btnDownload.setOnMouseClicked {
             if (tfURL.text != null && tfURL.text.trim() != "") {
                 replaceWith(MediaListWindow::class, ViewTransition.Slide(0.3.seconds, ViewTransition.Direction.LEFT))
-                // todo delete proxy args
-                args = arrayOf(tfURL.text, "-j", "--proxy", "socks5://127.0.0.1:1080/")
-                fire(LoadMediaListRequest(args))
+                controller.requestMediaInfo(tfURL.text)
             }
         }
     }

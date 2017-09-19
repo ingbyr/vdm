@@ -11,6 +11,7 @@ import javafx.scene.input.MouseEvent
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.Pane
 import tornadofx.*
+import java.util.logging.Level
 
 class MediaListWindow : View("GUI-YouGet") {
 
@@ -23,7 +24,7 @@ class MediaListWindow : View("GUI-YouGet") {
     val paneBack: Pane by fxid()
     val apBorder: AnchorPane by fxid()
 
-    val controller = MediaListController()
+    val controller: MediaListController by inject()
 
     val labelTitle: Label by fxid()
     val labelDescription: Label by fxid()
@@ -31,6 +32,7 @@ class MediaListWindow : View("GUI-YouGet") {
 
 
     init {
+        controller.subscribeEvents()
         // Window boarder
         apBorder.setOnMousePressed { event: MouseEvent? ->
             event?.let {
@@ -57,25 +59,17 @@ class MediaListWindow : View("GUI-YouGet") {
         subscribe<MediaListEvent> {
             labelTitle.text = it.mediaList.string("title")
             labelDescription.text = it.mediaList.string("description")
-            addMediaItems(it.mediaList.array<JsonObject>("formats"))
+            controller.addMediaItems(listViewMedia, it.mediaList.array("formats"))
         }
-    }
 
-    private fun addMediaItems(formats: JsonArray<JsonObject>?) {
-        if (formats != null) {
-            val medias = mutableListOf<Media>().observable()
-            formats.mapTo(medias) {
-                Media(it.string("format"),
-                        it.string("format_note"),
-                        it.int("filesize"),
-                        it.string("format_id"))
+        // list view的监听器
+        listViewMedia.setOnMouseClicked {
+            listViewMedia.selectedItem?.let {
+                log.info("select ${it.text}")
+                val formatID = it.text.split(" ")[0].toInt()
+                log.info("select format id is ${formatID}")
+
             }
-
-            medias.forEach {
-                listViewMedia.items.add(Label("${it.format}  ${it.size}MB"))
-                //todo download args -f [format id]
-            }
-
         }
     }
 
