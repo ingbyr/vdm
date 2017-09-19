@@ -18,6 +18,7 @@ class CoreArgs(core: String) {
                 args.add(it.value)
             }
         }
+//        println(args)
         return args
     }
 }

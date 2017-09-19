@@ -12,3 +12,4 @@ build/
 info.json
 src/main/java/
 src/test/
+/src/main/kotlin/com/ingbyr/guiyouget/test.kt
