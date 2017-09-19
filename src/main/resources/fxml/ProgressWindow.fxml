@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXProgressBar?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.SVGPath?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="150.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/8.0.131" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <AnchorPane fx:id="apBorder" prefHeight="30.0" prefWidth="550.0" style="-fx-background-color: #303f9f;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label layoutX="31.0" layoutY="9.0" text="Downloading" textFill="WHITE" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="5.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Pane fx:id="paneExit" layoutX="526.0" layoutY="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
+               <children>
+                  <javafx.scene.shape.SVGPath content="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" fill="white" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+               </children>
+            </Pane>
+         </children>
+      </AnchorPane>
+      <AnchorPane prefHeight="140.0" prefWidth="550.0" style="-fx-background-color: #3f51b5;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
+         <children>
+            <Label fx:id="labelTitle" layoutX="10.0" layoutY="20.0" text="Loading..." textFill="WHITE" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="20.0">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+            <JFXProgressBar fx:id="progressbar" layoutX="81.0" layoutY="70.0" prefHeight="10.0" stylesheets="@../css/ui.css" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="70.0" />
+            <Label fx:id="labelSpeed" layoutX="385.0" layoutY="35.0" textFill="WHITE" AnchorPane.rightAnchor="23.0" AnchorPane.topAnchor="35.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label fx:id="labelTime" layoutX="391.0" layoutY="73.0" textFill="WHITE" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="70.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

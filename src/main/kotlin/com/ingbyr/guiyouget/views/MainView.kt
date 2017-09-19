@@ -15,7 +15,6 @@ import tornadofx.*
 class MainView : View("GUI-YouGet") {
     var xOffset = 0.0
     var yOffset = 0.0
-    lateinit var args: Array<String>
 
     override val root: AnchorPane by fxml("/fxml/MainWindow.fxml")
 
@@ -70,7 +69,7 @@ class MainView : View("GUI-YouGet") {
         // Get media list
         btnDownload.setOnMouseClicked {
             if (tfURL.text != null && tfURL.text.trim() != "") {
-                replaceWith(MediaListWindow::class, ViewTransition.Slide(0.3.seconds, ViewTransition.Direction.LEFT))
+                replaceWith(MediaListView::class, ViewTransition.Slide(0.3.seconds, ViewTransition.Direction.LEFT))
                 controller.requestMediaInfo(tfURL.text)
             }
         }

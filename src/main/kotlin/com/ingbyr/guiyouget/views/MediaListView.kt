@@ -1,24 +1,26 @@
 package com.ingbyr.guiyouget.views
 
-import com.beust.klaxon.*
+import com.beust.klaxon.array
+import com.beust.klaxon.string
 import com.ingbyr.guiyouget.controllers.MediaListController
+import com.ingbyr.guiyouget.events.DownloadMediaRequest
 import com.ingbyr.guiyouget.events.MediaListEvent
-import com.ingbyr.guiyouget.models.Media
 import com.jfoenix.controls.JFXListView
 import javafx.application.Platform
 import javafx.scene.control.Label
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.Pane
+import javafx.stage.StageStyle
 import tornadofx.*
-import java.util.logging.Level
 
-class MediaListWindow : View("GUI-YouGet") {
+class MediaListView : View("GUI-YouGet") {
 
     override val root: AnchorPane by fxml("/fxml/MediaListWindow.fxml")
 
     var xOffset = 0.0
     var yOffset = 0.0
+    lateinit var url: String
 
     val paneExit: Pane by fxid()
     val paneBack: Pane by fxid()
@@ -57,6 +59,7 @@ class MediaListWindow : View("GUI-YouGet") {
 
         //Subscribe Events
         subscribe<MediaListEvent> {
+            url = it.mediaList.string("webpage_url") ?: ""
             labelTitle.text = it.mediaList.string("title")
             labelDescription.text = it.mediaList.string("description")
             controller.addMediaItems(listViewMedia, it.mediaList.array("formats"))
@@ -66,9 +69,10 @@ class MediaListWindow : View("GUI-YouGet") {
         listViewMedia.setOnMouseClicked {
             listViewMedia.selectedItem?.let {
                 log.info("select ${it.text}")
-                val formatID = it.text.split(" ")[0].toInt()
+                val formatID = it.text.split(" ")[0]
                 log.info("select format id is ${formatID}")
-
+                if (url != "") fire(DownloadMediaRequest(url, formatID))
+                ProgressView().openModal(StageStyle.UNDECORATED)
             }
         }
     }
