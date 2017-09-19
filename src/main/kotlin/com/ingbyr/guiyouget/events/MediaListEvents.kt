@@ -5,4 +5,4 @@ import tornadofx.*
 
 class MediaListEvent(val mediaList: JsonObject) : FXEvent()
 
-class LoadMediaListRequest(val args: Array<String>) : FXEvent(EventBus.RunOn.BackgroundThread)
+class LoadMediaListRequest(val args: MutableList<String>) : FXEvent(EventBus.RunOn.BackgroundThread)

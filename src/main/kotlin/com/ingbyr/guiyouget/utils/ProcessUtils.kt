@@ -5,10 +5,10 @@ import java.io.InputStreamReader
 
 
 object ProcessUtils {
-    fun runCommand(core: String, args: Array<String>): StringBuilder {
+    fun runCommand(args: MutableList<String>): StringBuilder {
         val output = StringBuilder()
-        val builder = ProcessBuilder(core, *args)
-        builder.redirectErrorStream(true)
+        val builder = ProcessBuilder(args)
+//        builder.redirectErrorStream(true)
         val p = builder.start()
         val r = BufferedReader(InputStreamReader(p.inputStream))
         var line: String?

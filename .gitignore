@@ -8,3 +8,7 @@ gradlew.bat
 out/
 settings.gradle
 build/
+/src/main/resources/core/info.json
+info.json
+src/main/java/
+src/test/
