@@ -8,6 +8,7 @@ import com.ingbyr.guiyouget.events.DownloadMediaRequest
 import com.ingbyr.guiyouget.events.LoadMediaListRequest
 import com.ingbyr.guiyouget.events.MediaListEvent
 import com.ingbyr.guiyouget.models.Media
+import com.ingbyr.guiyouget.models.ProgressModel
 import com.ingbyr.guiyouget.utils.CoreArgs
 import com.ingbyr.guiyouget.utils.YoutubeDL
 import com.jfoenix.controls.JFXListView
@@ -15,6 +16,7 @@ import javafx.scene.control.Label
 import tornadofx.*
 
 class MediaListController : Controller() {
+    val model: ProgressModel by inject()
 
     private val core = config.string("core", YoutubeDL.NAME)
 
@@ -29,21 +31,6 @@ class MediaListController : Controller() {
                         "title" to "Failed to get media info",
                         "description" to "Make sure that URL is correct"))))
             }
-        }
-
-        subscribe<DownloadMediaRequest> {
-            if (core == YoutubeDL.NAME) {
-                try {
-                    val args = CoreArgs(YoutubeDL.core)
-                    args.add("-f", it.formatID)
-                    args.add("--proxy", "socks5://127.0.0.1:1080/")
-                    args.add("url", it.url)
-                    YoutubeDL.downloadMedia(this@MediaListController, args.build())
-                } catch (e: Exception) {
-                    log.warning(e.toString())
-                }
-            }
-
         }
     }
 

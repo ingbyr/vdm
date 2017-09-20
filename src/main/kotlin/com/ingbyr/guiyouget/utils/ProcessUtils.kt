@@ -1,15 +1,16 @@
 package com.ingbyr.guiyouget.utils
 
-import com.ingbyr.guiyouget.controllers.MediaListController
-import com.ingbyr.guiyouget.events.UpdateMediaProgressbar
+import com.ingbyr.guiyouget.models.Progress
+import com.ingbyr.guiyouget.models.ProgressModel
+import javafx.application.Platform
+import org.slf4j.LoggerFactory
+import tornadofx.*
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
 
 object ProcessUtils {
-    private var progress: Double? = null
-    private var speed: String? = null
-    private var extTime: String? = null
+    val logger = LoggerFactory.getLogger(ProcessUtils::class.java)
 
     fun runCommand(args: MutableList<String>): StringBuilder {
         val output = StringBuilder()
@@ -28,40 +29,44 @@ object ProcessUtils {
         return output
     }
 
-    //todo 解析下载进度和下载速度和剩余时间
-    fun runDownloadCommand(controller: MediaListController, args: MutableList<String>) {
+    //todo 暂停下载
+    fun runDownloadCommand(pg: Progress, args: MutableList<String>) {
         val builder = ProcessBuilder(args)
         builder.redirectErrorStream(true)
         val p = builder.start()
         val r = BufferedReader(InputStreamReader(p.inputStream))
         var line: String?
-//        var progress: Double? = null
-//        var speed: String? = null
-//        var extTime: String? = null
+        var progress: Double? = null
+        var speed: String? = null
+        var extTime: String? = null
         while (true) {
             line = r.readLine()
             if (line == null) {
                 break
             }
-//            println(line)
-            /**
-             * [download]  95.9% of ~5.82MiB at 126.43KiB/s ETA 00:00
-             * [download]  61.9% of 6.46MiB at  1.53MiB/s ETA 00:01
-            [download] 100.0% of 6.46MiB at  1.95MiB/s ETA 00:00
-            [download] 100% of 6.46MiB in 00:03
-             */
+            logger.debug(line)
             val outs = line.split(" ")
             outs.forEach {
                 if (it.endsWith("%")) progress = it.subSequence(0, it.length - 1).toString().toDouble()
                 if (it.endsWith("/s")) speed = it
                 if (it.matches(Regex("\\d+:\\d+"))) extTime = it
             }
-            if (progress != null && speed != null && extTime != null) {
-//                println("$progress, $speed, $extTime")
-                controller.fire(UpdateMediaProgressbar(progress!!, speed!!, extTime!!))
-                progress = null
-                speed = null
-                extTime = null
+
+            if (progress != null) {
+                //todo need a better way to update progress UI
+                Platform.runLater {
+                    logger.debug("$progress, $speed, $extTime")
+                    pg.progress = progress as Double / 100
+                    pg.speed = speed
+                    pg.extTime = extTime
+                    pg.status = "Downloading..."
+                }
+            }
+
+            if(progress == 100.0) {
+                Platform.runLater {
+                    pg.status = "Finished"
+                }
             }
         }
     }
