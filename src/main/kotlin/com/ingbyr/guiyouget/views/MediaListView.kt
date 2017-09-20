@@ -12,9 +12,14 @@ import javafx.scene.input.MouseEvent
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.Pane
 import javafx.stage.StageStyle
+import org.slf4j.LoggerFactory
 import tornadofx.*
 
 class MediaListView : View("GUI-YouGet") {
+
+    companion object {
+        val logger = LoggerFactory.getLogger(MediaListView::class.java)
+    }
 
     override val root: AnchorPane by fxml("/fxml/MediaListWindow.fxml")
 
@@ -68,11 +73,11 @@ class MediaListView : View("GUI-YouGet") {
         // list view的监听器
         listViewMedia.setOnMouseClicked {
             listViewMedia.selectedItem?.let {
-                log.info("select ${it.text}")
+                logger.debug("select ${it.text}")
                 val formatID = it.text.split(" ")[0]
-                log.info("select format id is ${formatID}")
-                if (url != "") fire(DownloadMediaRequest(url, formatID))
+                logger.debug("select format id is ${formatID}")
                 ProgressView().openModal(StageStyle.UNDECORATED)
+                if (url != "") fire(DownloadMediaRequest(url, formatID))
             }
         }
     }

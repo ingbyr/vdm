@@ -1,6 +1,9 @@
 package com.ingbyr.guiyouget.utils
 
+import org.slf4j.LoggerFactory
+
 class CoreArgs(core: String) {
+    val logger = LoggerFactory.getLogger(CoreArgs::class.java)
     val argsMap = mutableMapOf<String, String>()
     val args = mutableListOf(core)
 
@@ -18,7 +21,7 @@ class CoreArgs(core: String) {
                 args.add(it.value)
             }
         }
-//        println(args)
+        logger.debug("run command $args")
         return args
     }
 }

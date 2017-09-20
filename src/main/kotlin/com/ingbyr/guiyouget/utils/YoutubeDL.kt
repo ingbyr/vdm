@@ -3,6 +3,8 @@ package com.ingbyr.guiyouget.utils
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.ingbyr.guiyouget.controllers.MediaListController
+import com.ingbyr.guiyouget.models.Progress
+import com.ingbyr.guiyouget.models.ProgressModel
 import java.nio.file.Files
 import java.nio.file.Paths
 
@@ -18,7 +20,11 @@ object YoutubeDL {
         return parser.parse(output) as JsonObject
     }
 
-    fun downloadMedia(mediaListController: MediaListController, args: MutableList<String>) {
-        ProcessUtils.runDownloadCommand(mediaListController, args)
+//    fun downloadMedia(mediaListController: MediaListController, args: MutableList<String>) {
+//        ProcessUtils.runDownloadCommand(mediaListController, args)
+//    }
+
+    fun downloadMedia(pg: Progress, args: MutableList<String>) {
+        ProcessUtils.runDownloadCommand(pg, args)
     }
 }
