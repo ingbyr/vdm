@@ -69,7 +69,10 @@ class MainView : View("GUI-YouGet") {
             labelStoragePath.text = Paths.get(System.getProperty("user.dir")).toAbsolutePath().toString()
             app.config["storagePath"] = labelStoragePath.text
             app.config.save()
+        } else {
+            labelStoragePath.text = app.config["storagePath"] as String
         }
+
         btnChangePath.setOnMouseClicked {
             val file = DirectoryChooser().showDialog(primaryStage)
             if (file != null) {
@@ -88,7 +91,7 @@ class MainView : View("GUI-YouGet") {
         }
 
         // Load download core config
-        val core = app.config["core"] as String
+        val core = app.config["core"]
         when (core) {
             YoutubeDL.NAME -> cbYoutubeDL.isSelected = true
             YouGet.NAME -> cbYouGet.isSelected = true
