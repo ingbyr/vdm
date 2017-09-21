@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.*?>
-<?import javafx.scene.effect.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.shape.*?>
-<?import com.jfoenix.controls.*?>
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.paint.*?>
-<?import javafx.scene.text.*?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXCheckBox?>
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.shape.SVGPath?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefWidth="550.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefWidth="550.0" xmlns="http://javafx.com/javafx/8.0.131" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <AnchorPane fx:id="apBorder" maxHeight="120.0" prefHeight="30.0" prefWidth="550.0" style="-fx-background-color: #303f9f;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -46,7 +48,7 @@
                     <content>
                         <VBox>
                            <children>
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="183.0" prefWidth="550.0">
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="150.0" prefWidth="550.0">
                                  <children>
                                     <Label layoutX="14.0" layoutY="14.0" prefHeight="29.0" prefWidth="510.0" text="Storage Path" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
                                        <font>
@@ -63,19 +65,14 @@
                                           <Font size="14.0" />
                                        </font>
                                     </JFXButton>
-                                    <Line endX="999999.0" fill="#bdbdbd" layoutY="100.0" opacity="0.5" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                    <Line endX="999999.0" fill="#bdbdbd" layoutY="100.0" opacity="0.5" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                                  </children>
                               </AnchorPane>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="188.0" prefWidth="550.0">
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="190.0" prefWidth="550.0">
                                  <children>
                                     <Label layoutX="14.0" layoutY="14.0" prefHeight="29.0" prefWidth="510.0" text="Donwnloading Core" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
                                        <font>
                                           <Font name="System Bold" size="14.0" />
-                                       </font>
-                                    </Label>
-                                    <Label fx:id="labelCoreVersion" layoutX="14.0" layoutY="43.0" prefHeight="15.0" prefWidth="523.0" text="Label" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="60.0">
-                                       <font>
-                                          <Font size="14.0" />
                                        </font>
                                     </Label>
                                     <JFXButton fx:id="btnUpdateCore" layoutX="125.0" layoutY="8.0" style="-fx-background-color: #c5cae9;" text="Check for Updates" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
@@ -83,10 +80,30 @@
                                           <Font size="14.0" />
                                        </font>
                                     </JFXButton>
-                                    <Line endX="999999.0" fill="#bdbdbd" layoutY="100.0" opacity="0.5" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                    <Line endX="999999.0" fill="#bdbdbd" layoutY="100.0" opacity="0.5" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                    <JFXCheckBox fx:id="cbYoutubeDL" layoutX="14.0" layoutY="73.0" style="-jfx-checked-color: #448aff;" text="youtube-dl" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="70.0">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </JFXCheckBox>
+                                    <JFXCheckBox fx:id="cbYouGet" layoutX="20.0" layoutY="102.0" style="-jfx-checked-color: #448aff;" text="you-get" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="110.0">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </JFXCheckBox>
+                                    <Label fx:id="labelYoutubeDL" layoutX="178.0" layoutY="72.0" text="Label" AnchorPane.leftAnchor="180.0" AnchorPane.topAnchor="70.0">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="labelYouGet" layoutX="178.0" layoutY="110.0" text="Label" AnchorPane.leftAnchor="180.0" AnchorPane.topAnchor="110.0">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
                                  </children>
                               </AnchorPane>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="158.0" prefWidth="550.0">
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="150.0" prefWidth="550.0">
                                  <children>
                                     <Label layoutX="14.0" layoutY="14.0" prefHeight="29.0" prefWidth="510.0" text="GUI-YouGet" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
                                        <font>
@@ -122,7 +139,7 @@
                                                 <Font size="14.0" />
                                              </font>
                                           </Label>
-                                          <Line endX="999999.0" fill="#bdbdbd" layoutY="100.0" opacity="0.5" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-1.0">
+                                          <Line endX="999999.0" fill="#bdbdbd" layoutY="100.0" opacity="0.5" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                              <cursor>
                                                 <Cursor fx:constant="DEFAULT" />
                                              </cursor>

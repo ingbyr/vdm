@@ -13,3 +13,6 @@ info.json
 src/main/java/
 src/test/
 /src/main/kotlin/com/ingbyr/guiyouget/test.kt
+/app.properties
+/src/main/resources/core/info-youget.json
+src/main/resources/core/info-youget.json
