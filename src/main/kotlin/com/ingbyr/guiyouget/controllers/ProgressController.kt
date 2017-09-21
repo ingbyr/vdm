@@ -10,16 +10,17 @@ class ProgressController : Controller() {
     private val core = config.string("core", YoutubeDL.NAME)
 
     fun download(pg: Progress, request: DownloadMediaRequest) {
-        if (core == YoutubeDL.NAME) {
-            try {
+        // Init download args
+        try {
+            if (core == YoutubeDL.NAME) {
                 val args = CoreArgs(YoutubeDL.core)
                 args.add("-f", request.formatID)
                 args.add("--proxy", "socks5://127.0.0.1:1080/")
                 args.add("url", request.url)
                 YoutubeDL.downloadMedia(pg, args.build())
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }
