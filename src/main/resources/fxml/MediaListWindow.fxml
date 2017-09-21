@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.shape.*?>
+<?import com.jfoenix.controls.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="550.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <AnchorPane fx:id="apBorder" prefHeight="30.0" prefWidth="550.0" style="-fx-background-color: #303f9f;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label layoutX="31.0" layoutY="9.0" text="Media List" textFill="WHITE" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="5.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Pane fx:id="paneExit" layoutX="526.0" layoutY="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
+               <children>
+                  <javafx.scene.shape.SVGPath content="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" fill="white" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+               </children>
+            </Pane>
+            <Pane fx:id="paneBack" layoutX="135.0" layoutY="9.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="5.0">
+               <children>
+                  <javafx.scene.shape.SVGPath content="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" fill="white" />
+               </children>
+            </Pane>
+         </children>
+      </AnchorPane>
+      <AnchorPane prefWidth="550.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
+         <children>
+            <AnchorPane prefHeight="100.0" prefWidth="600.0" style="-fx-background-color: #3f51b5;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <Label fx:id="labelTitle" layoutX="25.0" layoutY="29.0" text="Loading..." textFill="WHITE" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="20.0">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="labelDescription" minHeight="-Infinity" textFill="WHITE" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="60.0">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <JFXListView fx:id="listViewMedia" layoutY="100.0" prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/ui.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="100.0" />
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>
