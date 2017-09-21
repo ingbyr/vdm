@@ -98,6 +98,16 @@ app/*.log
 *.flv
 *.xml
 
+.gradle/
+app.properties
+build.gradle
+conf/
+gradle/
+gradlew
+gradlew.bat
+out/
+settings.gradle
+
 
 
 
