@@ -1,0 +1,20 @@
+.tab-header-background {
+    -fx-background-color: #3f51b5;
+}
+
+.jfx-tab-pane .tab-header-area .jfx-rippler {
+    -jfx-rippler-fill: #448aff;
+}
+
+.jfx-tab-pane .tab-selected-line {
+    -fx-background-color: #448aff;
+    -fx-pref-height: 3pt;
+}
+
+.jfx-list-view {
+    -fx-vertical-gap: 10.0;
+}
+
+.list-cell:selected {
+    -fx-background-color: #448aff;
+}

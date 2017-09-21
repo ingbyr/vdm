@@ -1,0 +1,22 @@
+<configuration scan="true" scanPeriod="30 seconds" debug="false" packagingData="true">
+
+    <contextName>LearnLogback</contextName>
+
+    <property name="USER_HOME" value="./log"/>
+
+    <timestamp key="bySecond" datePattern="yyyyMMdd" timeReference="contextBirth"/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>debug</level>
+        </filter>
+
+        <encoder>
+            <pattern>%-4d [%thread] %highlight%-5level %cyan%logger.%-10method - %message%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="debug">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>
