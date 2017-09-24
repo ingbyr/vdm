@@ -14,7 +14,7 @@
 <?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefWidth="550.0" xmlns="http://javafx.com/javafx/8.0.131" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefWidth="550.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <AnchorPane fx:id="apBorder" maxHeight="120.0" prefHeight="30.0" prefWidth="550.0" style="-fx-background-color: #303f9f;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -32,12 +32,17 @@
       </AnchorPane>
       <AnchorPane prefHeight="80.0" style="-fx-background-color: #3f51b5;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
          <children>
-            <JFXTextField fx:id="tfURL" focusColor="#448aff" prefHeight="23.0" prefWidth="356.0" style="-fx-text-inner-color: white;" unFocusColor="#448aff" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="130.0" AnchorPane.topAnchor="25.0" />
+            <JFXTextField fx:id="tfURL" focusColor="#448aff" prefHeight="23.0" prefWidth="356.0" style="-fx-text-inner-color: white;" unFocusColor="#448aff" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="140.0" AnchorPane.topAnchor="25.0" />
             <Label text="URL" textFill="WHITE" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="500.0" AnchorPane.topAnchor="20.0">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font>
             </Label>
+            <JFXButton fx:id="btnDownload" buttonType="RAISED" layoutX="436.0" layoutY="23.0" prefHeight="50.0" prefWidth="100.0" style="-fx-background-color: #448AFF;" text="Download" textFill="WHITE" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="23.0">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </JFXButton>
          </children>
       </AnchorPane>
       <AnchorPane prefHeight="445.0" prefWidth="550.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="110.0">
@@ -197,10 +202,5 @@
             </JFXTabPane>
          </children>
       </AnchorPane>
-      <JFXButton fx:id="btnDownload" buttonType="RAISED" layoutY="73.0" prefHeight="60.0" prefWidth="100.0" style="-fx-background-color: #448AFF;" text="Download" textFill="WHITE" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="50.0">
-         <font>
-            <Font name="System Bold" size="14.0" />
-         </font>
-      </JFXButton>
    </children>
 </AnchorPane>

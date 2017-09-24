@@ -1,4 +1,4 @@
-package com.ingbyr.guiyouget.utils
+package com.ingbyr.guiyouget.core
 
 import org.slf4j.LoggerFactory
 

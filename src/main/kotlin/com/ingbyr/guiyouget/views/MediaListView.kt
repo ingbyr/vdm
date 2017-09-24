@@ -2,13 +2,10 @@ package com.ingbyr.guiyouget.views
 
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.array
-import com.beust.klaxon.obj
 import com.beust.klaxon.string
 import com.ingbyr.guiyouget.controllers.MediaListController
-import com.ingbyr.guiyouget.events.DownloadMediaRequest
-import com.ingbyr.guiyouget.events.MediaListEvent
-import com.ingbyr.guiyouget.utils.YouGet
-import com.ingbyr.guiyouget.utils.YoutubeDL
+import com.ingbyr.guiyouget.events.*
+import com.ingbyr.guiyouget.core.CoreContents
 import com.jfoenix.controls.JFXListView
 import javafx.application.Platform
 import javafx.scene.control.Label
@@ -73,34 +70,30 @@ class MediaListView : View("GUI-YouGet") {
                 val formatID = it.text.split(" ")[0]
                 logger.debug("select format id is ${formatID}")
                 ProgressView().openModal(StageStyle.UNDECORATED)
-                if (url != "") fire(DownloadMediaRequest(url, formatID))
+                when (CoreContents.current) {
+                    CoreContents.YOUTUBE_DL -> fire(DownloadingRequestWithYoutubeDL(url, formatID))
+                    CoreContents.YOU_GET -> fire(DownloadingRequestWithYouGet(url, formatID))
+                }
+
+//                if (url != "") fire(DownloadMediaRequest(url, formatID))
             }
         }
 
         // Subscribe Events
         // Update title...
-        subscribe<MediaListEvent> {
-            val core = app.config["core"] as String
-            when (core) {
-                YoutubeDL.NAME -> {
-                    url = it.mediaList.string("webpage_url") ?: ""
-                    labelTitle.text = it.mediaList.string("title")
-                    labelDescription.text = it.mediaList.string("description")
-                    controller.addMediaItemsYoutubeDL(listViewMedia, it.mediaList.array("formats"))
-                }
+        // todo view model to this?
+        subscribe<DisplayMediasWithYoutubeDL> {
+            url = it.mediaList.string("webpage_url") ?: ""
+            labelTitle.text = it.mediaList.string("title")
+            labelDescription.text = it.mediaList.string("description")
+            controller.addMediaItemsYoutubeDL(listViewMedia, it.mediaList.array("formats"))
+        }
 
-                YouGet.NAME -> {
-                    url = it.mediaList.string("url") ?: ""
-                    labelTitle.text = it.mediaList.string("title")
-                    labelDescription.text = ""
-                    controller.addMediaItemsYouGet(listViewMedia, it.mediaList["streams"] as JsonObject)
-                }
-            }
-//            url = it.mediaList.string("webpage_url") ?: ""
-//            labelTitle.text = it.mediaList.string("title")
-//            labelDescription.text = it.mediaList.string("description")
-//
-//            controller.addMediaItems(listViewMedia, it.mediaList.array("formats"))
+        subscribe<DisplayMediasWithYouGet> {
+            url = it.mediaList.string("url") ?: ""
+            labelTitle.text = it.mediaList.string("title")
+            labelDescription.text = ""
+            controller.addMediaItemsYouGet(listViewMedia, it.mediaList["streams"] as JsonObject)
         }
     }
 
