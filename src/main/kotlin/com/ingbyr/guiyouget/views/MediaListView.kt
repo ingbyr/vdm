@@ -5,7 +5,7 @@ import com.beust.klaxon.array
 import com.beust.klaxon.string
 import com.ingbyr.guiyouget.controllers.MediaListController
 import com.ingbyr.guiyouget.events.*
-import com.ingbyr.guiyouget.core.CoreContents
+import com.ingbyr.guiyouget.utils.CoreUtils
 import com.jfoenix.controls.JFXListView
 import javafx.application.Platform
 import javafx.scene.control.Label
@@ -70,9 +70,9 @@ class MediaListView : View("GUI-YouGet") {
                 val formatID = it.text.split(" ")[0]
                 logger.debug("select format id is ${formatID}")
                 ProgressView().openModal(StageStyle.UNDECORATED)
-                when (CoreContents.current) {
-                    CoreContents.YOUTUBE_DL -> fire(DownloadingRequestWithYoutubeDL(url, formatID))
-                    CoreContents.YOU_GET -> fire(DownloadingRequestWithYouGet(url, formatID))
+                when (CoreUtils.current) {
+                    CoreUtils.YOUTUBE_DL -> fire(DownloadingRequestWithYoutubeDL(url, formatID))
+                    CoreUtils.YOU_GET -> fire(DownloadingRequestWithYouGet(url, formatID))
                 }
 
 //                if (url != "") fire(DownloadMediaRequest(url, formatID))
