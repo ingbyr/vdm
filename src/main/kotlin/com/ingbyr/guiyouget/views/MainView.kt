@@ -1,7 +1,9 @@
 package com.ingbyr.guiyouget.views
 
 import com.ingbyr.guiyouget.controllers.MainController
-import com.ingbyr.guiyouget.core.CoreContents
+import com.ingbyr.guiyouget.events.RequestCheckUpdatesYouGet
+import com.ingbyr.guiyouget.events.RequestCheckUpdatesYoutubeDL
+import com.ingbyr.guiyouget.utils.CoreUtils
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXCheckBox
 import com.jfoenix.controls.JFXTextField
@@ -92,19 +94,19 @@ class MainView : View("GUI-YouGet") {
         // Load download core config
         val core = app.config["core"]
         when (core) {
-            CoreContents.YOUTUBE_DL -> {
+            CoreUtils.YOUTUBE_DL -> {
                 cbYoutubeDL.isSelected = true
-                CoreContents.current = CoreContents.YOUTUBE_DL
+                CoreUtils.current = CoreUtils.YOUTUBE_DL
             }
-            CoreContents.YOU_GET -> {
+            CoreUtils.YOU_GET -> {
                 cbYouGet.isSelected = true
-                CoreContents.current = CoreContents.YOU_GET
+                CoreUtils.current = CoreUtils.YOU_GET
             }
             else -> {
-                app.config["core"] = CoreContents.YOUTUBE_DL
+                app.config["core"] = CoreUtils.YOUTUBE_DL
                 app.config.save()
                 cbYoutubeDL.isSelected = true
-                CoreContents.current = CoreContents.YOUTUBE_DL
+                CoreUtils.current = CoreUtils.YOUTUBE_DL
             }
         }
 
@@ -116,7 +118,7 @@ class MainView : View("GUI-YouGet") {
         cbYouGet.action {
             if (cbYouGet.isSelected) {
                 cbYoutubeDL.isSelected = false
-                app.config["core"] = CoreContents.YOU_GET
+                app.config["core"] = CoreUtils.YOU_GET
                 app.config.save()
             }
         }
@@ -124,14 +126,16 @@ class MainView : View("GUI-YouGet") {
         cbYoutubeDL.action {
             if (cbYoutubeDL.isSelected) {
                 cbYouGet.isSelected = false
-                app.config["core"] = CoreContents.YOUTUBE_DL
+                app.config["core"] = CoreUtils.YOUTUBE_DL
                 app.config.save()
             }
         }
 
         // Updates listener
         btnUpdateCore.setOnMouseClicked {
-            controller.updateCore()
+            UpdatesWindow().openModal(StageStyle.UNDECORATED)
+            fire(RequestCheckUpdatesYouGet)
+            fire(RequestCheckUpdatesYoutubeDL)
         }
 
         btnUpdate.setOnMouseClicked {

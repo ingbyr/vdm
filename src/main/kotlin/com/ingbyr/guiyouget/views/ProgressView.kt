@@ -47,6 +47,5 @@ class ProgressView : View() {
             labelTitle.text = it.status
             progressbar.progress = it.progress / 100
         }
-
     }
 }

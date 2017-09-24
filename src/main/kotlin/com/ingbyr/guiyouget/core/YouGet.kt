@@ -41,6 +41,7 @@ class YouGet(val url: String) : CoreController() {
         var line: String?
         val args = CoreArgs(core)
         args.add("foramtID", "--itag=$formatID")
+        args.add("-o", app.config["storagePath"] as String)
         args.add("url", url)
         val builder = ProcessBuilder(args.build())
         builder.redirectErrorStream(true)
@@ -63,7 +64,7 @@ class YouGet(val url: String) : CoreController() {
     }
 
     override fun parseStatus(line: String) {
-        val p = Regex("\\s*\\d+%").findAll(line).toList().flatMap(MatchResult::groupValues)
+        val p = Regex("\\d+\\.*\\d*%").findAll(line).toList().flatMap(MatchResult::groupValues)
         if (p.isNotEmpty()) {
             progress = p[0].subSequence(0, p[0].length - 1).toString().toDouble()
         }
