@@ -4,44 +4,46 @@ import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.int
 import com.beust.klaxon.string
-import com.ingbyr.guiyouget.events.LoadMediaListRequest
-import com.ingbyr.guiyouget.events.MediaListEvent
+import com.ingbyr.guiyouget.events.DisplayMediasWithYouGet
+import com.ingbyr.guiyouget.events.DisplayMediasWithYoutubeDL
+import com.ingbyr.guiyouget.events.RequestMediasWithYouGet
+import com.ingbyr.guiyouget.events.RequestMediasWithYoutubeDL
 import com.ingbyr.guiyouget.models.Media
-import com.ingbyr.guiyouget.utils.YouGet
-import com.ingbyr.guiyouget.utils.YoutubeDL
 import com.jfoenix.controls.JFXListView
 import javafx.scene.control.Label
 import org.slf4j.LoggerFactory
 import tornadofx.*
 
 class MediaListController : Controller() {
+
     private val logger = LoggerFactory.getLogger(MediaListController::class.java)
+
     fun subscribeEvents() {
-        subscribe<LoadMediaListRequest> {
+        subscribe<RequestMediasWithYoutubeDL> {
             try {
-                val core = app.config["core"] as String
-                when (core) {
-                    YoutubeDL.NAME -> {
-                        val json = YoutubeDL.getMediaInfo(it.args)
-                        fire(MediaListEvent(json))
-                    }
-                    YouGet.NAME -> {
-                        val json = YouGet.getMediaInfo(it.args)
-                        fire(MediaListEvent(json))
-                    }
-                    else -> {
-                        logger.error("Bad downloading core $core")
-                    }
-                }
+                val json = it.youtubedl.getMediasInfo()
+                fire(DisplayMediasWithYoutubeDL(json))
             } catch (e: Exception) {
                 logger.error(e.toString())
-                fire(MediaListEvent(JsonObject(mapOf(
+                fire(DisplayMediasWithYoutubeDL(JsonObject(mapOf(
                         "title" to "Failed to get media info",
                         "description" to "Make sure that URL is correct"))))
             }
-        }
-    }
 
+        }
+
+        subscribe<RequestMediasWithYouGet> {
+            try {
+                val json = it.youget.getMediasInfo()
+                fire(DisplayMediasWithYouGet(json))
+            } catch (e: Exception) {
+                logger.error(e.toString())
+                fire(DisplayMediasWithYouGet(JsonObject(mapOf("title" to "Failed to get media info"))))
+            }
+
+        }
+
+    }
 
     fun addMediaItemsYoutubeDL(listViewMedia: JFXListView<Label>, formats: JsonArray<JsonObject>?) {
         if (formats != null) {
@@ -68,7 +70,7 @@ class MediaListController : Controller() {
         val medias = mutableListOf<Media>().observable()
         logger.debug(streams.toString())
         streams.forEach { t, u ->
-            val info = streams.get(t) as JsonObject
+            val info = streams[t] as JsonObject
             medias.add(Media(info.string("video_profile"),
                     "",
                     info.int("size"),
@@ -78,9 +80,9 @@ class MediaListController : Controller() {
 
         medias.forEach {
             if (it.size == 0) {
-                listViewMedia.items.add(Label("${it.format} | ${it.ext}"))
+                listViewMedia.items.add(Label("${it.formatID} | ${it.format} | ${it.ext}"))
             } else {
-                listViewMedia.items.add(Label("${it.format} | ${it.ext} | ${it.size}MB"))
+                listViewMedia.items.add(Label("${it.formatID} | ${it.format} | ${it.ext} | ${it.size}MB"))
             }
         }
 
