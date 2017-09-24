@@ -55,8 +55,8 @@ class YoutubeDL(private val url: String) : CoreController() {
         while (true) {
             line = r.readLine()
             if (line != null && isDownloading) {
-                logger.debug(line)
-                logger.debug("downloading is $isDownloading")
+                logger.trace(line)
+                logger.trace("downloading is $isDownloading")
                 parseStatus(line)
             } else {
                 if (p != null && p.isAlive) {
@@ -76,7 +76,7 @@ class YoutubeDL(private val url: String) : CoreController() {
             if (it.endsWith("/s")) speed = it
             if (it.matches(Regex("\\d+:\\d+"))) extTime = it
         }
-        logger.debug("$progress, $speed, $extTime, $status")
+        logger.trace("$progress, $speed, $extTime, $status")
         if (progress == 100.0) {
             status = "Completed"
         }

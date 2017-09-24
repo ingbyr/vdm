@@ -37,4 +37,8 @@ class MainController : Controller() {
         // TODO: check updates
         // https://raw.githubusercontent.com/rg3/youtube-dl/master/youtube_dl/version.py
     }
+
+    fun updateGUI() {
+
+    }
 }
