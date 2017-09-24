@@ -2,6 +2,7 @@ package com.ingbyr.guiyouget.core
 
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
+import com.ingbyr.guiyouget.events.StopDownloading
 import com.ingbyr.guiyouget.events.UpdateProgressWithYouGet
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -15,6 +16,12 @@ class YouGet(val url: String) : CoreController() {
     private var speed = "0MB/s"
     private var status = "Analyzing..."
     private var isDownloading = false
+
+    init {
+        subscribe<StopDownloading> {
+            isDownloading = false
+        }
+    }
 
     private fun requestJsonAargs(): CoreArgs {
         val args = CoreArgs(core)
@@ -42,8 +49,8 @@ class YouGet(val url: String) : CoreController() {
         while (true) {
             line = r.readLine()
             if (line != null && isDownloading) {
-                logger.debug(line)
-                logger.debug("downloading is $isDownloading")
+                logger.trace(line)
+                logger.trace("downloading is $isDownloading")
                 parseStatus(line)
             } else {
                 if (p != null && p.isAlive) {
@@ -66,7 +73,7 @@ class YouGet(val url: String) : CoreController() {
             speed = s[0]
         }
 
-        logger.debug("$progress, $speed, $status")
+        logger.trace("$progress, $speed, $status")
         if (progress == 100.0) {
             status = "Completed"
         }

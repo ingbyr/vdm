@@ -108,6 +108,10 @@ class MainView : View("GUI-YouGet") {
             }
         }
 
+        // Load core version
+        labelYouGet.text = app.config["you-get-version"] as String
+        labelYoutubeDL.text = app.config["youtube-dl-version"] as String
+
         // Change download core
         cbYouGet.action {
             if (cbYouGet.isSelected) {
@@ -123,6 +127,15 @@ class MainView : View("GUI-YouGet") {
                 app.config["core"] = CoreContents.YOUTUBE_DL
                 app.config.save()
             }
+        }
+
+        // Updates listener
+        btnUpdateCore.setOnMouseClicked {
+            controller.updateCore()
+        }
+
+        btnUpdate.setOnMouseClicked {
+            controller.updateGUI()
         }
     }
 

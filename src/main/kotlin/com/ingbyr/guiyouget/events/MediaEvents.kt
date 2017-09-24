@@ -18,7 +18,6 @@ class DownloadingRequestWithYoutubeDL(val url: String, val formatID: String) : F
 class UpdateProgressWithYoutubeDL(val progress: Double, val speed: String, val extime: String, val status: String) : FXEvent()
 
 // you-get events
-// todo copy above
 class DisplayMediasWithYouGet(val mediaList: JsonObject) : FXEvent()
 
 class RequestMediasWithYouGet(val youget: YouGet) : FXEvent(EventBus.RunOn.BackgroundThread)
