@@ -19,6 +19,7 @@ class YoutubeDL(private val url: String) : CoreController() {
     private var extTime = "00:00"
     private var status = "Analyzing..."
     private var isDownloading = false
+    private val outputTemplate = "%(title)s.%(ext)s"
 
     init {
         subscribe<StopDownloading> {
@@ -45,8 +46,10 @@ class YoutubeDL(private val url: String) : CoreController() {
         isDownloading = true
         var line: String?
         val args = CoreArgs(core)
+        // todo remove proxy from this
         args.add("--proxy", "socks5://127.0.0.1:1080/")
         args.add("-f", formatID)
+        args.add("-o", Paths.get(app.config["storagePath"] as String, outputTemplate).toString())
         args.add("url", url)
         val builder = ProcessBuilder(args.build())
         builder.redirectErrorStream(true)
