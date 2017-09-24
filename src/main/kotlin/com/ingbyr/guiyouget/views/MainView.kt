@@ -1,8 +1,7 @@
 package com.ingbyr.guiyouget.views
 
 import com.ingbyr.guiyouget.controllers.MainController
-import com.ingbyr.guiyouget.utils.YouGet
-import com.ingbyr.guiyouget.utils.YoutubeDL
+import com.ingbyr.guiyouget.core.CoreContents
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXCheckBox
 import com.jfoenix.controls.JFXTextField
@@ -93,20 +92,31 @@ class MainView : View("GUI-YouGet") {
         // Load download core config
         val core = app.config["core"]
         when (core) {
-            YoutubeDL.NAME -> cbYoutubeDL.isSelected = true
-            YouGet.NAME -> cbYouGet.isSelected = true
+            CoreContents.YOUTUBE_DL -> {
+                cbYoutubeDL.isSelected = true
+                CoreContents.current = CoreContents.YOUTUBE_DL
+            }
+            CoreContents.YOU_GET -> {
+                cbYouGet.isSelected = true
+                CoreContents.current = CoreContents.YOU_GET
+            }
             else -> {
-                app.config["core"] = YoutubeDL.NAME
+                app.config["core"] = CoreContents.YOUTUBE_DL
                 app.config.save()
                 cbYoutubeDL.isSelected = true
+                CoreContents.current = CoreContents.YOUTUBE_DL
             }
         }
+
+        // Load core version
+        labelYouGet.text = app.config["you-get-version"] as String
+        labelYoutubeDL.text = app.config["youtube-dl-version"] as String
 
         // Change download core
         cbYouGet.action {
             if (cbYouGet.isSelected) {
                 cbYoutubeDL.isSelected = false
-                app.config["core"] = YouGet.NAME
+                app.config["core"] = CoreContents.YOU_GET
                 app.config.save()
             }
         }
@@ -114,9 +124,18 @@ class MainView : View("GUI-YouGet") {
         cbYoutubeDL.action {
             if (cbYoutubeDL.isSelected) {
                 cbYouGet.isSelected = false
-                app.config["core"] = YoutubeDL.NAME
+                app.config["core"] = CoreContents.YOUTUBE_DL
                 app.config.save()
             }
+        }
+
+        // Updates listener
+        btnUpdateCore.setOnMouseClicked {
+            controller.updateCore()
+        }
+
+        btnUpdate.setOnMouseClicked {
+            controller.updateGUI()
         }
     }
 

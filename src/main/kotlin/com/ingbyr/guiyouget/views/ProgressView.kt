@@ -1,9 +1,10 @@
 package com.ingbyr.guiyouget.views
 
 import com.ingbyr.guiyouget.controllers.ProgressController
-import com.ingbyr.guiyouget.events.DownloadMediaRequest
-import com.ingbyr.guiyouget.models.Progress
-import com.ingbyr.guiyouget.models.ProgressModel
+import com.ingbyr.guiyouget.events.StopDownloading
+import com.ingbyr.guiyouget.events.UpdateProgressWithYouGet
+import com.ingbyr.guiyouget.events.UpdateProgressWithYoutubeDL
+import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXProgressBar
 import javafx.scene.control.Label
 import javafx.scene.layout.AnchorPane
@@ -12,8 +13,6 @@ import tornadofx.*
 
 
 class ProgressView : View() {
-    private val pg = Progress(0.0, "0MiB/s", "00:00", "Analyzing...")
-    private val model = ProgressModel(pg)
     private val controller: ProgressController by inject()
     override val root: AnchorPane by fxml("/fxml/ProgressWindow.fxml")
 
@@ -22,20 +21,32 @@ class ProgressView : View() {
     private val labelTitle: Label by fxid()
     private val labelSpeed: Label by fxid()
     private val labelTime: Label by fxid()
+    private val btnCancel: JFXButton by fxid()
 
     init {
+        controller.subscribeEvents()
+
         paneExit.setOnMouseClicked {
+            fire(StopDownloading)
             this.close()
         }
 
-        progressbar.progressProperty().bind(model.progress)
-        labelTime.textProperty().bind(model.extTime)
-        labelSpeed.textProperty().bind(model.speed)
-        labelTitle.textProperty().bind(model.status)
-
-        // Subscribe Events
-        subscribe<DownloadMediaRequest> {
-            controller.download(pg, it)
+        btnCancel.setOnMouseClicked {
+            fire(StopDownloading)
         }
+
+        subscribe<UpdateProgressWithYoutubeDL> {
+            labelTime.text = it.extime
+            labelSpeed.text = it.speed
+            labelTitle.text = it.status
+            progressbar.progress = it.progress / 100
+        }
+
+        subscribe<UpdateProgressWithYouGet> {
+            labelSpeed.text = it.speed
+            labelTitle.text = it.status
+            progressbar.progress = it.progress / 100
+        }
+
     }
 }
