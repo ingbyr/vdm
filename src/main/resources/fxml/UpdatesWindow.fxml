@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXProgressBar?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
@@ -25,12 +24,16 @@
       </AnchorPane>
       <AnchorPane prefHeight="140.0" prefWidth="550.0" style="-fx-background-color: #3f51b5;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
          <children>
-            <Label fx:id="labelStatus" layoutX="10.0" layoutY="20.0" prefWidth="410.0" text="Analyzing..." textFill="WHITE" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+            <Label fx:id="labelYouget" layoutX="10.0" layoutY="20.0" prefWidth="410.0" text="Analyzing..." textFill="WHITE" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <JFXProgressBar fx:id="progressbar" layoutX="81.0" layoutY="70.0" prefHeight="10.0" stylesheets="@../css/ui.css" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="80.0" />
+            <Label fx:id="labelYoutubedl" layoutX="20.0" layoutY="30.0" prefWidth="410.0" text="Analyzing..." textFill="WHITE" AnchorPane.topAnchor="60.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
    </children>

@@ -2,7 +2,9 @@ package com.ingbyr.guiyouget.core
 
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
-import com.ingbyr.guiyouget.events.UpdateStates
+import com.ingbyr.guiyouget.events.UpdateYouGetStates
+import com.ingbyr.guiyouget.events.UpdateYoutubeDLStates
+import com.ingbyr.guiyouget.utils.CoreUtils
 import okhttp3.*
 import org.slf4j.LoggerFactory
 import tornadofx.*
@@ -49,7 +51,14 @@ class DownloadFileCallBack(private val file: File, private val k: String?, priva
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     override fun onFailure(call: Call?, e: IOException?) {
-        fire(UpdateStates("Updating failed"))
+        when (k) {
+            CoreUtils.YOUTUBE_DL_VERSION -> {
+                fire(UpdateYoutubeDLStates("[youtube-dl] Fail to update"))
+            }
+            CoreUtils.YOU_GET_VERSION -> {
+                fire(UpdateYouGetStates("[you-get] Fail to update"))
+            }
+        }
         logger.error(e.toString())
     }
 
@@ -83,7 +92,15 @@ class DownloadFileCallBack(private val file: File, private val k: String?, priva
             logger.error(e.toString())
 
         }
-        fire(UpdateStates("Complete updates"))
+
+        when (k) {
+            CoreUtils.YOUTUBE_DL_VERSION -> {
+                fire(UpdateYoutubeDLStates("[youtube-dl] Updating completed"))
+            }
+            CoreUtils.YOU_GET_VERSION -> {
+                fire(UpdateYouGetStates("[you-get] Updating completed"))
+            }
+        }
         // Update config of APP
         if (k != null && v != null) {
             app.config[k] = v

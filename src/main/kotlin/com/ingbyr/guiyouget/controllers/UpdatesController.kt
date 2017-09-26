@@ -1,9 +1,7 @@
 package com.ingbyr.guiyouget.controllers
 
 import com.ingbyr.guiyouget.core.OkHttpController
-import com.ingbyr.guiyouget.events.RequestCheckUpdatesYouGet
-import com.ingbyr.guiyouget.events.RequestCheckUpdatesYoutubeDL
-import com.ingbyr.guiyouget.events.UpdateStates
+import com.ingbyr.guiyouget.events.*
 import com.ingbyr.guiyouget.utils.CoreUtils
 import org.slf4j.LoggerFactory
 import tornadofx.*
@@ -15,7 +13,7 @@ class UpdatesController : Controller() {
 
     fun subscribeEvents() {
         subscribe<RequestCheckUpdatesYouGet> {
-            fire(UpdateStates("Check for updates of you-get"))
+            fire(UpdateYouGetStates("[you-get] Check for updates..."))
             val remoteJson = okhttp.requestJson(CoreUtils.REMOTE_CONF_URL)
             if (remoteJson != null) {
                 val youget = remoteJson["youget"] as String
@@ -27,7 +25,7 @@ class UpdatesController : Controller() {
         }
 
         subscribe<RequestCheckUpdatesYoutubeDL> {
-            fire(UpdateStates("Check for updates of youtube-dl"))
+            fire(UpdateYoutubeDLStates("[youtube-dl] Check for updates..."))
             val remoteJson = okhttp.requestJson(CoreUtils.REMOTE_CONF_URL)
             if (remoteJson != null) {
                 val youtubedl = remoteJson["youtubedl"] as String
@@ -49,7 +47,7 @@ class UpdatesController : Controller() {
                 logger.debug("[you-get] remote version is $remoteVersion, local version is $localVersion")
                 if (remoteVersion > localVersion) {
                     // do updates
-                    fire(UpdateStates("New version $remoteVersion of you-get, downloading..."))
+                    fire(UpdateYouGetStates("[you-get] New version $remoteVersion downloading..."))
                     val url = CoreUtils.yougetUpdateURL(remoteVersion)
                     logger.debug("[you-get] update url $url")
                     okhttp.downloadFile(url,
@@ -57,6 +55,7 @@ class UpdatesController : Controller() {
                             CoreUtils.YOU_GET_VERSION,
                             remoteVersion)
                 } else {
+                    fire(UpdateYouGetStates("[you-get] No updates"))
                     logger.debug("[you-get] no updates")
                 }
             }
@@ -65,7 +64,7 @@ class UpdatesController : Controller() {
                 logger.debug("[youtube-dl] remote version is $remoteVersion, local version is $localVersion")
                 if (remoteVersion > localVersion) {
                     // do updates
-                    fire(UpdateStates("New version $remoteVersion of youtube-dl, downloading..."))
+                    fire(UpdateYoutubeDLStates("[youtube-dl] New version $remoteVersion downloading..."))
                     val url = CoreUtils.youtubedlUpdateURL(remoteVersion)
                     logger.debug("[youtube-dl] update url $url")
                     okhttp.downloadFile(url,
@@ -73,6 +72,7 @@ class UpdatesController : Controller() {
                             CoreUtils.YOUTUBE_DL_VERSION,
                             remoteVersion)
                 } else {
+                    fire(UpdateYoutubeDLStates("[youtube-dl]No updates"))
                     logger.debug("[youtube-dl] no updates")
                 }
             }

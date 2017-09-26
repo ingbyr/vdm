@@ -81,7 +81,7 @@ class MainView : View("GUI-YouGet") {
         }
 
         // Storage path
-        if (app.config["storagePath"] == null) {
+        if (app.config["storagePath"] == null || app.config["storagePath"] == "") {
             labelStoragePath.text = Paths.get(System.getProperty("user.dir")).toAbsolutePath().toString()
             app.config["storagePath"] = labelStoragePath.text
             app.config.save()
@@ -176,6 +176,34 @@ class MainView : View("GUI-YouGet") {
             }
         }
 
+        tfSocksAddress.textProperty().addListener { _, _, newValue ->
+            if (app.config[CoreUtils.PROXY_TYPE] == CoreUtils.PROXY_SOCKS) {
+                app.config[CoreUtils.PROXY_ADDRESS] = newValue
+                app.config.save()
+            }
+        }
+
+        tfSocksPort.textProperty().addListener { _, _, newValue ->
+            if (app.config[CoreUtils.PROXY_TYPE] == CoreUtils.PROXY_SOCKS) {
+                app.config[CoreUtils.PROXY_PORT] = newValue
+                app.config.save()
+            }
+        }
+
+        tfHTTPAddress.textProperty().addListener { _, _, newValue ->
+            if (app.config[CoreUtils.PROXY_TYPE] == CoreUtils.PROXY_HTTP) {
+                app.config[CoreUtils.PROXY_ADDRESS] = newValue
+                app.config.save()
+            }
+        }
+
+        tfHTTPPort.textProperty().addListener { _, _, newValue ->
+            if (app.config[CoreUtils.PROXY_TYPE] == CoreUtils.PROXY_HTTP) {
+                app.config[CoreUtils.PROXY_PORT] = newValue
+                app.config.save()
+            }
+        }
+
         cbSocks5.action {
             val address = tfSocksAddress.text
             val port = tfSocksPort.text
@@ -186,14 +214,12 @@ class MainView : View("GUI-YouGet") {
             }
 
             // Enable socks proxy
-            if (cbSocks5.isSelected && address.trim() != "" && port.trim() != "") {
+            if (cbSocks5.isSelected) {
                 cbHTTP.isSelected = false
                 app.config[CoreUtils.PROXY_TYPE] = CoreUtils.PROXY_SOCKS
                 app.config[CoreUtils.PROXY_ADDRESS] = address
                 app.config[CoreUtils.PROXY_PORT] = port
                 app.config.save()
-            } else {
-                cbSocks5.isSelected = false
             }
         }
 
@@ -207,14 +233,12 @@ class MainView : View("GUI-YouGet") {
             }
 
             // Enable http proxy
-            if (cbHTTP.isSelected && address.trim() != "" && port.trim() != "") {
+            if (cbHTTP.isSelected) {
                 cbSocks5.isSelected = false
                 app.config[CoreUtils.PROXY_TYPE] = CoreUtils.PROXY_HTTP
                 app.config[CoreUtils.PROXY_ADDRESS] = address
                 app.config[CoreUtils.PROXY_PORT] = port
                 app.config.save()
-            } else {
-                cbHTTP.isSelected = false
             }
         }
 
