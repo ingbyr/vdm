@@ -3,8 +3,8 @@ package com.ingbyr.guiyouget.core
 import org.slf4j.LoggerFactory
 
 class CoreArgs(val core: String) {
-    val logger = LoggerFactory.getLogger(CoreArgs::class.java)
-    val argsMap = mutableMapOf<String, String>()
+    private val logger = LoggerFactory.getLogger(CoreArgs::class.java)
+    private val argsMap = mutableMapOf<String, String>()
 
 
     fun add(key: String, value: String) {

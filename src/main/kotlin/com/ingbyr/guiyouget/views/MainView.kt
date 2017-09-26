@@ -28,7 +28,6 @@ class MainView : View("GUI-YouGet") {
     private val tfURL: JFXTextField by fxid()
 
     private val labelStoragePath: Label by fxid()
-    private val labelCoreVersion: Label by fxid()
     private val labelVersion: Label by fxid()
     private val labelYoutubeDL: Label by fxid()
     private val labelYouGet: Label by fxid()
@@ -43,6 +42,22 @@ class MainView : View("GUI-YouGet") {
 
     private val paneExit: Pane by fxid()
     private val apBorder: AnchorPane by fxid()
+
+    private val cbSocks5: JFXCheckBox by fxid()
+    private val tfSocksAddress: JFXTextField by fxid()
+    private val tfSocksPort: JFXTextField by fxid()
+    private val cbHTTP: JFXCheckBox by fxid()
+    private val tfHTTPAddress: JFXTextField by fxid()
+    private val tfHTTPPort: JFXTextField by fxid()
+
+    private val labelAboutVersion: Label by fxid()
+    private val labelGitHub: Label by fxid()
+    private val labelLicense: Label by fxid()
+    private val labelAuthor: Label by fxid()
+    private val btnFollowMe: JFXButton by fxid()
+    private val btnReportBug: JFXButton by fxid()
+    private val btnDonate: JFXButton by fxid()
+
 
     init {
         // Window boarder
@@ -66,7 +81,7 @@ class MainView : View("GUI-YouGet") {
         }
 
         // Storage path
-        if (app.config["storagePath"] == null) {
+        if (app.config["storagePath"] == null || app.config["storagePath"] == "") {
             labelStoragePath.text = Paths.get(System.getProperty("user.dir")).toAbsolutePath().toString()
             app.config["storagePath"] = labelStoragePath.text
             app.config.save()
@@ -92,33 +107,33 @@ class MainView : View("GUI-YouGet") {
         }
 
         // Load download core config
-        val core = app.config["core"]
+        val core = app.config[CoreUtils.DOWNLOAD_CORE]
         when (core) {
             CoreUtils.YOUTUBE_DL -> {
                 cbYoutubeDL.isSelected = true
-                CoreUtils.current = CoreUtils.YOUTUBE_DL
             }
             CoreUtils.YOU_GET -> {
                 cbYouGet.isSelected = true
-                CoreUtils.current = CoreUtils.YOU_GET
             }
             else -> {
-                app.config["core"] = CoreUtils.YOUTUBE_DL
+                app.config[CoreUtils.DOWNLOAD_CORE] = CoreUtils.YOUTUBE_DL
                 app.config.save()
                 cbYoutubeDL.isSelected = true
-                CoreUtils.current = CoreUtils.YOUTUBE_DL
             }
         }
 
-        // Load core version
-        labelYouGet.text = app.config["you-get-version"] as String
-        labelYoutubeDL.text = app.config["youtube-dl-version"] as String
+        // Init core version
+        labelYouGet.text = app.config[CoreUtils.YOU_GET_VERSION] as String
+        labelYoutubeDL.text = app.config[CoreUtils.YOUTUBE_DL_VERSION] as String
+
+        // Init app version
+        labelVersion.text = app.config[CoreUtils.APP_VERSION] as String
 
         // Change download core
         cbYouGet.action {
             if (cbYouGet.isSelected) {
                 cbYoutubeDL.isSelected = false
-                app.config["core"] = CoreUtils.YOU_GET
+                app.config[CoreUtils.DOWNLOAD_CORE] = CoreUtils.YOU_GET
                 app.config.save()
             }
         }
@@ -126,7 +141,7 @@ class MainView : View("GUI-YouGet") {
         cbYoutubeDL.action {
             if (cbYoutubeDL.isSelected) {
                 cbYouGet.isSelected = false
-                app.config["core"] = CoreUtils.YOUTUBE_DL
+                app.config[CoreUtils.DOWNLOAD_CORE] = CoreUtils.YOUTUBE_DL
                 app.config.save()
             }
         }
@@ -141,6 +156,100 @@ class MainView : View("GUI-YouGet") {
         btnUpdate.setOnMouseClicked {
             controller.updateGUI()
         }
+
+        // Proxy
+        val proxy = app.config[CoreUtils.PROXY_TYPE]
+        when (proxy) {
+            CoreUtils.PROXY_HTTP -> {
+                cbHTTP.isSelected = true
+                tfHTTPAddress.text = app.config[CoreUtils.PROXY_ADDRESS] as String
+                tfHTTPPort.text = app.config[CoreUtils.PROXY_PORT] as String
+            }
+            CoreUtils.PROXY_SOCKS -> {
+                cbSocks5.isSelected = true
+                tfSocksAddress.text = app.config[CoreUtils.PROXY_ADDRESS] as String
+                tfSocksPort.text = app.config[CoreUtils.PROXY_PORT] as String
+            }
+            else -> {
+                cbHTTP.isSelected = false
+                cbSocks5.isSelected = false
+            }
+        }
+
+        tfSocksAddress.textProperty().addListener { _, _, newValue ->
+            if (app.config[CoreUtils.PROXY_TYPE] == CoreUtils.PROXY_SOCKS) {
+                app.config[CoreUtils.PROXY_ADDRESS] = newValue
+                app.config.save()
+            }
+        }
+
+        tfSocksPort.textProperty().addListener { _, _, newValue ->
+            if (app.config[CoreUtils.PROXY_TYPE] == CoreUtils.PROXY_SOCKS) {
+                app.config[CoreUtils.PROXY_PORT] = newValue
+                app.config.save()
+            }
+        }
+
+        tfHTTPAddress.textProperty().addListener { _, _, newValue ->
+            if (app.config[CoreUtils.PROXY_TYPE] == CoreUtils.PROXY_HTTP) {
+                app.config[CoreUtils.PROXY_ADDRESS] = newValue
+                app.config.save()
+            }
+        }
+
+        tfHTTPPort.textProperty().addListener { _, _, newValue ->
+            if (app.config[CoreUtils.PROXY_TYPE] == CoreUtils.PROXY_HTTP) {
+                app.config[CoreUtils.PROXY_PORT] = newValue
+                app.config.save()
+            }
+        }
+
+        cbSocks5.action {
+            val address = tfSocksAddress.text
+            val port = tfSocksPort.text
+            // Disable socks proxy
+            if (!cbSocks5.isSelected) {
+                app.config[CoreUtils.PROXY_TYPE] = ""
+                app.config.save()
+            }
+
+            // Enable socks proxy
+            if (cbSocks5.isSelected) {
+                cbHTTP.isSelected = false
+                app.config[CoreUtils.PROXY_TYPE] = CoreUtils.PROXY_SOCKS
+                app.config[CoreUtils.PROXY_ADDRESS] = address
+                app.config[CoreUtils.PROXY_PORT] = port
+                app.config.save()
+            }
+        }
+
+        cbHTTP.action {
+            val address = tfHTTPAddress.text
+            val port = tfHTTPPort.text
+            // Disable http proxy
+            if (!cbHTTP.isSelected) {
+                app.config[CoreUtils.PROXY_TYPE] = ""
+                app.config.save()
+            }
+
+            // Enable http proxy
+            if (cbHTTP.isSelected) {
+                cbSocks5.isSelected = false
+                app.config[CoreUtils.PROXY_TYPE] = CoreUtils.PROXY_HTTP
+                app.config[CoreUtils.PROXY_ADDRESS] = address
+                app.config[CoreUtils.PROXY_PORT] = port
+                app.config.save()
+            }
+        }
+
+        // About view
+        labelAboutVersion.text = app.config[CoreUtils.APP_VERSION] as String
+        labelGitHub.setOnMouseClicked { hostServices.showDocument(CoreUtils.APP_SOURCE_CODE) }
+        labelLicense.setOnMouseClicked { hostServices.showDocument(CoreUtils.APP_LICENSE) }
+        labelAuthor.setOnMouseClicked { hostServices.showDocument(CoreUtils.APP_AUTHOR) }
+        btnFollowMe.action { hostServices.showDocument(CoreUtils.APP_AUTHOR_GITHUB) }
+        btnReportBug.action { hostServices.showDocument(CoreUtils.APP_REPORT_BUGS) }
+        btnDonate.action { hostServices.showDocument(CoreUtils.APP_DONATE) }
     }
 
     // clean the url textfield
