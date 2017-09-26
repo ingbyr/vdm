@@ -14,7 +14,7 @@ class MainController : Controller() {
     private val logger: Logger = LoggerFactory.getLogger(MainController::class.java)
 
     fun requestMediaInfo(url: String) {
-        val core = app.config["core"] as String
+        val core = app.config[CoreUtils.DOWNLOAD_CORE]
         logger.debug("download core is $core")
 
         // Init the request args
@@ -36,6 +36,6 @@ class MainController : Controller() {
 
 
     fun updateGUI() {
-
+        hostServices.showDocument(CoreUtils.APP_UPDATE_URL)
     }
 }

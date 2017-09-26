@@ -2,6 +2,9 @@ package com.ingbyr.guiyouget.core
 
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
+import com.ingbyr.guiyouget.events.UpdateYouGetStates
+import com.ingbyr.guiyouget.events.UpdateYoutubeDLStates
+import com.ingbyr.guiyouget.utils.CoreUtils
 import okhttp3.*
 import org.slf4j.LoggerFactory
 import tornadofx.*
@@ -11,9 +14,9 @@ import java.io.IOException
 
 
 class OkHttpController : Controller() {
-    val logger = LoggerFactory.getLogger(this::class.java)
-    val client = OkHttpClient()
-    val parser = Parser()
+    private val logger = LoggerFactory.getLogger(this::class.java)
+    private val client = OkHttpClient()
+    private val parser = Parser()
 
     fun requestString(url: String): String? {
         val request = Request.Builder().get().url(url).build()
@@ -37,17 +40,25 @@ class OkHttpController : Controller() {
         }
     }
 
-    fun downloadFile(url: String, file: File) {
+    fun downloadFile(url: String, file: File, k: String? = null, v: String? = null) {
         val request = Request.Builder().url(url).build()
         logger.debug("save file to ${file.absolutePath}")
-        client.newCall(request).enqueue(DownloadFileCallBack(file))
+        client.newCall(request).enqueue(DownloadFileCallBack(file, k, v))
     }
 }
 
-class DownloadFileCallBack(var file: File) : Callback, Controller() {
-    val logger = LoggerFactory.getLogger(this::class.java)
+class DownloadFileCallBack(private val file: File, private val k: String?, private val v: String?) : Callback, Controller() {
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
     override fun onFailure(call: Call?, e: IOException?) {
+        when (k) {
+            CoreUtils.YOUTUBE_DL_VERSION -> {
+                fire(UpdateYoutubeDLStates("[youtube-dl] Fail to update"))
+            }
+            CoreUtils.YOU_GET_VERSION -> {
+                fire(UpdateYouGetStates("[you-get] Fail to update"))
+            }
+        }
         logger.error(e.toString())
     }
 
@@ -74,7 +85,7 @@ class DownloadFileCallBack(var file: File) : Callback, Controller() {
                 }
                 if (bytesRead == -1) break
                 process += bytesRead
-                println(process)
+                logger.trace(process.toString())
                 os.write(buffer, 0, bytesRead)
             } while (true)
         } catch (e: Exception) {
@@ -82,5 +93,18 @@ class DownloadFileCallBack(var file: File) : Callback, Controller() {
 
         }
 
+        when (k) {
+            CoreUtils.YOUTUBE_DL_VERSION -> {
+                fire(UpdateYoutubeDLStates("[youtube-dl] Updating completed"))
+            }
+            CoreUtils.YOU_GET_VERSION -> {
+                fire(UpdateYouGetStates("[you-get] Updating completed"))
+            }
+        }
+        // Update config of APP
+        if (k != null && v != null) {
+            app.config[k] = v
+            app.config.save()
+        }
     }
 }
