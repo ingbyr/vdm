@@ -70,7 +70,7 @@ class MediaListView : View("GUI-YouGet") {
                 val formatID = it.text.split(" ")[0]
                 logger.debug("select format id is ${formatID}")
                 ProgressView().openModal(StageStyle.UNDECORATED)
-                when (CoreUtils.current) {
+                when (app.config[CoreUtils.DOWNLOAD_CORE]) {
                     CoreUtils.YOUTUBE_DL -> fire(DownloadingRequestWithYoutubeDL(url, formatID))
                     CoreUtils.YOU_GET -> fire(DownloadingRequestWithYouGet(url, formatID))
                 }

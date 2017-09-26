@@ -107,21 +107,18 @@ class MainView : View("GUI-YouGet") {
         }
 
         // Load download core config
-        val core = app.config["core"]
+        val core = app.config[CoreUtils.DOWNLOAD_CORE]
         when (core) {
             CoreUtils.YOUTUBE_DL -> {
                 cbYoutubeDL.isSelected = true
-                CoreUtils.current = CoreUtils.YOUTUBE_DL
             }
             CoreUtils.YOU_GET -> {
                 cbYouGet.isSelected = true
-                CoreUtils.current = CoreUtils.YOU_GET
             }
             else -> {
-                app.config["core"] = CoreUtils.YOUTUBE_DL
+                app.config[CoreUtils.DOWNLOAD_CORE] = CoreUtils.YOUTUBE_DL
                 app.config.save()
                 cbYoutubeDL.isSelected = true
-                CoreUtils.current = CoreUtils.YOUTUBE_DL
             }
         }
 
@@ -136,7 +133,7 @@ class MainView : View("GUI-YouGet") {
         cbYouGet.action {
             if (cbYouGet.isSelected) {
                 cbYoutubeDL.isSelected = false
-                app.config["core"] = CoreUtils.YOU_GET
+                app.config[CoreUtils.DOWNLOAD_CORE] = CoreUtils.YOU_GET
                 app.config.save()
             }
         }
@@ -144,7 +141,7 @@ class MainView : View("GUI-YouGet") {
         cbYoutubeDL.action {
             if (cbYoutubeDL.isSelected) {
                 cbYouGet.isSelected = false
-                app.config["core"] = CoreUtils.YOUTUBE_DL
+                app.config[CoreUtils.DOWNLOAD_CORE] = CoreUtils.YOUTUBE_DL
                 app.config.save()
             }
         }

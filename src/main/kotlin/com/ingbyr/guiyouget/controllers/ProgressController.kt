@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory
 import tornadofx.*
 
 class ProgressController : Controller() {
-    val logger = LoggerFactory.getLogger(this::class.java)
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
     fun subscribeEvents() {
         subscribe<DownloadingRequestWithYoutubeDL> {
