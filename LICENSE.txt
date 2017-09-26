@@ -1,7 +1,7 @@
 ==============================================
 This is a copy of the MIT license.
 ==============================================
-Copyright (C) 2016 InG_byr <zwkv587@gmail.com>
+Copyright (C) 2016-2017 ingbyr <ingbyr@outlook.com>
 Copyright (C) 2012, 2013, 2014, 2015, 2016 Mort Yao <mort.yao@gmail.com>
 Copyright (C) 2012 Boyu Guo <iambus@gmail.com>
 

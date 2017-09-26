@@ -4,6 +4,7 @@ import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.ingbyr.guiyouget.events.StopDownloading
 import com.ingbyr.guiyouget.events.UpdateProgressWithYouGet
+import com.ingbyr.guiyouget.utils.CoreUtils
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.file.Paths
@@ -25,6 +26,17 @@ class YouGet(val url: String) : CoreController() {
     private fun requestJsonAargs(): CoreArgs {
         val args = CoreArgs(core)
         args.add("simulator", "--json")
+        when (app.config[CoreUtils.PROXY_TYPE]) {
+            CoreUtils.PROXY_SOCKS -> {
+//                logger.error("[you-get] Not support socks proxy")
+                args.add("-x",
+                        "${app.config[CoreUtils.PROXY_ADDRESS]}:${app.config[CoreUtils.PROXY_PORT]}")
+            }
+            CoreUtils.PROXY_HTTP -> {
+                args.add("-x",
+                        "${app.config[CoreUtils.PROXY_ADDRESS]}:${app.config[CoreUtils.PROXY_PORT]}")
+            }
+        }
         args.add("url", url)
         return args
     }
@@ -39,6 +51,16 @@ class YouGet(val url: String) : CoreController() {
         isDownloading = true
         var line: String?
         val args = CoreArgs(core)
+        when (app.config[CoreUtils.PROXY_TYPE]) {
+            CoreUtils.PROXY_SOCKS -> {
+                args.add("-x",
+                        "${app.config[CoreUtils.PROXY_ADDRESS]}:${app.config[CoreUtils.PROXY_PORT]}")
+            }
+            CoreUtils.PROXY_HTTP -> {
+                args.add("-x",
+                        "${app.config[CoreUtils.PROXY_ADDRESS]}:${app.config[CoreUtils.PROXY_PORT]}")
+            }
+        }
         args.add("foramtID", "--itag=$formatID")
         args.add("-o", app.config["storagePath"] as String)
         args.add("url", url)
