@@ -6,13 +6,12 @@ import com.ingbyr.guiyouget.events.StopDownloading
 import com.ingbyr.guiyouget.events.UpdateProgressWithYoutubeDL
 import java.io.BufferedReader
 import java.io.InputStreamReader
-import java.nio.file.Files
 import java.nio.file.Paths
 
 
 class YoutubeDL(private val url: String) : CoreController() {
 
-    private val core = this::class.java.getResource("/core/youtube-dl.exe").path
+    val core = Paths.get(System.getProperty("user.dir"), "core", "youtube-dl.exe").toAbsolutePath().toString()
     private val parser = Parser()
     private var progress = 0.0
     private var speed = "0MiB/s"

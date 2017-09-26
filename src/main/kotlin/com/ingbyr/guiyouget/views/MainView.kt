@@ -28,7 +28,6 @@ class MainView : View("GUI-YouGet") {
     private val tfURL: JFXTextField by fxid()
 
     private val labelStoragePath: Label by fxid()
-    private val labelCoreVersion: Label by fxid()
     private val labelVersion: Label by fxid()
     private val labelYoutubeDL: Label by fxid()
     private val labelYouGet: Label by fxid()
@@ -110,9 +109,12 @@ class MainView : View("GUI-YouGet") {
             }
         }
 
-        // Load core version
-        labelYouGet.text = app.config["you-get-version"] as String
-        labelYoutubeDL.text = app.config["youtube-dl-version"] as String
+        // Init core version
+        labelYouGet.text = app.config[CoreUtils.YOU_GET_VERSION] as String
+        labelYoutubeDL.text = app.config[CoreUtils.YOUTUBE_DL_VERSION] as String
+
+        // Init app version
+        labelVersion.text = app.config[CoreUtils.APP_VERSION] as String
 
         // Change download core
         cbYouGet.action {
