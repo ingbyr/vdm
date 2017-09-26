@@ -6,11 +6,10 @@ import com.ingbyr.guiyouget.events.StopDownloading
 import com.ingbyr.guiyouget.events.UpdateProgressWithYouGet
 import java.io.BufferedReader
 import java.io.InputStreamReader
-import java.nio.file.Files
 import java.nio.file.Paths
 
 class YouGet(val url: String) : CoreController() {
-    val core = this::class.java.getResource("/core/you-get.exe").path
+    val core = Paths.get(System.getProperty("user.dir"), "core", "you-get.exe").toAbsolutePath().toString()
     val parser = Parser()
     private var progress = 0.0
     private var speed = "0MB/s"

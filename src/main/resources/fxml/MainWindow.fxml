@@ -96,12 +96,22 @@
                                           <Font size="14.0" />
                                        </font>
                                     </JFXCheckBox>
-                                    <Label fx:id="labelYoutubeDL" layoutX="178.0" layoutY="72.0" text="Label" AnchorPane.leftAnchor="180.0" AnchorPane.topAnchor="70.0">
+                                    <Label fx:id="labelYoutubeDL" layoutX="178.0" layoutY="72.0" text="ver" AnchorPane.leftAnchor="240.0" AnchorPane.topAnchor="70.0">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
                                     </Label>
-                                    <Label fx:id="labelYouGet" layoutX="178.0" layoutY="110.0" text="Label" AnchorPane.leftAnchor="180.0" AnchorPane.topAnchor="110.0">
+                                    <Label fx:id="labelYouGet" layoutX="178.0" layoutY="110.0" text="ver" AnchorPane.leftAnchor="240.0" AnchorPane.topAnchor="110.0">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="216.0" layoutY="75.0" text="Version" AnchorPane.leftAnchor="180.0" AnchorPane.topAnchor="70.0">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="183.0" layoutY="112.0" text="Version" AnchorPane.leftAnchor="180.0" AnchorPane.topAnchor="110.0">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
@@ -115,7 +125,7 @@
                                           <Font name="System Bold" size="14.0" />
                                        </font>
                                     </Label>
-                                    <Label fx:id="labelVersion" layoutX="14.0" layoutY="43.0" prefHeight="15.0" prefWidth="523.0" text="Label" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="60.0">
+                                    <Label fx:id="labelVersion" layoutX="14.0" layoutY="43.0" text="ver" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="60.0">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
@@ -125,6 +135,11 @@
                                           <Font size="14.0" />
                                        </font>
                                     </JFXButton>
+                                    <Label layoutX="112.0" layoutY="61.0" text="Version" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="60.0">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
                                  </children>
                               </AnchorPane>
                            </children>

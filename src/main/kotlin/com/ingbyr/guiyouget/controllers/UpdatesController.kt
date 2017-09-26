@@ -7,11 +7,11 @@ import com.ingbyr.guiyouget.events.UpdateStates
 import com.ingbyr.guiyouget.utils.CoreUtils
 import org.slf4j.LoggerFactory
 import tornadofx.*
-import java.io.File
+import java.nio.file.Paths
 
-class UpdatesController: Controller() {
-    val logger = LoggerFactory.getLogger(this::class.java)
-    val okhttp = OkHttpController()
+class UpdatesController : Controller() {
+    private val logger = LoggerFactory.getLogger(this::class.java)
+    private val okhttp = OkHttpController()
 
     fun subscribeEvents() {
         subscribe<RequestCheckUpdatesYouGet> {
@@ -19,7 +19,7 @@ class UpdatesController: Controller() {
             val remoteJson = okhttp.requestJson(CoreUtils.REMOTE_CONF_URL)
             if (remoteJson != null) {
                 val youget = remoteJson["youget"] as String
-                logger.debug("get remote version file url $youget")
+                logger.debug("[you-get] remote version url $youget")
                 doUpdates(CoreUtils.YOU_GET, youget)
             } else {
                 //todo update failed
@@ -27,11 +27,11 @@ class UpdatesController: Controller() {
         }
 
         subscribe<RequestCheckUpdatesYoutubeDL> {
-            fire(UpdateStates("Check for updates of youyube-dl"))
+            fire(UpdateStates("Check for updates of youtube-dl"))
             val remoteJson = okhttp.requestJson(CoreUtils.REMOTE_CONF_URL)
             if (remoteJson != null) {
                 val youtubedl = remoteJson["youtubedl"] as String
-                logger.debug("get remote version file url $youtubedl")
+                logger.debug("[youtube-dl] remote version url $youtubedl")
                 doUpdates(CoreUtils.YOUTUBE_DL, youtubedl)
             } else {
                 //todo update failed
@@ -46,26 +46,36 @@ class UpdatesController: Controller() {
         when (core) {
             CoreUtils.YOU_GET -> {
                 val localVersion = app.config["you-get-version"] as String
-                logger.debug("remote version is $remoteVersion, local version is $localVersion")
+                logger.debug("[you-get] remote version is $remoteVersion, local version is $localVersion")
                 if (remoteVersion > localVersion) {
                     // do updates
-                    fire(UpdateStates("New version $remoteVersion of you-get, downloading"))
+                    fire(UpdateStates("New version $remoteVersion of you-get, downloading..."))
                     val url = CoreUtils.yougetUpdateURL(remoteVersion)
-                    logger.debug("you-get update url $url")
-                    okhttp.downloadFile(url, File(MainController::class.java.getResource("/core/you-get.exe").toURI()))
+                    logger.debug("[you-get] update url $url")
+                    okhttp.downloadFile(url,
+                            Paths.get(System.getProperty("user.dir"), "core", "you-get.exe").toFile(),
+                            CoreUtils.YOU_GET_VERSION,
+                            remoteVersion)
+                } else {
+                    logger.debug("[you-get] no updates")
                 }
             }
             CoreUtils.YOUTUBE_DL -> {
                 val localVersion = app.config["youtube-dl-version"] as String
+                logger.debug("[youtube-dl] remote version is $remoteVersion, local version is $localVersion")
                 if (remoteVersion > localVersion) {
                     // do updates
-                    fire(UpdateStates("New version $remoteVersion of youtube-dl, downloading"))
+                    fire(UpdateStates("New version $remoteVersion of youtube-dl, downloading..."))
                     val url = CoreUtils.youtubedlUpdateURL(remoteVersion)
-                    logger.debug("youtube-dl update url $url")
-                    okhttp.downloadFile(url, File(MainController::class.java.getResource("/core/youtube-dl.exe").toURI()))
+                    logger.debug("[youtube-dl] update url $url")
+                    okhttp.downloadFile(url,
+                            Paths.get(System.getProperty("user.dir"), "core", "youtube-dl.exe").toFile(),
+                            CoreUtils.YOUTUBE_DL_VERSION,
+                            remoteVersion)
+                } else {
+                    logger.debug("[youtube-dl] no updates")
                 }
             }
         }
-
     }
 }
