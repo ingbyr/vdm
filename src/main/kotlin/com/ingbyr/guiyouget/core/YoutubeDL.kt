@@ -54,9 +54,9 @@ class YoutubeDL(private val url: String) : CoreController() {
 
     override fun runDownloadCommand(formatID: String) {
         isDownloading = true
+        status = "Downloading..."
         var line: String?
         val args = CoreArgs(core)
-        // todo remove proxy from this
         when (app.config[CoreUtils.PROXY_TYPE]) {
             CoreUtils.PROXY_SOCKS -> {
                 args.add("--proxy",

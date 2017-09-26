@@ -49,6 +49,7 @@ class YouGet(val url: String) : CoreController() {
 
     override fun runDownloadCommand(formatID: String) {
         isDownloading = true
+        status = "Downloading..."
         var line: String?
         val args = CoreArgs(core)
         when (app.config[CoreUtils.PROXY_TYPE]) {
