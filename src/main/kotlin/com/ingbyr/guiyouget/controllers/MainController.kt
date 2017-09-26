@@ -36,6 +36,6 @@ class MainController : Controller() {
 
 
     fun updateGUI() {
-        hostServices.showDocument("https://github.com/ingbyr/GUI-YouGet/releases/latest")
+        hostServices.showDocument(CoreUtils.APP_UPDATE_URL)
     }
 }

@@ -4,6 +4,7 @@ import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.ingbyr.guiyouget.events.StopDownloading
 import com.ingbyr.guiyouget.events.UpdateProgressWithYoutubeDL
+import com.ingbyr.guiyouget.utils.CoreUtils
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.file.Paths
@@ -26,16 +27,26 @@ class YoutubeDL(private val url: String) : CoreController() {
         }
     }
 
-    private fun requestJsonAargs(): CoreArgs {
+    private fun requestJsonArgs(): CoreArgs {
         val args = CoreArgs(core)
         args.add("simulator", "-j")
-        args.add("--proxy", "socks5://127.0.0.1:1080/")
+        when (app.config[CoreUtils.PROXY_TYPE]) {
+            CoreUtils.PROXY_SOCKS -> {
+                args.add("--proxy",
+                        "socks5://${app.config[CoreUtils.PROXY_ADDRESS]}:${app.config[CoreUtils.PROXY_PORT]}/")
+            }
+            CoreUtils.PROXY_HTTP -> {
+                args.add("--proxy",
+                        "${app.config[CoreUtils.PROXY_ADDRESS]}:${app.config[CoreUtils.PROXY_PORT]}")
+            }
+        }
+//        args.add("--proxy", "socks5://127.0.0.1:1080/")
         args.add("url", url)
         return args
     }
 
     fun getMediasInfo(): JsonObject {
-        val output = runCommand(requestJsonAargs().build())
+        val output = runCommand(requestJsonArgs().build())
 //        Files.write(Paths.get(System.getProperty("user.dir"), "info.json"), output.toString().toByteArray())
         return parser.parse(output) as JsonObject
     }
@@ -46,7 +57,16 @@ class YoutubeDL(private val url: String) : CoreController() {
         var line: String?
         val args = CoreArgs(core)
         // todo remove proxy from this
-        args.add("--proxy", "socks5://127.0.0.1:1080/")
+        when (app.config[CoreUtils.PROXY_TYPE]) {
+            CoreUtils.PROXY_SOCKS -> {
+                args.add("--proxy",
+                        "socks5://${app.config[CoreUtils.PROXY_ADDRESS]}:${app.config[CoreUtils.PROXY_PORT]}/")
+            }
+            CoreUtils.PROXY_HTTP -> {
+                args.add("--proxy",
+                        "${app.config[CoreUtils.PROXY_ADDRESS]}:${app.config[CoreUtils.PROXY_PORT]}")
+            }
+        }
         args.add("-f", formatID)
         args.add("-o", Paths.get(app.config["storagePath"] as String, outputTemplate).toString())
         args.add("url", url)

@@ -43,6 +43,22 @@ class MainView : View("GUI-YouGet") {
     private val paneExit: Pane by fxid()
     private val apBorder: AnchorPane by fxid()
 
+    private val cbSocks5: JFXCheckBox by fxid()
+    private val tfSocksAddress: JFXTextField by fxid()
+    private val tfSocksPort: JFXTextField by fxid()
+    private val cbHTTP: JFXCheckBox by fxid()
+    private val tfHTTPAddress: JFXTextField by fxid()
+    private val tfHTTPPort: JFXTextField by fxid()
+
+    private val labelAboutVersion: Label by fxid()
+    private val labelGitHub: Label by fxid()
+    private val labelLicense: Label by fxid()
+    private val labelAuthor: Label by fxid()
+    private val btnFollowMe: JFXButton by fxid()
+    private val btnReportBug: JFXButton by fxid()
+    private val btnDonate: JFXButton by fxid()
+
+
     init {
         // Window boarder
         primaryStage.initStyle(StageStyle.UNDECORATED)
@@ -143,6 +159,76 @@ class MainView : View("GUI-YouGet") {
         btnUpdate.setOnMouseClicked {
             controller.updateGUI()
         }
+
+        // Proxy
+        val proxy = app.config[CoreUtils.PROXY_TYPE]
+        when (proxy) {
+            CoreUtils.PROXY_HTTP -> {
+                cbHTTP.isSelected = true
+                tfHTTPAddress.text = app.config[CoreUtils.PROXY_ADDRESS] as String
+                tfHTTPPort.text = app.config[CoreUtils.PROXY_PORT] as String
+            }
+            CoreUtils.PROXY_SOCKS -> {
+                cbSocks5.isSelected = true
+                tfSocksAddress.text = app.config[CoreUtils.PROXY_ADDRESS] as String
+                tfSocksPort.text = app.config[CoreUtils.PROXY_PORT] as String
+            }
+            else -> {
+                cbHTTP.isSelected = false
+                cbSocks5.isSelected = false
+            }
+        }
+
+        cbSocks5.action {
+            val address = tfSocksAddress.text
+            val port = tfSocksPort.text
+            // Disable socks proxy
+            if (!cbSocks5.isSelected) {
+                app.config[CoreUtils.PROXY_TYPE] = ""
+                app.config.save()
+            }
+
+            // Enable socks proxy
+            if (cbSocks5.isSelected && address.trim() != "" && port.trim() != "") {
+                cbHTTP.isSelected = false
+                app.config[CoreUtils.PROXY_TYPE] = CoreUtils.PROXY_SOCKS
+                app.config[CoreUtils.PROXY_ADDRESS] = address
+                app.config[CoreUtils.PROXY_PORT] = port
+                app.config.save()
+            } else {
+                cbSocks5.isSelected = false
+            }
+        }
+
+        cbHTTP.action {
+            val address = tfHTTPAddress.text
+            val port = tfHTTPPort.text
+            // Disable http proxy
+            if (!cbHTTP.isSelected) {
+                app.config[CoreUtils.PROXY_TYPE] = ""
+                app.config.save()
+            }
+
+            // Enable http proxy
+            if (cbHTTP.isSelected && address.trim() != "" && port.trim() != "") {
+                cbSocks5.isSelected = false
+                app.config[CoreUtils.PROXY_TYPE] = CoreUtils.PROXY_HTTP
+                app.config[CoreUtils.PROXY_ADDRESS] = address
+                app.config[CoreUtils.PROXY_PORT] = port
+                app.config.save()
+            } else {
+                cbHTTP.isSelected = false
+            }
+        }
+
+        // About view
+        labelAboutVersion.text = app.config[CoreUtils.APP_VERSION] as String
+        labelGitHub.setOnMouseClicked { hostServices.showDocument(CoreUtils.APP_SOURCE_CODE) }
+        labelLicense.setOnMouseClicked { hostServices.showDocument(CoreUtils.APP_LICENSE) }
+        labelAuthor.setOnMouseClicked { hostServices.showDocument(CoreUtils.APP_AUTHOR) }
+        btnFollowMe.action { hostServices.showDocument(CoreUtils.APP_AUTHOR_GITHUB) }
+        btnReportBug.action { hostServices.showDocument(CoreUtils.APP_REPORT_BUGS) }
+        btnDonate.action { hostServices.showDocument(CoreUtils.APP_DONATE) }
     }
 
     // clean the url textfield
