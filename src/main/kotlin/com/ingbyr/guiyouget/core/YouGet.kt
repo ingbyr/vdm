@@ -11,7 +11,7 @@ import java.nio.file.Paths
 
 class YouGet(val url: String) : CoreController() {
     val core = Paths.get(System.getProperty("user.dir"), "core", "you-get.exe").toAbsolutePath().toString()
-    val parser = Parser()
+    private val parser = Parser()
     private var progress = 0.0
     private var speed = "0MB/s"
     private var status = "Analyzing..."
