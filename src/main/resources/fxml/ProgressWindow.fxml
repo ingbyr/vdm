@@ -26,7 +26,7 @@
       </AnchorPane>
       <AnchorPane prefHeight="140.0" prefWidth="550.0" style="-fx-background-color: #3f51b5;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
          <children>
-            <Label fx:id="labelTitle" layoutX="10.0" layoutY="20.0" prefHeight="24.0" prefWidth="298.0" text="Analyzing..." textFill="WHITE" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="20.0">
+            <Label fx:id="labelTitle" layoutX="10.0" layoutY="20.0" prefHeight="24.0" prefWidth="298.0" text="%analyzing" textFill="WHITE" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="20.0">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
@@ -42,7 +42,12 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <JFXButton fx:id="btnCancel" buttonType="RAISED" layoutX="364.0" layoutY="52.0" prefHeight="40.0" prefWidth="70.0" style="-fx-background-color: #448AFF;" text="Pause" textFill="WHITE" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="55.0">
+            <JFXButton fx:id="btnPause" buttonType="RAISED" layoutX="364.0" layoutY="52.0" prefHeight="40.0" prefWidth="80.0" style="-fx-background-color: #448AFF;" text="%pause" textFill="WHITE" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="55.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </JFXButton>
+            <JFXButton fx:id="btnResume" buttonType="RAISED" layoutX="360.0" layoutY="55.0" prefHeight="40.0" prefWidth="80.0" style="-fx-background-color: #448AFF;" text="%resume" textFill="WHITE" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="55.0">
                <font>
                   <Font size="14.0" />
                </font>

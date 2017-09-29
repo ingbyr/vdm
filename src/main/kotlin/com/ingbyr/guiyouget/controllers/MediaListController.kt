@@ -66,25 +66,29 @@ class MediaListController : Controller() {
         }
     }
 
-    fun addMediaItemsYouGet(listViewMedia: JFXListView<Label>, streams: JsonObject) {
-        val medias = mutableListOf<Media>().observable()
-        logger.debug(streams.toString())
-        streams.forEach { t, u ->
-            val info = streams[t] as JsonObject
-            medias.add(Media(info.string("video_profile"),
-                    "",
-                    info.int("size"),
-                    t,
-                    info.string("container")))
-        }
+    fun addMediaItemsYouGet(listViewMedia: JFXListView<Label>, streams: Any?) {
+        if (streams != null) {
+            val streamsJson = streams as JsonObject
+            val medias = mutableListOf<Media>().observable()
+            logger.debug(streams.toString())
+            streamsJson.forEach { t, _ ->
+                val info = streamsJson[t] as JsonObject
+                medias.add(Media(info.string("video_profile"),
+                        "",
+                        info.int("size"),
+                        t,
+                        info.string("container")))
+            }
 
-        medias.forEach {
-            if (it.size == 0) {
-                listViewMedia.items.add(Label("${it.formatID} | ${it.format} | ${it.ext}"))
-            } else {
-                listViewMedia.items.add(Label("${it.formatID} | ${it.format} | ${it.ext} | ${it.size}MB"))
+            medias.forEach {
+                if (it.size == 0) {
+                    listViewMedia.items.add(Label("${it.formatID} | ${it.format} | ${it.ext}"))
+                } else {
+                    listViewMedia.items.add(Label("${it.formatID} | ${it.format} | ${it.ext} | ${it.size}MB"))
+                }
             }
         }
+
 
     }
 }

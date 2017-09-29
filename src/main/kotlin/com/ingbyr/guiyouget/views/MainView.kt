@@ -6,8 +6,11 @@ import com.ingbyr.guiyouget.events.RequestCheckUpdatesYoutubeDL
 import com.ingbyr.guiyouget.utils.CoreUtils
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXCheckBox
+import com.jfoenix.controls.JFXComboBox
 import com.jfoenix.controls.JFXTextField
 import javafx.application.Platform
+import javafx.beans.property.SimpleStringProperty
+import javafx.collections.FXCollections
 import javafx.scene.control.Label
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.AnchorPane
@@ -16,19 +19,25 @@ import javafx.stage.DirectoryChooser
 import javafx.stage.StageStyle
 import tornadofx.*
 import java.nio.file.Paths
+import java.util.*
 
 class MainView : View("GUI-YouGet") {
+    init {
+        messages = ResourceBundle.getBundle("i18n/MainView")
+    }
+
     private var xOffset = 0.0
     private var yOffset = 0.0
 
     override val root: AnchorPane by fxml("/fxml/MainWindow.fxml")
 
     private val controller: MainController by inject()
+    private val paneExit: Pane by fxid()
+    private val apBorder: AnchorPane by fxid()
 
     private val tfURL: JFXTextField by fxid()
 
     private val labelStoragePath: Label by fxid()
-    private val labelVersion: Label by fxid()
     private val labelYoutubeDL: Label by fxid()
     private val labelYouGet: Label by fxid()
 
@@ -40,8 +49,7 @@ class MainView : View("GUI-YouGet") {
     private val cbYoutubeDL: JFXCheckBox by fxid()
     private val cbYouGet: JFXCheckBox by fxid()
 
-    private val paneExit: Pane by fxid()
-    private val apBorder: AnchorPane by fxid()
+    private val cbLanguage: JFXComboBox<Label> by fxid()
 
     private val cbSocks5: JFXCheckBox by fxid()
     private val tfSocksAddress: JFXTextField by fxid()
@@ -50,11 +58,10 @@ class MainView : View("GUI-YouGet") {
     private val tfHTTPAddress: JFXTextField by fxid()
     private val tfHTTPPort: JFXTextField by fxid()
 
-    private val labelAboutVersion: Label by fxid()
+    private val labelVersion: Label by fxid()
     private val labelGitHub: Label by fxid()
     private val labelLicense: Label by fxid()
     private val labelAuthor: Label by fxid()
-    private val btnFollowMe: JFXButton by fxid()
     private val btnReportBug: JFXButton by fxid()
     private val btnDonate: JFXButton by fxid()
 
@@ -126,9 +133,6 @@ class MainView : View("GUI-YouGet") {
         labelYouGet.text = app.config[CoreUtils.YOU_GET_VERSION] as String
         labelYoutubeDL.text = app.config[CoreUtils.YOUTUBE_DL_VERSION] as String
 
-        // Init app version
-        labelVersion.text = app.config[CoreUtils.APP_VERSION] as String
-
         // Change download core
         cbYouGet.action {
             if (cbYouGet.isSelected) {
@@ -148,7 +152,7 @@ class MainView : View("GUI-YouGet") {
 
         // Updates listener
         btnUpdateCore.setOnMouseClicked {
-            UpdatesWindow().openModal(StageStyle.UNDECORATED)
+            UpdatesView().openModal(StageStyle.UNDECORATED)
             fire(RequestCheckUpdatesYouGet)
             fire(RequestCheckUpdatesYoutubeDL)
         }
@@ -243,13 +247,27 @@ class MainView : View("GUI-YouGet") {
         }
 
         // About view
-        labelAboutVersion.text = app.config[CoreUtils.APP_VERSION] as String
+        labelVersion.text = app.config[CoreUtils.APP_VERSION] as String
         labelGitHub.setOnMouseClicked { hostServices.showDocument(CoreUtils.APP_SOURCE_CODE) }
         labelLicense.setOnMouseClicked { hostServices.showDocument(CoreUtils.APP_LICENSE) }
         labelAuthor.setOnMouseClicked { hostServices.showDocument(CoreUtils.APP_AUTHOR) }
-        btnFollowMe.action { hostServices.showDocument(CoreUtils.APP_AUTHOR_GITHUB) }
         btnReportBug.action { hostServices.showDocument(CoreUtils.APP_REPORT_BUGS) }
         btnDonate.action { hostServices.showDocument(CoreUtils.APP_DONATE) }
+
+        // Change languages
+        cbLanguage.items.add(Label("English"))
+        cbLanguage.items.add(Label("中文"))
+
+        cbLanguage.promptText = messages["selectLanguage"]
+        cbLanguage.selectionModel.selectedItemProperty().onChange {
+            if (it != null) {
+                app.config["locale"] = it.text
+                app.config.save()
+            }
+        }
+
+
+        //todo 增加获取不同解析度选线，跳过JSON部分直接下载
     }
 
     // clean the url textfield

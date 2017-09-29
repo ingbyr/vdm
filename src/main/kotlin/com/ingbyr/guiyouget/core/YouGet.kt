@@ -5,6 +5,7 @@ import com.beust.klaxon.Parser
 import com.ingbyr.guiyouget.events.StopDownloading
 import com.ingbyr.guiyouget.events.UpdateProgressWithYouGet
 import com.ingbyr.guiyouget.utils.CoreUtils
+import tornadofx.*
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.file.Paths
@@ -14,7 +15,7 @@ class YouGet(val url: String) : CoreController() {
     private val parser = Parser()
     private var progress = 0.0
     private var speed = "0MB/s"
-    private var status = "Analyzing..."
+    private var status = messages["analyzing"]
     private var isDownloading = false
 
     init {
@@ -28,7 +29,6 @@ class YouGet(val url: String) : CoreController() {
         args.add("simulator", "--json")
         when (app.config[CoreUtils.PROXY_TYPE]) {
             CoreUtils.PROXY_SOCKS -> {
-//                logger.error("[you-get] Not support socks proxy")
                 args.add("-x",
                         "${app.config[CoreUtils.PROXY_ADDRESS]}:${app.config[CoreUtils.PROXY_PORT]}")
             }
@@ -49,7 +49,7 @@ class YouGet(val url: String) : CoreController() {
 
     override fun runDownloadCommand(formatID: String) {
         isDownloading = true
-        status = "Downloading..."
+        status = messages["downloading"]
         var line: String?
         val args = CoreArgs(core)
         when (app.config[CoreUtils.PROXY_TYPE]) {
@@ -98,7 +98,7 @@ class YouGet(val url: String) : CoreController() {
 
         logger.trace("$progress, $speed, $status")
         if (progress == 100.0) {
-            status = "Completed"
+            status = messages["completed"]
         }
         fire(UpdateProgressWithYouGet(progress, speed, status))
     }

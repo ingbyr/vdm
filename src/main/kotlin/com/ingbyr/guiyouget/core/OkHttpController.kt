@@ -11,6 +11,7 @@ import tornadofx.*
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.util.*
 
 
 class OkHttpController : Controller() {
@@ -48,15 +49,19 @@ class OkHttpController : Controller() {
 }
 
 class DownloadFileCallBack(private val file: File, private val k: String?, private val v: String?) : Callback, Controller() {
+    init {
+        messages = ResourceBundle.getBundle("i18n/core")
+    }
+
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     override fun onFailure(call: Call?, e: IOException?) {
         when (k) {
             CoreUtils.YOUTUBE_DL_VERSION -> {
-                fire(UpdateYoutubeDLStates("[youtube-dl] Fail to update"))
+                fire(UpdateYoutubeDLStates(messages["failed"]))
             }
             CoreUtils.YOU_GET_VERSION -> {
-                fire(UpdateYouGetStates("[you-get] Fail to update"))
+                fire(UpdateYouGetStates(messages["failed"]))
             }
         }
         logger.error(e.toString())
@@ -95,10 +100,10 @@ class DownloadFileCallBack(private val file: File, private val k: String?, priva
 
         when (k) {
             CoreUtils.YOUTUBE_DL_VERSION -> {
-                fire(UpdateYoutubeDLStates("[youtube-dl] Updating completed"))
+                fire(UpdateYoutubeDLStates(messages["completed"]))
             }
             CoreUtils.YOU_GET_VERSION -> {
-                fire(UpdateYouGetStates("[you-get] Updating completed"))
+                fire(UpdateYouGetStates(messages["completed"]))
             }
         }
         // Update config of APP
