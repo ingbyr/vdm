@@ -10,9 +10,14 @@ import javafx.scene.control.Label
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.Pane
 import tornadofx.*
+import java.util.*
 
 
 class ProgressView : View() {
+    init {
+        messages = ResourceBundle.getBundle("i18n/core")
+    }
+
     private val controller: ProgressController by inject()
     override val root: AnchorPane by fxml("/fxml/ProgressWindow.fxml")
 
@@ -21,7 +26,8 @@ class ProgressView : View() {
     private val labelTitle: Label by fxid()
     private val labelSpeed: Label by fxid()
     private val labelTime: Label by fxid()
-    private val btnCancel: JFXButton by fxid()
+    private val btnPause: JFXButton by fxid()
+    private val btnResume: JFXButton by fxid()
 
     init {
         controller.subscribeEvents()
@@ -31,10 +37,12 @@ class ProgressView : View() {
             this.close()
         }
 
-        btnCancel.setOnMouseClicked {
+        //todo 支持中断下载
+        btnPause.setOnMouseClicked {
             fire(StopDownloading)
         }
 
+        //todo 下载完成时自动关闭该页面，延迟关闭
         subscribe<UpdateProgressWithYoutubeDL> {
             labelTime.text = it.extime
             labelSpeed.text = it.speed

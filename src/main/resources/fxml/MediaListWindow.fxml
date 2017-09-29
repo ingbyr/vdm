@@ -11,7 +11,7 @@
    <children>
       <AnchorPane fx:id="apBorder" prefHeight="30.0" prefWidth="550.0" style="-fx-background-color: #303f9f;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Label layoutX="31.0" layoutY="9.0" text="Media List" textFill="WHITE" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="5.0">
+            <Label layoutX="31.0" layoutY="9.0" text="%label.mediaList" textFill="WHITE" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="5.0">
                <font>
                   <Font size="14.0" />
                </font>
@@ -27,7 +27,7 @@
          <children>
             <AnchorPane prefHeight="100.0" prefWidth="600.0" style="-fx-background-color: #3f51b5;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <Label fx:id="labelTitle" layoutX="25.0" layoutY="29.0" text="Loading..." textFill="WHITE" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="70.0" AnchorPane.topAnchor="20.0">
+                  <Label fx:id="labelTitle" layoutX="25.0" layoutY="29.0" text="%label.loading" textFill="WHITE" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="70.0" AnchorPane.topAnchor="20.0">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>

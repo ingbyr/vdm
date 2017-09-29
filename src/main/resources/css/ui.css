@@ -15,6 +15,6 @@
     -fx-vertical-gap: 10.0;
 }
 
-.list-cell:selected {
+.jfx-list-view .list-cell:selected {
     -fx-background-color: #448aff;
 }

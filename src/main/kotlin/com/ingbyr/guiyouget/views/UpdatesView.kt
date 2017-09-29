@@ -8,8 +8,13 @@ import javafx.scene.control.Label
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.Pane
 import tornadofx.*
+import java.util.*
 
-class UpdatesWindow : View() {
+class UpdatesView : View() {
+    init {
+        messages = ResourceBundle.getBundle("i18n/UpdatesView")
+    }
+
     val controller: UpdatesController by inject()
     override val root: AnchorPane by fxml("/fxml/UpdatesWindow.fxml")
 
