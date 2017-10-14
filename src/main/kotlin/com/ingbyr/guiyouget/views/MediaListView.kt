@@ -3,6 +3,8 @@ package com.ingbyr.guiyouget.views
 import com.beust.klaxon.array
 import com.beust.klaxon.string
 import com.ingbyr.guiyouget.controllers.MediaListController
+import com.ingbyr.guiyouget.core.YouGet
+import com.ingbyr.guiyouget.core.YoutubeDL
 import com.ingbyr.guiyouget.events.DisplayMediasWithYouGet
 import com.ingbyr.guiyouget.events.DisplayMediasWithYoutubeDL
 import com.ingbyr.guiyouget.events.DownloadingRequestWithYouGet
@@ -78,8 +80,8 @@ class MediaListView : View("GUI-YouGet") {
                 logger.debug("select format id is ${formatID}")
                 ProgressView().openModal(StageStyle.UNDECORATED)
                 when (app.config[CoreUtils.DOWNLOAD_CORE]) {
-                    CoreUtils.YOUTUBE_DL -> fire(DownloadingRequestWithYoutubeDL(url, formatID))
-                    CoreUtils.YOU_GET -> fire(DownloadingRequestWithYouGet(url, formatID))
+                    CoreUtils.YOUTUBE_DL -> fire(DownloadingRequestWithYoutubeDL(YoutubeDL(url), formatID))
+                    CoreUtils.YOU_GET -> fire(DownloadingRequestWithYouGet(YouGet(url), formatID))
                 }
             }
         }
