@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXProgressBar?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -31,7 +30,7 @@
                   <Font name="System Bold" size="18.0" />
                </font>
             </Label>
-            <JFXProgressBar fx:id="progressbar" layoutX="81.0" layoutY="70.0" prefHeight="10.0" stylesheets="@../css/ui.css" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="120.0" AnchorPane.topAnchor="70.0" />
+            <JFXProgressBar fx:id="progressbar" layoutX="81.0" layoutY="70.0" prefHeight="10.0" stylesheets="@../css/ui.css" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="70.0" />
             <Label fx:id="labelSpeed" layoutX="281.0" layoutY="23.0" textFill="WHITE" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="23.0">
                <font>
                   <Font size="14.0" />
@@ -42,16 +41,16 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <JFXButton fx:id="btnPause" buttonType="RAISED" layoutX="364.0" layoutY="52.0" prefHeight="40.0" prefWidth="80.0" style="-fx-background-color: #448AFF;" text="%pause" textFill="WHITE" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="55.0">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </JFXButton>
-            <JFXButton fx:id="btnResume" buttonType="RAISED" layoutX="360.0" layoutY="55.0" prefHeight="40.0" prefWidth="80.0" style="-fx-background-color: #448AFF;" text="%resume" textFill="WHITE" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="55.0">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </JFXButton>
+            <Pane fx:id="panePause" layoutX="349.0" layoutY="62.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="55.0">
+               <children>
+                  <SVGPath content="M16 48 L16 26 L12 26 L12 48 Z M28 26 L28 48 L32 48 L32 26 Z" fill="WHITE" layoutX="-9.0" layoutY="-18.0" />
+               </children>
+            </Pane>
+            <Pane fx:id="paneResume" layoutX="404.0" layoutY="73.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="58.0">
+               <children>
+                  <SVGPath content="M8 28 L24 16 L8 4 Z" fill="WHITE" />
+               </children>
+            </Pane>
          </children>
       </AnchorPane>
    </children>

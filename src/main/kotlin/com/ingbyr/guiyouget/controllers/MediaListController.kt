@@ -18,6 +18,7 @@ class MediaListController : Controller() {
 
     private val logger = LoggerFactory.getLogger(MediaListController::class.java)
 
+    //todo 获取失败时国际化文本
     fun subscribeEvents() {
         subscribe<RequestMediasWithYoutubeDL> {
             try {
@@ -29,7 +30,6 @@ class MediaListController : Controller() {
                         "title" to "Failed to get media info",
                         "description" to "Make sure that URL is correct"))))
             }
-
         }
 
         subscribe<RequestMediasWithYouGet> {
@@ -40,9 +40,7 @@ class MediaListController : Controller() {
                 logger.error(e.toString())
                 fire(DisplayMediasWithYouGet(JsonObject(mapOf("title" to "Failed to get media info"))))
             }
-
         }
-
     }
 
     fun addMediaItemsYoutubeDL(listViewMedia: JFXListView<Label>, formats: JsonArray<JsonObject>?) {
@@ -88,7 +86,5 @@ class MediaListController : Controller() {
                 }
             }
         }
-
-
     }
 }
