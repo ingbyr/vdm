@@ -1,18 +1,26 @@
 package com.ingbyr.guiyouget.views
 
 import com.ingbyr.guiyouget.controllers.ProgressController
+import com.ingbyr.guiyouget.events.ResumeDownloading
 import com.ingbyr.guiyouget.events.StopDownloading
 import com.ingbyr.guiyouget.events.UpdateProgressWithYouGet
 import com.ingbyr.guiyouget.events.UpdateProgressWithYoutubeDL
-import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXProgressBar
 import javafx.scene.control.Label
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.Pane
+import org.slf4j.LoggerFactory
 import tornadofx.*
+import java.util.*
 
 
 class ProgressView : View() {
+    private val logger = LoggerFactory.getLogger(this::class.java)
+
+    init {
+        messages = ResourceBundle.getBundle("i18n/core")
+    }
+
     private val controller: ProgressController by inject()
     override val root: AnchorPane by fxml("/fxml/ProgressWindow.fxml")
 
@@ -21,7 +29,8 @@ class ProgressView : View() {
     private val labelTitle: Label by fxid()
     private val labelSpeed: Label by fxid()
     private val labelTime: Label by fxid()
-    private val btnCancel: JFXButton by fxid()
+    private val panePause: Pane by fxid()
+    private val paneResume: Pane by fxid()
 
     init {
         controller.subscribeEvents()
@@ -31,7 +40,22 @@ class ProgressView : View() {
             this.close()
         }
 
-        btnCancel.setOnMouseClicked {
+        panePause.isVisible = true
+        paneResume.isVisible = false
+
+        paneResume.setOnMouseClicked {
+            logger.debug("resume")
+            paneResume.isVisible = false
+            panePause.isVisible = true
+            labelTitle.text = messages["resume"]
+            fire(ResumeDownloading)
+        }
+
+        panePause.setOnMouseClicked {
+            logger.debug("pause")
+            paneResume.isVisible = true
+            panePause.isVisible = false
+            labelTitle.text = messages["pause"]
             fire(StopDownloading)
         }
 

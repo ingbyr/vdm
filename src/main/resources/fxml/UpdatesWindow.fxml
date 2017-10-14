@@ -24,14 +24,24 @@
       </AnchorPane>
       <AnchorPane prefHeight="140.0" prefWidth="550.0" style="-fx-background-color: #3f51b5;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
          <children>
-            <Label fx:id="labelYouget" layoutX="10.0" layoutY="20.0" prefWidth="410.0" text="Analyzing..." textFill="WHITE" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+            <Label fx:id="labelYouget" layoutX="74.0" layoutY="20.0" text="%analyzing" textFill="WHITE" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="20.0">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label fx:id="labelYoutubedl" layoutX="20.0" layoutY="30.0" prefWidth="410.0" text="Analyzing..." textFill="WHITE" AnchorPane.topAnchor="60.0">
+            <Label fx:id="labelYoutubedl" layoutX="20.0" layoutY="30.0" text="%analyzing" textFill="WHITE" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="60.0">
                <font>
                   <Font size="14.0" />
+               </font>
+            </Label>
+            <Label layoutX="20.0" layoutY="22.0" text="you-get" textFill="WHITE" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="20.0">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+            <Label layoutX="10.0" layoutY="60.0" text="youtube-dl" textFill="WHITE" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="60.0">
+               <font>
+                  <Font name="System Bold" size="14.0" />
                </font>
             </Label>
          </children>
