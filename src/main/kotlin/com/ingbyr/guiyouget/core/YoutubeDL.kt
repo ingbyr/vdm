@@ -5,19 +5,19 @@ import com.beust.klaxon.Parser
 import com.ingbyr.guiyouget.events.StopDownloading
 import com.ingbyr.guiyouget.events.UpdateProgressWithYoutubeDL
 import com.ingbyr.guiyouget.utils.CoreUtils
+import tornadofx.*
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.file.Paths
 
 
 class YoutubeDL(private val url: String) : CoreController() {
-
     val core = Paths.get(System.getProperty("user.dir"), "core", "youtube-dl.exe").toAbsolutePath().toString()
     private val parser = Parser()
     private var progress = 0.0
     private var speed = "0MiB/s"
     private var extTime = "00:00"
-    private var status = "Analyzing..."
+    private var status = messages["analyzing"]
     private var isDownloading = false
     private val outputTemplate = "%(title)s.%(ext)s"
 
@@ -40,7 +40,6 @@ class YoutubeDL(private val url: String) : CoreController() {
                         "${app.config[CoreUtils.PROXY_ADDRESS]}:${app.config[CoreUtils.PROXY_PORT]}")
             }
         }
-//        args.add("--proxy", "socks5://127.0.0.1:1080/")
         args.add("url", url)
         return args
     }
@@ -54,7 +53,7 @@ class YoutubeDL(private val url: String) : CoreController() {
 
     override fun runDownloadCommand(formatID: String) {
         isDownloading = true
-        status = "Downloading..."
+        status = messages["downloading"]
         var line: String?
         val args = CoreArgs(core)
         when (app.config[CoreUtils.PROXY_TYPE]) {
@@ -100,7 +99,7 @@ class YoutubeDL(private val url: String) : CoreController() {
         }
         logger.trace("$progress, $speed, $extTime, $status")
         if (progress == 100.0) {
-            status = "Completed"
+            status = messages["completed"]
         }
         fire(UpdateProgressWithYoutubeDL(progress, speed, extTime, status))
     }

@@ -1,10 +1,14 @@
 package com.ingbyr.guiyouget.views
 
-import com.beust.klaxon.JsonObject
 import com.beust.klaxon.array
 import com.beust.klaxon.string
 import com.ingbyr.guiyouget.controllers.MediaListController
-import com.ingbyr.guiyouget.events.*
+import com.ingbyr.guiyouget.core.YouGet
+import com.ingbyr.guiyouget.core.YoutubeDL
+import com.ingbyr.guiyouget.events.DisplayMediasWithYouGet
+import com.ingbyr.guiyouget.events.DisplayMediasWithYoutubeDL
+import com.ingbyr.guiyouget.events.DownloadingRequestWithYouGet
+import com.ingbyr.guiyouget.events.DownloadingRequestWithYoutubeDL
 import com.ingbyr.guiyouget.utils.CoreUtils
 import com.jfoenix.controls.JFXListView
 import javafx.application.Platform
@@ -16,8 +20,13 @@ import javafx.stage.StageStyle
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tornadofx.*
+import java.util.*
 
 class MediaListView : View("GUI-YouGet") {
+
+    init {
+        messages = ResourceBundle.getBundle("i18n/MediaListView")
+    }
 
     companion object {
         val logger: Logger = LoggerFactory.getLogger(MediaListView::class.java)
@@ -71,17 +80,13 @@ class MediaListView : View("GUI-YouGet") {
                 logger.debug("select format id is ${formatID}")
                 ProgressView().openModal(StageStyle.UNDECORATED)
                 when (app.config[CoreUtils.DOWNLOAD_CORE]) {
-                    CoreUtils.YOUTUBE_DL -> fire(DownloadingRequestWithYoutubeDL(url, formatID))
-                    CoreUtils.YOU_GET -> fire(DownloadingRequestWithYouGet(url, formatID))
+                    CoreUtils.YOUTUBE_DL -> fire(DownloadingRequestWithYoutubeDL(YoutubeDL(url), formatID))
+                    CoreUtils.YOU_GET -> fire(DownloadingRequestWithYouGet(YouGet(url), formatID))
                 }
-
-//                if (url != "") fire(DownloadMediaRequest(url, formatID))
             }
         }
 
         // Subscribe Events
-        // Update title...
-        // todo view model to this?
         subscribe<DisplayMediasWithYoutubeDL> {
             url = it.mediaList.string("webpage_url") ?: ""
             labelTitle.text = it.mediaList.string("title")
@@ -93,14 +98,14 @@ class MediaListView : View("GUI-YouGet") {
             url = it.mediaList.string("url") ?: ""
             labelTitle.text = it.mediaList.string("title")
             labelDescription.text = ""
-            controller.addMediaItemsYouGet(listViewMedia, it.mediaList["streams"] as JsonObject)
+            controller.addMediaItemsYouGet(listViewMedia, it.mediaList["streams"])
         }
     }
 
     // reset the ui
     override fun onUndock() {
         listViewMedia.items.clear()
-        labelTitle.text = "Loading..."
+        labelTitle.text = messages["label.loading"]
         labelDescription.text = ""
     }
 }

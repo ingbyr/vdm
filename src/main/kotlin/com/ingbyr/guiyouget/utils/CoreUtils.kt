@@ -19,7 +19,6 @@ object CoreUtils {
     val APP_SOURCE_CODE = "https://github.com/ingbyr/GUI-YouGet"
     val APP_LICENSE = "https://raw.githubusercontent.com/ingbyr/GUI-YouGet/master/LICENSE.txt"
     val APP_AUTHOR = "http://www.ingbyr.com/"
-    val APP_AUTHOR_GITHUB = "https://github.com/ingbyr"
     val APP_REPORT_BUGS = "https://github.com/ingbyr/GUI-YouGet/issues"
     val APP_DONATE = "http://wx3.sinaimg.cn/large/bca3b20dly1fjx6l6j4r2j20ci0cgq55.jpg"
 

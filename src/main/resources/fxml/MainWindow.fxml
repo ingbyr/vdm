@@ -2,6 +2,7 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXCheckBox?>
+<?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXTabPane?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.scene.Cursor?>
@@ -34,13 +35,13 @@
       </AnchorPane>
       <AnchorPane prefHeight="80.0" style="-fx-background-color: #3f51b5;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
          <children>
-            <JFXTextField fx:id="tfURL" focusColor="#448aff" prefHeight="23.0" prefWidth="356.0" style="-fx-text-inner-color: white;" unFocusColor="#448aff" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="140.0" AnchorPane.topAnchor="25.0" />
-            <Label text="URL" textFill="WHITE" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="500.0" AnchorPane.topAnchor="20.0">
+            <JFXTextField fx:id="tfURL" focusColor="#448aff" prefHeight="23.0" prefWidth="356.0" style="-fx-text-inner-color: white;" unFocusColor="#448aff" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="140.0" AnchorPane.topAnchor="30.0" />
+            <Label text="%label.URL" textFill="WHITE" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="500.0" AnchorPane.topAnchor="20.0">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font>
             </Label>
-            <JFXButton fx:id="btnDownload" buttonType="RAISED" layoutX="436.0" layoutY="23.0" prefHeight="50.0" prefWidth="100.0" style="-fx-background-color: #448AFF;" text="Download" textFill="WHITE" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="23.0">
+            <JFXButton fx:id="btnDownload" buttonType="RAISED" layoutX="436.0" layoutY="23.0" prefHeight="50.0" prefWidth="100.0" style="-fx-background-color: #448AFF;" text="%btn.download" textFill="WHITE" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="23.0">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font>
@@ -51,15 +52,15 @@
          <children>
             <JFXTabPane prefHeight="254.0" prefWidth="550.0" stylesheets="@../css/ui.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <tabs>
-                  <Tab text="General Settings">
+                  <Tab text="%tab.generalSettings">
                     <content>
                         <VBox>
                            <children>
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="150.0" prefWidth="550.0">
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="110.0" prefWidth="550.0">
                                  <children>
-                                    <Label layoutX="14.0" layoutY="14.0" prefHeight="29.0" prefWidth="510.0" text="Storage Path" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                    <Label layoutX="14.0" layoutY="14.0" prefHeight="29.0" prefWidth="510.0" text="%label.storagePath" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="10.0">
                                        <font>
-                                          <Font name="System Bold" size="14.0" />
+                                          <Font name="Microsoft YaHei Bold" size="14.0" />
                                        </font>
                                     </Label>
                                     <Label fx:id="labelStoragePath" layoutX="14.0" layoutY="43.0" prefHeight="15.0" prefWidth="523.0" text="path" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="60.0">
@@ -67,53 +68,53 @@
                                           <Font size="14.0" />
                                        </font>
                                     </Label>
-                                    <JFXButton fx:id="btnChangePath" layoutX="125.0" layoutY="8.0" style="-fx-background-color: #c5cae9;" text="Change Path" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                    <JFXButton fx:id="btnChangePath" buttonType="RAISED" layoutX="125.0" layoutY="8.0" style="-fx-background-color: #c5cae9;" text="%btn.changePath" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="10.0">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
                                     </JFXButton>
-                                    <Line endX="999999.0" fill="#bdbdbd" layoutY="100.0" opacity="0.5" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                    <Line endX="999999.0" fill="#bdbdbd" layoutY="100.0" opacity="0.5" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                                  </children>
                               </AnchorPane>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="190.0" prefWidth="550.0">
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="550.0">
                                  <children>
-                                    <Label layoutX="14.0" layoutY="14.0" prefHeight="29.0" prefWidth="510.0" text="Donwnloading Core" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                    <Label layoutX="14.0" layoutY="14.0" prefHeight="29.0" prefWidth="510.0" text="%label.downloadingCore" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="15.0">
                                        <font>
                                           <Font name="System Bold" size="14.0" />
                                        </font>
                                     </Label>
-                                    <JFXButton fx:id="btnUpdateCore" layoutX="125.0" layoutY="8.0" style="-fx-background-color: #c5cae9;" text="Check for Updates" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                    <JFXButton fx:id="btnUpdateCore" buttonType="RAISED" layoutX="125.0" layoutY="8.0" style="-fx-background-color: #c5cae9;" text="%btn.checkUpdates" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="15.0">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
                                     </JFXButton>
-                                    <Line endX="999999.0" fill="#bdbdbd" layoutY="100.0" opacity="0.5" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                                    <JFXCheckBox fx:id="cbYoutubeDL" layoutX="14.0" layoutY="73.0" style="-jfx-checked-color: #448aff;" text="youtube-dl" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="70.0">
+                                    <Line endX="999999.0" fill="#bdbdbd" layoutY="100.0" opacity="0.5" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                    <JFXCheckBox fx:id="cbYoutubeDL" layoutX="14.0" layoutY="73.0" style="-jfx-checked-color: #448aff;" text="youtube-dl" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="65.0">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
                                     </JFXCheckBox>
-                                    <JFXCheckBox fx:id="cbYouGet" layoutX="20.0" layoutY="102.0" style="-jfx-checked-color: #448aff;" text="you-get" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="110.0">
+                                    <JFXCheckBox fx:id="cbYouGet" layoutX="20.0" layoutY="102.0" style="-jfx-checked-color: #448aff;" text="you-get" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="105.0">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
                                     </JFXCheckBox>
-                                    <Label fx:id="labelYoutubeDL" layoutX="178.0" layoutY="72.0" text="ver" AnchorPane.leftAnchor="240.0" AnchorPane.topAnchor="70.0">
+                                    <Label fx:id="labelYoutubeDL" layoutX="178.0" layoutY="72.0" text="ver" AnchorPane.leftAnchor="240.0" AnchorPane.topAnchor="65.0">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
                                     </Label>
-                                    <Label fx:id="labelYouGet" layoutX="178.0" layoutY="110.0" text="ver" AnchorPane.leftAnchor="240.0" AnchorPane.topAnchor="110.0">
+                                    <Label fx:id="labelYouGet" layoutX="178.0" layoutY="110.0" text="ver" AnchorPane.leftAnchor="240.0" AnchorPane.topAnchor="105.0">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="216.0" layoutY="75.0" text="Version" AnchorPane.leftAnchor="180.0" AnchorPane.topAnchor="70.0">
+                                    <Label layoutX="216.0" layoutY="75.0" text="%label.version" AnchorPane.leftAnchor="180.0" AnchorPane.topAnchor="65.0">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="183.0" layoutY="112.0" text="Version" AnchorPane.leftAnchor="180.0" AnchorPane.topAnchor="110.0">
+                                    <Label layoutX="183.0" layoutY="112.0" text="%label.version" AnchorPane.leftAnchor="180.0" AnchorPane.topAnchor="105.0">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
@@ -122,22 +123,13 @@
                               </AnchorPane>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="150.0" prefWidth="550.0">
                                  <children>
-                                    <Label layoutX="14.0" layoutY="14.0" prefHeight="29.0" prefWidth="510.0" text="GUI-YouGet" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                    <Label layoutX="14.0" layoutY="14.0" prefHeight="29.0" prefWidth="510.0" text="%label.otherOptions" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="15.0">
                                        <font>
                                           <Font name="System Bold" size="14.0" />
                                        </font>
                                     </Label>
-                                    <Label fx:id="labelVersion" layoutX="14.0" layoutY="43.0" text="ver" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="60.0">
-                                       <font>
-                                          <Font size="14.0" />
-                                       </font>
-                                    </Label>
-                                    <JFXButton fx:id="btnUpdate" layoutX="125.0" layoutY="8.0" style="-fx-background-color: #c5cae9;" text="Check for Updates" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
-                                       <font>
-                                          <Font size="14.0" />
-                                       </font>
-                                    </JFXButton>
-                                    <Label layoutX="112.0" layoutY="61.0" text="Version" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="60.0">
+                                    <JFXComboBox fx:id="cbLanguage" focusColor="#c5cae9" layoutX="132.0" layoutY="51.0" AnchorPane.leftAnchor="120.0" AnchorPane.topAnchor="50.0" />
+                                    <Label layoutX="28.0" layoutY="53.0" text="%label.language" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="55.0">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
@@ -148,7 +140,7 @@
                         </VBox>
                     </content>
                   </Tab>
-                  <Tab text="Proxy Settings">
+                  <Tab text="%label.proxySettings">
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
@@ -156,7 +148,7 @@
                                  <children>
                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
-                                          <Label fx:id="labelStoragePath1" layoutX="14.0" layoutY="43.0" text="Address" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="60.0">
+                                          <Label fx:id="labelStoragePath1" layoutX="14.0" layoutY="43.0" text="%label.address" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="65.0">
                                              <font>
                                                 <Font size="14.0" />
                                              </font>
@@ -166,14 +158,14 @@
                                                 <Cursor fx:constant="DEFAULT" />
                                              </cursor>
                                           </Line>
-                                          <JFXCheckBox fx:id="cbSocks5" layoutX="14.0" layoutY="24.0" style="-jfx-checked-color: #448aff;" text="Socks5 Proxy" AnchorPane.topAnchor="20.0">
+                                          <JFXCheckBox fx:id="cbSocks5" layoutX="14.0" layoutY="24.0" style="-jfx-checked-color: #448aff;" text="%cb.socks5Proxy" AnchorPane.topAnchor="20.0">
                                              <font>
                                                 <Font name="System Bold" size="14.0" />
                                              </font>
                                           </JFXCheckBox>
                                           <JFXTextField fx:id="tfSocksAddress" focusColor="#448aff" layoutX="89.0" layoutY="58.0" prefHeight="23.0" prefWidth="438.0" unFocusColor="#3f51b5" AnchorPane.leftAnchor="90.0" AnchorPane.rightAnchor="20.0" />
                                           <JFXTextField fx:id="tfSocksPort" focusColor="#448aff" layoutX="79.0" layoutY="101.0" prefHeight="23.0" prefWidth="438.0" unFocusColor="#3f51b5" AnchorPane.leftAnchor="90.0" AnchorPane.rightAnchor="20.0" />
-                                          <Label fx:id="labelStoragePath11" layoutX="20.0" layoutY="103.0" text="Port" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="110.0">
+                                          <Label fx:id="labelStoragePath11" layoutX="20.0" layoutY="103.0" text="%label.port" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="115.0">
                                              <font>
                                                 <Font size="14.0" />
                                              </font>
@@ -182,19 +174,19 @@
                                     </AnchorPane>
                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
-                                          <Label fx:id="labelStoragePath11" layoutX="14.0" layoutY="43.0" text="Address" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="60.0">
+                                          <Label fx:id="labelStoragePath11" layoutX="14.0" layoutY="43.0" text="%label.address" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="65.0">
                                              <font>
                                                 <Font size="14.0" />
                                              </font>
                                           </Label>
-                                          <JFXCheckBox fx:id="cbHTTP" layoutX="14.0" layoutY="24.0" style="-jfx-checked-color: #448aff;" text="HTTP Proxy" AnchorPane.topAnchor="20.0">
+                                          <JFXCheckBox fx:id="cbHTTP" layoutX="14.0" layoutY="24.0" style="-jfx-checked-color: #448aff;" text="%cb.httpProxy" AnchorPane.topAnchor="20.0">
                                              <font>
                                                 <Font name="System Bold" size="14.0" />
                                              </font>
                                           </JFXCheckBox>
                                           <JFXTextField fx:id="tfHTTPAddress" focusColor="#448aff" layoutX="89.0" layoutY="58.0" prefHeight="23.0" prefWidth="438.0" unFocusColor="#3f51b5" AnchorPane.leftAnchor="90.0" AnchorPane.rightAnchor="20.0" />
                                           <JFXTextField fx:id="tfHTTPPort" focusColor="#448aff" layoutX="79.0" layoutY="101.0" prefHeight="23.0" prefWidth="438.0" unFocusColor="#3f51b5" AnchorPane.leftAnchor="90.0" AnchorPane.rightAnchor="20.0" />
-                                          <Label fx:id="labelStoragePath111" layoutX="20.0" layoutY="103.0" text="Port" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="110.0">
+                                          <Label fx:id="labelStoragePath111" layoutX="20.0" layoutY="103.0" text="%label.port" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="115.0">
                                              <font>
                                                 <Font size="14.0" />
                                              </font>
@@ -207,28 +199,28 @@
                         </AnchorPane>
                     </content>
                   </Tab>
-                  <Tab text="About">
+                  <Tab text="%tab.about">
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <Label layoutX="180.0" layoutY="95.0" style="-fx-wrap-text: true;" text="GUI-YouGet is a GUI application for the you-get and youtube-dl. It's FREE to download and use. " AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="20.0">
+                              <Label layoutX="180.0" layoutY="95.0" style="-fx-wrap-text: true;" text="%label.about" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="20.0">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
                               </Label>
                               <AnchorPane layoutX="20.0" layoutY="80.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="80.0">
                                  <children>
-                                    <Label style="-fx-wrap-text: true;" text="Version : " AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <Label style="-fx-wrap-text: true;" text="%label.version" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <font>
                                           <Font name="System Bold" size="16.0" />
                                        </font>
                                     </Label>
-                                    <Label fx:id="labelAboutVersion" layoutX="130.0" style="-fx-wrap-text: true;" text="ver" textFill="#3f51b5" AnchorPane.leftAnchor="140.0" AnchorPane.topAnchor="0.0">
+                                    <Label fx:id="labelVersion" layoutX="130.0" style="-fx-wrap-text: true;" text="ver" textFill="#3f51b5" AnchorPane.leftAnchor="140.0" AnchorPane.topAnchor="0.0">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="160.0" layoutY="50.0" style="-fx-wrap-text: true;" text="Source Code :" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="30.0">
+                                    <Label layoutX="160.0" layoutY="50.0" style="-fx-wrap-text: true;" text="%label.sourceCode" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="30.0">
                                        <font>
                                           <Font name="System Bold" size="16.0" />
                                        </font>
@@ -238,7 +230,7 @@
                                           <Font size="16.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="160.0" layoutY="80.0" style="-fx-wrap-text: true;" text="License : " AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="60.0">
+                                    <Label layoutX="160.0" layoutY="80.0" style="-fx-wrap-text: true;" text="%label.license" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="60.0">
                                        <font>
                                           <Font name="System Bold" size="16.0" />
                                        </font>
@@ -248,7 +240,7 @@
                                           <Font size="16.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="160.0" layoutY="110.0" style="-fx-wrap-text: true;" text="Author : " AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="90.0">
+                                    <Label layoutX="160.0" layoutY="110.0" style="-fx-wrap-text: true;" text="%label.author" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="90.0">
                                        <font>
                                           <Font name="System Bold" size="16.0" />
                                        </font>
@@ -267,17 +259,17 @@
                                           <Image url="@logo.jpg" />
                                        </image>
                                     </ImageView>
-                                    <JFXButton fx:id="btnFollowMe" buttonType="RAISED" layoutX="257.0" layoutY="14.0" prefHeight="34.0" prefWidth="250.0" style="-fx-background-color: #448AFF;" text="Follow me on Github" textFill="WHITE" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="0.0">
+                                    <JFXButton fx:id="btnUpdate" buttonType="RAISED" layoutX="257.0" layoutY="14.0" prefHeight="34.0" prefWidth="250.0" style="-fx-background-color: #448AFF;" text="%btn.checkUpdates" textFill="WHITE" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="0.0">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
                                     </JFXButton>
-                                    <JFXButton fx:id="btnReportBug" buttonType="RAISED" layoutX="257.0" layoutY="67.0" prefWidth="250.0" style="-fx-background-color: #448AFF;" text="Report bugs" textFill="WHITE" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="60.0">
+                                    <JFXButton fx:id="btnReportBug" buttonType="RAISED" layoutX="257.0" layoutY="67.0" prefWidth="250.0" style="-fx-background-color: #448AFF;" text="%btn.reportBugs" textFill="WHITE" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="60.0">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
                                     </JFXButton>
-                                    <JFXButton fx:id="btnDonate" buttonType="RAISED" layoutX="267.0" layoutY="77.0" prefWidth="250.0" style="-fx-background-color: #448AFF;" text="Donate to me" textFill="WHITE" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="120.0">
+                                    <JFXButton fx:id="btnDonate" buttonType="RAISED" layoutX="267.0" layoutY="77.0" prefWidth="250.0" style="-fx-background-color: #448AFF;" text="%btn.donate" textFill="WHITE" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="120.0">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
