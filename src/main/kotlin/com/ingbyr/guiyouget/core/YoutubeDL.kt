@@ -5,6 +5,7 @@ import com.beust.klaxon.Parser
 import com.ingbyr.guiyouget.events.StopDownloading
 import com.ingbyr.guiyouget.events.UpdateProgressWithYoutubeDL
 import com.ingbyr.guiyouget.utils.CoreUtils
+import org.slf4j.LoggerFactory
 import tornadofx.*
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -12,6 +13,10 @@ import java.nio.file.Paths
 
 
 class YoutubeDL(private val url: String) : CoreController() {
+    companion object {
+        val logger = LoggerFactory.getLogger(this::class.java)
+    }
+
     val core = Paths.get(System.getProperty("user.dir"), "core", "youtube-dl.exe").toAbsolutePath().toString()
     private val parser = Parser()
     private var progress = 0.0
@@ -82,7 +87,7 @@ class YoutubeDL(private val url: String) : CoreController() {
             } else {
                 if (p != null && p.isAlive) {
                     logger.debug("stop process $p")
-                    p.destroy()
+                    p.destroyForcibly()
                 }
                 break
             }
