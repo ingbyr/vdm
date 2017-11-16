@@ -44,7 +44,6 @@ class ProgressView : View() {
         paneResume.isVisible = false
 
         paneResume.setOnMouseClicked {
-            logger.debug("resume")
             paneResume.isVisible = false
             panePause.isVisible = true
             labelTitle.text = messages["resume"]
@@ -52,7 +51,6 @@ class ProgressView : View() {
         }
 
         panePause.setOnMouseClicked {
-            logger.debug("pause")
             paneResume.isVisible = true
             panePause.isVisible = false
             labelTitle.text = messages["pause"]

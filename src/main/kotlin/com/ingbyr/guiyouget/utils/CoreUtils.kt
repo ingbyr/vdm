@@ -7,6 +7,7 @@ object CoreUtils {
     val YOUTUBE_DL_VERSION = "youtube-dl-version"
     val YOU_GET = "you-get"
     val YOU_GET_VERSION = "you-get-version"
+    val STORAGE_PATH = "storagePath"
 
     val PROXY_TYPE = "proxy-type"
     val PROXY_ADDRESS = "proxy-address"

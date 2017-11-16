@@ -13,12 +13,16 @@ import com.jfoenix.controls.JFXListView
 import javafx.scene.control.Label
 import org.slf4j.LoggerFactory
 import tornadofx.*
+import java.util.*
 
 class MediaListController : Controller() {
 
     private val logger = LoggerFactory.getLogger(MediaListController::class.java)
 
-    //todo 获取失败时国际化文本
+    init {
+        messages = ResourceBundle.getBundle("i18n/MediaListView")
+    }
+
     fun subscribeEvents() {
         subscribe<RequestMediasWithYoutubeDL> {
             try {
@@ -27,8 +31,8 @@ class MediaListController : Controller() {
             } catch (e: Exception) {
                 logger.error(e.toString())
                 fire(DisplayMediasWithYoutubeDL(JsonObject(mapOf(
-                        "title" to "Failed to get media info",
-                        "description" to "Make sure that URL is correct"))))
+                        "title" to messages["getInfoFailed"],
+                        "description" to messages["getInfoFailedDes"]))))
             }
         }
 
@@ -38,7 +42,7 @@ class MediaListController : Controller() {
                 fire(DisplayMediasWithYouGet(json))
             } catch (e: Exception) {
                 logger.error(e.toString())
-                fire(DisplayMediasWithYouGet(JsonObject(mapOf("title" to "Failed to get media info"))))
+                fire(DisplayMediasWithYouGet(JsonObject(mapOf("title" to messages["getInfoFailed"]))))
             }
         }
     }

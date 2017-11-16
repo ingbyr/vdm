@@ -5,12 +5,17 @@ import com.beust.klaxon.Parser
 import com.ingbyr.guiyouget.events.StopDownloading
 import com.ingbyr.guiyouget.events.UpdateProgressWithYouGet
 import com.ingbyr.guiyouget.utils.CoreUtils
+import org.slf4j.LoggerFactory
 import tornadofx.*
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.file.Paths
 
 class YouGet(val url: String) : CoreController() {
+    companion object {
+        val logger = LoggerFactory.getLogger(this::class.java)
+    }
+
     val core = Paths.get(System.getProperty("user.dir"), "core", "you-get.exe").toAbsolutePath().toString()
     private val parser = Parser()
     private var progress = 0.0

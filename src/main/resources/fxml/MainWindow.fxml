@@ -2,7 +2,6 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXCheckBox?>
-<?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXTabPane?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.scene.Cursor?>
@@ -17,7 +16,7 @@
 <?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefWidth="550.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefWidth="550.0" xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <AnchorPane fx:id="apBorder" maxHeight="120.0" prefHeight="30.0" prefWidth="550.0" style="-fx-background-color: #303f9f;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -35,20 +34,20 @@
       </AnchorPane>
       <AnchorPane prefHeight="80.0" style="-fx-background-color: #3f51b5;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
          <children>
-            <JFXTextField fx:id="tfURL" focusColor="#448aff" prefHeight="23.0" prefWidth="356.0" style="-fx-text-inner-color: white;" unFocusColor="#448aff" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="140.0" AnchorPane.topAnchor="30.0" />
+            <JFXTextField fx:id="tfURL" focusColor="#448aff" prefHeight="24.0" prefWidth="356.0" style="-fx-text-inner-color: white;" unFocusColor="#448aff" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="160.0" AnchorPane.topAnchor="30.0" />
             <Label text="%label.URL" textFill="WHITE" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="500.0" AnchorPane.topAnchor="20.0">
                <font>
-                  <Font name="System Bold" size="14.0" />
+                  <Font name="System Bold" size="16.0" />
                </font>
             </Label>
-            <JFXButton fx:id="btnDownload" buttonType="RAISED" layoutX="436.0" layoutY="23.0" prefHeight="50.0" prefWidth="100.0" style="-fx-background-color: #448AFF;" text="%btn.download" textFill="WHITE" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="23.0">
+            <JFXButton fx:id="btnDownload" buttonType="RAISED" layoutX="436.0" layoutY="23.0" prefHeight="50.0" prefWidth="120.0" style="-fx-background-color: #448AFF;" text="%btn.download" textFill="WHITE" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="23.0">
                <font>
-                  <Font name="System Bold" size="14.0" />
+                  <Font name="System Bold" size="16.0" />
                </font>
             </JFXButton>
          </children>
       </AnchorPane>
-      <AnchorPane prefHeight="445.0" prefWidth="550.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="110.0">
+      <AnchorPane prefHeight="420.0" prefWidth="550.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="110.0">
          <children>
             <JFXTabPane prefHeight="254.0" prefWidth="550.0" stylesheets="@../css/ui.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <tabs>
@@ -56,27 +55,32 @@
                     <content>
                         <VBox>
                            <children>
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="110.0" prefWidth="550.0">
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="130.0" prefWidth="550.0">
                                  <children>
                                     <Label layoutX="14.0" layoutY="14.0" prefHeight="29.0" prefWidth="510.0" text="%label.storagePath" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="10.0">
                                        <font>
                                           <Font name="Microsoft YaHei Bold" size="14.0" />
                                        </font>
                                     </Label>
-                                    <Label fx:id="labelStoragePath" layoutX="14.0" layoutY="43.0" prefHeight="15.0" prefWidth="523.0" text="path" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="60.0">
+                                    <Label fx:id="labelStoragePath" layoutX="14.0" layoutY="43.0" text="path" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="60.0">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
                                     </Label>
-                                    <JFXButton fx:id="btnChangePath" buttonType="RAISED" layoutX="125.0" layoutY="8.0" style="-fx-background-color: #c5cae9;" text="%btn.changePath" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="10.0">
+                                    <JFXButton fx:id="btnChangePath" buttonType="RAISED" layoutX="125.0" layoutY="8.0" style="-fx-background-color: #c5cae9;" text="%btn.changePath" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="15.0">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
                                     </JFXButton>
                                     <Line endX="999999.0" fill="#bdbdbd" layoutY="100.0" opacity="0.5" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                    <JFXButton fx:id="btnOpenDir" buttonType="RAISED" layoutX="424.0" layoutY="55.0" style="-fx-background-color: #c5cae9;" text="%btn.openPath" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="60.0">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </JFXButton>
                                  </children>
                               </AnchorPane>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="550.0">
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="170.0" prefWidth="550.0">
                                  <children>
                                     <Label layoutX="14.0" layoutY="14.0" prefHeight="29.0" prefWidth="510.0" text="%label.downloadingCore" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="15.0">
                                        <font>
@@ -123,13 +127,27 @@
                               </AnchorPane>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="150.0" prefWidth="550.0">
                                  <children>
-                                    <Label layoutX="14.0" layoutY="14.0" prefHeight="29.0" prefWidth="510.0" text="%label.otherOptions" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="15.0">
+                                    <Label layoutX="14.0" layoutY="14.0" prefHeight="29.0" prefWidth="510.0" text="%label.appInfo" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="15.0">
                                        <font>
                                           <Font name="System Bold" size="14.0" />
                                        </font>
                                     </Label>
-                                    <JFXComboBox fx:id="cbLanguage" focusColor="#c5cae9" layoutX="132.0" layoutY="51.0" AnchorPane.leftAnchor="120.0" AnchorPane.topAnchor="50.0" />
-                                    <Label layoutX="28.0" layoutY="53.0" text="%label.language" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="55.0">
+                                    <JFXButton fx:id="btnReportBug" buttonType="RAISED" layoutX="286.0" layoutY="74.0" style="-fx-background-color: #c5cae9;" text="%btn.reportBugs" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="60.0">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </JFXButton>
+                                    <JFXButton fx:id="btnUpdate" buttonType="RAISED" layoutX="286.0" layoutY="27.0" style="-fx-background-color: #c5cae9;" text="%btn.checkUpdates" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="15.0">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </JFXButton>
+                                    <Label layoutX="20.0" layoutY="62.0" text="%label.version" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="60.0">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="labelAPP" layoutX="105.0" layoutY="65.0" text="ver" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="60.0">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
@@ -144,7 +162,7 @@
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <VBox prefHeight="346.0" prefWidth="550.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <VBox prefHeight="320.0" prefWidth="550.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
@@ -203,80 +221,71 @@
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <Label layoutX="180.0" layoutY="95.0" style="-fx-wrap-text: true;" text="%label.about" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="20.0">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Label>
-                              <AnchorPane layoutX="20.0" layoutY="80.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="80.0">
+                              <AnchorPane layoutX="43.0" layoutY="229.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
                                  <children>
-                                    <Label style="-fx-wrap-text: true;" text="%label.version" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                       <font>
-                                          <Font name="System Bold" size="16.0" />
-                                       </font>
-                                    </Label>
-                                    <Label fx:id="labelVersion" layoutX="130.0" style="-fx-wrap-text: true;" text="ver" textFill="#3f51b5" AnchorPane.leftAnchor="140.0" AnchorPane.topAnchor="0.0">
+                                    <Label style="-fx-wrap-text: true;" text="%label.about" AnchorPane.leftAnchor="180.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="160.0" layoutY="50.0" style="-fx-wrap-text: true;" text="%label.sourceCode" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="30.0">
-                                       <font>
-                                          <Font name="System Bold" size="16.0" />
-                                       </font>
-                                    </Label>
-                                    <Label fx:id="labelGitHub" layoutX="280.0" layoutY="50.0" style="-fx-wrap-text: true;" text="GitHub" textFill="#3f51b5" AnchorPane.leftAnchor="140.0" AnchorPane.topAnchor="30.0">
-                                       <font>
-                                          <Font size="16.0" />
-                                       </font>
-                                    </Label>
-                                    <Label layoutX="160.0" layoutY="80.0" style="-fx-wrap-text: true;" text="%label.license" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="60.0">
-                                       <font>
-                                          <Font name="System Bold" size="16.0" />
-                                       </font>
-                                    </Label>
-                                    <Label fx:id="labelLicense" layoutX="280.0" layoutY="80.0" style="-fx-wrap-text: true;" text="MIT" textFill="#3f51b5" AnchorPane.leftAnchor="140.0" AnchorPane.topAnchor="60.0">
-                                       <font>
-                                          <Font size="16.0" />
-                                       </font>
-                                    </Label>
-                                    <Label layoutX="160.0" layoutY="110.0" style="-fx-wrap-text: true;" text="%label.author" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="90.0">
-                                       <font>
-                                          <Font name="System Bold" size="16.0" />
-                                       </font>
-                                    </Label>
-                                    <Label fx:id="labelAuthor" layoutX="280.0" layoutY="110.0" style="-fx-wrap-text: true;" text="ingbyr" textFill="#3f51b5" AnchorPane.leftAnchor="140.0" AnchorPane.topAnchor="90.0">
-                                       <font>
-                                          <Font size="16.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </AnchorPane>
-                              <AnchorPane layoutX="43.0" layoutY="229.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="220.0">
-                                 <children>
+                                    <AnchorPane layoutX="209.0" layoutY="19.0" prefWidth="228.0" AnchorPane.leftAnchor="180.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="80.0">
+                                       <children>
+                                          <Label style="-fx-wrap-text: true;" text="%label.version" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <font>
+                                                <Font name="System Bold" size="16.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="labelVersion" layoutX="130.0" style="-fx-wrap-text: true;" text="ver" textFill="#3f51b5" AnchorPane.leftAnchor="140.0" AnchorPane.topAnchor="0.0">
+                                             <font>
+                                                <Font size="16.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="160.0" layoutY="50.0" style="-fx-wrap-text: true;" text="%label.sourceCode" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="30.0">
+                                             <font>
+                                                <Font name="System Bold" size="16.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="labelGitHub" layoutX="280.0" layoutY="50.0" style="-fx-wrap-text: true;" text="GitHub" textFill="#3f51b5" AnchorPane.leftAnchor="140.0" AnchorPane.topAnchor="30.0">
+                                             <font>
+                                                <Font size="16.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="160.0" layoutY="80.0" style="-fx-wrap-text: true;" text="%label.license" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="60.0">
+                                             <font>
+                                                <Font name="System Bold" size="16.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="labelLicense" layoutX="280.0" layoutY="80.0" style="-fx-wrap-text: true;" text="MIT" textFill="#3f51b5" AnchorPane.leftAnchor="140.0" AnchorPane.topAnchor="60.0">
+                                             <font>
+                                                <Font size="16.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="160.0" layoutY="110.0" style="-fx-wrap-text: true;" text="%label.author" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="90.0">
+                                             <font>
+                                                <Font name="System Bold" size="16.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="labelAuthor" layoutX="280.0" layoutY="110.0" style="-fx-wrap-text: true;" text="ingbyr" textFill="#3f51b5" AnchorPane.leftAnchor="140.0" AnchorPane.topAnchor="90.0">
+                                             <font>
+                                                <Font size="16.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </AnchorPane>
                                     <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <image>
                                           <Image url="@logo.jpg" />
                                        </image>
                                     </ImageView>
-                                    <JFXButton fx:id="btnUpdate" buttonType="RAISED" layoutX="257.0" layoutY="14.0" prefHeight="34.0" prefWidth="250.0" style="-fx-background-color: #448AFF;" text="%btn.checkUpdates" textFill="WHITE" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="0.0">
-                                       <font>
-                                          <Font size="16.0" />
-                                       </font>
-                                    </JFXButton>
-                                    <JFXButton fx:id="btnReportBug" buttonType="RAISED" layoutX="257.0" layoutY="67.0" prefWidth="250.0" style="-fx-background-color: #448AFF;" text="%btn.reportBugs" textFill="WHITE" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="60.0">
-                                       <font>
-                                          <Font size="16.0" />
-                                       </font>
-                                    </JFXButton>
-                                    <JFXButton fx:id="btnDonate" buttonType="RAISED" layoutX="267.0" layoutY="77.0" prefWidth="250.0" style="-fx-background-color: #448AFF;" text="%btn.donate" textFill="WHITE" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="120.0">
+                                    <JFXButton fx:id="btnDonate" buttonType="RAISED" layoutX="180.0" layoutY="213.0" prefHeight="34.0" prefWidth="309.0" style="-fx-background-color: #c5cae9;" text="%btn.donate" AnchorPane.leftAnchor="180.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="220.0">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
                                     </JFXButton>
                                  </children>
                               </AnchorPane>
-                           </children></AnchorPane>
+                           </children>
+                        </AnchorPane>
                     </content>
                   </Tab>
                </tabs>

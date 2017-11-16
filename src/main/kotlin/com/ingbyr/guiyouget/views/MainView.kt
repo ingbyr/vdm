@@ -18,6 +18,7 @@ import javafx.scene.layout.Pane
 import javafx.stage.DirectoryChooser
 import javafx.stage.StageStyle
 import tornadofx.*
+import java.awt.Desktop
 import java.nio.file.Paths
 import java.util.*
 
@@ -40,16 +41,17 @@ class MainView : View("GUI-YouGet") {
     private val labelStoragePath: Label by fxid()
     private val labelYoutubeDL: Label by fxid()
     private val labelYouGet: Label by fxid()
+    private val labelAPP: Label by fxid()
 
     private val btnDownload: JFXButton by fxid()
     private val btnChangePath: JFXButton by fxid()
+    private val btnOpenDir: JFXButton by fxid()
     private val btnUpdateCore: JFXButton by fxid()
+    private val btnReportBug: JFXButton by fxid()
     private val btnUpdate: JFXButton by fxid()
 
     private val cbYoutubeDL: JFXCheckBox by fxid()
     private val cbYouGet: JFXCheckBox by fxid()
-
-    private val cbLanguage: JFXComboBox<Label> by fxid()
 
     private val cbSocks5: JFXCheckBox by fxid()
     private val tfSocksAddress: JFXTextField by fxid()
@@ -62,7 +64,6 @@ class MainView : View("GUI-YouGet") {
     private val labelGitHub: Label by fxid()
     private val labelLicense: Label by fxid()
     private val labelAuthor: Label by fxid()
-    private val btnReportBug: JFXButton by fxid()
     private val btnDonate: JFXButton by fxid()
 
 
@@ -88,21 +89,26 @@ class MainView : View("GUI-YouGet") {
         }
 
         // Storage path
-        if (app.config["storagePath"] == null || app.config["storagePath"] == "") {
+        if (app.config[CoreUtils.STORAGE_PATH] == null || app.config[CoreUtils.STORAGE_PATH] == "") {
             labelStoragePath.text = Paths.get(System.getProperty("user.dir")).toAbsolutePath().toString()
-            app.config["storagePath"] = labelStoragePath.text
+            app.config[CoreUtils.STORAGE_PATH] = labelStoragePath.text
             app.config.save()
         } else {
-            labelStoragePath.text = app.config["storagePath"] as String
+            labelStoragePath.text = app.config[CoreUtils.STORAGE_PATH] as String
         }
 
         btnChangePath.setOnMouseClicked {
             val file = DirectoryChooser().showDialog(primaryStage)
             if (file != null) {
-                app.config["storagePath"] = file.absolutePath.toString()
+                app.config[CoreUtils.STORAGE_PATH] = file.absolutePath.toString()
                 app.config.save()
                 labelStoragePath.text = file.absolutePath.toString()
             }
+        }
+
+        btnOpenDir.setOnMouseClicked {
+            val dir = Paths.get(app.config[CoreUtils.STORAGE_PATH] as String).toFile()
+            Desktop.getDesktop().open(dir)
         }
 
         // Get media list
@@ -129,9 +135,10 @@ class MainView : View("GUI-YouGet") {
             }
         }
 
-        // Init core version
+        // Init version
         labelYouGet.text = app.config[CoreUtils.YOU_GET_VERSION] as String
         labelYoutubeDL.text = app.config[CoreUtils.YOUTUBE_DL_VERSION] as String
+        labelAPP.text = app.config[CoreUtils.APP_VERSION] as String
 
         // Change download core
         cbYouGet.action {
@@ -253,19 +260,6 @@ class MainView : View("GUI-YouGet") {
         labelAuthor.setOnMouseClicked { hostServices.showDocument(CoreUtils.APP_AUTHOR) }
         btnReportBug.action { hostServices.showDocument(CoreUtils.APP_REPORT_BUGS) }
         btnDonate.action { hostServices.showDocument(CoreUtils.APP_DONATE) }
-
-        // Change languages
-        cbLanguage.items.add(Label("English"))
-        cbLanguage.items.add(Label("中文"))
-
-        cbLanguage.promptText = messages["selectLanguage"]
-        cbLanguage.selectionModel.selectedItemProperty().onChange {
-            if (it != null) {
-                app.config["locale"] = it.text
-                app.config.save()
-            }
-        }
-
 
         //todo 增加获取不同解析度选线，跳过JSON部分直接下载
     }
