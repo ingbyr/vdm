@@ -7,7 +7,7 @@
 <?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="150.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="150.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <AnchorPane fx:id="apBorder" prefHeight="30.0" prefWidth="550.0" style="-fx-background-color: #303f9f;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -30,7 +30,7 @@
                   <Font name="System Bold" size="18.0" />
                </font>
             </Label>
-            <JFXProgressBar fx:id="progressbar" layoutX="81.0" layoutY="70.0" prefHeight="10.0" stylesheets="@../css/ui.css" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="70.0" />
+            <JFXProgressBar fx:id="progressbar" layoutX="81.0" layoutY="70.0" prefHeight="10.0" stylesheets="@../css/ui.css" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="70.0" />
             <Label fx:id="labelSpeed" layoutX="281.0" layoutY="23.0" textFill="WHITE" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="23.0">
                <font>
                   <Font size="14.0" />
@@ -41,12 +41,12 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <Pane fx:id="panePause" layoutX="349.0" layoutY="62.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="55.0">
+            <Pane fx:id="panePause" layoutX="349.0" layoutY="62.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="55.0">
                <children>
                   <SVGPath content="M16 48 L16 26 L12 26 L12 48 Z M28 26 L28 48 L32 48 L32 26 Z" fill="WHITE" layoutX="-9.0" layoutY="-18.0" />
                </children>
             </Pane>
-            <Pane fx:id="paneResume" layoutX="404.0" layoutY="73.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="58.0">
+            <Pane fx:id="paneResume" layoutX="404.0" layoutY="73.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="58.0">
                <children>
                   <SVGPath content="M8 28 L24 16 L8 4 Z" fill="WHITE" />
                </children>

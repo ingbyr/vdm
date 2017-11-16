@@ -58,7 +58,7 @@ class UpdatesController : Controller() {
                     val url = CoreUtils.yougetUpdateURL(remoteVersion)
                     logger.debug("[you-get] update url $url")
                     okhttp.downloadFile(url,
-                            Paths.get(System.getProperty("user.dir"), "core", "you-get.exe").toFile(),
+                            Paths.get(System.getProperty("user.dir"), "core", "you-get.exe").toString(),
                             CoreUtils.YOU_GET_VERSION,
                             remoteVersion)
                 } else {
@@ -75,7 +75,7 @@ class UpdatesController : Controller() {
                     val url = CoreUtils.youtubedlUpdateURL(remoteVersion)
                     logger.debug("[youtube-dl] update url $url")
                     okhttp.downloadFile(url,
-                            Paths.get(System.getProperty("user.dir"), "core", "youtube-dl.exe").toFile(),
+                            Paths.get(System.getProperty("user.dir"), "core", "youtube-dl.exe").toString(),
                             CoreUtils.YOUTUBE_DL_VERSION,
                             remoteVersion)
                 } else {

@@ -12,8 +12,6 @@ abstract class CoreController : Controller() {
         messages = ResourceBundle.getBundle("i18n/core")
     }
 
-    val logger = LoggerFactory.getLogger(CoreController::class.java)
-
     fun runCommand(args: MutableList<String>): StringBuilder {
         val output = StringBuilder()
         val builder = ProcessBuilder(args)
