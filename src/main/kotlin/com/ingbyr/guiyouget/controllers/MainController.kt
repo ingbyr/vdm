@@ -4,7 +4,7 @@ import com.ingbyr.guiyouget.core.YouGet
 import com.ingbyr.guiyouget.core.YoutubeDL
 import com.ingbyr.guiyouget.events.RequestMediasWithYouGet
 import com.ingbyr.guiyouget.events.RequestMediasWithYoutubeDL
-import com.ingbyr.guiyouget.utils.CoreUtils
+import com.ingbyr.guiyouget.utils.ContentsUtil
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tornadofx.*
@@ -14,16 +14,16 @@ class MainController : Controller() {
     private val logger: Logger = LoggerFactory.getLogger(MainController::class.java)
 
     fun requestMediaInfo(url: String) {
-        val core = app.config[CoreUtils.DOWNLOAD_CORE]
+        val core = app.config[ContentsUtil.DOWNLOAD_CORE]
         logger.debug("download core is $core")
 
         // Init the request args
         when (core) {
-            CoreUtils.YOUTUBE_DL -> {
+            ContentsUtil.YOUTUBE_DL -> {
                 fire(RequestMediasWithYoutubeDL(YoutubeDL(url)))
             }
 
-            CoreUtils.YOU_GET -> {
+            ContentsUtil.YOU_GET -> {
                 fire(RequestMediasWithYouGet(YouGet(url)))
             }
 
@@ -36,6 +36,6 @@ class MainController : Controller() {
 
 
     fun updateGUI() {
-        hostServices.showDocument(CoreUtils.APP_UPDATE_URL)
+        hostServices.showDocument(ContentsUtil.APP_UPDATE_URL)
     }
 }

@@ -2,8 +2,8 @@ package com.ingbyr.guiyouget.core
 
 import org.slf4j.LoggerFactory
 
-class CoreArgs(val core: String) {
-    private val logger = LoggerFactory.getLogger(CoreArgs::class.java)
+class DownloadEngine(val core: String) {
+    private val logger = LoggerFactory.getLogger(DownloadEngine::class.java)
     private val argsMap = mutableMapOf<String, String>()
 
 

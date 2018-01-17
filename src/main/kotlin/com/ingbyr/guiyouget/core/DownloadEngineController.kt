@@ -1,13 +1,12 @@
 package com.ingbyr.guiyouget.core
 
-import org.slf4j.LoggerFactory
 import tornadofx.*
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.util.*
 
 
-abstract class CoreController : Controller() {
+abstract class DownloadEngineController : Controller() {
     init {
         messages = ResourceBundle.getBundle("i18n/core")
     }
