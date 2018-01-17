@@ -2,7 +2,7 @@ group 'com.ingbyr.guiyouget'
 version '0.2.1'
 
 buildscript {
-    ext.kotlin_version = '1.1.60'
+    ext.kotlin_version = '1.2.10'
 
     repositories {
         mavenCentral()
@@ -32,8 +32,8 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
-    compile 'no.tornado:tornadofx:1.7.10'
-    compile 'com.jfoenix:jfoenix:1.4.0'
+    compile 'no.tornado:tornadofx:1.7.14'
+    compile 'com.jfoenix:jfoenix:1.11.1'
     compile 'com.beust:klaxon:0.30'
     compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
     compile 'com.squareup.okhttp3:okhttp:3.9.0'

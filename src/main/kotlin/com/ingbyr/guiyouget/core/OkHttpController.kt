@@ -4,7 +4,7 @@ import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.ingbyr.guiyouget.events.UpdateYouGetStates
 import com.ingbyr.guiyouget.events.UpdateYoutubeDLStates
-import com.ingbyr.guiyouget.utils.CoreUtils
+import com.ingbyr.guiyouget.utils.ContentsUtil
 import okhttp3.*
 import okio.Okio
 import org.slf4j.LoggerFactory
@@ -65,11 +65,11 @@ class DownloadFileCallBack(private val file: String, private val k: String?, pri
 
     override fun onFailure(call: Call?, e: IOException?) {
         when (k) {
-            CoreUtils.YOUTUBE_DL_VERSION -> {
+            ContentsUtil.YOUTUBE_DL_VERSION -> {
                 logger.debug("failed to update youtube-dl")
                 fire(UpdateYoutubeDLStates(messages["failed"]))
             }
-            CoreUtils.YOU_GET_VERSION -> {
+            ContentsUtil.YOU_GET_VERSION -> {
                 logger.debug("failed to update you-get")
                 fire(UpdateYouGetStates(messages["failed"]))
             }
@@ -91,10 +91,10 @@ class DownloadFileCallBack(private val file: String, private val k: String?, pri
             }
 
             when (k) {
-                CoreUtils.YOUTUBE_DL_VERSION -> {
+                ContentsUtil.YOUTUBE_DL_VERSION -> {
                     fire(UpdateYoutubeDLStates(messages["completed"]))
                 }
-                CoreUtils.YOU_GET_VERSION -> {
+                ContentsUtil.YOU_GET_VERSION -> {
                     fire(UpdateYouGetStates(messages["completed"]))
                 }
             }
@@ -102,11 +102,11 @@ class DownloadFileCallBack(private val file: String, private val k: String?, pri
             logger.error("bad request")
             response.close()
             when (k) {
-                CoreUtils.YOUTUBE_DL_VERSION -> {
+                ContentsUtil.YOUTUBE_DL_VERSION -> {
                     logger.debug("failed to update youtube-dl")
                     fire(UpdateYoutubeDLStates(messages["failed"]))
                 }
-                CoreUtils.YOU_GET_VERSION -> {
+                ContentsUtil.YOU_GET_VERSION -> {
                     logger.debug("failed to update you-get")
                     fire(UpdateYouGetStates(messages["failed"]))
                 }

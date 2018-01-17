@@ -1,13 +1,13 @@
 package com.ingbyr.guiyouget.utils
 
-object CoreUtils {
+object ContentsUtil {
     var DOWNLOAD_CORE = "download-core"
     var REMOTE_CONF_URL = "https://raw.githubusercontent.com/ingbyr/GUI-YouGet/master/RemoteConf.json"
     val YOUTUBE_DL = "youtube-dl"
     val YOUTUBE_DL_VERSION = "youtube-dl-version"
     val YOU_GET = "you-get"
     val YOU_GET_VERSION = "you-get-version"
-    val STORAGE_PATH = "storagePath"
+    val STORAGE_PATH = "storage-path"
 
     val PROXY_TYPE = "proxy-type"
     val PROXY_ADDRESS = "proxy-address"
