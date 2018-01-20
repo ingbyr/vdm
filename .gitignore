@@ -8,3 +8,5 @@ gradle/
 gradlew
 gradlew.bat
 log/
+core/
+GUI-YouGet.iml
