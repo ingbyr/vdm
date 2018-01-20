@@ -72,7 +72,7 @@ class YoutubeDL(private val url: String) : DownloadEngineController() {
             }
         }
         args.add("-f", formatID)
-        args.add("-o", Paths.get(app.config["storagePath"] as String, outputTemplate).toString())
+        args.add("-o", Paths.get(app.config[ContentsUtil.STORAGE_PATH] as String, outputTemplate).toString())
         args.add("url", url)
         val builder = ProcessBuilder(args.build())
         builder.redirectErrorStream(true)

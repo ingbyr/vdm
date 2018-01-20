@@ -68,7 +68,7 @@ class YouGet(val url: String) : DownloadEngineController() {
             }
         }
         args.add("foramtID", "--itag=$formatID")
-        args.add("-o", app.config["storagePath"] as String)
+        args.add("-o", app.config[ContentsUtil.STORAGE_PATH] as String)
         args.add("url", url)
         val builder = ProcessBuilder(args.build())
         builder.redirectErrorStream(true)
