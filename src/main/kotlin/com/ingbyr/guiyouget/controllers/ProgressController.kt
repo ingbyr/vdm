@@ -1,7 +1,7 @@
 package com.ingbyr.guiyouget.controllers
 
-import com.ingbyr.guiyouget.core.YouGet
-import com.ingbyr.guiyouget.core.YoutubeDL
+import com.ingbyr.guiyouget.engine.YouGet
+import com.ingbyr.guiyouget.engine.YoutubeDL
 import com.ingbyr.guiyouget.events.DownloadingRequestWithYouGet
 import com.ingbyr.guiyouget.events.DownloadingRequestWithYoutubeDL
 import com.ingbyr.guiyouget.events.ResumeDownloading
