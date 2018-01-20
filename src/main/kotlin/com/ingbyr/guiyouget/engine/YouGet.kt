@@ -1,9 +1,9 @@
-package com.ingbyr.guiyouget.core
+package com.ingbyr.guiyouget.engine
 
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.ingbyr.guiyouget.events.StopDownloading
-import com.ingbyr.guiyouget.events.UpdateProgressWithYoutubeDL
+import com.ingbyr.guiyouget.events.UpdateProgressWithYouGet
 import com.ingbyr.guiyouget.utils.ContentsUtil
 import org.slf4j.LoggerFactory
 import tornadofx.*
@@ -11,20 +11,17 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.file.Paths
 
-
-class YoutubeDL(private val url: String) : DownloadEngineController() {
+class YouGet(val url: String) : DownloadEngineController() {
     companion object {
         val logger = LoggerFactory.getLogger(this::class.java)
     }
 
-    val core = Paths.get(System.getProperty("user.dir"), "core", "youtube-dl.exe").toAbsolutePath().toString()
+    val core = Paths.get(System.getProperty("user.dir"), "engine", "you-get.exe").toAbsolutePath().toString()
     private val parser = Parser()
     private var progress = 0.0
-    private var speed = "0MiB/s"
-    private var extTime = "00:00"
+    private var speed = "0MB/s"
     private var status = messages["analyzing"]
     private var isDownloading = false
-    private val outputTemplate = "%(title)s.%(ext)s"
 
     init {
         subscribe<StopDownloading> {
@@ -32,16 +29,16 @@ class YoutubeDL(private val url: String) : DownloadEngineController() {
         }
     }
 
-    private fun requestJsonArgs(): DownloadEngine {
+    private fun requestJsonAargs(): DownloadEngine {
         val args = DownloadEngine(core)
-        args.add("simulator", "-j")
+        args.add("simulator", "--json")
         when (app.config[ContentsUtil.PROXY_TYPE]) {
             ContentsUtil.PROXY_SOCKS -> {
-                args.add("--proxy",
-                        "socks5://${app.config[ContentsUtil.PROXY_ADDRESS]}:${app.config[ContentsUtil.PROXY_PORT]}/")
+                args.add("-x",
+                        "${app.config[ContentsUtil.PROXY_ADDRESS]}:${app.config[ContentsUtil.PROXY_PORT]}")
             }
             ContentsUtil.PROXY_HTTP -> {
-                args.add("--proxy",
+                args.add("-x",
                         "${app.config[ContentsUtil.PROXY_ADDRESS]}:${app.config[ContentsUtil.PROXY_PORT]}")
             }
         }
@@ -50,11 +47,10 @@ class YoutubeDL(private val url: String) : DownloadEngineController() {
     }
 
     fun getMediasInfo(): JsonObject {
-        val output = runCommand(requestJsonArgs().build())
+        val output = runCommand(requestJsonAargs().build())
 //        Files.write(Paths.get(System.getProperty("user.dir"), "info.json"), output.toString().toByteArray())
         return parser.parse(output) as JsonObject
     }
-
 
     override fun runDownloadCommand(formatID: String) {
         isDownloading = true
@@ -63,16 +59,16 @@ class YoutubeDL(private val url: String) : DownloadEngineController() {
         val args = DownloadEngine(core)
         when (app.config[ContentsUtil.PROXY_TYPE]) {
             ContentsUtil.PROXY_SOCKS -> {
-                args.add("--proxy",
-                        "socks5://${app.config[ContentsUtil.PROXY_ADDRESS]}:${app.config[ContentsUtil.PROXY_PORT]}/")
+                args.add("-x",
+                        "${app.config[ContentsUtil.PROXY_ADDRESS]}:${app.config[ContentsUtil.PROXY_PORT]}")
             }
             ContentsUtil.PROXY_HTTP -> {
-                args.add("--proxy",
+                args.add("-x",
                         "${app.config[ContentsUtil.PROXY_ADDRESS]}:${app.config[ContentsUtil.PROXY_PORT]}")
             }
         }
-        args.add("-f", formatID)
-        args.add("-o", Paths.get(app.config[ContentsUtil.STORAGE_PATH] as String, outputTemplate).toString())
+        args.add("foramtID", "--itag=$formatID")
+        args.add("-o", app.config[ContentsUtil.STORAGE_PATH] as String)
         args.add("url", url)
         val builder = ProcessBuilder(args.build())
         builder.redirectErrorStream(true)
@@ -87,7 +83,7 @@ class YoutubeDL(private val url: String) : DownloadEngineController() {
             } else {
                 if (p != null && p.isAlive) {
                     logger.debug("stop process $p")
-                    p.destroyForcibly()
+                    p.destroy()
                 }
                 break
             }
@@ -95,17 +91,20 @@ class YoutubeDL(private val url: String) : DownloadEngineController() {
     }
 
     override fun parseStatus(line: String) {
-        val outs = line.split(" ")
-
-        outs.forEach {
-            if (it.endsWith("%")) progress = it.subSequence(0, it.length - 1).toString().toDouble()
-            if (it.endsWith("/s")) speed = it
-            if (it.matches(Regex("\\d+:\\d+"))) extTime = it
+        val p = Regex("\\d+\\.*\\d*%").findAll(line).toList().flatMap(MatchResult::groupValues)
+        if (p.isNotEmpty()) {
+            progress = p[0].subSequence(0, p[0].length - 1).toString().toDouble()
         }
-        logger.trace("$progress, $speed, $extTime, $status")
+
+        val s = Regex("\\d+\\s*.B/s").findAll(line).toList().flatMap(MatchResult::groupValues)
+        if (s.isNotEmpty()) {
+            speed = s[0]
+        }
+
+        logger.trace("$progress, $speed, $status")
         if (progress == 100.0) {
             status = messages["completed"]
         }
-        fire(UpdateProgressWithYoutubeDL(progress, speed, extTime, status))
+        fire(UpdateProgressWithYouGet(progress, speed, status))
     }
 }

@@ -1,7 +1,7 @@
 package com.ingbyr.guiyouget.utils
 
 object ContentsUtil {
-    var DOWNLOAD_CORE = "download-core"
+    var DOWNLOAD_CORE = "download-engine"
     var REMOTE_CONF_URL = "https://raw.githubusercontent.com/ingbyr/GUI-YouGet/master/RemoteConf.json"
     val YOUTUBE_DL = "youtube-dl"
     val YOUTUBE_DL_VERSION = "youtube-dl-version"

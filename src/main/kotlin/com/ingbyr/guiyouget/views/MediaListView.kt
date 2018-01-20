@@ -3,8 +3,8 @@ package com.ingbyr.guiyouget.views
 import com.beust.klaxon.array
 import com.beust.klaxon.string
 import com.ingbyr.guiyouget.controllers.MediaListController
-import com.ingbyr.guiyouget.core.YouGet
-import com.ingbyr.guiyouget.core.YoutubeDL
+import com.ingbyr.guiyouget.engine.YouGet
+import com.ingbyr.guiyouget.engine.YoutubeDL
 import com.ingbyr.guiyouget.events.DisplayMediasWithYouGet
 import com.ingbyr.guiyouget.events.DisplayMediasWithYoutubeDL
 import com.ingbyr.guiyouget.events.DownloadingRequestWithYouGet

@@ -1,8 +1,8 @@
 package com.ingbyr.guiyouget.events
 
 import com.beust.klaxon.JsonObject
-import com.ingbyr.guiyouget.core.YouGet
-import com.ingbyr.guiyouget.core.YoutubeDL
+import com.ingbyr.guiyouget.engine.YouGet
+import com.ingbyr.guiyouget.engine.YoutubeDL
 import tornadofx.*
 
 // common events

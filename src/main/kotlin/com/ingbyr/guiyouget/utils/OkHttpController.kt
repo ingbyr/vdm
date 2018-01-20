@@ -1,10 +1,9 @@
-package com.ingbyr.guiyouget.core
+package com.ingbyr.guiyouget.utils
 
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.ingbyr.guiyouget.events.UpdateYouGetStates
 import com.ingbyr.guiyouget.events.UpdateYoutubeDLStates
-import com.ingbyr.guiyouget.utils.ContentsUtil
 import okhttp3.*
 import okio.Okio
 import org.slf4j.LoggerFactory
@@ -20,7 +19,7 @@ class OkHttpController : Controller() {
     private val parser = Parser()
 
     init {
-        messages = ResourceBundle.getBundle("i18n/core")
+        messages = ResourceBundle.getBundle("i18n/engine")
     }
 
     fun requestString(url: String): String? {
@@ -58,7 +57,7 @@ class OkHttpController : Controller() {
 
 class DownloadFileCallBack(private val file: String, private val k: String?, private val v: String?) : Callback, Controller() {
     init {
-        messages = ResourceBundle.getBundle("i18n/core")
+        messages = ResourceBundle.getBundle("i18n/engine")
     }
 
     private val logger = LoggerFactory.getLogger(this::class.java)

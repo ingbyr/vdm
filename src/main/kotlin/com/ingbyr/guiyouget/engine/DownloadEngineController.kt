@@ -1,4 +1,4 @@
-package com.ingbyr.guiyouget.core
+package com.ingbyr.guiyouget.engine
 
 import tornadofx.*
 import java.io.BufferedReader
@@ -8,7 +8,7 @@ import java.util.*
 
 abstract class DownloadEngineController : Controller() {
     init {
-        messages = ResourceBundle.getBundle("i18n/core")
+        messages = ResourceBundle.getBundle("i18n/engine")
     }
 
     fun runCommand(args: MutableList<String>): StringBuilder {

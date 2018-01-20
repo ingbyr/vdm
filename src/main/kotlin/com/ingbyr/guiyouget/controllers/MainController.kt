@@ -1,7 +1,7 @@
 package com.ingbyr.guiyouget.controllers
 
-import com.ingbyr.guiyouget.core.YouGet
-import com.ingbyr.guiyouget.core.YoutubeDL
+import com.ingbyr.guiyouget.engine.YouGet
+import com.ingbyr.guiyouget.engine.YoutubeDL
 import com.ingbyr.guiyouget.events.RequestMediasWithYouGet
 import com.ingbyr.guiyouget.events.RequestMediasWithYoutubeDL
 import com.ingbyr.guiyouget.utils.ContentsUtil
@@ -15,7 +15,7 @@ class MainController : Controller() {
 
     fun requestMediaInfo(url: String) {
         val core = app.config[ContentsUtil.DOWNLOAD_CORE]
-        logger.debug("download core is $core")
+        logger.debug("download engine is $core")
 
         // Init the request args
         when (core) {
@@ -28,7 +28,7 @@ class MainController : Controller() {
             }
 
             else -> {
-                logger.error("bad downloading core $core")
+                logger.error("bad downloading engine $core")
             }
         }
 

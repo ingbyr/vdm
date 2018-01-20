@@ -1,6 +1,6 @@
 package com.ingbyr.guiyouget.controllers
 
-import com.ingbyr.guiyouget.core.OkHttpController
+import com.ingbyr.guiyouget.utils.OkHttpController
 import com.ingbyr.guiyouget.events.*
 import com.ingbyr.guiyouget.utils.ContentsUtil
 import org.slf4j.LoggerFactory
@@ -58,7 +58,7 @@ class UpdatesController : Controller() {
                     val url = ContentsUtil.yougetUpdateURL(remoteVersion)
                     logger.debug("[you-get] update url $url")
                     okhttp.downloadFile(url,
-                            Paths.get(System.getProperty("user.dir"), "core", "you-get.exe").toString(),
+                            Paths.get(System.getProperty("user.dir"), "engine", "you-get.exe").toString(),
                             ContentsUtil.YOU_GET_VERSION,
                             remoteVersion)
                 } else {
@@ -75,7 +75,7 @@ class UpdatesController : Controller() {
                     val url = ContentsUtil.youtubedlUpdateURL(remoteVersion)
                     logger.debug("[youtube-dl] update url $url")
                     okhttp.downloadFile(url,
-                            Paths.get(System.getProperty("user.dir"), "core", "youtube-dl.exe").toString(),
+                            Paths.get(System.getProperty("user.dir"), "engine", "youtube-dl.exe").toString(),
                             ContentsUtil.YOUTUBE_DL_VERSION,
                             remoteVersion)
                 } else {

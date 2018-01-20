@@ -116,7 +116,7 @@ class MainView : View("GUI-YouGet") {
             }
         }
 
-        // Load download core config
+        // Load download engine config
         val core = app.config[ContentsUtil.DOWNLOAD_CORE]
         when (core) {
             ContentsUtil.YOUTUBE_DL -> {
@@ -137,7 +137,7 @@ class MainView : View("GUI-YouGet") {
         labelYoutubeDL.text = app.config[ContentsUtil.YOUTUBE_DL_VERSION] as String
         labelAPP.text = app.config[ContentsUtil.APP_VERSION] as String
 
-        // Change download core
+        // Change download engine
         cbYouGet.action {
             if (cbYouGet.isSelected) {
                 cbYoutubeDL.isSelected = false
