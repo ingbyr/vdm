@@ -30,20 +30,20 @@ class YouGet(val url: String) : DownloadEngineController() {
     }
 
     private fun requestJsonAargs(): DownloadEngine {
-        val args = DownloadEngine(core)
-        args.add("simulator", "--json")
+        val engine = DownloadEngine(core)
+        engine.add("simulator", "--json")
         when (app.config[ContentsUtil.PROXY_TYPE]) {
             ContentsUtil.PROXY_SOCKS -> {
-                args.add("-x",
+                engine.add("-x",
                         "${app.config[ContentsUtil.PROXY_ADDRESS]}:${app.config[ContentsUtil.PROXY_PORT]}")
             }
             ContentsUtil.PROXY_HTTP -> {
-                args.add("-x",
+                engine.add("-x",
                         "${app.config[ContentsUtil.PROXY_ADDRESS]}:${app.config[ContentsUtil.PROXY_PORT]}")
             }
         }
-        args.add("url", url)
-        return args
+        engine.add("url", url)
+        return engine
     }
 
     fun getMediasInfo(): JsonObject {
@@ -56,21 +56,21 @@ class YouGet(val url: String) : DownloadEngineController() {
         isDownloading = true
         status = messages["downloading"]
         var line: String?
-        val args = DownloadEngine(core)
+        val engine = DownloadEngine(core)
         when (app.config[ContentsUtil.PROXY_TYPE]) {
             ContentsUtil.PROXY_SOCKS -> {
-                args.add("-x",
+                engine.add("-x",
                         "${app.config[ContentsUtil.PROXY_ADDRESS]}:${app.config[ContentsUtil.PROXY_PORT]}")
             }
             ContentsUtil.PROXY_HTTP -> {
-                args.add("-x",
+                engine.add("-x",
                         "${app.config[ContentsUtil.PROXY_ADDRESS]}:${app.config[ContentsUtil.PROXY_PORT]}")
             }
         }
-        args.add("foramtID", "--itag=$formatID")
-        args.add("-o", app.config[ContentsUtil.STORAGE_PATH] as String)
-        args.add("url", url)
-        val builder = ProcessBuilder(args.build())
+        engine.add("foramtID", "--itag=$formatID")
+        engine.add("-o", app.config[ContentsUtil.STORAGE_PATH] as String)
+        engine.add("url", url)
+        val builder = ProcessBuilder(engine.build())
         builder.redirectErrorStream(true)
         val p = builder.start()
         val r = BufferedReader(InputStreamReader(p.inputStream))
