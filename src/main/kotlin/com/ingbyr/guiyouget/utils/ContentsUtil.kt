@@ -1,8 +1,9 @@
 package com.ingbyr.guiyouget.utils
 
 object ContentsUtil {
-    var DOWNLOAD_CORE = "download-engine"
-    var REMOTE_CONF_URL = "https://raw.githubusercontent.com/ingbyr/GUI-YouGet/master/RemoteConf.json"
+    val DOWNLOAD_CORE = "download-engine"
+    val REMOTE_YOU_GET_VERSION = "https://raw.githubusercontent.com/soimort/you-get/master/src/you_get/version.py"
+    val REMOTE_YOUTUBE_DL_VERSION = "https://raw.githubusercontent.com/rg3/youtube-dl/master/youtube_dl/version.py"
     val YOUTUBE_DL = "youtube-dl"
     val YOUTUBE_DL_VERSION = "youtube-dl-version"
     val YOU_GET = "you-get"
@@ -21,7 +22,6 @@ object ContentsUtil {
     val APP_LICENSE = "https://raw.githubusercontent.com/ingbyr/GUI-YouGet/master/LICENSE.txt"
     val APP_AUTHOR = "http://www.ingbyr.com/"
     val APP_REPORT_BUGS = "https://github.com/ingbyr/GUI-YouGet/issues"
-    val APP_DONATE = "http://wx3.sinaimg.cn/large/bca3b20dly1fjx6l6j4r2j20ci0cgq55.jpg"
 
     fun yougetUpdateURL(ver: String) = "https://github.com/soimort/you-get/releases/download/v$ver/you-get-$ver-win32.exe"
 
