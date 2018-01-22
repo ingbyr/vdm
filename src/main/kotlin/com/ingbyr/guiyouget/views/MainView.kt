@@ -96,7 +96,7 @@ class MainView : View("GUI-YouGet") {
 
         btnChangePath.setOnMouseClicked {
             val file = DirectoryChooser().showDialog(primaryStage)
-            if (file != null) {
+            file?.apply {
                 app.config[ContentsUtil.STORAGE_PATH] = file.absolutePath.toString()
                 app.config.save()
                 labelStoragePath.text = file.absolutePath.toString()
@@ -256,9 +256,7 @@ class MainView : View("GUI-YouGet") {
         labelLicense.setOnMouseClicked { hostServices.showDocument(ContentsUtil.APP_LICENSE) }
         labelAuthor.setOnMouseClicked { hostServices.showDocument(ContentsUtil.APP_AUTHOR) }
         btnReportBug.action { hostServices.showDocument(ContentsUtil.APP_REPORT_BUGS) }
-        btnDonate.action { hostServices.showDocument(ContentsUtil.APP_DONATE) }
-
-        //todo 增加获取不同解析度选线，跳过JSON部分直接下载
+        btnDonate.action { openInternalWindow(ImageView::class)}
     }
 
     // clean the url textfield
