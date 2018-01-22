@@ -17,7 +17,7 @@
 
 # Feedback bugs
 If something is broken and `GUI-YouGet` can't get you things you want, don't panic. (Yes, this happens all the time!)
-Open a new issue on [GitHub](https://github.com/ingbyr/GUI-YouGet/issues), with detailed `/log/debug.log` output attached.
+Open a new issue on [GitHub](https://github.com/ingbyr/GUI-YouGet/issues), with detailed `app/log/debug.log` output attached.
 
 # Legal Issues
 
