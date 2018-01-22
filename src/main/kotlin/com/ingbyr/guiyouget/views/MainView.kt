@@ -3,14 +3,11 @@ package com.ingbyr.guiyouget.views
 import com.ingbyr.guiyouget.controllers.MainController
 import com.ingbyr.guiyouget.events.RequestCheckUpdatesYouGet
 import com.ingbyr.guiyouget.events.RequestCheckUpdatesYoutubeDL
-import com.ingbyr.guiyouget.utils.CoreUtils
+import com.ingbyr.guiyouget.utils.ContentsUtil
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXCheckBox
-import com.jfoenix.controls.JFXComboBox
 import com.jfoenix.controls.JFXTextField
 import javafx.application.Platform
-import javafx.beans.property.SimpleStringProperty
-import javafx.collections.FXCollections
 import javafx.scene.control.Label
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.AnchorPane
@@ -89,25 +86,25 @@ class MainView : View("GUI-YouGet") {
         }
 
         // Storage path
-        if (app.config[CoreUtils.STORAGE_PATH] == null || app.config[CoreUtils.STORAGE_PATH] == "") {
+        if (app.config[ContentsUtil.STORAGE_PATH] == null || app.config[ContentsUtil.STORAGE_PATH] == "") {
             labelStoragePath.text = Paths.get(System.getProperty("user.dir")).toAbsolutePath().toString()
-            app.config[CoreUtils.STORAGE_PATH] = labelStoragePath.text
+            app.config[ContentsUtil.STORAGE_PATH] = labelStoragePath.text
             app.config.save()
         } else {
-            labelStoragePath.text = app.config[CoreUtils.STORAGE_PATH] as String
+            labelStoragePath.text = app.config[ContentsUtil.STORAGE_PATH] as String
         }
 
         btnChangePath.setOnMouseClicked {
             val file = DirectoryChooser().showDialog(primaryStage)
-            if (file != null) {
-                app.config[CoreUtils.STORAGE_PATH] = file.absolutePath.toString()
+            file?.apply {
+                app.config[ContentsUtil.STORAGE_PATH] = file.absolutePath.toString()
                 app.config.save()
                 labelStoragePath.text = file.absolutePath.toString()
             }
         }
 
         btnOpenDir.setOnMouseClicked {
-            val dir = Paths.get(app.config[CoreUtils.STORAGE_PATH] as String).toFile()
+            val dir = Paths.get(app.config[ContentsUtil.STORAGE_PATH] as String).toFile()
             Desktop.getDesktop().open(dir)
         }
 
@@ -119,32 +116,32 @@ class MainView : View("GUI-YouGet") {
             }
         }
 
-        // Load download core config
-        val core = app.config[CoreUtils.DOWNLOAD_CORE]
+        // Load download engine config
+        val core = app.config[ContentsUtil.DOWNLOAD_CORE]
         when (core) {
-            CoreUtils.YOUTUBE_DL -> {
+            ContentsUtil.YOUTUBE_DL -> {
                 cbYoutubeDL.isSelected = true
             }
-            CoreUtils.YOU_GET -> {
+            ContentsUtil.YOU_GET -> {
                 cbYouGet.isSelected = true
             }
             else -> {
-                app.config[CoreUtils.DOWNLOAD_CORE] = CoreUtils.YOUTUBE_DL
+                app.config[ContentsUtil.DOWNLOAD_CORE] = ContentsUtil.YOUTUBE_DL
                 app.config.save()
                 cbYoutubeDL.isSelected = true
             }
         }
 
         // Init version
-        labelYouGet.text = app.config[CoreUtils.YOU_GET_VERSION] as String
-        labelYoutubeDL.text = app.config[CoreUtils.YOUTUBE_DL_VERSION] as String
-        labelAPP.text = app.config[CoreUtils.APP_VERSION] as String
+        labelYouGet.text = app.config[ContentsUtil.YOU_GET_VERSION] as String
+        labelYoutubeDL.text = app.config[ContentsUtil.YOUTUBE_DL_VERSION] as String
+        labelAPP.text = app.config[ContentsUtil.APP_VERSION] as String
 
-        // Change download core
+        // Change download engine
         cbYouGet.action {
             if (cbYouGet.isSelected) {
                 cbYoutubeDL.isSelected = false
-                app.config[CoreUtils.DOWNLOAD_CORE] = CoreUtils.YOU_GET
+                app.config[ContentsUtil.DOWNLOAD_CORE] = ContentsUtil.YOU_GET
                 app.config.save()
             }
         }
@@ -152,7 +149,7 @@ class MainView : View("GUI-YouGet") {
         cbYoutubeDL.action {
             if (cbYoutubeDL.isSelected) {
                 cbYouGet.isSelected = false
-                app.config[CoreUtils.DOWNLOAD_CORE] = CoreUtils.YOUTUBE_DL
+                app.config[ContentsUtil.DOWNLOAD_CORE] = ContentsUtil.YOUTUBE_DL
                 app.config.save()
             }
         }
@@ -169,17 +166,17 @@ class MainView : View("GUI-YouGet") {
         }
 
         // Proxy
-        val proxy = app.config[CoreUtils.PROXY_TYPE]
+        val proxy = app.config[ContentsUtil.PROXY_TYPE]
         when (proxy) {
-            CoreUtils.PROXY_HTTP -> {
+            ContentsUtil.PROXY_HTTP -> {
                 cbHTTP.isSelected = true
-                tfHTTPAddress.text = app.config[CoreUtils.PROXY_ADDRESS] as String
-                tfHTTPPort.text = app.config[CoreUtils.PROXY_PORT] as String
+                tfHTTPAddress.text = app.config[ContentsUtil.PROXY_ADDRESS] as String
+                tfHTTPPort.text = app.config[ContentsUtil.PROXY_PORT] as String
             }
-            CoreUtils.PROXY_SOCKS -> {
+            ContentsUtil.PROXY_SOCKS -> {
                 cbSocks5.isSelected = true
-                tfSocksAddress.text = app.config[CoreUtils.PROXY_ADDRESS] as String
-                tfSocksPort.text = app.config[CoreUtils.PROXY_PORT] as String
+                tfSocksAddress.text = app.config[ContentsUtil.PROXY_ADDRESS] as String
+                tfSocksPort.text = app.config[ContentsUtil.PROXY_PORT] as String
             }
             else -> {
                 cbHTTP.isSelected = false
@@ -188,29 +185,29 @@ class MainView : View("GUI-YouGet") {
         }
 
         tfSocksAddress.textProperty().addListener { _, _, newValue ->
-            if (app.config[CoreUtils.PROXY_TYPE] == CoreUtils.PROXY_SOCKS) {
-                app.config[CoreUtils.PROXY_ADDRESS] = newValue
+            if (app.config[ContentsUtil.PROXY_TYPE] == ContentsUtil.PROXY_SOCKS) {
+                app.config[ContentsUtil.PROXY_ADDRESS] = newValue
                 app.config.save()
             }
         }
 
         tfSocksPort.textProperty().addListener { _, _, newValue ->
-            if (app.config[CoreUtils.PROXY_TYPE] == CoreUtils.PROXY_SOCKS) {
-                app.config[CoreUtils.PROXY_PORT] = newValue
+            if (app.config[ContentsUtil.PROXY_TYPE] == ContentsUtil.PROXY_SOCKS) {
+                app.config[ContentsUtil.PROXY_PORT] = newValue
                 app.config.save()
             }
         }
 
         tfHTTPAddress.textProperty().addListener { _, _, newValue ->
-            if (app.config[CoreUtils.PROXY_TYPE] == CoreUtils.PROXY_HTTP) {
-                app.config[CoreUtils.PROXY_ADDRESS] = newValue
+            if (app.config[ContentsUtil.PROXY_TYPE] == ContentsUtil.PROXY_HTTP) {
+                app.config[ContentsUtil.PROXY_ADDRESS] = newValue
                 app.config.save()
             }
         }
 
         tfHTTPPort.textProperty().addListener { _, _, newValue ->
-            if (app.config[CoreUtils.PROXY_TYPE] == CoreUtils.PROXY_HTTP) {
-                app.config[CoreUtils.PROXY_PORT] = newValue
+            if (app.config[ContentsUtil.PROXY_TYPE] == ContentsUtil.PROXY_HTTP) {
+                app.config[ContentsUtil.PROXY_PORT] = newValue
                 app.config.save()
             }
         }
@@ -220,16 +217,16 @@ class MainView : View("GUI-YouGet") {
             val port = tfSocksPort.text
             // Disable socks proxy
             if (!cbSocks5.isSelected) {
-                app.config[CoreUtils.PROXY_TYPE] = ""
+                app.config[ContentsUtil.PROXY_TYPE] = ""
                 app.config.save()
             }
 
             // Enable socks proxy
             if (cbSocks5.isSelected) {
                 cbHTTP.isSelected = false
-                app.config[CoreUtils.PROXY_TYPE] = CoreUtils.PROXY_SOCKS
-                app.config[CoreUtils.PROXY_ADDRESS] = address
-                app.config[CoreUtils.PROXY_PORT] = port
+                app.config[ContentsUtil.PROXY_TYPE] = ContentsUtil.PROXY_SOCKS
+                app.config[ContentsUtil.PROXY_ADDRESS] = address
+                app.config[ContentsUtil.PROXY_PORT] = port
                 app.config.save()
             }
         }
@@ -239,29 +236,27 @@ class MainView : View("GUI-YouGet") {
             val port = tfHTTPPort.text
             // Disable http proxy
             if (!cbHTTP.isSelected) {
-                app.config[CoreUtils.PROXY_TYPE] = ""
+                app.config[ContentsUtil.PROXY_TYPE] = ""
                 app.config.save()
             }
 
             // Enable http proxy
             if (cbHTTP.isSelected) {
                 cbSocks5.isSelected = false
-                app.config[CoreUtils.PROXY_TYPE] = CoreUtils.PROXY_HTTP
-                app.config[CoreUtils.PROXY_ADDRESS] = address
-                app.config[CoreUtils.PROXY_PORT] = port
+                app.config[ContentsUtil.PROXY_TYPE] = ContentsUtil.PROXY_HTTP
+                app.config[ContentsUtil.PROXY_ADDRESS] = address
+                app.config[ContentsUtil.PROXY_PORT] = port
                 app.config.save()
             }
         }
 
         // About view
-        labelVersion.text = app.config[CoreUtils.APP_VERSION] as String
-        labelGitHub.setOnMouseClicked { hostServices.showDocument(CoreUtils.APP_SOURCE_CODE) }
-        labelLicense.setOnMouseClicked { hostServices.showDocument(CoreUtils.APP_LICENSE) }
-        labelAuthor.setOnMouseClicked { hostServices.showDocument(CoreUtils.APP_AUTHOR) }
-        btnReportBug.action { hostServices.showDocument(CoreUtils.APP_REPORT_BUGS) }
-        btnDonate.action { hostServices.showDocument(CoreUtils.APP_DONATE) }
-
-        //todo 增加获取不同解析度选线，跳过JSON部分直接下载
+        labelVersion.text = app.config[ContentsUtil.APP_VERSION] as String
+        labelGitHub.setOnMouseClicked { hostServices.showDocument(ContentsUtil.APP_SOURCE_CODE) }
+        labelLicense.setOnMouseClicked { hostServices.showDocument(ContentsUtil.APP_LICENSE) }
+        labelAuthor.setOnMouseClicked { hostServices.showDocument(ContentsUtil.APP_AUTHOR) }
+        btnReportBug.action { hostServices.showDocument(ContentsUtil.APP_REPORT_BUGS) }
+        btnDonate.action { openInternalWindow(ImageView::class)}
     }
 
     // clean the url textfield

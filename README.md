@@ -1,5 +1,5 @@
 ﻿# GUI-YouGet
-![](https://img.shields.io/badge/v0.2.1-pass-green.svg)
+![](https://img.shields.io/badge/v0.2.2-pass-green.svg)
 ![](https://img.shields.io/github/forks/ingbyr/GUI-YouGet.svg)
 ![](https://img.shields.io/github/stars/ingbyr/GUI-YouGet.svg)
 ![](https://img.shields.io/badge/license-MIT-blue.svg)
@@ -8,18 +8,16 @@
 > [中文说明](http://www.ingbyr.com/2016/06/18/youget-zh/)
 
 # Download
-> **NOTICE:** Before you run the GUI-YouGet, you need to install [jre8 ](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html)(recommended) or [jdk8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) first.
+[Download Page](https://github.com/ingbyr/GUI-YouGet/releases)
 
-[GUI-YouGet Download Page](https://github.com/ingbyr/GUI-YouGet/releases)
-
-# Screenshot
-![](screenshot/main.png)
-![](screenshot/medias.png)
-![](screenshot/download.png)
+# Screenshots
+![](screenshots/main.png)
+![](screenshots/medias.png)
+![](screenshots/download.png)
 
 # Feedback bugs
 If something is broken and `GUI-YouGet` can't get you things you want, don't panic. (Yes, this happens all the time!)
-Open a new issue on [GitHub](https://github.com/ingbyr/GUI-YouGet/issues), with detailed `/log/debug.log` output attached.
+Open a new issue on [GitHub](https://github.com/ingbyr/GUI-YouGet/issues), with detailed `app/log/debug.log` output attached.
 
 # Legal Issues
 

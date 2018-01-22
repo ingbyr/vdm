@@ -166,7 +166,7 @@
                                  <children>
                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
-                                          <Label fx:id="labelStoragePath1" layoutX="14.0" layoutY="43.0" text="%label.address" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="65.0">
+                                          <Label layoutX="14.0" layoutY="43.0" text="%label.address" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="65.0">
                                              <font>
                                                 <Font size="14.0" />
                                              </font>
@@ -183,7 +183,7 @@
                                           </JFXCheckBox>
                                           <JFXTextField fx:id="tfSocksAddress" focusColor="#448aff" layoutX="89.0" layoutY="58.0" prefHeight="23.0" prefWidth="438.0" unFocusColor="#3f51b5" AnchorPane.leftAnchor="90.0" AnchorPane.rightAnchor="20.0" />
                                           <JFXTextField fx:id="tfSocksPort" focusColor="#448aff" layoutX="79.0" layoutY="101.0" prefHeight="23.0" prefWidth="438.0" unFocusColor="#3f51b5" AnchorPane.leftAnchor="90.0" AnchorPane.rightAnchor="20.0" />
-                                          <Label fx:id="labelStoragePath11" layoutX="20.0" layoutY="103.0" text="%label.port" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="115.0">
+                                          <Label layoutX="20.0" layoutY="103.0" text="%label.port" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="115.0">
                                              <font>
                                                 <Font size="14.0" />
                                              </font>
@@ -192,7 +192,7 @@
                                     </AnchorPane>
                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
-                                          <Label fx:id="labelStoragePath11" layoutX="14.0" layoutY="43.0" text="%label.address" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="65.0">
+                                          <Label layoutX="14.0" layoutY="43.0" text="%label.address" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="65.0">
                                              <font>
                                                 <Font size="14.0" />
                                              </font>
@@ -204,7 +204,7 @@
                                           </JFXCheckBox>
                                           <JFXTextField fx:id="tfHTTPAddress" focusColor="#448aff" layoutX="89.0" layoutY="58.0" prefHeight="23.0" prefWidth="438.0" unFocusColor="#3f51b5" AnchorPane.leftAnchor="90.0" AnchorPane.rightAnchor="20.0" />
                                           <JFXTextField fx:id="tfHTTPPort" focusColor="#448aff" layoutX="79.0" layoutY="101.0" prefHeight="23.0" prefWidth="438.0" unFocusColor="#3f51b5" AnchorPane.leftAnchor="90.0" AnchorPane.rightAnchor="20.0" />
-                                          <Label fx:id="labelStoragePath111" layoutX="20.0" layoutY="103.0" text="%label.port" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="115.0">
+                                          <Label layoutX="20.0" layoutY="103.0" text="%label.port" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="115.0">
                                              <font>
                                                 <Font size="14.0" />
                                              </font>
@@ -274,7 +274,7 @@
                                     </AnchorPane>
                                     <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <image>
-                                          <Image url="@logo.jpg" />
+                                          <Image url="@../img/logo.jpg" />
                                        </image>
                                     </ImageView>
                                     <JFXButton fx:id="btnDonate" buttonType="RAISED" layoutX="180.0" layoutY="213.0" prefHeight="34.0" prefWidth="309.0" style="-fx-background-color: #c5cae9;" text="%btn.donate" AnchorPane.leftAnchor="180.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="220.0">

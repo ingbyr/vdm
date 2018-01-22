@@ -6,7 +6,7 @@
 <?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="150.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="150.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <AnchorPane fx:id="apBorder" prefHeight="30.0" prefWidth="550.0" style="-fx-background-color: #303f9f;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -24,12 +24,12 @@
       </AnchorPane>
       <AnchorPane prefHeight="140.0" prefWidth="550.0" style="-fx-background-color: #3f51b5;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
          <children>
-            <Label fx:id="labelYouget" layoutX="74.0" layoutY="20.0" text="%analyzing" textFill="WHITE" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="20.0">
+            <Label fx:id="labelYouget" layoutX="74.0" layoutY="20.0" text="%checkForUpdates" textFill="WHITE" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="20.0">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label fx:id="labelYoutubedl" layoutX="20.0" layoutY="30.0" text="%analyzing" textFill="WHITE" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="60.0">
+            <Label fx:id="labelYoutubedl" layoutX="20.0" layoutY="30.0" text="%checkForUpdates" textFill="WHITE" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="60.0">
                <font>
                   <Font size="14.0" />
                </font>

@@ -3,13 +3,13 @@ package com.ingbyr.guiyouget.views
 import com.beust.klaxon.array
 import com.beust.klaxon.string
 import com.ingbyr.guiyouget.controllers.MediaListController
-import com.ingbyr.guiyouget.core.YouGet
-import com.ingbyr.guiyouget.core.YoutubeDL
+import com.ingbyr.guiyouget.engine.YouGet
+import com.ingbyr.guiyouget.engine.YoutubeDL
 import com.ingbyr.guiyouget.events.DisplayMediasWithYouGet
 import com.ingbyr.guiyouget.events.DisplayMediasWithYoutubeDL
 import com.ingbyr.guiyouget.events.DownloadingRequestWithYouGet
 import com.ingbyr.guiyouget.events.DownloadingRequestWithYoutubeDL
-import com.ingbyr.guiyouget.utils.CoreUtils
+import com.ingbyr.guiyouget.utils.ContentsUtil
 import com.jfoenix.controls.JFXListView
 import javafx.application.Platform
 import javafx.scene.control.Label
@@ -79,9 +79,9 @@ class MediaListView : View("GUI-YouGet") {
                 val formatID = it.text.split(" ")[0]
                 logger.debug("select format id is ${formatID}")
                 ProgressView().openModal(StageStyle.UNDECORATED)
-                when (app.config[CoreUtils.DOWNLOAD_CORE]) {
-                    CoreUtils.YOUTUBE_DL -> fire(DownloadingRequestWithYoutubeDL(YoutubeDL(url), formatID))
-                    CoreUtils.YOU_GET -> fire(DownloadingRequestWithYouGet(YouGet(url), formatID))
+                when (app.config[ContentsUtil.DOWNLOAD_CORE]) {
+                    ContentsUtil.YOUTUBE_DL -> fire(DownloadingRequestWithYoutubeDL(YoutubeDL(url), formatID))
+                    ContentsUtil.YOU_GET -> fire(DownloadingRequestWithYouGet(YouGet(url), formatID))
                 }
             }
         }

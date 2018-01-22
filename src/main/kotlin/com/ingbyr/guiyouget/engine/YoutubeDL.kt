@@ -1,10 +1,10 @@
-package com.ingbyr.guiyouget.core
+package com.ingbyr.guiyouget.engine
 
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.ingbyr.guiyouget.events.StopDownloading
 import com.ingbyr.guiyouget.events.UpdateProgressWithYoutubeDL
-import com.ingbyr.guiyouget.utils.CoreUtils
+import com.ingbyr.guiyouget.utils.ContentsUtil
 import org.slf4j.LoggerFactory
 import tornadofx.*
 import java.io.BufferedReader
@@ -12,12 +12,12 @@ import java.io.InputStreamReader
 import java.nio.file.Paths
 
 
-class YoutubeDL(private val url: String) : CoreController() {
+class YoutubeDL(private val url: String) : DownloadEngineController() {
     companion object {
         val logger = LoggerFactory.getLogger(this::class.java)
     }
 
-    val core = Paths.get(System.getProperty("user.dir"), "core", "youtube-dl.exe").toAbsolutePath().toString()
+    val core = Paths.get(System.getProperty("user.dir"), "engine", "youtube-dl.exe").toAbsolutePath().toString()
     private val parser = Parser()
     private var progress = 0.0
     private var speed = "0MiB/s"
@@ -32,21 +32,21 @@ class YoutubeDL(private val url: String) : CoreController() {
         }
     }
 
-    private fun requestJsonArgs(): CoreArgs {
-        val args = CoreArgs(core)
-        args.add("simulator", "-j")
-        when (app.config[CoreUtils.PROXY_TYPE]) {
-            CoreUtils.PROXY_SOCKS -> {
-                args.add("--proxy",
-                        "socks5://${app.config[CoreUtils.PROXY_ADDRESS]}:${app.config[CoreUtils.PROXY_PORT]}/")
+    private fun requestJsonArgs(): DownloadEngine {
+        val engine = DownloadEngine(core)
+        engine.add("simulator", "-j")
+        when (app.config[ContentsUtil.PROXY_TYPE]) {
+            ContentsUtil.PROXY_SOCKS -> {
+                engine.add("--proxy",
+                        "socks5://${app.config[ContentsUtil.PROXY_ADDRESS]}:${app.config[ContentsUtil.PROXY_PORT]}/")
             }
-            CoreUtils.PROXY_HTTP -> {
-                args.add("--proxy",
-                        "${app.config[CoreUtils.PROXY_ADDRESS]}:${app.config[CoreUtils.PROXY_PORT]}")
+            ContentsUtil.PROXY_HTTP -> {
+                engine.add("--proxy",
+                        "${app.config[ContentsUtil.PROXY_ADDRESS]}:${app.config[ContentsUtil.PROXY_PORT]}")
             }
         }
-        args.add("url", url)
-        return args
+        engine.add("url", url)
+        return engine
     }
 
     fun getMediasInfo(): JsonObject {
@@ -60,21 +60,21 @@ class YoutubeDL(private val url: String) : CoreController() {
         isDownloading = true
         status = messages["downloading"]
         var line: String?
-        val args = CoreArgs(core)
-        when (app.config[CoreUtils.PROXY_TYPE]) {
-            CoreUtils.PROXY_SOCKS -> {
-                args.add("--proxy",
-                        "socks5://${app.config[CoreUtils.PROXY_ADDRESS]}:${app.config[CoreUtils.PROXY_PORT]}/")
+        val engine = DownloadEngine(core)
+        when (app.config[ContentsUtil.PROXY_TYPE]) {
+            ContentsUtil.PROXY_SOCKS -> {
+                engine.add("--proxy",
+                        "socks5://${app.config[ContentsUtil.PROXY_ADDRESS]}:${app.config[ContentsUtil.PROXY_PORT]}/")
             }
-            CoreUtils.PROXY_HTTP -> {
-                args.add("--proxy",
-                        "${app.config[CoreUtils.PROXY_ADDRESS]}:${app.config[CoreUtils.PROXY_PORT]}")
+            ContentsUtil.PROXY_HTTP -> {
+                engine.add("--proxy",
+                        "${app.config[ContentsUtil.PROXY_ADDRESS]}:${app.config[ContentsUtil.PROXY_PORT]}")
             }
         }
-        args.add("-f", formatID)
-        args.add("-o", Paths.get(app.config["storagePath"] as String, outputTemplate).toString())
-        args.add("url", url)
-        val builder = ProcessBuilder(args.build())
+        engine.add("-f", formatID)
+        engine.add("-o", Paths.get(app.config[ContentsUtil.STORAGE_PATH] as String, outputTemplate).toString())
+        engine.add("url", url)
+        val builder = ProcessBuilder(engine.build())
         builder.redirectErrorStream(true)
         val p = builder.start()
         val r = BufferedReader(InputStreamReader(p.inputStream))

@@ -2,9 +2,11 @@
 .idea/
 build/
 out/
-app.properties
+/app.properties
 conf/
 gradle/
 gradlew
 gradlew.bat
 log/
+/engine/
+GUI-YouGet.iml

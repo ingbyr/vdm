@@ -31,8 +31,7 @@ class MediaListController : Controller() {
             } catch (e: Exception) {
                 logger.error(e.toString())
                 fire(DisplayMediasWithYoutubeDL(JsonObject(mapOf(
-                        "title" to messages["getInfoFailed"],
-                        "description" to messages["getInfoFailedDes"]))))
+                        "title" to messages["failed"]))))
             }
         }
 
@@ -42,7 +41,7 @@ class MediaListController : Controller() {
                 fire(DisplayMediasWithYouGet(json))
             } catch (e: Exception) {
                 logger.error(e.toString())
-                fire(DisplayMediasWithYouGet(JsonObject(mapOf("title" to messages["getInfoFailed"]))))
+                fire(DisplayMediasWithYouGet(JsonObject(mapOf("title" to messages["failed"]))))
             }
         }
     }

@@ -18,7 +18,7 @@ class ProgressView : View() {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     init {
-        messages = ResourceBundle.getBundle("i18n/core")
+        messages = ResourceBundle.getBundle("i18n/engine")
     }
 
     private val controller: ProgressController by inject()

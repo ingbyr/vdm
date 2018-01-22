@@ -1,10 +1,10 @@
 package com.ingbyr.guiyouget.controllers
 
-import com.ingbyr.guiyouget.core.YouGet
-import com.ingbyr.guiyouget.core.YoutubeDL
+import com.ingbyr.guiyouget.engine.YouGet
+import com.ingbyr.guiyouget.engine.YoutubeDL
 import com.ingbyr.guiyouget.events.RequestMediasWithYouGet
 import com.ingbyr.guiyouget.events.RequestMediasWithYoutubeDL
-import com.ingbyr.guiyouget.utils.CoreUtils
+import com.ingbyr.guiyouget.utils.ContentsUtil
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tornadofx.*
@@ -14,21 +14,21 @@ class MainController : Controller() {
     private val logger: Logger = LoggerFactory.getLogger(MainController::class.java)
 
     fun requestMediaInfo(url: String) {
-        val core = app.config[CoreUtils.DOWNLOAD_CORE]
-        logger.debug("download core is $core")
+        val core = app.config[ContentsUtil.DOWNLOAD_CORE]
+        logger.debug("download engine is $core")
 
         // Init the request args
         when (core) {
-            CoreUtils.YOUTUBE_DL -> {
+            ContentsUtil.YOUTUBE_DL -> {
                 fire(RequestMediasWithYoutubeDL(YoutubeDL(url)))
             }
 
-            CoreUtils.YOU_GET -> {
+            ContentsUtil.YOU_GET -> {
                 fire(RequestMediasWithYouGet(YouGet(url)))
             }
 
             else -> {
-                logger.error("bad downloading core $core")
+                logger.error("bad downloading engine $core")
             }
         }
 
@@ -36,6 +36,6 @@ class MainController : Controller() {
 
 
     fun updateGUI() {
-        hostServices.showDocument(CoreUtils.APP_UPDATE_URL)
+        hostServices.showDocument(ContentsUtil.APP_UPDATE_URL)
     }
 }

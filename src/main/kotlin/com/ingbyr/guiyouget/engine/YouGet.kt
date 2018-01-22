@@ -1,22 +1,22 @@
-package com.ingbyr.guiyouget.core
+package com.ingbyr.guiyouget.engine
 
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.ingbyr.guiyouget.events.StopDownloading
 import com.ingbyr.guiyouget.events.UpdateProgressWithYouGet
-import com.ingbyr.guiyouget.utils.CoreUtils
+import com.ingbyr.guiyouget.utils.ContentsUtil
 import org.slf4j.LoggerFactory
 import tornadofx.*
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.file.Paths
 
-class YouGet(val url: String) : CoreController() {
+class YouGet(val url: String) : DownloadEngineController() {
     companion object {
         val logger = LoggerFactory.getLogger(this::class.java)
     }
 
-    val core = Paths.get(System.getProperty("user.dir"), "core", "you-get.exe").toAbsolutePath().toString()
+    val core = Paths.get(System.getProperty("user.dir"), "engine", "you-get.exe").toAbsolutePath().toString()
     private val parser = Parser()
     private var progress = 0.0
     private var speed = "0MB/s"
@@ -29,21 +29,21 @@ class YouGet(val url: String) : CoreController() {
         }
     }
 
-    private fun requestJsonAargs(): CoreArgs {
-        val args = CoreArgs(core)
-        args.add("simulator", "--json")
-        when (app.config[CoreUtils.PROXY_TYPE]) {
-            CoreUtils.PROXY_SOCKS -> {
-                args.add("-x",
-                        "${app.config[CoreUtils.PROXY_ADDRESS]}:${app.config[CoreUtils.PROXY_PORT]}")
+    private fun requestJsonAargs(): DownloadEngine {
+        val engine = DownloadEngine(core)
+        engine.add("simulator", "--json")
+        when (app.config[ContentsUtil.PROXY_TYPE]) {
+            ContentsUtil.PROXY_SOCKS -> {
+                engine.add("-x",
+                        "${app.config[ContentsUtil.PROXY_ADDRESS]}:${app.config[ContentsUtil.PROXY_PORT]}")
             }
-            CoreUtils.PROXY_HTTP -> {
-                args.add("-x",
-                        "${app.config[CoreUtils.PROXY_ADDRESS]}:${app.config[CoreUtils.PROXY_PORT]}")
+            ContentsUtil.PROXY_HTTP -> {
+                engine.add("-x",
+                        "${app.config[ContentsUtil.PROXY_ADDRESS]}:${app.config[ContentsUtil.PROXY_PORT]}")
             }
         }
-        args.add("url", url)
-        return args
+        engine.add("url", url)
+        return engine
     }
 
     fun getMediasInfo(): JsonObject {
@@ -56,21 +56,21 @@ class YouGet(val url: String) : CoreController() {
         isDownloading = true
         status = messages["downloading"]
         var line: String?
-        val args = CoreArgs(core)
-        when (app.config[CoreUtils.PROXY_TYPE]) {
-            CoreUtils.PROXY_SOCKS -> {
-                args.add("-x",
-                        "${app.config[CoreUtils.PROXY_ADDRESS]}:${app.config[CoreUtils.PROXY_PORT]}")
+        val engine = DownloadEngine(core)
+        when (app.config[ContentsUtil.PROXY_TYPE]) {
+            ContentsUtil.PROXY_SOCKS -> {
+                engine.add("-x",
+                        "${app.config[ContentsUtil.PROXY_ADDRESS]}:${app.config[ContentsUtil.PROXY_PORT]}")
             }
-            CoreUtils.PROXY_HTTP -> {
-                args.add("-x",
-                        "${app.config[CoreUtils.PROXY_ADDRESS]}:${app.config[CoreUtils.PROXY_PORT]}")
+            ContentsUtil.PROXY_HTTP -> {
+                engine.add("-x",
+                        "${app.config[ContentsUtil.PROXY_ADDRESS]}:${app.config[ContentsUtil.PROXY_PORT]}")
             }
         }
-        args.add("foramtID", "--itag=$formatID")
-        args.add("-o", app.config["storagePath"] as String)
-        args.add("url", url)
-        val builder = ProcessBuilder(args.build())
+        engine.add("foramtID", "--itag=$formatID")
+        engine.add("-o", app.config[ContentsUtil.STORAGE_PATH] as String)
+        engine.add("url", url)
+        val builder = ProcessBuilder(engine.build())
         builder.redirectErrorStream(true)
         val p = builder.start()
         val r = BufferedReader(InputStreamReader(p.inputStream))

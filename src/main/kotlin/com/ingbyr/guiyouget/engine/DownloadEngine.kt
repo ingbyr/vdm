@@ -1,9 +1,9 @@
-package com.ingbyr.guiyouget.core
+package com.ingbyr.guiyouget.engine
 
 import org.slf4j.LoggerFactory
 
-class CoreArgs(val core: String) {
-    private val logger = LoggerFactory.getLogger(CoreArgs::class.java)
+class DownloadEngine(val core: String) {
+    private val logger = LoggerFactory.getLogger(DownloadEngine::class.java)
     private val argsMap = mutableMapOf<String, String>()
 
 
@@ -11,7 +11,7 @@ class CoreArgs(val core: String) {
         argsMap.put(key, value)
     }
 
-    // Build args except core arg
+    // Build args except engine arg
     fun build(): MutableList<String> {
         val args = mutableListOf(core)
         argsMap.forEach {
