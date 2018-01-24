@@ -1,0 +1,5 @@
+{
+  "youget": "https://raw.githubusercontent.com/soimort/youget/master/src/you_get/version.py",
+  "youtubedl": "https://raw.githubusercontent.com/rg3/youtubedl/master/youtube_dl/version.py",
+  "appversion": "0.2.2"
+} 
