@@ -5,10 +5,14 @@
 ![](https://img.shields.io/badge/license-MIT-blue.svg)
 ![](https://img.shields.io/github/issues/ingbyr/GUI-YouGet.svg)
 
-> [中文说明](http://www.ingbyr.com/2016/06/18/youget-zh/)
+> [中文说明](http://www.ingbyr.com/post/youget-zh/)
 
 # Download
-[Download Page](https://github.com/ingbyr/GUI-YouGet/releases)
+
+| Github | Tencent Mirror |
+| :---- | :----------- |
+| [All](https://github.com/ingbyr/GUI-YouGet/releases) | [GUI-YouGet.exe](https://share.weiyun.com/7580673363d31a07d5cbf24f0f7c741d) |
+| | [GUI-YouGet-NEEDJRE-0.2.2.zip](https://share.weiyun.com/d8a03914225c913ad49ebbe05a85814b)
 
 # Screenshots
 ![](screenshots/main.png)
