@@ -45,7 +45,7 @@ class YoutubeDL(private val url: String) : DownloadEngineController() {
                         "${app.config[ContentsUtil.PROXY_ADDRESS]}:${app.config[ContentsUtil.PROXY_PORT]}")
             }
         }
-        engine.add("url", url)
+        engine.add("url", "\"$url\"")
         return engine
     }
 
@@ -73,7 +73,7 @@ class YoutubeDL(private val url: String) : DownloadEngineController() {
         }
         engine.add("-f", formatID)
         engine.add("-o", Paths.get(app.config[ContentsUtil.STORAGE_PATH] as String, outputTemplate).toString())
-        engine.add("url", url)
+        engine.add("url", "\"$url\"")
         val builder = ProcessBuilder(engine.build())
         builder.redirectErrorStream(true)
         val p = builder.start()
