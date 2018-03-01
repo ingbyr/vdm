@@ -8,22 +8,22 @@
 > [中文说明](http://www.ingbyr.com/post/youget-zh/)
 
 # Download
+[Download Page](https://github.com/ingbyr/GUI-YouGet/releases)
+
 - You can install GUI-YouGet by downloading GUI-YouGet.exe directly
 - If you know how to run the jar file,  just download the `GUI-YouGet-NEEDJRE.zip`(Requires the [JRE8 ](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html)or [JDK8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html))
 
-| Github | Tencent Mirror |
-| :---- | :----------- |
-| [All](https://github.com/ingbyr/GUI-YouGet/releases) | [GUI-YouGet.exe](https://share.weiyun.com/7580673363d31a07d5cbf24f0f7c741d) |
-| | [GUI-YouGet-NEEDJRE.zip](https://share.weiyun.com/d8a03914225c913ad49ebbe05a85814b)
 
 # Screenshots
 ![](screenshots/main.png)
 ![](screenshots/medias.png)
 ![](screenshots/download.png)
 
+
 # Feedback bugs
 If something is broken and `GUI-YouGet` can't get you things you want, don't panic. (Yes, this happens all the time!)
 Open a new issue on [GitHub](https://github.com/ingbyr/GUI-YouGet/issues), with detailed `app/log/debug.log` output attached.
+
 
 # Legal Issues
 This software is distributed under the [MIT license](https://raw.githubusercontent.com/ingbyr/GUI-YouGet/master/LICENSE.txt).
@@ -36,8 +36,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
+
 # Contributors
 Gojko: Hungarian language support
+
 
 # Authors
 Made by [@ingbyr](http://www.ingbyr.com)
