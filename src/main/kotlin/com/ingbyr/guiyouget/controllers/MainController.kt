@@ -15,7 +15,7 @@ class MainController : Controller() {
 
     fun requestMediaInfo(url: String) {
         val core = app.config[ContentsUtil.DOWNLOAD_CORE]
-        logger.debug("download engine is $core")
+        logger.debug("engine: $core")
 
         // Init the request args
         when (core) {
@@ -28,7 +28,7 @@ class MainController : Controller() {
             }
 
             else -> {
-                logger.error("bad downloading engine $core")
+                logger.error("unknown engine: $core")
             }
         }
 

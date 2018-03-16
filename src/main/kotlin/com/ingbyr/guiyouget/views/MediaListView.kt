@@ -5,10 +5,7 @@ import com.beust.klaxon.string
 import com.ingbyr.guiyouget.controllers.MediaListController
 import com.ingbyr.guiyouget.engine.YouGet
 import com.ingbyr.guiyouget.engine.YoutubeDL
-import com.ingbyr.guiyouget.events.DisplayMediasWithYouGet
-import com.ingbyr.guiyouget.events.DisplayMediasWithYoutubeDL
-import com.ingbyr.guiyouget.events.DownloadingRequestWithYouGet
-import com.ingbyr.guiyouget.events.DownloadingRequestWithYoutubeDL
+import com.ingbyr.guiyouget.events.*
 import com.ingbyr.guiyouget.utils.ContentsUtil
 import com.jfoenix.controls.JFXListView
 import javafx.application.Platform
@@ -77,7 +74,6 @@ class MediaListView : View("GUI-YouGet") {
             listViewMedia.selectedItem?.let {
                 logger.debug("select ${it.text}")
                 val formatID = it.text.split(" ")[0]
-                logger.debug("select format id is ${formatID}")
                 ProgressView().openModal(StageStyle.UNDECORATED)
                 when (app.config[ContentsUtil.DOWNLOAD_CORE]) {
                     ContentsUtil.YOUTUBE_DL -> fire(DownloadingRequestWithYoutubeDL(YoutubeDL(url), formatID))
@@ -90,7 +86,7 @@ class MediaListView : View("GUI-YouGet") {
         subscribe<DisplayMediasWithYoutubeDL> {
             url = it.mediaList.string("webpage_url") ?: ""
             labelTitle.text = it.mediaList.string("title")
-            labelDescription.text = it.mediaList.string("description")
+            labelDescription.text = it.mediaList.string("description") ?: ""
             controller.addMediaItemsYoutubeDL(listViewMedia, it.mediaList.array("formats"))
         }
 
@@ -102,10 +98,14 @@ class MediaListView : View("GUI-YouGet") {
         }
     }
 
-    // reset the ui
     override fun onUndock() {
+        /**
+         * Reset UI and clean the background task
+         */
         listViewMedia.items.clear()
         labelTitle.text = messages["label.loading"]
         labelDescription.text = ""
+        // clean the thread
+        fire(StopDownloading)
     }
 }

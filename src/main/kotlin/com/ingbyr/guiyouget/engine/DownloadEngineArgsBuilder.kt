@@ -2,8 +2,8 @@ package com.ingbyr.guiyouget.engine
 
 import org.slf4j.LoggerFactory
 
-class DownloadEngine(val core: String) {
-    private val logger = LoggerFactory.getLogger(DownloadEngine::class.java)
+class DownloadEngineArgsBuilder(val core: String) {
+    private val logger = LoggerFactory.getLogger(DownloadEngineArgsBuilder::class.java)
     private val argsMap = mutableMapOf<String, String>()
 
 
@@ -22,7 +22,7 @@ class DownloadEngine(val core: String) {
                 args.add(it.value)
             }
         }
-        logger.debug("run command $args")
+        logger.debug("exec $args")
         return args
     }
 }

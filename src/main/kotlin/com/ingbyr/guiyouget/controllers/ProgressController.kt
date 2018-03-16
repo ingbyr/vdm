@@ -18,23 +18,23 @@ class ProgressController : Controller() {
         subscribe<DownloadingRequestWithYoutubeDL> {
             youtubedl = it.youtubedl
             formatID = it.formatID
-            it.youtubedl.runDownloadCommand(it.formatID)
+            it.youtubedl.download(it.formatID)
         }
 
         subscribe<DownloadingRequestWithYouGet> {
             youget = it.youget
             formatID = it.formatID
-            it.youget.runDownloadCommand(it.formatID)
+            it.youget.download(it.formatID)
         }
 
         subscribe<ResumeDownloading> {
           youtubedl?.let {
               logger.debug("resume downloading with youtube-dl")
-              it.runDownloadCommand(formatID!!)
+              it.download(formatID!!)
           }
           youget?.let {
               logger.debug("resume downloading with youget")
-              it.runDownloadCommand(formatID!!)
+              it.download(formatID!!)
           }
         }
     }

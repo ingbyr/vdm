@@ -258,9 +258,4 @@ class MainView : View("GUI-YouGet") {
         btnReportBug.action { hostServices.showDocument(ContentsUtil.APP_REPORT_BUGS) }
         btnDonate.action { openInternalWindow(ImageView::class)}
     }
-
-    // clean the url textfield
-    override fun onDock() {
-        tfURL.text = ""
-    }
 }
