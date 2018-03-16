@@ -57,6 +57,7 @@ class ProgressView : View() {
             fire(StopDownloading)
         }
 
+
         subscribe<UpdateProgressWithYoutubeDL> {
             labelTime.text = it.extime
             labelSpeed.text = it.speed

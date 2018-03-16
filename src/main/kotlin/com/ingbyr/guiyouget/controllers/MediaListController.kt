@@ -1,9 +1,6 @@
 package com.ingbyr.guiyouget.controllers
 
-import com.beust.klaxon.JsonArray
-import com.beust.klaxon.JsonObject
-import com.beust.klaxon.int
-import com.beust.klaxon.string
+import com.beust.klaxon.*
 import com.ingbyr.guiyouget.events.DisplayMediasWithYouGet
 import com.ingbyr.guiyouget.events.DisplayMediasWithYoutubeDL
 import com.ingbyr.guiyouget.events.RequestMediasWithYouGet
@@ -24,22 +21,26 @@ class MediaListController : Controller() {
     }
 
     fun subscribeEvents() {
+        var media: StringBuilder? = null
         subscribe<RequestMediasWithYoutubeDL> {
             try {
-                val json = it.youtubedl.getMediasInfo()
-                fire(DisplayMediasWithYoutubeDL(json))
+                media = it.youtubedl.getMediasInfo()
+                val mediaJson = Parser().parse(media!!) as JsonObject
+                fire(DisplayMediasWithYoutubeDL(mediaJson))
             } catch (e: Exception) {
+                logger.error(media.toString())
                 logger.error(e.toString())
-                fire(DisplayMediasWithYoutubeDL(JsonObject(mapOf(
-                        "title" to messages["failed"]))))
+                fire(DisplayMediasWithYoutubeDL(JsonObject(mapOf("title" to messages["failed"]))))
             }
         }
 
         subscribe<RequestMediasWithYouGet> {
             try {
-                val json = it.youget.getMediasInfo()
-                fire(DisplayMediasWithYouGet(json))
+                media = it.youget.getMediasInfo()
+                val mediaJson = Parser().parse(media!!) as JsonObject
+                fire(DisplayMediasWithYouGet(mediaJson))
             } catch (e: Exception) {
+                logger.error(media.toString())
                 logger.error(e.toString())
                 fire(DisplayMediasWithYouGet(JsonObject(mapOf("title" to messages["failed"]))))
             }
@@ -56,7 +57,7 @@ class MediaListController : Controller() {
                         it.string("format_id"),
                         it.string("ext"))
             }
-
+            medias.reverse()
             medias.forEach {
                 if (it.size == 0) {
                     listViewMedia.items.add(Label("${it.format} | ${it.ext}"))
