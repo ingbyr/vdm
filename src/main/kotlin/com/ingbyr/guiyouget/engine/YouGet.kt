@@ -4,8 +4,8 @@ import com.ingbyr.guiyouget.events.StopDownloading
 import com.ingbyr.guiyouget.events.UpdateProgressWithYouGet
 import com.ingbyr.guiyouget.utils.ContentsUtil
 import com.ingbyr.guiyouget.utils.OSException
-import com.ingbyr.guiyouget.utils.Platform
-import com.ingbyr.guiyouget.utils.PlatformType
+import com.ingbyr.guiyouget.utils.GUIPlatform
+import com.ingbyr.guiyouget.utils.GUIPlatformType
 import org.slf4j.LoggerFactory
 import tornadofx.*
 import java.io.BufferedReader
@@ -31,17 +31,17 @@ class YouGet(val url: String) : DownloadEngineController() {
         /**
          * init the core path for different platforms
          */
-        return when (Platform.current()) {
-            PlatformType.WINDOWS -> {
+        return when (GUIPlatform.current()) {
+            GUIPlatformType.WINDOWS -> {
                 Paths.get(System.getProperty("user.dir"), "engine", "you-get.exe").toAbsolutePath().toString()
             }
-            PlatformType.LINUX -> {
+            GUIPlatformType.LINUX -> {
                 "you-get"
             }
-            PlatformType.MAC_OS -> {
+            GUIPlatformType.MAC_OS -> {
                 "you-get"
             }
-            PlatformType.NOT_SUPPORTED -> {
+            GUIPlatformType.NOT_SUPPORTED -> {
                 logger.error("Not supported OS")
                 throw OSException("Not supported OS")
             }

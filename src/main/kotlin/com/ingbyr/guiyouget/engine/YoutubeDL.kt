@@ -4,8 +4,8 @@ import com.ingbyr.guiyouget.events.StopDownloading
 import com.ingbyr.guiyouget.events.UpdateProgressWithYoutubeDL
 import com.ingbyr.guiyouget.utils.ContentsUtil
 import com.ingbyr.guiyouget.utils.OSException
-import com.ingbyr.guiyouget.utils.Platform
-import com.ingbyr.guiyouget.utils.PlatformType
+import com.ingbyr.guiyouget.utils.GUIPlatform
+import com.ingbyr.guiyouget.utils.GUIPlatformType
 import org.slf4j.LoggerFactory
 import tornadofx.*
 import java.io.BufferedReader
@@ -33,17 +33,17 @@ class YoutubeDL(private val url: String) : DownloadEngineController() {
         /**
          * init the core path for different platforms
          */
-        return when (Platform.current()) {
-            PlatformType.WINDOWS -> {
+        return when (GUIPlatform.current()) {
+            GUIPlatformType.WINDOWS -> {
                 Paths.get(System.getProperty("user.dir"), "engine", "youtube-dl.exe").toAbsolutePath().toString()
             }
-            PlatformType.LINUX -> {
+            GUIPlatformType.LINUX -> {
                 "youtube-dl"
             }
-            PlatformType.MAC_OS -> {
+            GUIPlatformType.MAC_OS -> {
                 "youtube-dl"
             }
-            PlatformType.NOT_SUPPORTED -> {
+            GUIPlatformType.NOT_SUPPORTED -> {
                 logger.error("Not supported OS")
                 throw OSException("Not supported OS")
             }
@@ -146,5 +146,3 @@ class YoutubeDL(private val url: String) : DownloadEngineController() {
         fire(UpdateProgressWithYoutubeDL(progress, speed, extTime, status))
     }
 }
-
-data class YoutubeDLMediaData(val webpage_url: String, val title: String, val description: String, val formats: ArrayList<String>)
