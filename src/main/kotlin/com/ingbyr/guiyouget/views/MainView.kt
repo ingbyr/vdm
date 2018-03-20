@@ -4,6 +4,8 @@ import com.ingbyr.guiyouget.controllers.MainController
 import com.ingbyr.guiyouget.events.RequestCheckUpdatesYouGet
 import com.ingbyr.guiyouget.events.RequestCheckUpdatesYoutubeDL
 import com.ingbyr.guiyouget.utils.ContentsUtil
+import com.ingbyr.guiyouget.utils.GUIPlatform
+import com.ingbyr.guiyouget.utils.GUIPlatformType
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXCheckBox
 import com.jfoenix.controls.JFXTextField
@@ -14,6 +16,8 @@ import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.Pane
 import javafx.stage.DirectoryChooser
 import javafx.stage.StageStyle
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import tornadofx.*
 import java.awt.Desktop
 import java.nio.file.Paths
@@ -22,6 +26,10 @@ import java.util.*
 class MainView : View("GUI-YouGet") {
     init {
         messages = ResourceBundle.getBundle("i18n/MainView")
+    }
+
+    companion object {
+        val logger: Logger = LoggerFactory.getLogger(MainView::class.java)
     }
 
     private var xOffset = 0.0
@@ -105,7 +113,21 @@ class MainView : View("GUI-YouGet") {
 
         btnOpenDir.setOnMouseClicked {
             val dir = Paths.get(app.config[ContentsUtil.STORAGE_PATH] as String).toFile()
-            Desktop.getDesktop().open(dir)
+            logger.debug("open dir: $dir")
+            when(GUIPlatform.current()) {
+                GUIPlatformType.LINUX -> {
+                    Runtime.getRuntime().exec("xdg-open $dir")
+                }
+                GUIPlatformType.WINDOWS -> {
+                    Desktop.getDesktop().open(dir)
+                }
+                GUIPlatformType.MAC_OS -> {
+                    Desktop.getDesktop().open(dir)
+                }
+                GUIPlatformType.NOT_SUPPORTED -> {
+
+                }
+            }
         }
 
         // Get media list
