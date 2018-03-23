@@ -1,7 +1,5 @@
 package com.ingbyr.guiyouget.views
 
-import com.beust.klaxon.array
-import com.beust.klaxon.string
 import com.ingbyr.guiyouget.controllers.MediaListController
 import com.ingbyr.guiyouget.engine.YouGet
 import com.ingbyr.guiyouget.engine.YoutubeDL
@@ -75,10 +73,11 @@ class MediaListView : View("GUI-YouGet") {
                 logger.debug("select ${it.text}")
                 val formatID = it.text.split(" ")[0]
                 ProgressView().openModal(StageStyle.UNDECORATED)
-                when (app.config[ContentsUtil.DOWNLOAD_CORE]) {
-                    ContentsUtil.YOUTUBE_DL -> fire(DownloadingRequestWithYoutubeDL(YoutubeDL(url), formatID))
-                    ContentsUtil.YOU_GET -> fire(DownloadingRequestWithYouGet(YouGet(url), formatID))
-                }
+                // todo start download progree in the progressview
+//                when (app.config[ContentsUtil.DOWNLOAD_CORE]) {
+//                    ContentsUtil.YOUTUBE_DL -> fire(DownloadingRequestWithYoutubeDL(YoutubeDL(url), formatID))
+//                    ContentsUtil.YOU_GET -> fire(DownloadingRequestWithYouGet(YouGet(url), formatID))
+//                }
             }
         }
 

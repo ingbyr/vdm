@@ -1,6 +1,8 @@
 package com.ingbyr.guiyouget.views
 
 import com.ingbyr.guiyouget.controllers.ProgressController
+import com.ingbyr.guiyouget.engine.ProxyType
+import com.ingbyr.guiyouget.engine.YoutubeDLTest
 import com.ingbyr.guiyouget.events.ResumeDownloading
 import com.ingbyr.guiyouget.events.StopDownloading
 import com.ingbyr.guiyouget.events.UpdateProgressWithYouGet
@@ -33,7 +35,7 @@ class ProgressView : View() {
     private val paneResume: Pane by fxid()
 
     init {
-        controller.subscribeEvents()
+//        controller.subscribeEvents()
 
         paneExit.setOnMouseClicked {
             fire(StopDownloading)
@@ -55,6 +57,16 @@ class ProgressView : View() {
             panePause.isVisible = false
             labelTitle.text = messages["pause"]
             fire(StopDownloading)
+        }
+
+        // todo update ui in download thread
+        runAsync {
+            val ydt = YoutubeDLTest("test url")
+            ydt.addProxy(ProxyType.SOCKS5, "127.0.0.1", "1080")
+            val json = ydt.fetchMediaJson()
+            json.string("title")
+        } ui {
+            labelTitle.text = it
         }
 
 
