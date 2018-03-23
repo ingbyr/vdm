@@ -26,11 +26,10 @@ repositories {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     compile "no.tornado:tornadofx:1.7.15"
-    compile "com.jfoenix:jfoenix:8.0.1"
-    compile "com.beust:klaxon:0.30"
+    compile "com.jfoenix:jfoenix:8.0.3"
+    compile 'com.beust:klaxon:2.1.13'
     compile group: "ch.qos.logback", name: "logback-classic", version: "1.2.3"
     compile "com.github.kittinunf.fuel:fuel:1.12.0"
-    compile 'com.alibaba:fastjson:1.2.46'
 }
 
 compileKotlin {

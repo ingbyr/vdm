@@ -1,5 +1,7 @@
 package com.ingbyr.guiyouget.engine
 
+import com.beust.klaxon.JsonObject
+import com.beust.klaxon.Parser
 import com.ingbyr.guiyouget.utils.GUIPlatform
 import com.ingbyr.guiyouget.utils.GUIPlatformType
 import com.ingbyr.guiyouget.utils.OSException
@@ -8,6 +10,7 @@ import org.slf4j.LoggerFactory
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.file.Paths
+import kotlin.math.log
 
 enum class EngineStatus {
     /**
@@ -32,6 +35,8 @@ enum class DownloadType {
     OTHERS
 }
 
+class DownloadEngineException(message: String) : Exception(message)
+
 abstract class BaseEngine {
     /**
      * Adapt to the different platform
@@ -44,6 +49,7 @@ abstract class BaseEngine {
     abstract val logger: Logger
     abstract var speed: String
     abstract var extTime: String
+    abstract var progress: Double
     abstract var status: EngineStatus
     abstract var running: Boolean
     abstract val argsMap: MutableMap<String, String>
@@ -51,9 +57,9 @@ abstract class BaseEngine {
 
     abstract fun initCore(): String // handle with the different platform
     // todo change return type to json
-    abstract fun fetchMediaJson(): String // fetch the json data of the url
+    abstract fun fetchMediaJson(): JsonObject // fetch the json data of the url
 
-    abstract fun downloadMedia(formatID: String) // download media
+    abstract fun downloadMedia(formatID: String, outputPath: String) // download media
     abstract fun parseDownloadStatus(line: String, downloadType: DownloadType)
     abstract fun addProxy(proxyType: ProxyType, address: String, port: String)
     abstract fun execCommand(command: MutableList<String>, downloadType: DownloadType): StringBuilder?
@@ -84,8 +90,10 @@ class YoutubeDLTest(override val url: String) : BaseEngine() {
     override val logger: Logger = LoggerFactory.getLogger(this::class.java)
     override var speed = "0MiB/s"
     override var extTime = "00:00"
+    override var progress = 0.0
     override var status = EngineStatus.ANALYZE
     override var running = false
+    private val nameTemplate = "%(title)s.%(ext)s"
 
     override fun addProxy(proxyType: ProxyType, address: String, port: String) {
         when (proxyType) {
@@ -143,40 +151,76 @@ class YoutubeDLTest(override val url: String) : BaseEngine() {
                 running = false
                 return output
             }
+
             DownloadType.PALTLIST -> {
-
+                // todo download playlist
             }
+
             DownloadType.SINGLE -> {
-
+                while (true) {
+                    line = r.readLine()
+                    if (line != null && running) {
+                        parseDownloadStatus(line, DownloadType.SINGLE)
+                    } else {
+                        if (p != null && p.isAlive) {
+                            logger.debug("stop process $p")
+                            p.destroyForcibly()
+                        }
+                        break
+                    }
+                }
             }
+
             DownloadType.OTHERS -> {
-
+                // todo tbd
             }
+
         }
         return null
     }
 
-    override fun fetchMediaJson(): String {
-        // todo use fastjson lib to parse data
-        // todo change fuel lib
-        // todo delete klaxon lib
+    override fun fetchMediaJson(): JsonObject {
         argsMap["SimulateJson"] = "-j"
         argsMap["url"] = url
-        val mediaJson = execCommand(argsMap.build(), DownloadType.JSON)
-        logger.debug(mediaJson.toString())
-        return mediaJson.toString()
+        val mediaData = execCommand(argsMap.build(), DownloadType.JSON)
+        if (mediaData != null) {
+            try {
+                return Parser().parse(mediaData) as JsonObject
+            } catch (e: Exception) {
+                logger.error(mediaData.toString())
+                logger.error(e.toString())
+                throw DownloadEngineException("Can not parse media data to json object")
+            }
+        } else {
+            throw DownloadEngineException("Media data is null")
+        }
     }
 
-    override fun downloadMedia(formatID: String) {
-
+    override fun downloadMedia(formatID: String, outputPath: String) {
+        argsMap["-f"] = formatID
+        argsMap["-o"] = Paths.get(outputPath, nameTemplate).toString()
+        argsMap["url"] = url
+        execCommand(argsMap.build(), DownloadType.SINGLE)
     }
 
     override fun parseDownloadStatus(line: String, downloadType: DownloadType) {
-    }
-}
+        when (downloadType) {
+            DownloadType.SINGLE -> {
+                val outs = line.split(" ")
+                outs.forEach {
+                    if (it.endsWith("%")) progress = it.subSequence(0, it.length - 1).toString().toDouble()
+                    if (it.endsWith("/s")) speed = it
+                    if (it.matches(Regex("\\d+:\\d+"))) extTime = it
+                }
+                logger.debug("$progress, $speed, $extTime, $status")
+                if (progress >= 100.0) {
+                    logger.debug("finished downloading")
+                }
+            }
 
-fun main(args: Array<String>) {
-    val engine = YoutubeDLTest("https://www.youtube.com/watch?v=sFni3t0UFJI")
-    engine.addProxy(ProxyType.SOCKS5, "127.0.0.1", "1080")
-    engine.fetchMediaJson()
+            else -> {
+                    logger.error("not supported yet")
+            }
+        }
+    }
 }
