@@ -1,10 +1,8 @@
 package com.ingbyr.guiyouget.views
 
 import com.ingbyr.guiyouget.controllers.MediaListController
-import com.ingbyr.guiyouget.engine.YouGet
-import com.ingbyr.guiyouget.engine.YoutubeDL
-import com.ingbyr.guiyouget.events.*
-import com.ingbyr.guiyouget.utils.ContentsUtil
+import com.ingbyr.guiyouget.events.StopDownloading
+import com.ingbyr.guiyouget.utils.EngineUtils
 import com.jfoenix.controls.JFXListView
 import javafx.application.Platform
 import javafx.scene.control.Label
@@ -31,7 +29,7 @@ class MediaListView : View("GUI-YouGet") {
 
     private var xOffset = 0.0
     private var yOffset = 0.0
-    private lateinit var url: String
+//    private var url = params["url"] as? String
 
     private val paneExit: Pane by fxid()
     private val paneBack: Pane by fxid()
@@ -43,9 +41,7 @@ class MediaListView : View("GUI-YouGet") {
     private val labelDescription: Label by fxid()
     private val listViewMedia: JFXListView<Label> by fxid()
 
-
     init {
-        controller.subscribeEvents()
         // Window boarder
         apBorder.setOnMousePressed { event: MouseEvent? ->
             event?.let {
@@ -73,27 +69,33 @@ class MediaListView : View("GUI-YouGet") {
                 logger.debug("select ${it.text}")
                 val formatID = it.text.split(" ")[0]
                 ProgressView().openModal(StageStyle.UNDECORATED)
-                // todo start download progree in the progressview
-//                when (app.config[ContentsUtil.DOWNLOAD_CORE]) {
-//                    ContentsUtil.YOUTUBE_DL -> fire(DownloadingRequestWithYoutubeDL(YoutubeDL(url), formatID))
-//                    ContentsUtil.YOU_GET -> fire(DownloadingRequestWithYouGet(YouGet(url), formatID))
-//                }
+                // todo download in progress view. need pass the format ID
             }
         }
+    }
 
-        // Subscribe Events
-        subscribe<DisplayMediasWithYoutubeDL> {
-            url = it.mediaList.string("webpage_url") ?: ""
-            labelTitle.text = it.mediaList.string("title")
-            labelDescription.text = it.mediaList.string("description") ?: ""
-            controller.addMediaItemsYoutubeDL(listViewMedia, it.mediaList.array("formats"))
-        }
-
-        subscribe<DisplayMediasWithYouGet> {
-            url = it.mediaList.string("url") ?: ""
-            labelTitle.text = it.mediaList.string("title")
-            labelDescription.text = ""
-            controller.addMediaItemsYouGet(listViewMedia, it.mediaList["streams"])
+    private fun displayMedia() {
+        val url = params["url"] as? String  // update url when docked
+        // fetch media json and display it
+        if (url != null) {
+            runAsync {
+                controller.requestMedia(url)
+            } ui {
+                when (app.config.string(EngineUtils.DOWNLOAD_CORE)) {
+                    EngineUtils.YOUTUBE_DL -> {
+                        labelTitle.text = it.string("title")
+                        labelDescription.text = it.string("description") ?: ""
+                        controller.addMediaItemsYoutubeDL(listViewMedia, it.array("formats"))
+                    }
+                    EngineUtils.YOU_GET -> {
+                        labelTitle.text = it.string("title")
+                        labelDescription.text = ""
+                        controller.addMediaItemsYouGet(listViewMedia, it.array("streams"))
+                    }
+                }
+            }
+        } else {
+            //todo bad url. need display the tip
         }
     }
 
@@ -106,5 +108,9 @@ class MediaListView : View("GUI-YouGet") {
         labelDescription.text = ""
         // clean the thread
         fire(StopDownloading)
+    }
+
+    override fun onDock() {
+        displayMedia()
     }
 }
