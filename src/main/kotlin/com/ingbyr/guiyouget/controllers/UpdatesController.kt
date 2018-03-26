@@ -7,6 +7,7 @@ import com.ingbyr.guiyouget.events.RequestCheckUpdatesYoutubeDL
 import com.ingbyr.guiyouget.events.UpdateYouGetStates
 import com.ingbyr.guiyouget.events.UpdateYoutubeDLStates
 import com.ingbyr.guiyouget.utils.ContentsUtil
+import com.ingbyr.guiyouget.utils.EngineUtils
 import org.slf4j.LoggerFactory
 import tornadofx.*
 import java.nio.file.Paths
@@ -24,11 +25,11 @@ class UpdatesController : Controller() {
 
         subscribe<RequestCheckUpdatesYouGet> {
             fire(UpdateYouGetStates(messages["checkForUpdates"]))
-            Fuel.get(ContentsUtil.REMOTE_YOU_GET_VERSION).responseString { _, _, result ->
+            Fuel.get(EngineUtils.REMOTE_YOU_GET_VERSION).responseString { _, _, result ->
                 when (result) {
                     is Result.Success -> {
                         val remoteV = parseVersion(result.get())
-                        if (needUpdate(app.config[ContentsUtil.YOU_GET_VERSION] as String, remoteV)) {
+                        if (needUpdate(app.config[EngineUtils.YOU_GET_VERSION] as String, remoteV)) {
                             logger.debug("[you-get] try to download new version")
                             downloadYouGet(remoteV)
                         } else {
@@ -45,11 +46,11 @@ class UpdatesController : Controller() {
 
         subscribe<RequestCheckUpdatesYoutubeDL> {
             fire(UpdateYoutubeDLStates(messages["checkForUpdates"]))
-            Fuel.get(ContentsUtil.REMOTE_YOUTUBE_DL_VERSION).responseString { _, _, result ->
+            Fuel.get(EngineUtils.REMOTE_YOUTUBE_DL_VERSION).responseString { _, _, result ->
                 when (result) {
                     is Result.Success -> {
                         val remoteV = parseVersion(result.get())
-                        if (needUpdate(app.config[ContentsUtil.YOUTUBE_DL_VERSION] as String, remoteV)) {
+                        if (needUpdate(app.config[EngineUtils.YOUTUBE_DL_VERSION] as String, remoteV)) {
                             logger.debug("[youtube-dl] try to download new version")
                             downloadYoutubeDL(remoteV)
                         } else {
@@ -86,21 +87,21 @@ class UpdatesController : Controller() {
             Fuel.download(response.url.toString()).destination { _, _ ->
                 Paths.get(System.getProperty("user.dir"), "engine", "you-get.exe").toFile()
             }.progress { readBytes, totalBytes ->
-                        fire(UpdateYouGetStates("${messages["newVersionIs"]} $remoteV, ${messages["downloading"]} ${(readBytes.toFloat() / totalBytes.toFloat() * 100).toInt()}%"))
-                    }.response { _, _, result ->
-                        when (result) {
-                            is Result.Success -> {
-                                app.config[ContentsUtil.YOU_GET_VERSION] = remoteV
-                                app.config.save()
-                                logger.debug("[you-get] finished updating")
-                                fire(UpdateYouGetStates(messages["compeleted"]))
-                            }
-                            is Result.Failure -> {
-                                logger.debug("[you-get] failed to update")
-                                fire(UpdateYouGetStates(messages["noUpdates"]))
-                            }
-                        }
+                fire(UpdateYouGetStates("${messages["newVersionIs"]} $remoteV, ${messages["downloading"]} ${(readBytes.toFloat() / totalBytes.toFloat() * 100).toInt()}%"))
+            }.response { _, _, result ->
+                when (result) {
+                    is Result.Success -> {
+                        app.config[EngineUtils.YOU_GET_VERSION] = remoteV
+                        app.config.save()
+                        logger.debug("[you-get] finished updating")
+                        fire(UpdateYouGetStates(messages["compeleted"]))
                     }
+                    is Result.Failure -> {
+                        logger.debug("[you-get] failed to update")
+                        fire(UpdateYouGetStates(messages["noUpdates"]))
+                    }
+                }
+            }
         }
     }
 
@@ -112,21 +113,21 @@ class UpdatesController : Controller() {
             Fuel.download(response.url.toString()).destination { _, _ ->
                 Paths.get(System.getProperty("user.dir"), "engine", "youtube-dl.exe").toFile()
             }.progress { readBytes, totalBytes ->
-                        fire(UpdateYoutubeDLStates("${messages["newVersionIs"]} $remoteV, ${messages["downloading"]} ${(readBytes.toFloat() / totalBytes.toFloat() * 100).toInt()}%"))
-                    }.response { _, _, result ->
-                        when (result) {
-                            is Result.Success -> {
-                                app.config[ContentsUtil.YOUTUBE_DL_VERSION] = remoteV
-                                app.config.save()
-                                logger.debug("[youtube-dl] finished updating")
-                                fire(UpdateYoutubeDLStates(messages["compeleted"]))
-                            }
-                            is Result.Failure -> {
-                                logger.debug("[youtube-dl] failed to update")
-                                fire(UpdateYoutubeDLStates(messages["noUpdates"]))
-                            }
-                        }
+                fire(UpdateYoutubeDLStates("${messages["newVersionIs"]} $remoteV, ${messages["downloading"]} ${(readBytes.toFloat() / totalBytes.toFloat() * 100).toInt()}%"))
+            }.response { _, _, result ->
+                when (result) {
+                    is Result.Success -> {
+                        app.config[EngineUtils.YOUTUBE_DL_VERSION] = remoteV
+                        app.config.save()
+                        logger.debug("[youtube-dl] finished updating")
+                        fire(UpdateYoutubeDLStates(messages["compeleted"]))
                     }
+                    is Result.Failure -> {
+                        logger.debug("[youtube-dl] failed to update")
+                        fire(UpdateYoutubeDLStates(messages["noUpdates"]))
+                    }
+                }
+            }
         }
     }
 }

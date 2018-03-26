@@ -3,9 +3,7 @@ package com.ingbyr.guiyouget.views
 import com.ingbyr.guiyouget.controllers.MainController
 import com.ingbyr.guiyouget.events.RequestCheckUpdatesYouGet
 import com.ingbyr.guiyouget.events.RequestCheckUpdatesYoutubeDL
-import com.ingbyr.guiyouget.utils.ContentsUtil
-import com.ingbyr.guiyouget.utils.GUIPlatform
-import com.ingbyr.guiyouget.utils.GUIPlatformType
+import com.ingbyr.guiyouget.utils.*
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXCheckBox
 import com.jfoenix.controls.JFXTextField
@@ -114,7 +112,7 @@ class MainView : View("GUI-YouGet") {
         btnOpenDir.setOnMouseClicked {
             val dir = Paths.get(app.config[ContentsUtil.STORAGE_PATH] as String).toFile()
             logger.debug("open dir: $dir")
-            when(GUIPlatform.current()) {
+            when (GUIPlatform.current()) {
                 GUIPlatformType.LINUX -> {
                     Runtime.getRuntime().exec("xdg-open $dir")
                 }
@@ -133,37 +131,37 @@ class MainView : View("GUI-YouGet") {
         // Get media list
         btnDownload.setOnMouseClicked {
             if (tfURL.text != null && tfURL.text.trim() != "") {
-                replaceWith(MediaListView::class, ViewTransition.Slide(0.3.seconds, ViewTransition.Direction.LEFT))
-                controller.requestMediaInfo(tfURL.text)
+//                replaceWith(MediaListView::class, ViewTransition.Slide(0.3.seconds, ViewTransition.Direction.LEFT))
+                replaceWith(find<MediaListView>(mapOf("url" to tfURL.text)), ViewTransition.Slide(0.3.seconds, ViewTransition.Direction.LEFT))
             }
         }
 
         // Load download engine config
-        val core = app.config[ContentsUtil.DOWNLOAD_CORE]
+        val core = app.config[EngineUtils.DOWNLOAD_CORE]
         when (core) {
-            ContentsUtil.YOUTUBE_DL -> {
+            EngineUtils.YOUTUBE_DL -> {
                 cbYoutubeDL.isSelected = true
             }
-            ContentsUtil.YOU_GET -> {
+            EngineUtils.YOU_GET -> {
                 cbYouGet.isSelected = true
             }
             else -> {
-                app.config[ContentsUtil.DOWNLOAD_CORE] = ContentsUtil.YOUTUBE_DL
+                app.config[EngineUtils.DOWNLOAD_CORE] = EngineUtils.YOUTUBE_DL
                 app.config.save()
                 cbYoutubeDL.isSelected = true
             }
         }
 
         // Init version
-        labelYouGet.text = app.config[ContentsUtil.YOU_GET_VERSION] as String
-        labelYoutubeDL.text = app.config[ContentsUtil.YOUTUBE_DL_VERSION] as String
+        labelYouGet.text = app.config[EngineUtils.YOU_GET_VERSION] as String
+        labelYoutubeDL.text = app.config[EngineUtils.YOUTUBE_DL_VERSION] as String
         labelAPP.text = app.config[ContentsUtil.APP_VERSION] as String
 
         // Change download engine
         cbYouGet.action {
             if (cbYouGet.isSelected) {
                 cbYoutubeDL.isSelected = false
-                app.config[ContentsUtil.DOWNLOAD_CORE] = ContentsUtil.YOU_GET
+                app.config[EngineUtils.DOWNLOAD_CORE] = EngineUtils.YOU_GET
                 app.config.save()
             }
         }
@@ -171,7 +169,7 @@ class MainView : View("GUI-YouGet") {
         cbYoutubeDL.action {
             if (cbYoutubeDL.isSelected) {
                 cbYouGet.isSelected = false
-                app.config[ContentsUtil.DOWNLOAD_CORE] = ContentsUtil.YOUTUBE_DL
+                app.config[EngineUtils.DOWNLOAD_CORE] = EngineUtils.YOUTUBE_DL
                 app.config.save()
             }
         }
@@ -188,17 +186,17 @@ class MainView : View("GUI-YouGet") {
         }
 
         // Proxy
-        val proxy = app.config[ContentsUtil.PROXY_TYPE]
+        val proxy = app.config[ProxyUtils.TYPE]
         when (proxy) {
-            ContentsUtil.PROXY_HTTP -> {
+            ProxyUtils.HTTP -> {
                 cbHTTP.isSelected = true
-                tfHTTPAddress.text = app.config[ContentsUtil.PROXY_ADDRESS] as String
-                tfHTTPPort.text = app.config[ContentsUtil.PROXY_PORT] as String
+                tfHTTPAddress.text = app.config[ProxyUtils.ADDRESS] as String
+                tfHTTPPort.text = app.config[ProxyUtils.PORT] as String
             }
-            ContentsUtil.PROXY_SOCKS -> {
+            ProxyUtils.SOCKS5 -> {
                 cbSocks5.isSelected = true
-                tfSocksAddress.text = app.config[ContentsUtil.PROXY_ADDRESS] as String
-                tfSocksPort.text = app.config[ContentsUtil.PROXY_PORT] as String
+                tfSocksAddress.text = app.config[ProxyUtils.ADDRESS] as String
+                tfSocksPort.text = app.config[ProxyUtils.PORT] as String
             }
             else -> {
                 cbHTTP.isSelected = false
@@ -207,29 +205,29 @@ class MainView : View("GUI-YouGet") {
         }
 
         tfSocksAddress.textProperty().addListener { _, _, newValue ->
-            if (app.config[ContentsUtil.PROXY_TYPE] == ContentsUtil.PROXY_SOCKS) {
-                app.config[ContentsUtil.PROXY_ADDRESS] = newValue
+            if (app.config[ProxyUtils.TYPE] == ProxyUtils.SOCKS5) {
+                app.config[ProxyUtils.ADDRESS] = newValue
                 app.config.save()
             }
         }
 
         tfSocksPort.textProperty().addListener { _, _, newValue ->
-            if (app.config[ContentsUtil.PROXY_TYPE] == ContentsUtil.PROXY_SOCKS) {
-                app.config[ContentsUtil.PROXY_PORT] = newValue
+            if (app.config[ProxyUtils.TYPE] == ProxyUtils.SOCKS5) {
+                app.config[ProxyUtils.PORT] = newValue
                 app.config.save()
             }
         }
 
         tfHTTPAddress.textProperty().addListener { _, _, newValue ->
-            if (app.config[ContentsUtil.PROXY_TYPE] == ContentsUtil.PROXY_HTTP) {
-                app.config[ContentsUtil.PROXY_ADDRESS] = newValue
+            if (app.config[ProxyUtils.TYPE] == ProxyUtils.HTTP) {
+                app.config[ProxyUtils.ADDRESS] = newValue
                 app.config.save()
             }
         }
 
         tfHTTPPort.textProperty().addListener { _, _, newValue ->
-            if (app.config[ContentsUtil.PROXY_TYPE] == ContentsUtil.PROXY_HTTP) {
-                app.config[ContentsUtil.PROXY_PORT] = newValue
+            if (app.config[ProxyUtils.TYPE] == ProxyUtils.HTTP) {
+                app.config[ProxyUtils.PORT] = newValue
                 app.config.save()
             }
         }
@@ -239,16 +237,16 @@ class MainView : View("GUI-YouGet") {
             val port = tfSocksPort.text
             // Disable socks proxy
             if (!cbSocks5.isSelected) {
-                app.config[ContentsUtil.PROXY_TYPE] = ""
+                app.config[ProxyUtils.TYPE] = ProxyUtils.NONE
                 app.config.save()
             }
 
             // Enable socks proxy
             if (cbSocks5.isSelected) {
                 cbHTTP.isSelected = false
-                app.config[ContentsUtil.PROXY_TYPE] = ContentsUtil.PROXY_SOCKS
-                app.config[ContentsUtil.PROXY_ADDRESS] = address
-                app.config[ContentsUtil.PROXY_PORT] = port
+                app.config[ProxyUtils.TYPE] = ProxyUtils.SOCKS5
+                app.config[ProxyUtils.ADDRESS] = address
+                app.config[ProxyUtils.PORT] = port
                 app.config.save()
             }
         }
@@ -258,16 +256,16 @@ class MainView : View("GUI-YouGet") {
             val port = tfHTTPPort.text
             // Disable http proxy
             if (!cbHTTP.isSelected) {
-                app.config[ContentsUtil.PROXY_TYPE] = ""
+                app.config[ProxyUtils.TYPE] = ProxyUtils.NONE
                 app.config.save()
             }
 
             // Enable http proxy
             if (cbHTTP.isSelected) {
                 cbSocks5.isSelected = false
-                app.config[ContentsUtil.PROXY_TYPE] = ContentsUtil.PROXY_HTTP
-                app.config[ContentsUtil.PROXY_ADDRESS] = address
-                app.config[ContentsUtil.PROXY_PORT] = port
+                app.config[ProxyUtils.TYPE] = ProxyUtils.HTTP
+                app.config[ProxyUtils.ADDRESS] = address
+                app.config[ProxyUtils.PORT] = port
                 app.config.save()
             }
         }
@@ -278,6 +276,6 @@ class MainView : View("GUI-YouGet") {
         labelLicense.setOnMouseClicked { hostServices.showDocument(ContentsUtil.APP_LICENSE) }
         labelAuthor.setOnMouseClicked { hostServices.showDocument(ContentsUtil.APP_AUTHOR) }
         btnReportBug.action { hostServices.showDocument(ContentsUtil.APP_REPORT_BUGS) }
-        btnDonate.action { openInternalWindow(ImageView::class)}
+        btnDonate.action { openInternalWindow(ImageView::class) }
     }
 }

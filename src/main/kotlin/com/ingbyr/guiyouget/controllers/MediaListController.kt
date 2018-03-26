@@ -1,11 +1,13 @@
 package com.ingbyr.guiyouget.controllers
 
-import com.beust.klaxon.*
-import com.ingbyr.guiyouget.events.DisplayMediasWithYouGet
-import com.ingbyr.guiyouget.events.DisplayMediasWithYoutubeDL
-import com.ingbyr.guiyouget.events.RequestMediasWithYouGet
-import com.ingbyr.guiyouget.events.RequestMediasWithYoutubeDL
+import com.beust.klaxon.JsonArray
+import com.beust.klaxon.JsonObject
+import com.ingbyr.guiyouget.engine.YouGet
+import com.ingbyr.guiyouget.engine.YoutubeDL
 import com.ingbyr.guiyouget.models.Media
+import com.ingbyr.guiyouget.utils.ContentsUtil
+import com.ingbyr.guiyouget.utils.EngineUtils
+import com.ingbyr.guiyouget.utils.ProxyUtils
 import com.jfoenix.controls.JFXListView
 import javafx.scene.control.Label
 import org.slf4j.LoggerFactory
@@ -20,35 +22,32 @@ class MediaListController : Controller() {
         messages = ResourceBundle.getBundle("i18n/MediaListView")
     }
 
-    fun subscribeEvents() {
-        var media: StringBuilder? = null
-        subscribe<RequestMediasWithYoutubeDL> {
-            try {
-                media = it.youtubedl.getMediasInfo()
-                val mediaJson = Parser().parse(media!!) as JsonObject
-                fire(DisplayMediasWithYoutubeDL(mediaJson))
-            } catch (e: Exception) {
-                logger.error(media.toString())
-                logger.error(e.toString())
-                fire(DisplayMediasWithYoutubeDL(JsonObject(mapOf("title" to messages["failed"]))))
+    fun requestMedia(url: String): JsonObject {
+        when (app.config[EngineUtils.DOWNLOAD_CORE]) {
+            EngineUtils.YOUTUBE_DL -> {
+                val engine = YoutubeDL(url)
+                engine.addProxy(app.config.string(ProxyUtils.TYPE),
+                        app.config.string(ProxyUtils.ADDRESS),
+                        app.config.string(ProxyUtils.PORT))
+                return engine.fetchMediaJson()
             }
-        }
-
-        subscribe<RequestMediasWithYouGet> {
-            try {
-                media = it.youget.getMediasInfo()
-                val mediaJson = Parser().parse(media!!) as JsonObject
-                fire(DisplayMediasWithYouGet(mediaJson))
-            } catch (e: Exception) {
-                logger.error(media.toString())
-                logger.error(e.toString())
-                fire(DisplayMediasWithYouGet(JsonObject(mapOf("title" to messages["failed"]))))
+            EngineUtils.YOU_GET -> {
+                val engine = YouGet(url)
+                engine.addProxy(app.config.string(ProxyUtils.TYPE),
+                        app.config.string(ProxyUtils.ADDRESS),
+                        app.config.string(ProxyUtils.PORT))
+                return engine.fetchMediaJson()
+            }
+            else -> {
+                // todo handle error
+                return JsonObject()
             }
         }
     }
 
     fun addMediaItemsYoutubeDL(listViewMedia: JFXListView<Label>, formats: JsonArray<JsonObject>?) {
         if (formats != null) {
+
             val medias = mutableListOf<Media>().observable()
             formats.mapTo(medias) {
                 Media(it.string("format"),
@@ -68,7 +67,7 @@ class MediaListController : Controller() {
         }
     }
 
-    fun addMediaItemsYouGet(listViewMedia: JFXListView<Label>, streams: Any?) {
+    fun addMediaItemsYouGet(listViewMedia: JFXListView<Label>, streams: JsonArray<JsonObject>?) {
         if (streams != null) {
             val streamsJson = streams as JsonObject
             val medias = mutableListOf<Media>().observable()
