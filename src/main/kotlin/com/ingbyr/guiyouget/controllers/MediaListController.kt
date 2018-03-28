@@ -17,21 +17,20 @@ import java.util.*
 class MediaListController : Controller() {
 
     private val logger = LoggerFactory.getLogger(MediaListController::class.java)
-    var currentEngine: BaseEngine? = null
+    private lateinit var engine: BaseEngine
 
     init {
         messages = ResourceBundle.getBundle("i18n/MediaListView")
 
         subscribe<StopBackgroundTask> {
-            currentEngine?.stop()
+            engine.stop()
         }
     }
 
     fun requestMedia(url: String): JsonObject? {
         when (app.config[EngineUtils.TYPE]) {
             EngineUtils.YOUTUBE_DL -> {
-                val engine = YoutubeDL(url)
-                currentEngine = engine
+                engine = YoutubeDL(url)
                 engine.addProxy(app.config.string(ProxyUtils.TYPE),
                         app.config.string(ProxyUtils.ADDRESS),
                         app.config.string(ProxyUtils.PORT))
@@ -43,9 +42,9 @@ class MediaListController : Controller() {
             }
 
             EngineUtils.YOU_GET -> {
+                //todo you-get
             }
         }
-
         return null
     }
 

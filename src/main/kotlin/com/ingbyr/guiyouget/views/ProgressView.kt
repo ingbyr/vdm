@@ -3,6 +3,7 @@ package com.ingbyr.guiyouget.views
 import com.ingbyr.guiyouget.controllers.ProgressController
 import com.ingbyr.guiyouget.events.ResumeDownloading
 import com.ingbyr.guiyouget.events.StopBackgroundTask
+import com.ingbyr.guiyouget.utils.EngineStatus
 import com.jfoenix.controls.JFXProgressBar
 import javafx.animation.AnimationTimer
 import javafx.beans.property.SimpleLongProperty
@@ -37,6 +38,11 @@ class ProgressView : View() {
     private val msgQueue = ArrayBlockingQueue<Map<String, Any>>(1)
 
     init {
+
+        subscribe<StopBackgroundTask> {
+            controller.engine.stop()
+        }
+
         paneExit.setOnMouseClicked {
             fire(StopBackgroundTask)
             this.close()
@@ -46,20 +52,22 @@ class ProgressView : View() {
         paneResume.isVisible = false
 
         paneResume.setOnMouseClicked {
+            logger.debug("resume the download task")
             paneResume.isVisible = false
             panePause.isVisible = true
             labelTitle.text = messages["resume"]
-            fire(ResumeDownloading)
+            controller.download(url, formatID, msgQueue)
         }
 
         panePause.setOnMouseClicked {
+            logger.debug("pause the download task")
             paneResume.isVisible = true
             panePause.isVisible = false
             labelTitle.text = messages["pause"]
             fire(StopBackgroundTask)
         }
 
-
+        // start download task in background
         runAsync {
             controller.download(url, formatID, msgQueue)
         }
@@ -70,13 +78,39 @@ class ProgressView : View() {
             override fun handle(now: Long) {
                 if (now - lastUpdate.get() > minUpdateInterval) {
                     val msg = msgQueue.poll()
-                    if (msg != null) {
-                        logger.debug(msg.toString())
+                    msg?.let {
+                        labelTitle.text = translateStatus(it["status"] as EngineStatus)
+                        labelSpeed.text = it["speed"] as String
+                        labelTime.text = it["extime"] as String
+                        progressbar.progress = it["progress"] as Double / 100.0
                     }
                     lastUpdate.set(now)
                 }
             }
         }
         timer.start()
+    }
+
+    private fun translateStatus(type: EngineStatus): String {
+        return when (type) {
+            EngineStatus.ANALYZE -> {
+                messages["analyzing"]
+            }
+            EngineStatus.DOWNLOAD -> {
+                messages["downloading"]
+            }
+            EngineStatus.FAIL -> {
+                messages["failed"]
+            }
+            EngineStatus.FINISH -> {
+                messages["completed"]
+            }
+            EngineStatus.PAUSE -> {
+                messages["pause"]
+            }
+            EngineStatus.RESUME -> {
+                messages["resume"]
+            }
+        }
     }
 }

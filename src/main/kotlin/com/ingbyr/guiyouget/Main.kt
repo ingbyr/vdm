@@ -14,8 +14,9 @@ class Main : App(MainView::class) {
     private val availableLanguages = listOf("zh", "en", "hu")
 
     init {
-//        todo comment this
-//        Locale.setDefault(Locale("test", "test"))
+        // todo i18n debug
+        // Locale.setDefault(Locale("test", "test"))
+
         val language = Locale.getDefault().language
         if (language !in availableLanguages) {
             Locale.setDefault(Locale("en", "US"))

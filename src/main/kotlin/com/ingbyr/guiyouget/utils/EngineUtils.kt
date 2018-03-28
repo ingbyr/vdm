@@ -8,14 +8,14 @@ enum class EngineStatus {
     DOWNLOAD,
     PAUSE,
     RESUME,
-    FAIL
+    FAIL,
+    FINISH
 }
 
 enum class DownloadType {
     JSON,
     SINGLE,
-    PLAYLIST,
-    OTHERS
+    PLAYLIST
 }
 
 object EngineUtils {

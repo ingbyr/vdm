@@ -69,7 +69,6 @@ class MediaListView : View("GUI-YouGet") {
             listViewMedia.selectedItem?.let {
                 val formatID = it.text.split(" ")[0]
                 logger.debug("start download ${it.text}, format id is $formatID")
-                // todo pass the url args to progress view
                 url?.let { // if url is not null, display progress view to download
                     find<ProgressView>(mapOf("url" to url, "formatID" to formatID)).openModal(StageStyle.UNDECORATED)
                 }
