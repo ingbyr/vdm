@@ -8,16 +8,19 @@ import org.slf4j.LoggerFactory
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.file.Paths
+import java.util.concurrent.ArrayBlockingQueue
+import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.collections.set
 
-class YoutubeDL(override val url: String) : BaseEngine() {
+class YoutubeDL(override val url: String, override val msgQueue: ArrayBlockingQueue<Map<String, Any>>? = null) : BaseEngine() {
     override val core = initCore()
     override val argsMap = mutableMapOf("core" to core)
     override val logger: Logger = LoggerFactory.getLogger(this::class.java)
-    override var speed = "0MiB/s"
-    override var extTime = "00:00"
-    override var progress = 0.0
-    override var status = EngineStatus.ANALYZE
-    override var running = false
+    private var speed = "0MiB/s"
+    private var extime = "00:00"
+    private var progress = 0.0
+    private var status = EngineStatus.ANALYZE
+    override var running = AtomicBoolean(false)
     private val nameTemplate = "%(title)s.%(ext)s"
 
     override fun addProxy(proxyType: String, address: String, port: String) {
@@ -29,6 +32,7 @@ class YoutubeDL(override val url: String) : BaseEngine() {
                 argsMap["--proxy"] = "$address:$port"
             }
             ProxyUtils.NONE -> {
+                logger.debug("no proxy setting in config file")
             }
         }
     }
@@ -56,27 +60,26 @@ class YoutubeDL(override val url: String) : BaseEngine() {
          * Exec the command by invoking the system shell etc.
          * Long time method
          */
-        running = true
+        running.set(true)
         val builder = ProcessBuilder(command)
         builder.redirectErrorStream(true)
         val p = builder.start()
         val r = BufferedReader(InputStreamReader(p.inputStream))
+        val output = StringBuilder()
+
         var line: String?
 
         when (downloadType) {
             DownloadType.JSON -> {
                 // fetch the media json and return string builder
-                val output = StringBuilder()
-                while (true) {
+                while (running.get()) {
                     line = r.readLine()
-                    if (running && line != null) {
+                    if (line != null) {
                         output.append(line.trim())
                     } else {
                         break
                     }
                 }
-                running = false
-                return output
             }
 
             DownloadType.PLAYLIST -> {
@@ -84,15 +87,11 @@ class YoutubeDL(override val url: String) : BaseEngine() {
             }
 
             DownloadType.SINGLE -> {
-                while (true) {
+                while (running.get()) {
                     line = r.readLine()
-                    if (line != null && running) {
+                    if (line != null) {
                         parseDownloadStatus(line, DownloadType.SINGLE)
                     } else {
-                        if (p != null && p.isAlive) {
-                            logger.debug("stop process $p")
-                            p.destroyForcibly()
-                        }
                         break
                     }
                 }
@@ -103,24 +102,36 @@ class YoutubeDL(override val url: String) : BaseEngine() {
             }
 
         }
-        return null
+
+        if (p.isAlive) {
+            logger.debug("force to stop process $p")
+            p.destroyForcibly()
+            p.waitFor()
+            logger.debug("process stopped")
+        }
+
+        return if (!running.get()) { //clear output if stopped by user
+            null
+        } else {
+            running.set(false)
+            output
+        }
     }
 
     override fun fetchMediaJson(): JsonObject {
         argsMap["SimulateJson"] = "-j"
         argsMap["url"] = url
         val mediaData = execCommand(argsMap.build(), DownloadType.JSON)
-        // todo return error in json object. not throw it
         if (mediaData != null) {
             try {
                 return Parser().parse(mediaData) as JsonObject
             } catch (e: Exception) {
-                logger.error(mediaData.toString())
                 logger.error(e.toString())
-                throw DownloadEngineException("Can not parse media data to json object")
+                throw DownloadEngineException("parse data failed:\n $mediaData")
             }
         } else {
-            throw DownloadEngineException("Media data is null")
+            logger.error("no media json return from $url")
+            throw DownloadEngineException("no media json return from $url")
         }
     }
 
@@ -138,9 +149,16 @@ class YoutubeDL(override val url: String) : BaseEngine() {
                 outs.forEach {
                     if (it.endsWith("%")) progress = it.subSequence(0, it.length - 1).toString().toDouble()
                     if (it.endsWith("/s")) speed = it
-                    if (it.matches(Regex("\\d+:\\d+"))) extTime = it
+                    if (it.matches(Regex("\\d+:\\d+"))) extime = it
                 }
-                logger.debug("$progress, $speed, $extTime, $status")
+                logger.debug(line)
+                logger.debug("$progress, $speed, $extime, $status")
+                // send the status to msg queue to update UI
+                msgQueue?.put(
+                        mapOf("progress" to progress,
+                                "speed" to speed,
+                                "extime" to extime,
+                                "status" to status))
                 if (progress >= 100.0) {
                     logger.debug("finished downloading")
                 }

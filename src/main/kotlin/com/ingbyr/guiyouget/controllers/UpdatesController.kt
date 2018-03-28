@@ -6,7 +6,7 @@ import com.ingbyr.guiyouget.events.RequestCheckUpdatesYouGet
 import com.ingbyr.guiyouget.events.RequestCheckUpdatesYoutubeDL
 import com.ingbyr.guiyouget.events.UpdateYouGetStates
 import com.ingbyr.guiyouget.events.UpdateYoutubeDLStates
-import com.ingbyr.guiyouget.utils.ContentsUtil
+import com.ingbyr.guiyouget.utils.CommonUtils
 import com.ingbyr.guiyouget.utils.EngineUtils
 import org.slf4j.LoggerFactory
 import tornadofx.*
@@ -80,7 +80,7 @@ class UpdatesController : Controller() {
 
 
     private fun downloadYouGet(remoteV: String) {
-        val url = ContentsUtil.yougetUpdateURL(remoteV)
+        val url = CommonUtils.yougetUpdateURL(remoteV)
         logger.debug("[you-get] downloading from $url")
         Fuel.get(url).response { _, response, _ ->
             logger.debug("[you-get] downloading from ${response.url}")
@@ -106,7 +106,7 @@ class UpdatesController : Controller() {
     }
 
     private fun downloadYoutubeDL(remoteV: String) {
-        val url = ContentsUtil.youtubedlUpdateURL(remoteV)
+        val url = CommonUtils.youtubedlUpdateURL(remoteV)
         logger.debug("[youtube-dl] downloading from $url")
         Fuel.get(url).response { _, response, _ ->
             logger.debug("[youtube-dl] downloading from ${response.url}")

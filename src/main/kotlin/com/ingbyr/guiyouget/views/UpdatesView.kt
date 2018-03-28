@@ -1,7 +1,7 @@
 package com.ingbyr.guiyouget.views
 
 import com.ingbyr.guiyouget.controllers.UpdatesController
-import com.ingbyr.guiyouget.events.StopDownloading
+import com.ingbyr.guiyouget.events.StopBackgroundTask
 import com.ingbyr.guiyouget.events.UpdateYouGetStates
 import com.ingbyr.guiyouget.events.UpdateYoutubeDLStates
 import javafx.scene.control.Label
@@ -26,7 +26,7 @@ class UpdatesView : View() {
         controller.subscribeEvents()
 
         paneExit.setOnMouseClicked {
-            fire(StopDownloading)
+            fire(StopBackgroundTask)
             this.close()
         }
 
