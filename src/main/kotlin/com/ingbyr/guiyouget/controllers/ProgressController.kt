@@ -14,8 +14,7 @@ import java.util.concurrent.ArrayBlockingQueue
 
 class ProgressController : Controller() {
     private val logger = LoggerFactory.getLogger(this::class.java)
-    private lateinit var engine: BaseEngine
-
+    lateinit var engine: BaseEngine
 
     init {
         subscribe<StopBackgroundTask> {
@@ -27,7 +26,8 @@ class ProgressController : Controller() {
         when (app.config[EngineUtils.TYPE]) {
             EngineUtils.YOUTUBE_DL -> {
                 engine = YoutubeDL(url, msgQueue)
-                engine.addProxy(app.config.string(ProxyUtils.TYPE),
+                engine.addProxy(
+                        app.config.string(ProxyUtils.TYPE),
                         app.config.string(ProxyUtils.ADDRESS),
                         app.config.string(ProxyUtils.PORT))
                 engine.downloadMedia(formatID, app.config.string(CommonUtils.STORAGE_PATH))
@@ -35,7 +35,7 @@ class ProgressController : Controller() {
 
 
             EngineUtils.YOU_GET -> {
-
+                //todo you-get
             }
         }
     }

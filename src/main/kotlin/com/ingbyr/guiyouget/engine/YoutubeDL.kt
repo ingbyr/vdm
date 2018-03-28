@@ -9,7 +9,9 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.file.Paths
 import java.util.concurrent.ArrayBlockingQueue
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.regex.Pattern
 import kotlin.collections.set
 
 class YoutubeDL(override val url: String, override val msgQueue: ArrayBlockingQueue<Map<String, Any>>? = null) : BaseEngine() {
@@ -22,6 +24,10 @@ class YoutubeDL(override val url: String, override val msgQueue: ArrayBlockingQu
     private var status = EngineStatus.ANALYZE
     override var running = AtomicBoolean(false)
     private val nameTemplate = "%(title)s.%(ext)s"
+    private val progressPattern = Pattern.compile("\\d+\\.\\d+%")
+    private val speedPattern = Pattern.compile("\\d+\\.\\d+\\w+/s")
+    private val extimePattern = Pattern.compile("\\d+:\\d+")
+    private val sizePattern = Pattern.compile("\\d+\\.\\d+\\w*B\\s") // unused
 
     override fun addProxy(proxyType: String, address: String, port: String) {
         when (proxyType) {
@@ -58,7 +64,7 @@ class YoutubeDL(override val url: String, override val msgQueue: ArrayBlockingQu
     override fun execCommand(command: MutableList<String>, downloadType: DownloadType): StringBuilder? {
         /**
          * Exec the command by invoking the system shell etc.
-         * Long time method
+         * Long time task
          */
         running.set(true)
         val builder = ProcessBuilder(command)
@@ -82,10 +88,6 @@ class YoutubeDL(override val url: String, override val msgQueue: ArrayBlockingQu
                 }
             }
 
-            DownloadType.PLAYLIST -> {
-                // todo download playlist
-            }
-
             DownloadType.SINGLE -> {
                 while (running.get()) {
                     line = r.readLine()
@@ -97,12 +99,13 @@ class YoutubeDL(override val url: String, override val msgQueue: ArrayBlockingQu
                 }
             }
 
-            DownloadType.OTHERS -> {
-                // todo tbd
+            DownloadType.PLAYLIST -> {
+                // todo download playlist
             }
-
         }
 
+        // wait to clean up auto
+        p.waitFor(500, TimeUnit.MICROSECONDS)
         if (p.isAlive) {
             logger.debug("force to stop process $p")
             p.destroyForcibly()
@@ -110,7 +113,8 @@ class YoutubeDL(override val url: String, override val msgQueue: ArrayBlockingQu
             logger.debug("process stopped")
         }
 
-        return if (!running.get()) { //clear output if stopped by user
+        return if (!running.get()) {
+            //clear output if stopped by user
             null
         } else {
             running.set(false)
@@ -143,38 +147,48 @@ class YoutubeDL(override val url: String, override val msgQueue: ArrayBlockingQu
     }
 
     override fun parseDownloadStatus(line: String, downloadType: DownloadType) {
+        status = EngineStatus.DOWNLOAD
         when (downloadType) {
             DownloadType.SINGLE -> {
-                val outs = line.split(" ")
-                outs.forEach {
-                    if (it.endsWith("%")) progress = it.subSequence(0, it.length - 1).toString().toDouble()
-                    if (it.endsWith("/s")) speed = it
-                    if (it.matches(Regex("\\d+:\\d+"))) extime = it
-                }
                 logger.debug(line)
+                progress = progressPattern.matcher(line).takeIf { it.find() }?.group()?.toProgess() ?: progress
+                speed = speedPattern.matcher(line).takeIf { it.find() }?.group()?.toString() ?: speed
+                extime = extimePattern.matcher(line).takeIf { it.find() }?.group()?.toString() ?: extime
                 logger.debug("$progress, $speed, $extime, $status")
+
+                if (progress >= 100.0) {
+                    status = EngineStatus.FINISH
+                    logger.debug("finished downloading")
+                }
+
+                if (!running.get()) {
+                    status = EngineStatus.PAUSE
+                }
+
                 // send the status to msg queue to update UI
                 msgQueue?.put(
                         mapOf("progress" to progress,
                                 "speed" to speed,
                                 "extime" to extime,
                                 "status" to status))
-                if (progress >= 100.0) {
-                    logger.debug("finished downloading")
-                }
             }
 
-            else -> {
-                logger.error("not supported yet")
+            DownloadType.PLAYLIST -> {
+                //todo download playlist function
+            }
+
+            DownloadType.JSON -> {
+                //todo no action
             }
         }
     }
 
-}
+    private fun String.toProgess(): Double {
+        /**
+         * Transfer "42.3%"(String) to 42.3(Double)
+         */
+        val s = this.replace("%", "")
+        return s.trim().toDouble()
+    }
 
-//fun main(args: Array<String>) {
-//    val ydt = YoutubeDL("https://www.youtube.com/watch?v=4Q2KNl1MAX8")
-//    ydt.addProxy(ProxyUtils.SOCKS5, "127.0.0.1", "1080")
-//    val json = ydt.fetchMediaJson()
-//    println(json.string("title"))
-//}
+}
