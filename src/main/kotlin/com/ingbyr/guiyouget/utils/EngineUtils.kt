@@ -19,7 +19,7 @@ enum class DownloadType {
 }
 
 object EngineUtils {
-    const val DOWNLOAD_CORE = "download-engine"
+    const val TYPE = "download-core"
 
     const val YOUTUBE_DL = "youtube-dl"
     const val YOUTUBE_DL_VERSION = "youtube-dl-version"

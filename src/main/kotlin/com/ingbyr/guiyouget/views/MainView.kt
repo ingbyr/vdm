@@ -92,25 +92,25 @@ class MainView : View("GUI-YouGet") {
         }
 
         // Storage path
-        if (app.config[ContentsUtil.STORAGE_PATH] == null || app.config[ContentsUtil.STORAGE_PATH] == "") {
+        if (app.config[CommonUtils.STORAGE_PATH] == null || app.config[CommonUtils.STORAGE_PATH] == "") {
             labelStoragePath.text = Paths.get(System.getProperty("user.dir")).toAbsolutePath().toString()
-            app.config[ContentsUtil.STORAGE_PATH] = labelStoragePath.text
+            app.config[CommonUtils.STORAGE_PATH] = labelStoragePath.text
             app.config.save()
         } else {
-            labelStoragePath.text = app.config[ContentsUtil.STORAGE_PATH] as String
+            labelStoragePath.text = app.config[CommonUtils.STORAGE_PATH] as String
         }
 
         btnChangePath.setOnMouseClicked {
             val file = DirectoryChooser().showDialog(primaryStage)
             file?.apply {
-                app.config[ContentsUtil.STORAGE_PATH] = file.absolutePath.toString()
+                app.config[CommonUtils.STORAGE_PATH] = file.absolutePath.toString()
                 app.config.save()
                 labelStoragePath.text = file.absolutePath.toString()
             }
         }
 
         btnOpenDir.setOnMouseClicked {
-            val dir = Paths.get(app.config[ContentsUtil.STORAGE_PATH] as String).toFile()
+            val dir = Paths.get(app.config[CommonUtils.STORAGE_PATH] as String).toFile()
             logger.debug("open dir: $dir")
             when (GUIPlatform.current()) {
                 GUIPlatformType.LINUX -> {
@@ -137,7 +137,7 @@ class MainView : View("GUI-YouGet") {
         }
 
         // Load download engine config
-        val core = app.config[EngineUtils.DOWNLOAD_CORE]
+        val core = app.config[EngineUtils.TYPE]
         when (core) {
             EngineUtils.YOUTUBE_DL -> {
                 cbYoutubeDL.isSelected = true
@@ -146,7 +146,7 @@ class MainView : View("GUI-YouGet") {
                 cbYouGet.isSelected = true
             }
             else -> {
-                app.config[EngineUtils.DOWNLOAD_CORE] = EngineUtils.YOUTUBE_DL
+                app.config[EngineUtils.TYPE] = EngineUtils.YOUTUBE_DL
                 app.config.save()
                 cbYoutubeDL.isSelected = true
             }
@@ -155,13 +155,13 @@ class MainView : View("GUI-YouGet") {
         // Init version
         labelYouGet.text = app.config[EngineUtils.YOU_GET_VERSION] as String
         labelYoutubeDL.text = app.config[EngineUtils.YOUTUBE_DL_VERSION] as String
-        labelAPP.text = app.config[ContentsUtil.APP_VERSION] as String
+        labelAPP.text = app.config[CommonUtils.APP_VERSION] as String
 
         // Change download engine
         cbYouGet.action {
             if (cbYouGet.isSelected) {
                 cbYoutubeDL.isSelected = false
-                app.config[EngineUtils.DOWNLOAD_CORE] = EngineUtils.YOU_GET
+                app.config[EngineUtils.TYPE] = EngineUtils.YOU_GET
                 app.config.save()
             }
         }
@@ -169,7 +169,7 @@ class MainView : View("GUI-YouGet") {
         cbYoutubeDL.action {
             if (cbYoutubeDL.isSelected) {
                 cbYouGet.isSelected = false
-                app.config[EngineUtils.DOWNLOAD_CORE] = EngineUtils.YOUTUBE_DL
+                app.config[EngineUtils.TYPE] = EngineUtils.YOUTUBE_DL
                 app.config.save()
             }
         }
@@ -271,11 +271,11 @@ class MainView : View("GUI-YouGet") {
         }
 
         // About view
-        labelVersion.text = app.config[ContentsUtil.APP_VERSION] as String
-        labelGitHub.setOnMouseClicked { hostServices.showDocument(ContentsUtil.APP_SOURCE_CODE) }
-        labelLicense.setOnMouseClicked { hostServices.showDocument(ContentsUtil.APP_LICENSE) }
-        labelAuthor.setOnMouseClicked { hostServices.showDocument(ContentsUtil.APP_AUTHOR) }
-        btnReportBug.action { hostServices.showDocument(ContentsUtil.APP_REPORT_BUGS) }
+        labelVersion.text = app.config[CommonUtils.APP_VERSION] as String
+        labelGitHub.setOnMouseClicked { hostServices.showDocument(CommonUtils.APP_SOURCE_CODE) }
+        labelLicense.setOnMouseClicked { hostServices.showDocument(CommonUtils.APP_LICENSE) }
+        labelAuthor.setOnMouseClicked { hostServices.showDocument(CommonUtils.APP_AUTHOR) }
+        btnReportBug.action { hostServices.showDocument(CommonUtils.APP_REPORT_BUGS) }
         btnDonate.action { openInternalWindow(ImageView::class) }
     }
 }

@@ -1,8 +1,8 @@
 package com.ingbyr.guiyouget.views
 
+import com.beust.klaxon.JsonObject
 import com.ingbyr.guiyouget.controllers.MediaListController
-import com.ingbyr.guiyouget.events.StopDownloading
-import com.ingbyr.guiyouget.utils.EngineUtils
+import com.ingbyr.guiyouget.events.StopBackgroundTask
 import com.jfoenix.controls.JFXListView
 import javafx.application.Platform
 import javafx.scene.control.Label
@@ -29,7 +29,6 @@ class MediaListView : View("GUI-YouGet") {
 
     private var xOffset = 0.0
     private var yOffset = 0.0
-//    private var url = params["url"] as? String
 
     private val paneExit: Pane by fxid()
     private val paneBack: Pane by fxid()
@@ -40,6 +39,8 @@ class MediaListView : View("GUI-YouGet") {
     private val labelTitle: Label by fxid()
     private val labelDescription: Label by fxid()
     private val listViewMedia: JFXListView<Label> by fxid()
+
+    private var url: String? = null
 
     init {
         // Window boarder
@@ -66,32 +67,28 @@ class MediaListView : View("GUI-YouGet") {
 
         listViewMedia.setOnMouseClicked {
             listViewMedia.selectedItem?.let {
-                logger.debug("select ${it.text}")
                 val formatID = it.text.split(" ")[0]
-                ProgressView().openModal(StageStyle.UNDECORATED)
-                // todo download in progress view. need pass the format ID
+                logger.debug("start download ${it.text}, format id is $formatID")
+                // todo pass the url args to progress view
+                url?.let { // if url is not null, display progress view to download
+                    find<ProgressView>(mapOf("url" to url, "formatID" to formatID)).openModal(StageStyle.UNDECORATED)
+                }
             }
         }
     }
 
     private fun displayMedia() {
-        val url = params["url"] as? String  // update url when docked
+        url = params["url"] as? String  // update url when docked
         // fetch media json and display it
         if (url != null) {
             runAsync {
-                controller.requestMedia(url)
+                controller.requestMedia(url!!)
             } ui {
-                when (app.config.string(EngineUtils.DOWNLOAD_CORE)) {
-                    EngineUtils.YOUTUBE_DL -> {
-                        labelTitle.text = it.string("title")
-                        labelDescription.text = it.string("description") ?: ""
-                        controller.addMediaItemsYoutubeDL(listViewMedia, it.array("formats"))
-                    }
-                    EngineUtils.YOU_GET -> {
-                        labelTitle.text = it.string("title")
-                        labelDescription.text = ""
-                        controller.addMediaItemsYouGet(listViewMedia, it.array("streams"))
-                    }
+                if (it != null) {
+                    controller.displayMedia(labelTitle, labelDescription, listViewMedia, it)
+                } else {
+                    controller.displayMedia(labelTitle, labelDescription, listViewMedia,
+                            JsonObject(mapOf("title" to messages["failed"])))
                 }
             }
         } else {
@@ -99,18 +96,23 @@ class MediaListView : View("GUI-YouGet") {
         }
     }
 
+    fun resetUI() {
+        labelTitle.text = messages["label.loading"]
+        labelDescription.text = ""
+        listViewMedia.items.clear()
+    }
+
     override fun onUndock() {
         /**
          * Reset UI and clean the background task
          */
-        listViewMedia.items.clear()
-        labelTitle.text = messages["label.loading"]
-        labelDescription.text = ""
+        resetUI()
         // clean the thread
-        fire(StopDownloading)
+        fire(StopBackgroundTask)
     }
 
     override fun onDock() {
-        displayMedia()
+        resetUI()
+        displayMedia() // fetch media json and display
     }
 }

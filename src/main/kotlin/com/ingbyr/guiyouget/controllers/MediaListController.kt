@@ -2,10 +2,10 @@ package com.ingbyr.guiyouget.controllers
 
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
-import com.ingbyr.guiyouget.engine.YouGet
+import com.ingbyr.guiyouget.engine.BaseEngine
 import com.ingbyr.guiyouget.engine.YoutubeDL
+import com.ingbyr.guiyouget.events.StopBackgroundTask
 import com.ingbyr.guiyouget.models.Media
-import com.ingbyr.guiyouget.utils.ContentsUtil
 import com.ingbyr.guiyouget.utils.EngineUtils
 import com.ingbyr.guiyouget.utils.ProxyUtils
 import com.jfoenix.controls.JFXListView
@@ -17,37 +17,55 @@ import java.util.*
 class MediaListController : Controller() {
 
     private val logger = LoggerFactory.getLogger(MediaListController::class.java)
+    var currentEngine: BaseEngine? = null
 
     init {
         messages = ResourceBundle.getBundle("i18n/MediaListView")
+
+        subscribe<StopBackgroundTask> {
+            currentEngine?.stop()
+        }
     }
 
-    fun requestMedia(url: String): JsonObject {
-        when (app.config[EngineUtils.DOWNLOAD_CORE]) {
+    fun requestMedia(url: String): JsonObject? {
+        when (app.config[EngineUtils.TYPE]) {
             EngineUtils.YOUTUBE_DL -> {
                 val engine = YoutubeDL(url)
+                currentEngine = engine
                 engine.addProxy(app.config.string(ProxyUtils.TYPE),
                         app.config.string(ProxyUtils.ADDRESS),
                         app.config.string(ProxyUtils.PORT))
-                return engine.fetchMediaJson()
+                try {
+                    return engine.fetchMediaJson()
+                } catch (e: Exception) {
+                    logger.error(e.toString())
+                }
+            }
+
+            EngineUtils.YOU_GET -> {
+            }
+        }
+
+        return null
+    }
+
+    fun displayMedia(labelTitle: Label, labelDescription: Label, listViewMedia: JFXListView<Label>, it: JsonObject) {
+        when (app.config.string(EngineUtils.TYPE)) {
+            EngineUtils.YOUTUBE_DL -> {
+                labelTitle.text = it.string("title")
+                labelDescription.text = it.string("description") ?: ""
+                addMediaItemsYoutubeDL(listViewMedia, it.array("formats"))
             }
             EngineUtils.YOU_GET -> {
-                val engine = YouGet(url)
-                engine.addProxy(app.config.string(ProxyUtils.TYPE),
-                        app.config.string(ProxyUtils.ADDRESS),
-                        app.config.string(ProxyUtils.PORT))
-                return engine.fetchMediaJson()
-            }
-            else -> {
-                // todo handle error
-                return JsonObject()
+                labelTitle.text = it.string("title")
+                labelDescription.text = ""
+                addMediaItemsYouGet(listViewMedia, it.array("streams"))
             }
         }
     }
 
-    fun addMediaItemsYoutubeDL(listViewMedia: JFXListView<Label>, formats: JsonArray<JsonObject>?) {
+    private fun addMediaItemsYoutubeDL(listViewMedia: JFXListView<Label>, formats: JsonArray<JsonObject>?) {
         if (formats != null) {
-
             val medias = mutableListOf<Media>().observable()
             formats.mapTo(medias) {
                 Media(it.string("format"),
@@ -67,7 +85,7 @@ class MediaListController : Controller() {
         }
     }
 
-    fun addMediaItemsYouGet(listViewMedia: JFXListView<Label>, streams: JsonArray<JsonObject>?) {
+    private fun addMediaItemsYouGet(listViewMedia: JFXListView<Label>, streams: JsonArray<JsonObject>?) {
         if (streams != null) {
             val streamsJson = streams as JsonObject
             val medias = mutableListOf<Media>().observable()
@@ -80,7 +98,6 @@ class MediaListController : Controller() {
                         t,
                         info.string("container")))
             }
-
             medias.forEach {
                 if (it.size == 0) {
                     listViewMedia.items.add(Label("${it.formatID} | ${it.format} | ${it.ext}"))
