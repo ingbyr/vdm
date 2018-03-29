@@ -2,10 +2,8 @@ package com.ingbyr.guiyouget.engine
 
 import com.beust.klaxon.JsonObject
 import com.ingbyr.guiyouget.utils.DownloadType
-import com.ingbyr.guiyouget.utils.EngineStatus
 import org.slf4j.Logger
-import tornadofx.*
-import java.util.concurrent.ArrayBlockingQueue
+import java.util.concurrent.ConcurrentLinkedDeque
 import java.util.concurrent.atomic.AtomicBoolean
 
 
@@ -22,7 +20,7 @@ abstract class BaseEngine {
     abstract var running: AtomicBoolean
     abstract val argsMap: MutableMap<String, String>
     abstract val url: String
-    abstract val msgQueue: ArrayBlockingQueue<Map<String, Any>>?
+    abstract val msgQueue: ConcurrentLinkedDeque<Map<String, Any>>?
 
     abstract fun initCore(): String // handle with the different platform
     abstract fun fetchMediaJson(): JsonObject // fetch the json data of the url

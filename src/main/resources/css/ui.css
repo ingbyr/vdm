@@ -18,3 +18,7 @@
 .jfx-list-view .list-cell:selected {
     -fx-background-color: #448aff;
 }
+
+.jfx-progress-bar > .bar {
+    -fx-background-color: #448aff;
+}

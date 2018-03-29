@@ -1,7 +1,6 @@
 package com.ingbyr.guiyouget.views
 
 import com.ingbyr.guiyouget.controllers.ProgressController
-import com.ingbyr.guiyouget.events.ResumeDownloading
 import com.ingbyr.guiyouget.events.StopBackgroundTask
 import com.ingbyr.guiyouget.utils.EngineStatus
 import com.jfoenix.controls.JFXProgressBar
@@ -13,7 +12,7 @@ import javafx.scene.layout.Pane
 import org.slf4j.LoggerFactory
 import tornadofx.*
 import java.util.*
-import java.util.concurrent.ArrayBlockingQueue
+import java.util.concurrent.ConcurrentLinkedDeque
 
 
 class ProgressView : View() {
@@ -35,11 +34,12 @@ class ProgressView : View() {
 
     private val url = params["url"] as String
     private val formatID = params["formatID"] as String
-    private val msgQueue = ArrayBlockingQueue<Map<String, Any>>(1)
+    private val msgQueue = ConcurrentLinkedDeque<Map<String, Any>>()
 
     init {
 
         subscribe<StopBackgroundTask> {
+            logger.debug("stop the background task")
             controller.engine.stop()
         }
 
@@ -52,11 +52,14 @@ class ProgressView : View() {
         paneResume.isVisible = false
 
         paneResume.setOnMouseClicked {
+            //todo when click run error status
             logger.debug("resume the download task")
             paneResume.isVisible = false
             panePause.isVisible = true
             labelTitle.text = messages["resume"]
-            controller.download(url, formatID, msgQueue)
+            runAsync {
+                controller.download(url, formatID, msgQueue)
+            }
         }
 
         panePause.setOnMouseClicked {
@@ -82,7 +85,7 @@ class ProgressView : View() {
                         labelTitle.text = translateStatus(it["status"] as EngineStatus)
                         labelSpeed.text = it["speed"] as String
                         labelTime.text = it["extime"] as String
-                        progressbar.progress = it["progress"] as Double / 100.0
+                        progressbar.progress = it["progress"] as Double
                     }
                     lastUpdate.set(now)
                 }
