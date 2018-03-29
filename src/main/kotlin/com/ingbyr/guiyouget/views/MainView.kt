@@ -22,6 +22,11 @@ import java.nio.file.Paths
 import java.util.*
 
 class MainView : View("GUI-YouGet") {
+    // todo Skip the choice of formatID
+    // todo Add minimize icon to the progress view
+    // todo Add download playlist function
+    // todo log button
+
     init {
         messages = ResourceBundle.getBundle("i18n/MainView")
     }

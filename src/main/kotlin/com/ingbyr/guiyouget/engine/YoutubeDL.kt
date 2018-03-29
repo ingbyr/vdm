@@ -8,13 +8,14 @@ import org.slf4j.LoggerFactory
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.file.Paths
-import java.util.concurrent.ArrayBlockingQueue
+import java.util.concurrent.ConcurrentLinkedDeque
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.regex.Pattern
 import kotlin.collections.set
 
-class YoutubeDL(override val url: String, override val msgQueue: ArrayBlockingQueue<Map<String, Any>>? = null) : BaseEngine() {
+
+class YoutubeDL(override val url: String, override val msgQueue: ConcurrentLinkedDeque<Map<String, Any>>? = null) : BaseEngine() {
     override val core = initCore()
     override val argsMap = mutableMapOf("core" to core)
     override val logger: Logger = LoggerFactory.getLogger(this::class.java)
@@ -24,8 +25,8 @@ class YoutubeDL(override val url: String, override val msgQueue: ArrayBlockingQu
     private var status = EngineStatus.ANALYZE
     override var running = AtomicBoolean(false)
     private val nameTemplate = "%(title)s.%(ext)s"
-    private val progressPattern = Pattern.compile("\\d+\\.\\d+%")
-    private val speedPattern = Pattern.compile("\\d+\\.\\d+\\w+/s")
+    private val progressPattern = Pattern.compile("\\d+\\W?\\d*%")
+    private val speedPattern = Pattern.compile("\\d+\\W?\\d*\\w+/s")
     private val extimePattern = Pattern.compile("\\d+:\\d+")
     private val sizePattern = Pattern.compile("\\d+\\.\\d+\\w*B\\s") // unused
 
@@ -105,7 +106,7 @@ class YoutubeDL(override val url: String, override val msgQueue: ArrayBlockingQu
         }
 
         // wait to clean up auto
-        p.waitFor(500, TimeUnit.MICROSECONDS)
+        p.waitFor(200, TimeUnit.MICROSECONDS)
         if (p.isAlive) {
             logger.debug("force to stop process $p")
             p.destroyForcibly()
@@ -113,12 +114,12 @@ class YoutubeDL(override val url: String, override val msgQueue: ArrayBlockingQu
             logger.debug("process stopped")
         }
 
-        return if (!running.get()) {
-            //clear output if stopped by user
-            null
-        } else {
+        return if (running.get()) {
             running.set(false)
             output
+        } else {
+            //clear output if stopped by user
+            null
         }
     }
 
@@ -147,18 +148,20 @@ class YoutubeDL(override val url: String, override val msgQueue: ArrayBlockingQu
     }
 
     override fun parseDownloadStatus(line: String, downloadType: DownloadType) {
-        status = EngineStatus.DOWNLOAD
         when (downloadType) {
             DownloadType.SINGLE -> {
-                logger.debug(line)
                 progress = progressPattern.matcher(line).takeIf { it.find() }?.group()?.toProgess() ?: progress
                 speed = speedPattern.matcher(line).takeIf { it.find() }?.group()?.toString() ?: speed
                 extime = extimePattern.matcher(line).takeIf { it.find() }?.group()?.toString() ?: extime
-                logger.debug("$progress, $speed, $extime, $status")
+                logger.debug("$line -> $progress, $speed, $extime, $status")
 
-                if (progress >= 100.0) {
-                    status = EngineStatus.FINISH
-                    logger.debug("finished downloading")
+                when {
+                    progress >= 1.0 -> {
+                        status = EngineStatus.FINISH
+                        logger.debug("finished task of $url")
+                    }
+                    progress > 0 -> status = EngineStatus.DOWNLOAD
+                    else -> return
                 }
 
                 if (!running.get()) {
@@ -166,7 +169,7 @@ class YoutubeDL(override val url: String, override val msgQueue: ArrayBlockingQu
                 }
 
                 // send the status to msg queue to update UI
-                msgQueue?.put(
+                msgQueue?.offer(
                         mapOf("progress" to progress,
                                 "speed" to speed,
                                 "extime" to extime,
@@ -185,10 +188,9 @@ class YoutubeDL(override val url: String, override val msgQueue: ArrayBlockingQu
 
     private fun String.toProgess(): Double {
         /**
-         * Transfer "42.3%"(String) to 42.3(Double)
+         * Transfer "42.3%"(String) to 0.423(Double)
          */
         val s = this.replace("%", "")
-        return s.trim().toDouble()
+        return s.trim().toDouble() / 100
     }
-
 }
