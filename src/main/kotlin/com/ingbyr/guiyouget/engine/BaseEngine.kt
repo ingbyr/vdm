@@ -25,7 +25,8 @@ abstract class BaseEngine {
     abstract fun initCore(): String // handle with the different platform
     abstract fun fetchMediaJson(): JsonObject // fetch the json data of the url
     abstract fun downloadMedia(formatID: String, outputPath: String) // download media
-    abstract fun parseDownloadStatus(line: String, downloadType: DownloadType)
+    abstract fun parseDownloadSingleStatus(line: String)
+    abstract fun parseDownloadPlaylistStatus(line: String)
     abstract fun addProxy(proxyType: String, address: String, port: String)
     abstract fun execCommand(command: MutableList<String>, downloadType: DownloadType): StringBuilder?
 

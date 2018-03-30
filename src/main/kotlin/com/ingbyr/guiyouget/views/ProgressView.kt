@@ -26,6 +26,7 @@ class ProgressView : View() {
     override val root: AnchorPane by fxml("/fxml/ProgressWindow.fxml")
     private val progressbar: JFXProgressBar by fxid()
     private val paneExit: Pane by fxid()
+    private val paneMinimize: Pane by fxid()
     private val labelTitle: Label by fxid()
     private val labelSpeed: Label by fxid()
     private val labelTime: Label by fxid()
@@ -37,6 +38,9 @@ class ProgressView : View() {
     private val msgQueue = ConcurrentLinkedDeque<Map<String, Any>>()
 
     init {
+        paneMinimize.setOnMouseClicked {
+            primaryStage.isIconified = true
+        }
 
         subscribe<StopBackgroundTask> {
             logger.debug("stop the background task")

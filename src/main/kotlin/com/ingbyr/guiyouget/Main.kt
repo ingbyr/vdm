@@ -15,7 +15,9 @@ class Main : App(MainView::class) {
 
     init {
         // todo i18n debug
-        // Locale.setDefault(Locale("test", "test"))
+         Locale.setDefault(Locale("en", "test"))
+
+        // todo contains the font locally
 
         val language = Locale.getDefault().language
         if (language !in availableLanguages) {

@@ -7,7 +7,7 @@
 <?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="150.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="150.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/8.0.162" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <AnchorPane fx:id="apBorder" prefHeight="30.0" prefWidth="550.0" style="-fx-background-color: #303f9f;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -19,6 +19,11 @@
             <Pane fx:id="paneExit" layoutX="526.0" layoutY="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
                <children>
                   <javafx.scene.shape.SVGPath content="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" fill="white" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+               </children>
+            </Pane>
+            <Pane fx:id="paneMinimize" prefHeight="19.0" prefWidth="19.0" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="10.0">
+               <children>
+                  <SVGPath content="M0 8 L18 8 L18 6 L0 6 Z" fill="white" />
                </children>
             </Pane>
          </children>
