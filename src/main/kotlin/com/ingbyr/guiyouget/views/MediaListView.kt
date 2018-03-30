@@ -10,7 +10,6 @@ import javafx.scene.input.MouseEvent
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.Pane
 import javafx.stage.StageStyle
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tornadofx.*
 import java.util.*
@@ -21,16 +20,14 @@ class MediaListView : View("GUI-YouGet") {
         messages = ResourceBundle.getBundle("i18n/MediaListView")
     }
 
-    companion object {
-        val logger: Logger = LoggerFactory.getLogger(MediaListView::class.java)
-    }
-
     override val root: AnchorPane by fxml("/fxml/MediaListWindow.fxml")
+    private val logger = LoggerFactory.getLogger(MediaListView::class.java)
 
     private var xOffset = 0.0
     private var yOffset = 0.0
 
     private val paneExit: Pane by fxid()
+    private val paneMinimize: Pane by fxid()
     private val paneBack: Pane by fxid()
     private val apBorder: AnchorPane by fxid()
 
@@ -57,8 +54,13 @@ class MediaListView : View("GUI-YouGet") {
                 primaryStage.y = event.screenY - yOffset
             }
         }
+
         paneExit.setOnMouseClicked {
             Platform.exit()
+        }
+
+        paneMinimize.setOnMouseClicked {
+            primaryStage.isIconified = true
         }
 
         paneBack.setOnMouseClicked {
@@ -69,7 +71,8 @@ class MediaListView : View("GUI-YouGet") {
             listViewMedia.selectedItem?.let {
                 val formatID = it.text.split(" ")[0]
                 logger.debug("start download ${it.text}, format id is $formatID")
-                url?.let { // if url is not null, display progress view to download
+                url?.let {
+                    // if url is not null, display progress view to download
                     find<ProgressView>(mapOf("url" to url, "formatID" to formatID)).openModal(StageStyle.UNDECORATED)
                 }
             }

@@ -22,13 +22,15 @@ class YoutubeDL(override val url: String, override val msgQueue: ConcurrentLinke
     private var speed = "0MiB/s"
     private var extime = "00:00"
     private var progress = 0.0
+    private var playlistProgress = "0 / 1"
     private var status = EngineStatus.ANALYZE
     override var running = AtomicBoolean(false)
     private val nameTemplate = "%(title)s.%(ext)s"
     private val progressPattern = Pattern.compile("\\d+\\W?\\d*%")
     private val speedPattern = Pattern.compile("\\d+\\W?\\d*\\w+/s")
     private val extimePattern = Pattern.compile("\\d+:\\d+")
-    private val sizePattern = Pattern.compile("\\d+\\.\\d+\\w*B\\s") // unused
+    // todo parse the playlist output
+    private val playlistProgressPattern = Pattern.compile("\\d+\\sof\\s\\d+")
 
     override fun addProxy(proxyType: String, address: String, port: String) {
         when (proxyType) {
@@ -93,7 +95,7 @@ class YoutubeDL(override val url: String, override val msgQueue: ConcurrentLinke
                 while (running.get()) {
                     line = r.readLine()
                     if (line != null) {
-                        parseDownloadStatus(line, DownloadType.SINGLE)
+                        parseDownloadSingleStatus(line)
                     } else {
                         break
                     }
@@ -101,7 +103,14 @@ class YoutubeDL(override val url: String, override val msgQueue: ConcurrentLinke
             }
 
             DownloadType.PLAYLIST -> {
-                // todo download playlist
+                while (running.get()) {
+                    line = r.readLine()
+                    if (line != null) {
+                        // todo
+                    } else {
+                        break
+                    }
+                }
             }
         }
 
@@ -147,50 +156,75 @@ class YoutubeDL(override val url: String, override val msgQueue: ConcurrentLinke
         execCommand(argsMap.build(), DownloadType.SINGLE)
     }
 
-    override fun parseDownloadStatus(line: String, downloadType: DownloadType) {
-        when (downloadType) {
-            DownloadType.SINGLE -> {
-                progress = progressPattern.matcher(line).takeIf { it.find() }?.group()?.toProgess() ?: progress
-                speed = speedPattern.matcher(line).takeIf { it.find() }?.group()?.toString() ?: speed
-                extime = extimePattern.matcher(line).takeIf { it.find() }?.group()?.toString() ?: extime
-                logger.debug("$line -> $progress, $speed, $extime, $status")
+    override fun parseDownloadSingleStatus(line: String) {
+        progress = progressPattern.matcher(line).takeIf { it.find() }?.group()?.toProgress() ?: progress
+        speed = speedPattern.matcher(line).takeIf { it.find() }?.group()?.toString() ?: speed
+        extime = extimePattern.matcher(line).takeIf { it.find() }?.group()?.toString() ?: extime
+        logger.debug("$line -> $progress, $speed, $extime, $status")
 
-                when {
-                    progress >= 1.0 -> {
-                        status = EngineStatus.FINISH
-                        logger.debug("finished task of $url")
-                    }
-                    progress > 0 -> status = EngineStatus.DOWNLOAD
-                    else -> return
-                }
-
-                if (!running.get()) {
-                    status = EngineStatus.PAUSE
-                }
-
-                // send the status to msg queue to update UI
-                msgQueue?.offer(
-                        mapOf("progress" to progress,
-                                "speed" to speed,
-                                "extime" to extime,
-                                "status" to status))
+        when {
+            progress >= 1.0 -> {
+                status = EngineStatus.FINISH
+                logger.debug("finished single media task of $url")
             }
-
-            DownloadType.PLAYLIST -> {
-                //todo download playlist function
-            }
-
-            DownloadType.JSON -> {
-                //todo no action
-            }
+            progress > 0 -> status = EngineStatus.DOWNLOAD
+            else -> return
         }
+
+        if (!running.get()) {
+            status = EngineStatus.PAUSE
+        }
+
+        // send the status to msg queue to update UI
+        msgQueue?.offer(
+                mapOf("progress" to progress,
+                        "speed" to speed,
+                        "extime" to extime,
+                        "status" to status))
     }
 
-    private fun String.toProgess(): Double {
+    override fun parseDownloadPlaylistStatus(line: String) {
+        //todo parse the playlist
+        progress = progressPattern.matcher(line).takeIf { it.find() }?.group()?.toProgress() ?: progress
+        speed = speedPattern.matcher(line).takeIf { it.find() }?.group()?.toString() ?: speed
+        playlistProgress = playlistProgressPattern.matcher(line).takeIf { it.find() }?.group()?.toString()?.replace("of", "/") ?: playlistProgress
+
+        when {
+            progress >= 1.0 -> {
+                if (playlistProgress.asPlaylistIsCompeleted()) {
+                    status = EngineStatus.FINISH
+                    logger.debug("finished playlist task of $url")
+                }
+            }
+            progress > 0 -> {
+                status = EngineStatus.DOWNLOAD
+            }
+        }
+
+        if (!running.get()) {
+            status = EngineStatus.PAUSE
+        }
+
+        msgQueue?.offer(
+                mapOf("progress" to progress,
+                        "speed" to speed,
+                        "extime" to playlistProgress,
+                        "status" to status))
+    }
+
+    private fun String.toProgress(): Double {
         /**
          * Transfer "42.3%"(String) to 0.423(Double)
          */
         val s = this.replace("%", "")
         return s.trim().toDouble() / 100
+    }
+
+    private fun String.asPlaylistIsCompeleted(): Boolean {
+        /**
+         * Compare a / b and return the a>=b
+         */
+        val progress = this.split("/")
+        return progress[0].trim() >= progress[1].trim()
     }
 }

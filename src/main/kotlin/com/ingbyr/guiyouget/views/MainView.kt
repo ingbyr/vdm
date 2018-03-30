@@ -42,24 +42,24 @@ class MainView : View("GUI-YouGet") {
 
     private val controller: MainController by inject()
     private val paneExit: Pane by fxid()
+    private val paneMinimize: Pane by fxid()
     private val apBorder: AnchorPane by fxid()
 
     private val tfURL: JFXTextField by fxid()
 
     private val labelStoragePath: Label by fxid()
-    private val labelYoutubeDL: Label by fxid()
-    private val labelYouGet: Label by fxid()
-    private val labelAPP: Label by fxid()
-
     private val btnDownload: JFXButton by fxid()
     private val btnChangePath: JFXButton by fxid()
     private val btnOpenDir: JFXButton by fxid()
-    private val btnUpdateCore: JFXButton by fxid()
-    private val btnReportBug: JFXButton by fxid()
-    private val btnUpdate: JFXButton by fxid()
+
+    private val cbChooseDeafultFormat: JFXCheckBox by fxid()
+    private val cbAsPlayList: JFXCheckBox by fxid()
 
     private val cbYoutubeDL: JFXCheckBox by fxid()
     private val cbYouGet: JFXCheckBox by fxid()
+    private val labelYoutubeDL: Label by fxid()
+    private val labelYouGet: Label by fxid()
+    private val btnUpdateCore: JFXButton by fxid()
 
     private val cbSocks5: JFXCheckBox by fxid()
     private val tfSocksAddress: JFXTextField by fxid()
@@ -73,6 +73,8 @@ class MainView : View("GUI-YouGet") {
     private val labelLicense: Label by fxid()
     private val labelAuthor: Label by fxid()
     private val btnDonate: JFXButton by fxid()
+    private val btnReportBug: JFXButton by fxid()
+    private val btnUpdate: JFXButton by fxid()
 
 
     init {
@@ -80,6 +82,10 @@ class MainView : View("GUI-YouGet") {
         primaryStage.initStyle(StageStyle.UNDECORATED)
         paneExit.setOnMouseClicked {
             Platform.exit()
+        }
+
+        paneMinimize.setOnMouseClicked {
+            primaryStage.isIconified = true
         }
 
         apBorder.setOnMousePressed { event: MouseEvent? ->
@@ -160,7 +166,6 @@ class MainView : View("GUI-YouGet") {
         // Init version
         labelYouGet.text = app.config[EngineUtils.YOU_GET_VERSION] as String
         labelYoutubeDL.text = app.config[EngineUtils.YOUTUBE_DL_VERSION] as String
-        labelAPP.text = app.config[CommonUtils.APP_VERSION] as String
 
         // Change download engine
         cbYouGet.action {
