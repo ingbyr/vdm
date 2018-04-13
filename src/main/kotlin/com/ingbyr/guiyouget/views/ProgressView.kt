@@ -56,7 +56,6 @@ class ProgressView : View() {
         paneResume.isVisible = false
 
         paneResume.setOnMouseClicked {
-            //todo when click run error status
             logger.debug("resume the download task")
             paneResume.isVisible = false
             panePause.isVisible = true
@@ -90,6 +89,11 @@ class ProgressView : View() {
                         labelSpeed.text = it["speed"] as String
                         labelTime.text = it["extime"] as String
                         progressbar.progress = it["progress"] as Double
+
+                        if (it["status"] as EngineStatus == EngineStatus.FINISH) {
+                            // todo fire event to reset main UI
+                            this@ProgressView.close()
+                        }
                     }
                     lastUpdate.set(now)
                 }
