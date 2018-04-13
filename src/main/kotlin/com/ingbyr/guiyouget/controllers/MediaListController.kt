@@ -2,43 +2,55 @@ package com.ingbyr.guiyouget.controllers
 
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
-import com.ingbyr.guiyouget.engine.BaseEngine
-import com.ingbyr.guiyouget.engine.YoutubeDL
+import com.ingbyr.guiyouget.engine.*
 import com.ingbyr.guiyouget.events.StopBackgroundTask
 import com.ingbyr.guiyouget.models.Media
 import com.ingbyr.guiyouget.utils.EngineUtils
+import com.ingbyr.guiyouget.utils.ProxyType
 import com.ingbyr.guiyouget.utils.ProxyUtils
 import com.jfoenix.controls.JFXListView
 import javafx.scene.control.Label
 import org.slf4j.LoggerFactory
 import tornadofx.*
+import java.lang.IllegalStateException
 import java.util.*
 
 class MediaListController : Controller() {
 
     private val logger = LoggerFactory.getLogger(MediaListController::class.java)
-    private lateinit var engine: BaseEngine
+    private var engine: AbstractEngine? = null
 
     init {
         messages = ResourceBundle.getBundle("i18n/MediaListView")
 
         subscribe<StopBackgroundTask> {
-            engine.stop()
+            engine?.stopTask()
         }
     }
 
-    fun requestMedia(url: String): JsonObject? {
+
+    fun requestMedia(url: String, proxyType: ProxyType, address: String, port: String): JsonObject? {
+        // todo use engine type
         when (app.config[EngineUtils.TYPE]) {
             EngineUtils.YOUTUBE_DL -> {
-                engine = YoutubeDL(url)
-                engine.addProxy(app.config.string(ProxyUtils.TYPE),
-                        app.config.string(ProxyUtils.ADDRESS),
-                        app.config.string(ProxyUtils.PORT))
-                try {
-                    return engine.fetchMediaJson()
-                } catch (e: Exception) {
-                    logger.error(e.toString())
+                engine = EngineFactory.create(EngineType.YOUTUBE_DL)
+                if (engine != null) {
+                    engine!!.url(url).addProxy(proxyType, address, port)
+                    try {
+                        return engine!!.fetchMediaJson()
+                    } catch (e: Exception) {
+                        logger.error(e.toString())
+                    }
                 }
+//                engine = YoutubeDL(url)
+//                engine.addProxy(app.config.string(ProxyUtils.TYPE),
+//                        app.config.string(ProxyUtils.ADDRESS),
+//                        app.config.string(ProxyUtils.PORT))
+//                try {
+//                    return engine.fetchMediaJson()
+//                } catch (e: Exception) {
+//                    logger.error(e.toString())
+//                }
             }
 
             EngineUtils.YOU_GET -> {

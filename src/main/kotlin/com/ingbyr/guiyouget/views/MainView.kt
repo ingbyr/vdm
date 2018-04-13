@@ -1,6 +1,7 @@
 package com.ingbyr.guiyouget.views
 
 import com.ingbyr.guiyouget.controllers.MainController
+import com.ingbyr.guiyouget.engine.EngineType
 import com.ingbyr.guiyouget.events.RequestCheckUpdatesYouGet
 import com.ingbyr.guiyouget.events.RequestCheckUpdatesYoutubeDL
 import com.ingbyr.guiyouget.utils.*
@@ -16,16 +17,22 @@ import javafx.stage.DirectoryChooser
 import javafx.stage.StageStyle
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import tornadofx.*
+import tornadofx.View
+import tornadofx.ViewTransition
+import tornadofx.action
+import tornadofx.seconds
 import java.awt.Desktop
+import java.lang.IllegalStateException
 import java.nio.file.Paths
 import java.util.*
+import kotlin.collections.set
+
 
 class MainView : View("GUI-YouGet") {
     // todo Skip the choice of formatID
-    // todo Add minimize icon to the progress view
     // todo Add download playlist function
-    // todo log button
+    // todo Add enable log button
+    // todo Some config needs to safe load
 
     init {
         messages = ResourceBundle.getBundle("i18n/MainView")
@@ -139,47 +146,74 @@ class MainView : View("GUI-YouGet") {
             }
         }
 
-        // Get media list
+        // fetch media json and display it
         btnDownload.setOnMouseClicked {
             if (tfURL.text != null && tfURL.text.trim() != "") {
-//                replaceWith(MediaListView::class, ViewTransition.Slide(0.3.seconds, ViewTransition.Direction.LEFT))
-                replaceWith(find<MediaListView>(mapOf("url" to tfURL.text)), ViewTransition.Slide(0.3.seconds, ViewTransition.Direction.LEFT))
+                // load proxy settings
+                val proxyType = ProxyType.valueOf(safeLoadConfig(ProxyType.PROXY_TYPE.name, ProxyType.NONE.name))
+                var address = ""
+                var port = ""
+                when (proxyType) {
+                    ProxyType.SOCKS5 -> {
+                        address = safeLoadConfig(ProxyType.SOCKS5_PROXY_ADDRESS.name, "")
+                        port = safeLoadConfig(ProxyType.SOCKS5_PROXY_PORT.name, "")
+                    }
+
+                    ProxyType.HTTP -> {
+                        address = safeLoadConfig(ProxyType.HTTP_PROXY_ADDRESS.name, "")
+                        port = safeLoadConfig(ProxyType.HTTP_PROXY_PORT.name, "")
+                    }
+
+                    ProxyType.NONE -> {
+                        logger.debug("no proxy from config")
+                    }
+
+                    else -> {
+                        logger.error("error proxy type $proxyType")
+                    }
+                }
+
+                // load engine type
+                val engineType = ProxyType.valueOf(safeLoadConfig(EngineType.ENGINE_TYPE.name, EngineType.YOUTUBE_DL.name))
+                // todo trans the engineType to media list view and progress view
+                // display the media list view
+                replaceWith(find<MediaListView>(mapOf("url" to tfURL.text, "proxyType" to proxyType, "address" to address, "port" to port, "engineType" to engineType)),
+                        ViewTransition.Slide(0.3.seconds, ViewTransition.Direction.LEFT))
             }
         }
 
-        // Load download engine config
-        val core = app.config[EngineUtils.TYPE]
-        when (core) {
-            EngineUtils.YOUTUBE_DL -> {
+        // load download engine config
+        val engineType = EngineType.valueOf(safeLoadConfig(EngineType.ENGINE_TYPE.name, EngineType.YOUTUBE_DL.name))
+        when (engineType) {
+            EngineType.YOUTUBE_DL -> {
                 cbYoutubeDL.isSelected = true
             }
-            EngineUtils.YOU_GET -> {
+            EngineType.YOU_GET -> {
                 cbYouGet.isSelected = true
             }
             else -> {
-                app.config[EngineUtils.TYPE] = EngineUtils.YOUTUBE_DL
+                app.config[EngineType.ENGINE_TYPE.name] = EngineType.YOUTUBE_DL
                 app.config.save()
                 cbYoutubeDL.isSelected = true
             }
         }
 
-        // Init version
+        // init version label
         labelYouGet.text = app.config[EngineUtils.YOU_GET_VERSION] as String
         labelYoutubeDL.text = app.config[EngineUtils.YOUTUBE_DL_VERSION] as String
 
-        // Change download engine
-        cbYouGet.action {
-            if (cbYouGet.isSelected) {
-                cbYoutubeDL.isSelected = false
-                app.config[EngineUtils.TYPE] = EngineUtils.YOU_GET
-                app.config.save()
-            }
-        }
-
+        // engine checkbox listener
         cbYoutubeDL.action {
             if (cbYoutubeDL.isSelected) {
                 cbYouGet.isSelected = false
-                app.config[EngineUtils.TYPE] = EngineUtils.YOUTUBE_DL
+                app.config[EngineType.ENGINE_TYPE] = EngineType.YOUTUBE_DL
+                app.config.save()
+            }
+        }
+        cbYouGet.action {
+            if (cbYouGet.isSelected) {
+                cbYoutubeDL.isSelected = false
+                app.config[EngineType.ENGINE_TYPE] = EngineType.YOU_GET
                 app.config.save()
             }
         }
@@ -196,86 +230,76 @@ class MainView : View("GUI-YouGet") {
         }
 
         // Proxy
-        val proxy = app.config[ProxyUtils.TYPE]
-        when (proxy) {
-            ProxyUtils.HTTP -> {
-                cbHTTP.isSelected = true
-                tfHTTPAddress.text = app.config[ProxyUtils.ADDRESS] as String
-                tfHTTPPort.text = app.config[ProxyUtils.PORT] as String
-            }
-            ProxyUtils.SOCKS5 -> {
-                cbSocks5.isSelected = true
-                tfSocksAddress.text = app.config[ProxyUtils.ADDRESS] as String
-                tfSocksPort.text = app.config[ProxyUtils.PORT] as String
-            }
+        tfSocksAddress.text = safeLoadConfig(ProxyType.SOCKS5_PROXY_ADDRESS.name)
+        tfSocksPort.text = safeLoadConfig(ProxyType.SOCKS5_PROXY_PORT.name)
+        tfHTTPAddress.text = safeLoadConfig(ProxyType.HTTP_PROXY_ADDRESS.name)
+        tfHTTPPort.text = safeLoadConfig(ProxyType.HTTP_PROXY_PORT.name)
+
+        val proxyType = ProxyType.valueOf(safeLoadConfig(ProxyType.PROXY_TYPE.name, ProxyType.NONE.name))
+        when (proxyType) {
+            ProxyType.SOCKS5 -> cbSocks5.isSelected = true
+            ProxyType.HTTP -> cbHTTP.isSelected = true
             else -> {
                 cbHTTP.isSelected = false
                 cbSocks5.isSelected = false
             }
         }
 
-        tfSocksAddress.textProperty().addListener { _, _, newValue ->
-            if (app.config[ProxyUtils.TYPE] == ProxyUtils.SOCKS5) {
-                app.config[ProxyUtils.ADDRESS] = newValue
+        tfSocksAddress.focusedProperty().addListener({ _, oldValue, _ ->
+            if (oldValue) { // When unfocused save to config
+                app.config[ProxyType.SOCKS5_PROXY_ADDRESS.name] = tfSocksAddress.text
                 app.config.save()
             }
-        }
+        })
 
-        tfSocksPort.textProperty().addListener { _, _, newValue ->
-            if (app.config[ProxyUtils.TYPE] == ProxyUtils.SOCKS5) {
-                app.config[ProxyUtils.PORT] = newValue
+        tfSocksPort.focusedProperty().addListener({ _, oldValue, _ ->
+            if (oldValue) {
+                app.config[ProxyType.SOCKS5_PROXY_PORT.name] = tfSocksPort.text
                 app.config.save()
             }
-        }
+        })
 
-        tfHTTPAddress.textProperty().addListener { _, _, newValue ->
-            if (app.config[ProxyUtils.TYPE] == ProxyUtils.HTTP) {
-                app.config[ProxyUtils.ADDRESS] = newValue
+        tfHTTPAddress.focusedProperty().addListener({ _, oldValue, _ ->
+            if (oldValue) { // When unfocused save to config
+                app.config[ProxyType.HTTP_PROXY_ADDRESS.name] = tfHTTPAddress.text
                 app.config.save()
             }
-        }
+        })
 
-        tfHTTPPort.textProperty().addListener { _, _, newValue ->
-            if (app.config[ProxyUtils.TYPE] == ProxyUtils.HTTP) {
-                app.config[ProxyUtils.PORT] = newValue
+        tfHTTPPort.focusedProperty().addListener({ _, oldValue, _ ->
+            if (oldValue) {
+                app.config[ProxyType.HTTP_PROXY_PORT.name] = tfHTTPPort.text
                 app.config.save()
             }
-        }
+        })
+
 
         cbSocks5.action {
-            val address = tfSocksAddress.text
-            val port = tfSocksPort.text
             // Disable socks proxy
             if (!cbSocks5.isSelected) {
-                app.config[ProxyUtils.TYPE] = ProxyUtils.NONE
+                app.config[ProxyType.PROXY_TYPE.name] = ProxyType.NONE.name
                 app.config.save()
             }
 
             // Enable socks proxy
             if (cbSocks5.isSelected) {
                 cbHTTP.isSelected = false
-                app.config[ProxyUtils.TYPE] = ProxyUtils.SOCKS5
-                app.config[ProxyUtils.ADDRESS] = address
-                app.config[ProxyUtils.PORT] = port
+                app.config[ProxyType.PROXY_TYPE.name] = ProxyType.SOCKS5.name
                 app.config.save()
             }
         }
 
         cbHTTP.action {
-            val address = tfHTTPAddress.text
-            val port = tfHTTPPort.text
             // Disable http proxy
             if (!cbHTTP.isSelected) {
-                app.config[ProxyUtils.TYPE] = ProxyUtils.NONE
+                app.config[ProxyType.PROXY_TYPE.name] = ProxyType.NONE.name
                 app.config.save()
             }
 
             // Enable http proxy
             if (cbHTTP.isSelected) {
                 cbSocks5.isSelected = false
-                app.config[ProxyUtils.TYPE] = ProxyUtils.HTTP
-                app.config[ProxyUtils.ADDRESS] = address
-                app.config[ProxyUtils.PORT] = port
+                app.config[ProxyType.PROXY_TYPE.name] = ProxyType.HTTP.name
                 app.config.save()
             }
         }
@@ -287,5 +311,15 @@ class MainView : View("GUI-YouGet") {
         labelAuthor.setOnMouseClicked { hostServices.showDocument(CommonUtils.APP_AUTHOR) }
         btnReportBug.action { hostServices.showDocument(CommonUtils.APP_REPORT_BUGS) }
         btnDonate.action { openInternalWindow(ImageView::class) }
+    }
+
+    private fun safeLoadConfig(key: String, defaultValue: String = ""): String {
+        return try {
+            app.config.string(key)
+        } catch (e: IllegalStateException) {
+            app.config[key] = defaultValue
+            app.config.save()
+            defaultValue
+        }
     }
 }

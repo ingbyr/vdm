@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory
 import tornadofx.*
 import java.util.concurrent.ConcurrentLinkedDeque
 
-// todo how to import OSGi to add engine dynamically
+// todo import OSGi to add engine dynamically
 
 class ProgressController : Controller() {
     private val logger = LoggerFactory.getLogger(this::class.java)

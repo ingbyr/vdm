@@ -3,6 +3,7 @@ package com.ingbyr.guiyouget.views
 import com.beust.klaxon.JsonObject
 import com.ingbyr.guiyouget.controllers.MediaListController
 import com.ingbyr.guiyouget.events.StopBackgroundTask
+import com.ingbyr.guiyouget.utils.ProxyType
 import com.jfoenix.controls.JFXListView
 import javafx.application.Platform
 import javafx.scene.control.Label
@@ -37,7 +38,11 @@ class MediaListView : View("GUI-YouGet") {
     private val labelDescription: Label by fxid()
     private val listViewMedia: JFXListView<Label> by fxid()
 
+    // args from main view config
     private var url: String? = null
+    private var proxyType: ProxyType? = null
+    private var address: String? = null
+    private var port: String? = null
 
     init {
         // Window boarder
@@ -80,11 +85,16 @@ class MediaListView : View("GUI-YouGet") {
     }
 
     private fun displayMedia() {
-        url = params["url"] as? String  // update url when docked
+        // load the args from main view config
+        url = params["url"] as? String
+        proxyType = params["proxyType"] as? ProxyType
+        address = params["address"] as? String
+        port = params["port"] as? String
+
         // fetch media json and display it
-        if (url != null) {
+        if (url != null && proxyType != null && address != null && port != null) {
             runAsync {
-                controller.requestMedia(url!!)
+                controller.requestMedia(url!!, proxyType!!, address!!, port!!)
             } ui {
                 if (it != null) {
                     controller.displayMedia(labelTitle, labelDescription, listViewMedia, it)
@@ -98,7 +108,7 @@ class MediaListView : View("GUI-YouGet") {
         }
     }
 
-    fun resetUI() {
+    private fun resetUI() {
         labelTitle.text = messages["label.loading"]
         labelDescription.text = ""
         listViewMedia.items.clear()
