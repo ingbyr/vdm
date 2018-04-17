@@ -1,35 +1,33 @@
 package com.ingbyr.guiyouget.controllers
 
-import com.ingbyr.guiyouget.engine.BaseEngine
-import com.ingbyr.guiyouget.engine.YoutubeDL
-import com.ingbyr.guiyouget.utils.CommonUtils
-import com.ingbyr.guiyouget.utils.EngineUtils
-import com.ingbyr.guiyouget.utils.ProxyUtils
+import com.ingbyr.guiyouget.engine.AbstractEngine
+import com.ingbyr.guiyouget.engine.EngineFactory
+import com.ingbyr.guiyouget.events.StopBackgroundTask
+import com.ingbyr.guiyouget.utils.EngineType
+import com.ingbyr.guiyouget.utils.ProxyType
 import org.slf4j.LoggerFactory
-import tornadofx.*
+import tornadofx.Controller
 import java.util.concurrent.ConcurrentLinkedDeque
 
 // todo import OSGi to add engine dynamically
 
 class ProgressController : Controller() {
     private val logger = LoggerFactory.getLogger(this::class.java)
-    lateinit var engine: BaseEngine
+    var engine: AbstractEngine? = null
 
-    fun download(url: String, formatID: String, msgQueue: ConcurrentLinkedDeque<Map<String, Any>>) {
-        when (app.config[EngineUtils.TYPE]) {
-            EngineUtils.YOUTUBE_DL -> {
-                engine = YoutubeDL(url, msgQueue)
-                engine.addProxy(
-                        app.config.string(ProxyUtils.TYPE),
-                        app.config.string(ProxyUtils.ADDRESS),
-                        app.config.string(ProxyUtils.PORT))
-                engine.downloadMedia(formatID, app.config.string(CommonUtils.STORAGE_PATH))
-            }
+    init {
+        subscribe<StopBackgroundTask> {
+            logger.debug("stop the background task")
+            engine?.stopTask()
+        }
+    }
 
-
-            EngineUtils.YOU_GET -> {
-                //todo you-get
-            }
+    fun download(engineType: EngineType, url: String, proxyType: ProxyType, address: String, port: String, formatID: String, msgQueue: ConcurrentLinkedDeque<Map<String, Any>>) {
+        engine = EngineFactory.create(engineType)
+        if (engine != null) {
+            engine!!.url(url).addProxy(proxyType, address, port).format(formatID).downloadMedia(msgQueue)
+        }else {
+            logger.error("bad engine $engineType when download media")
         }
     }
 }

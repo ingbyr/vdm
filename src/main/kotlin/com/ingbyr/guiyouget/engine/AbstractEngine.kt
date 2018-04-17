@@ -32,7 +32,7 @@ abstract class AbstractEngine {
     abstract fun parseDownloadPlaylistStatus(line: String)
     abstract fun execCommand(command: MutableList<String>, downloadType: DownloadType): StringBuilder?
 
-    public fun stopTask() {
+    fun stopTask() {
         /**
          * Please overwrite this if need extra operation.
          */
@@ -54,22 +54,6 @@ abstract class AbstractEngine {
         }
         logger.debug("exec $args")
         return args
-    }
-
-    protected fun String.toProgress(): Double {
-        /**
-         * Transfer "42.3%"(String) to 0.423(Double)
-         */
-        val s = this.replace("%", "")
-        return s.trim().toDouble() / 100
-    }
-
-    protected fun String.asPlaylistIsCompeleted(): Boolean {
-        /**
-         * Compare a / b and return the a>=b
-         */
-        val progress = this.split("/")
-        return progress[0].trim() >= progress[1].trim()
     }
 
     fun displayCommand() {

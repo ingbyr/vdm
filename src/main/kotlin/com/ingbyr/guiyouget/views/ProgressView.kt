@@ -3,6 +3,8 @@ package com.ingbyr.guiyouget.views
 import com.ingbyr.guiyouget.controllers.ProgressController
 import com.ingbyr.guiyouget.events.StopBackgroundTask
 import com.ingbyr.guiyouget.utils.EngineStatus
+import com.ingbyr.guiyouget.utils.EngineType
+import com.ingbyr.guiyouget.utils.ProxyType
 import com.jfoenix.controls.JFXProgressBar
 import javafx.animation.AnimationTimer
 import javafx.beans.property.SimpleLongProperty
@@ -36,15 +38,14 @@ class ProgressView : View() {
     private val url = params["url"] as String
     private val formatID = params["formatID"] as String
     private val msgQueue = ConcurrentLinkedDeque<Map<String, Any>>()
+    private var proxyType: ProxyType = params["proxyType"] as ProxyType
+    private var address: String = params["address"] as String
+    private var port: String = params["port"] as String
+    private var engineType: EngineType = params["engineType"] as EngineType
 
     init {
         paneMinimize.setOnMouseClicked {
             primaryStage.isIconified = true
-        }
-
-        subscribe<StopBackgroundTask> {
-            logger.debug("stop the background task")
-            controller.engine.stop()
         }
 
         paneExit.setOnMouseClicked {
@@ -61,7 +62,7 @@ class ProgressView : View() {
             panePause.isVisible = true
             labelTitle.text = messages["resume"]
             runAsync {
-                controller.download(url, formatID, msgQueue)
+                controller.download(engineType, url, proxyType, address, port, formatID, msgQueue)
             }
         }
 
@@ -75,7 +76,7 @@ class ProgressView : View() {
 
         // start download task in background
         runAsync {
-            controller.download(url, formatID, msgQueue)
+            controller.download(engineType, url, proxyType, address, port, formatID, msgQueue)
         }
 
         val lastUpdate = SimpleLongProperty()
