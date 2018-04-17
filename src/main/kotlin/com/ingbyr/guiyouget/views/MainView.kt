@@ -1,7 +1,6 @@
 package com.ingbyr.guiyouget.views
 
 import com.ingbyr.guiyouget.controllers.MainController
-import com.ingbyr.guiyouget.engine.EngineType
 import com.ingbyr.guiyouget.events.RequestCheckUpdatesYouGet
 import com.ingbyr.guiyouget.events.RequestCheckUpdatesYoutubeDL
 import com.ingbyr.guiyouget.utils.*
@@ -164,9 +163,7 @@ class MainView : View("GUI-YouGet") {
                         port = safeLoadConfig(ProxyType.HTTP_PROXY_PORT.name, "")
                     }
 
-                    ProxyType.NONE -> {
-                        logger.debug("no proxy from config")
-                    }
+                    ProxyType.NONE -> { }
 
                     else -> {
                         logger.error("error proxy type $proxyType")
@@ -174,7 +171,7 @@ class MainView : View("GUI-YouGet") {
                 }
 
                 // load engine type
-                val engineType = ProxyType.valueOf(safeLoadConfig(EngineType.ENGINE_TYPE.name, EngineType.YOUTUBE_DL.name))
+                val engineType = EngineType.valueOf(safeLoadConfig(EngineType.ENGINE_TYPE.name, EngineType.YOUTUBE_DL.name))
                 // todo trans the engineType to media list view and progress view
                 // display the media list view
                 replaceWith(find<MediaListView>(mapOf("url" to tfURL.text, "proxyType" to proxyType, "address" to address, "port" to port, "engineType" to engineType)),
@@ -206,19 +203,19 @@ class MainView : View("GUI-YouGet") {
         cbYoutubeDL.action {
             if (cbYoutubeDL.isSelected) {
                 cbYouGet.isSelected = false
-                app.config[EngineType.ENGINE_TYPE] = EngineType.YOUTUBE_DL
+                app.config[EngineType.ENGINE_TYPE.name] = EngineType.YOUTUBE_DL.name
                 app.config.save()
             }
         }
         cbYouGet.action {
             if (cbYouGet.isSelected) {
                 cbYoutubeDL.isSelected = false
-                app.config[EngineType.ENGINE_TYPE] = EngineType.YOU_GET
+                app.config[EngineType.ENGINE_TYPE.name] = EngineType.YOU_GET.name
                 app.config.save()
             }
         }
 
-        // Updates listener
+        // updates listener
         btnUpdateCore.setOnMouseClicked {
             UpdatesView().openModal(StageStyle.UNDECORATED)
             fire(RequestCheckUpdatesYouGet)
@@ -229,7 +226,7 @@ class MainView : View("GUI-YouGet") {
             controller.updateGUI()
         }
 
-        // Proxy
+        // proxy
         tfSocksAddress.text = safeLoadConfig(ProxyType.SOCKS5_PROXY_ADDRESS.name)
         tfSocksPort.text = safeLoadConfig(ProxyType.SOCKS5_PROXY_PORT.name)
         tfHTTPAddress.text = safeLoadConfig(ProxyType.HTTP_PROXY_ADDRESS.name)
@@ -246,7 +243,7 @@ class MainView : View("GUI-YouGet") {
         }
 
         tfSocksAddress.focusedProperty().addListener({ _, oldValue, _ ->
-            if (oldValue) { // When unfocused save to config
+            if (oldValue) { // when unfocused save to config
                 app.config[ProxyType.SOCKS5_PROXY_ADDRESS.name] = tfSocksAddress.text
                 app.config.save()
             }
@@ -260,7 +257,7 @@ class MainView : View("GUI-YouGet") {
         })
 
         tfHTTPAddress.focusedProperty().addListener({ _, oldValue, _ ->
-            if (oldValue) { // When unfocused save to config
+            if (oldValue) { // when unfocused save to config
                 app.config[ProxyType.HTTP_PROXY_ADDRESS.name] = tfHTTPAddress.text
                 app.config.save()
             }
@@ -275,13 +272,13 @@ class MainView : View("GUI-YouGet") {
 
 
         cbSocks5.action {
-            // Disable socks proxy
+            // disable socks proxy
             if (!cbSocks5.isSelected) {
                 app.config[ProxyType.PROXY_TYPE.name] = ProxyType.NONE.name
                 app.config.save()
             }
 
-            // Enable socks proxy
+            // enable socks proxy
             if (cbSocks5.isSelected) {
                 cbHTTP.isSelected = false
                 app.config[ProxyType.PROXY_TYPE.name] = ProxyType.SOCKS5.name
@@ -290,13 +287,13 @@ class MainView : View("GUI-YouGet") {
         }
 
         cbHTTP.action {
-            // Disable http proxy
+            // disable http proxy
             if (!cbHTTP.isSelected) {
                 app.config[ProxyType.PROXY_TYPE.name] = ProxyType.NONE.name
                 app.config.save()
             }
 
-            // Enable http proxy
+            // enable http proxy
             if (cbHTTP.isSelected) {
                 cbSocks5.isSelected = false
                 app.config[ProxyType.PROXY_TYPE.name] = ProxyType.HTTP.name
@@ -304,7 +301,7 @@ class MainView : View("GUI-YouGet") {
             }
         }
 
-        // About view
+        // about view
         labelVersion.text = app.config[CommonUtils.APP_VERSION] as String
         labelGitHub.setOnMouseClicked { hostServices.showDocument(CommonUtils.APP_SOURCE_CODE) }
         labelLicense.setOnMouseClicked { hostServices.showDocument(CommonUtils.APP_LICENSE) }

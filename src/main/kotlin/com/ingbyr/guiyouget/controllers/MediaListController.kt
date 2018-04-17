@@ -2,17 +2,17 @@ package com.ingbyr.guiyouget.controllers
 
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
-import com.ingbyr.guiyouget.engine.*
+import com.ingbyr.guiyouget.engine.AbstractEngine
+import com.ingbyr.guiyouget.engine.EngineFactory
 import com.ingbyr.guiyouget.events.StopBackgroundTask
 import com.ingbyr.guiyouget.models.Media
-import com.ingbyr.guiyouget.utils.EngineUtils
+import com.ingbyr.guiyouget.utils.EngineType
 import com.ingbyr.guiyouget.utils.ProxyType
-import com.ingbyr.guiyouget.utils.ProxyUtils
 import com.jfoenix.controls.JFXListView
 import javafx.scene.control.Label
 import org.slf4j.LoggerFactory
-import tornadofx.*
-import java.lang.IllegalStateException
+import tornadofx.Controller
+import tornadofx.observable
 import java.util.*
 
 class MediaListController : Controller() {
@@ -29,52 +29,41 @@ class MediaListController : Controller() {
     }
 
 
-    fun requestMedia(url: String, proxyType: ProxyType, address: String, port: String): JsonObject? {
+    fun requestMedia(engineType: EngineType, url: String, proxyType: ProxyType, address: String, port: String): JsonObject? {
         // todo use engine type
-        when (app.config[EngineUtils.TYPE]) {
-            EngineUtils.YOUTUBE_DL -> {
-                engine = EngineFactory.create(EngineType.YOUTUBE_DL)
-                if (engine != null) {
-                    engine!!.url(url).addProxy(proxyType, address, port)
-                    try {
-                        return engine!!.fetchMediaJson()
-                    } catch (e: Exception) {
-                        logger.error(e.toString())
-                    }
-                }
-//                engine = YoutubeDL(url)
-//                engine.addProxy(app.config.string(ProxyUtils.TYPE),
-//                        app.config.string(ProxyUtils.ADDRESS),
-//                        app.config.string(ProxyUtils.PORT))
-//                try {
-//                    return engine.fetchMediaJson()
-//                } catch (e: Exception) {
-//                    logger.error(e.toString())
-//                }
+        engine = EngineFactory.create(engineType)
+        if (engine != null) {
+            engine!!.url(url).addProxy(proxyType, address, port)
+            try {
+                return engine!!.fetchMediaJson()
+            } catch (e: Exception) {
+                logger.error(e.toString())
             }
-
-            EngineUtils.YOU_GET -> {
-                //todo you-get
-            }
+        } else {
+            logger.error("bad engine: $engineType")
         }
         return null
     }
 
-    fun displayMedia(labelTitle: Label, labelDescription: Label, listViewMedia: JFXListView<Label>, it: JsonObject) {
-        when (app.config.string(EngineUtils.TYPE)) {
-            EngineUtils.YOUTUBE_DL -> {
+    fun displayMedia(engineType: EngineType, labelTitle: Label, labelDescription: Label, listViewMedia: JFXListView<Label>, it: JsonObject) {
+        when (engineType) {
+            EngineType.YOUTUBE_DL -> {
                 labelTitle.text = it.string("title")
                 labelDescription.text = it.string("description") ?: ""
                 addMediaItemsYoutubeDL(listViewMedia, it.array("formats"))
             }
-            EngineUtils.YOU_GET -> {
+            EngineType.YOU_GET -> {
                 labelTitle.text = it.string("title")
                 labelDescription.text = ""
                 addMediaItemsYouGet(listViewMedia, it.array("streams"))
             }
+            else -> {
+                logger.error("bad engine $engineType when fetch media json")
+            }
         }
     }
 
+    // todo data display should be done in Engine class?
     private fun addMediaItemsYoutubeDL(listViewMedia: JFXListView<Label>, formats: JsonArray<JsonObject>?) {
         if (formats != null) {
             val medias = mutableListOf<Media>().observable()
@@ -96,6 +85,7 @@ class MediaListController : Controller() {
         }
     }
 
+    // todo data display should be done in Engine class?
     private fun addMediaItemsYouGet(listViewMedia: JFXListView<Label>, streams: JsonArray<JsonObject>?) {
         if (streams != null) {
             val streamsJson = streams as JsonObject

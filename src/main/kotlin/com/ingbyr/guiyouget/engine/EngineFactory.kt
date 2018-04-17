@@ -1,11 +1,12 @@
 package com.ingbyr.guiyouget.engine
 
+import com.ingbyr.guiyouget.utils.EngineType
 import com.ingbyr.guiyouget.utils.ProxyType
 
 object EngineFactory {
     fun create(engineType: EngineType): AbstractEngine? {
         return when (engineType) {
-            EngineType.YOUTUBE_DL -> YoutubeDLNew()
+            EngineType.YOUTUBE_DL -> YoutubeDL()
             else -> null
         }
     }

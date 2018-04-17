@@ -3,6 +3,7 @@ package com.ingbyr.guiyouget.views
 import com.beust.klaxon.JsonObject
 import com.ingbyr.guiyouget.controllers.MediaListController
 import com.ingbyr.guiyouget.events.StopBackgroundTask
+import com.ingbyr.guiyouget.utils.EngineType
 import com.ingbyr.guiyouget.utils.ProxyType
 import com.jfoenix.controls.JFXListView
 import javafx.application.Platform
@@ -43,6 +44,7 @@ class MediaListView : View("GUI-YouGet") {
     private var proxyType: ProxyType? = null
     private var address: String? = null
     private var port: String? = null
+    private var engineType: EngineType? = null
 
     init {
         // Window boarder
@@ -74,11 +76,16 @@ class MediaListView : View("GUI-YouGet") {
 
         listViewMedia.setOnMouseClicked {
             listViewMedia.selectedItem?.let {
-                val formatID = it.text.split(" ")[0]
-                logger.debug("start download ${it.text}, format id is $formatID")
-                url?.let {
-                    // if url is not null, display progress view to download
-                    find<ProgressView>(mapOf("url" to url, "formatID" to formatID)).openModal(StageStyle.UNDECORATED)
+                if (url != null && proxyType != null && address != null && port != null && engineType != null) {
+                    val formatID = it.text.split(" ")[0]
+                    logger.debug("start download ${it.text}, format id is $formatID")
+                    url?.let {
+                        // if url is not null, display progress view to download
+                        find<ProgressView>(mapOf("url" to url, "formatID" to formatID, "proxyType" to proxyType, "address" to address, "port" to port, "engineType" to engineType)).openModal(StageStyle.UNDECORATED)
+                    }
+                } else {
+                    logger.error("download engine args error: url | proxyType | address | port | engineType ")
+                    logger.error("$url | $proxyType | $address | $port | $engineType ")
                 }
             }
         }
@@ -90,17 +97,17 @@ class MediaListView : View("GUI-YouGet") {
         proxyType = params["proxyType"] as? ProxyType
         address = params["address"] as? String
         port = params["port"] as? String
+        engineType = params["engineType"] as? EngineType
 
         // fetch media json and display it
         if (url != null && proxyType != null && address != null && port != null) {
             runAsync {
-                controller.requestMedia(url!!, proxyType!!, address!!, port!!)
+                controller.requestMedia(engineType!!, url!!, proxyType!!, address!!, port!!)
             } ui {
                 if (it != null) {
-                    controller.displayMedia(labelTitle, labelDescription, listViewMedia, it)
+                    controller.displayMedia(engineType!!, labelTitle, labelDescription, listViewMedia, it)
                 } else {
-                    controller.displayMedia(labelTitle, labelDescription, listViewMedia,
-                            JsonObject(mapOf("title" to messages["failed"])))
+                    labelTitle.text = messages["failed"]
                 }
             }
         } else {
