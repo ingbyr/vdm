@@ -3,6 +3,8 @@ package com.ingbyr.guiyouget.engine
 import com.beust.klaxon.JsonObject
 import com.ingbyr.guiyouget.utils.DownloadType
 import com.ingbyr.guiyouget.utils.ProxyType
+import com.jfoenix.controls.JFXListView
+import javafx.scene.control.Label
 import org.slf4j.Logger
 import java.util.concurrent.ConcurrentLinkedDeque
 import java.util.concurrent.atomic.AtomicBoolean
@@ -22,15 +24,15 @@ abstract class AbstractEngine {
     protected val argsMap: MutableMap<String, String> = mutableMapOf()
 
     abstract fun url(url: String): AbstractEngine
-    abstract fun addProxy(type: ProxyType, address: String, port:String): AbstractEngine
+    abstract fun addProxy(type: ProxyType, address: String, port: String): AbstractEngine
     abstract fun fetchMediaJson(): JsonObject
     abstract fun format(formatID: String): AbstractEngine
     abstract fun output(outputPath: String): AbstractEngine
     abstract fun downloadMedia(messageQuene: ConcurrentLinkedDeque<Map<String, Any>>)
-
     abstract fun parseDownloadSingleStatus(line: String)
     abstract fun parseDownloadPlaylistStatus(line: String)
     abstract fun execCommand(command: MutableList<String>, downloadType: DownloadType): StringBuilder?
+    abstract fun displayMediaList(labelTitle: Label, labelDescription: Label, listViewMedia: JFXListView<Label>, json: JsonObject)
 
     fun stopTask() {
         /**

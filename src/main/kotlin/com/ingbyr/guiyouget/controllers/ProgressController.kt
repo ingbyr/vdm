@@ -22,10 +22,10 @@ class ProgressController : Controller() {
         }
     }
 
-    fun download(engineType: EngineType, url: String, proxyType: ProxyType, address: String, port: String, formatID: String, msgQueue: ConcurrentLinkedDeque<Map<String, Any>>) {
+    fun download(engineType: EngineType, url: String, proxyType: ProxyType, address: String, port: String, formatID: String, output:String, msgQueue: ConcurrentLinkedDeque<Map<String, Any>>) {
         engine = EngineFactory.create(engineType)
         if (engine != null) {
-            engine!!.url(url).addProxy(proxyType, address, port).format(formatID).downloadMedia(msgQueue)
+            engine!!.url(url).addProxy(proxyType, address, port).format(formatID).output(output).downloadMedia(msgQueue)
         }else {
             logger.error("bad engine $engineType when download media")
         }

@@ -1,6 +1,6 @@
 package com.ingbyr.guiyouget.utils
 
-object CommonUtils {
+object ContentUtils {
     const val STORAGE_PATH = "STORAGE_PATH"
     const val APP_VERSION = "version"
     const val APP_UPDATE_URL = "https://github.com/ingbyr/GUI-YouGet/releases/latest"
