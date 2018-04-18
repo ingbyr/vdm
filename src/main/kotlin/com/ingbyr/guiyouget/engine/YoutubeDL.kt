@@ -2,9 +2,13 @@ package com.ingbyr.guiyouget.engine
 
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
+import com.ingbyr.guiyouget.models.Media
 import com.ingbyr.guiyouget.utils.*
+import com.jfoenix.controls.JFXListView
+import javafx.scene.control.Label
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import tornadofx.observable
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.file.Paths
@@ -28,7 +32,6 @@ class YoutubeDL : AbstractEngine() {
     // todo parse the playlist output
     private val playlistProgressPattern = Pattern.compile("\\d+\\sof\\s\\d+")
 
-
     init {
         argsMap["engine"] = when (GUIPlatform.current()) {
             GUIPlatformType.WINDOWS -> {
@@ -45,6 +48,32 @@ class YoutubeDL : AbstractEngine() {
                 throw OSException("Not supported OS")
             }
         }
+    }
+
+
+    override fun displayMediaList(labelTitle: Label, labelDescription: Label, listViewMedia: JFXListView<Label>, json: JsonObject) {
+        labelTitle.text = json.string("title")
+        labelDescription.text = json.string("description") ?: ""
+        val formats = json.array<JsonObject>("formats")
+        if (formats != null) {
+            val medias = mutableListOf<Media>().observable()
+            formats.mapTo(medias) {
+                Media(it.string("format"),
+                        it.string("format_note"),
+                        it.int("filesize"),
+                        it.string("format_id"),
+                        it.string("ext"))
+            }
+            medias.reverse()
+            medias.forEach {
+                if (it.size == 0) {
+                    listViewMedia.items.add(Label("${it.format} | ${it.ext}"))
+                } else {
+                    listViewMedia.items.add(Label("${it.format} | ${it.ext} | ${it.size}MB"))
+                }
+            }
+        }
+
     }
 
     override fun url(url: String): AbstractEngine {
@@ -64,7 +93,6 @@ class YoutubeDL : AbstractEngine() {
             }
 
             ProxyType.HTTP -> {
-                // todo add head "http://" for this ?
                 if (address.isEmpty() or port.isEmpty()) {
                     logger.debug("add an empty proxy to youtube-dl")
                     return this

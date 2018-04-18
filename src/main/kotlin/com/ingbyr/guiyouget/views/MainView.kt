@@ -31,7 +31,6 @@ class MainView : View("GUI-YouGet") {
     // todo Skip the choice of formatID
     // todo Add download playlist function
     // todo Add enable log button
-    // todo Some config needs to safe load
 
     init {
         messages = ResourceBundle.getBundle("i18n/MainView")
@@ -109,25 +108,25 @@ class MainView : View("GUI-YouGet") {
         }
 
         // Storage path
-        if (app.config[CommonUtils.STORAGE_PATH] == null || app.config[CommonUtils.STORAGE_PATH] == "") {
+        if (app.config[ContentUtils.STORAGE_PATH] == null || app.config[ContentUtils.STORAGE_PATH] == "") {
             labelStoragePath.text = Paths.get(System.getProperty("user.dir")).toAbsolutePath().toString()
-            app.config[CommonUtils.STORAGE_PATH] = labelStoragePath.text
+            app.config[ContentUtils.STORAGE_PATH] = labelStoragePath.text
             app.config.save()
         } else {
-            labelStoragePath.text = app.config[CommonUtils.STORAGE_PATH] as String
+            labelStoragePath.text = app.config[ContentUtils.STORAGE_PATH] as String
         }
 
         btnChangePath.setOnMouseClicked {
             val file = DirectoryChooser().showDialog(primaryStage)
             file?.apply {
-                app.config[CommonUtils.STORAGE_PATH] = file.absolutePath.toString()
+                app.config[ContentUtils.STORAGE_PATH] = file.absolutePath.toString()
                 app.config.save()
                 labelStoragePath.text = file.absolutePath.toString()
             }
         }
 
         btnOpenDir.setOnMouseClicked {
-            val dir = Paths.get(app.config[CommonUtils.STORAGE_PATH] as String).toFile()
+            val dir = Paths.get(app.config[ContentUtils.STORAGE_PATH] as String).toFile()
             logger.debug("open dir: $dir")
             when (GUIPlatform.current()) {
                 GUIPlatformType.LINUX -> {
@@ -172,9 +171,12 @@ class MainView : View("GUI-YouGet") {
 
                 // load engine type
                 val engineType = EngineType.valueOf(safeLoadConfig(EngineType.ENGINE_TYPE.name, EngineType.YOUTUBE_DL.name))
-                // todo trans the engineType to media list view and progress view
+
+                // load output path
+                val outputPath = app.config.string(ContentUtils.STORAGE_PATH)
+
                 // display the media list view
-                replaceWith(find<MediaListView>(mapOf("url" to tfURL.text, "proxyType" to proxyType, "address" to address, "port" to port, "engineType" to engineType)),
+                replaceWith(find<MediaListView>(mapOf("url" to tfURL.text, "proxyType" to proxyType, "address" to address, "port" to port, "engineType" to engineType, "output" to outputPath)),
                         ViewTransition.Slide(0.3.seconds, ViewTransition.Direction.LEFT))
             }
         }
@@ -302,11 +304,11 @@ class MainView : View("GUI-YouGet") {
         }
 
         // about view
-        labelVersion.text = app.config[CommonUtils.APP_VERSION] as String
-        labelGitHub.setOnMouseClicked { hostServices.showDocument(CommonUtils.APP_SOURCE_CODE) }
-        labelLicense.setOnMouseClicked { hostServices.showDocument(CommonUtils.APP_LICENSE) }
-        labelAuthor.setOnMouseClicked { hostServices.showDocument(CommonUtils.APP_AUTHOR) }
-        btnReportBug.action { hostServices.showDocument(CommonUtils.APP_REPORT_BUGS) }
+        labelVersion.text = app.config[ContentUtils.APP_VERSION] as String
+        labelGitHub.setOnMouseClicked { hostServices.showDocument(ContentUtils.APP_SOURCE_CODE) }
+        labelLicense.setOnMouseClicked { hostServices.showDocument(ContentUtils.APP_LICENSE) }
+        labelAuthor.setOnMouseClicked { hostServices.showDocument(ContentUtils.APP_AUTHOR) }
+        btnReportBug.action { hostServices.showDocument(ContentUtils.APP_REPORT_BUGS) }
         btnDonate.action { openInternalWindow(ImageView::class) }
     }
 

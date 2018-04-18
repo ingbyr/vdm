@@ -9,6 +9,7 @@ import com.jfoenix.controls.JFXProgressBar
 import javafx.animation.AnimationTimer
 import javafx.beans.property.SimpleLongProperty
 import javafx.scene.control.Label
+import javafx.scene.input.MouseEvent
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.Pane
 import org.slf4j.LoggerFactory
@@ -34,16 +35,37 @@ class ProgressView : View() {
     private val labelTime: Label by fxid()
     private val panePause: Pane by fxid()
     private val paneResume: Pane by fxid()
+    private val apBorder: AnchorPane by fxid()
 
     private val url = params["url"] as String
     private val formatID = params["formatID"] as String
     private val msgQueue = ConcurrentLinkedDeque<Map<String, Any>>()
-    private var proxyType: ProxyType = params["proxyType"] as ProxyType
-    private var address: String = params["address"] as String
-    private var port: String = params["port"] as String
-    private var engineType: EngineType = params["engineType"] as EngineType
+    private val proxyType = params["proxyType"] as ProxyType
+    private val address = params["address"] as String
+    private val port = params["port"] as String
+    private val engineType = params["engineType"] as EngineType
+    private val output = params["output"] as String
+
+    private var xOffset = 0.0
+    private var yOffset = 0.0
 
     init {
+        // Window boarder
+        apBorder.setOnMousePressed { event: MouseEvent? ->
+            event?.let {
+                xOffset = event.sceneX
+                yOffset = event.sceneY
+            }
+        }
+
+        apBorder.setOnMouseDragged { event: MouseEvent? ->
+            event?.let {
+                primaryStage.x = event.screenX - xOffset
+                primaryStage.y = event.screenY - yOffset
+            }
+        }
+
+        // FIXME 最小化有时会重复弹出
         paneMinimize.setOnMouseClicked {
             primaryStage.isIconified = true
         }
@@ -62,7 +84,7 @@ class ProgressView : View() {
             panePause.isVisible = true
             labelTitle.text = messages["resume"]
             runAsync {
-                controller.download(engineType, url, proxyType, address, port, formatID, msgQueue)
+                controller.download(engineType, url, proxyType, address, port, formatID, output, msgQueue)
             }
         }
 
@@ -76,7 +98,7 @@ class ProgressView : View() {
 
         // start download task in background
         runAsync {
-            controller.download(engineType, url, proxyType, address, port, formatID, msgQueue)
+            controller.download(engineType, url, proxyType, address, port, formatID, output, msgQueue)
         }
 
         val lastUpdate = SimpleLongProperty()
