@@ -1,11 +1,11 @@
 ﻿# GUI-YouGet
-![](https://img.shields.io/badge/v0.2.3-pass-green.svg)
+![](https://img.shields.io/badge/version-0.2.3-green.svg)
 ![](https://img.shields.io/github/forks/ingbyr/GUI-YouGet.svg)
 ![](https://img.shields.io/github/stars/ingbyr/GUI-YouGet.svg)
-![](https://img.shields.io/badge/license-MIT-blue.svg)
 ![](https://img.shields.io/github/issues/ingbyr/GUI-YouGet.svg)
+![](https://img.shields.io/badge/license-MIT-blue.svg)
 
-> [中文说明](http://www.ingbyr.com/post/youget-zh/)
+[中文说明](http://www.ingbyr.com/post/youget-zh/)
 
 # Download
 [Download Page](https://github.com/ingbyr/GUI-YouGet/releases)
@@ -20,7 +20,7 @@
 ![](screenshots/download.png)
 
 
-# Feedback bugs
+# Feedback Bugs
 If something is broken and `GUI-YouGet` can't get you things you want, don't panic. (Yes, this happens all the time!)
 Open a new issue on [GitHub](https://github.com/ingbyr/GUI-YouGet/issues), with detailed `app/log/debug.log` output attached.
 
@@ -38,7 +38,7 @@ SOFTWARE.
 
 
 # Contributors
-Gojko: Hungarian language support
+- gojko71: Hungarian Language Support
 
 
 # Authors
