@@ -7,6 +7,7 @@ import com.ingbyr.guiyouget.utils.*
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXCheckBox
 import com.jfoenix.controls.JFXTextField
+import com.jfoenix.controls.JFXToggleButton
 import javafx.application.Platform
 import javafx.scene.control.Label
 import javafx.scene.input.MouseEvent
@@ -27,10 +28,11 @@ import java.util.*
 import kotlin.collections.set
 
 
-class MainView : View("GUI-YouGet") {
-    // todo Skip the choice of formatID
-    // todo Add download playlist function
-    // todo Add enable log button
+class MainView : View() {
+    // TODO Skip the choice of formatID
+    // TODO Add download playlist function
+    // TODO Add enable log button
+    // TODO Add download with cookie
 
     init {
         messages = ResourceBundle.getBundle("i18n/MainView")
@@ -60,8 +62,8 @@ class MainView : View("GUI-YouGet") {
     private val cbChooseDeafultFormat: JFXCheckBox by fxid()
     private val cbAsPlayList: JFXCheckBox by fxid()
 
-    private val cbYoutubeDL: JFXCheckBox by fxid()
-    private val cbYouGet: JFXCheckBox by fxid()
+    private val tbYoutubeDL: JFXToggleButton by fxid()
+    private val tbYouGet: JFXToggleButton by fxid()
     private val labelYoutubeDL: Label by fxid()
     private val labelYouGet: Label by fxid()
     private val btnUpdateCore: JFXButton by fxid()
@@ -107,14 +109,8 @@ class MainView : View("GUI-YouGet") {
             }
         }
 
-        // Storage path
-        if (app.config[ContentUtils.STORAGE_PATH] == null || app.config[ContentUtils.STORAGE_PATH] == "") {
-            labelStoragePath.text = Paths.get(System.getProperty("user.dir")).toAbsolutePath().toString()
-            app.config[ContentUtils.STORAGE_PATH] = labelStoragePath.text
-            app.config.save()
-        } else {
-            labelStoragePath.text = app.config[ContentUtils.STORAGE_PATH] as String
-        }
+        // init storage path
+        labelStoragePath.text = safeLoadConfig(ContentUtils.STORAGE_PATH, Paths.get(System.getProperty("user.dir")).toAbsolutePath().toString())
 
         btnChangePath.setOnMouseClicked {
             val file = DirectoryChooser().showDialog(primaryStage)
@@ -162,7 +158,8 @@ class MainView : View("GUI-YouGet") {
                         port = safeLoadConfig(ProxyType.HTTP_PROXY_PORT.name, "")
                     }
 
-                    ProxyType.NONE -> { }
+                    ProxyType.NONE -> {
+                    }
 
                     else -> {
                         logger.error("error proxy type $proxyType")
@@ -176,42 +173,39 @@ class MainView : View("GUI-YouGet") {
                 val outputPath = app.config.string(ContentUtils.STORAGE_PATH)
 
                 // display the media list view
-                replaceWith(find<MediaListView>(mapOf("url" to tfURL.text, "proxyType" to proxyType, "address" to address, "port" to port, "engineType" to engineType, "output" to outputPath)),
-                        ViewTransition.Slide(0.3.seconds, ViewTransition.Direction.LEFT))
+                val args = mapOf("url" to tfURL.text, "proxyType" to proxyType, "address" to address, "port" to port, "engineType" to engineType, "output" to outputPath)
+                replaceWith(find<MediaListView>(args), ViewTransition.Slide(0.3.seconds, ViewTransition.Direction.LEFT))
             }
         }
 
-        // load download engine config
-        val engineType = EngineType.valueOf(safeLoadConfig(EngineType.ENGINE_TYPE.name, EngineType.YOUTUBE_DL.name))
-        when (engineType) {
+        // init download engine
+        when (EngineType.valueOf(safeLoadConfig(EngineType.ENGINE_TYPE.name, EngineType.YOUTUBE_DL.name))) {
             EngineType.YOUTUBE_DL -> {
-                cbYoutubeDL.isSelected = true
+                tbYoutubeDL.isSelected = true
             }
             EngineType.YOU_GET -> {
-                cbYouGet.isSelected = true
+                tbYouGet.isSelected = true
             }
             else -> {
                 app.config[EngineType.ENGINE_TYPE.name] = EngineType.YOUTUBE_DL
                 app.config.save()
-                cbYoutubeDL.isSelected = true
+                tbYoutubeDL.isSelected = true
             }
         }
 
         // init version label
-        labelYouGet.text = app.config[EngineUtils.YOU_GET_VERSION] as String
-        labelYoutubeDL.text = app.config[EngineUtils.YOUTUBE_DL_VERSION] as String
+        labelYouGet.text = app.config[EngineUtils.YOU_GET_VERSION].toString()
+        labelYoutubeDL.text = app.config[EngineUtils.YOUTUBE_DL_VERSION].toString()
 
-        // engine checkbox listener
-        cbYoutubeDL.action {
-            if (cbYoutubeDL.isSelected) {
-                cbYouGet.isSelected = false
+        // engine toggle button listener
+        tbYoutubeDL.action {
+            if (tbYoutubeDL.isSelected) {
                 app.config[EngineType.ENGINE_TYPE.name] = EngineType.YOUTUBE_DL.name
                 app.config.save()
             }
         }
-        cbYouGet.action {
-            if (cbYouGet.isSelected) {
-                cbYoutubeDL.isSelected = false
+        tbYouGet.action {
+            if (tbYouGet.isSelected) {
                 app.config[EngineType.ENGINE_TYPE.name] = EngineType.YOU_GET.name
                 app.config.save()
             }
@@ -228,14 +222,13 @@ class MainView : View("GUI-YouGet") {
             controller.updateGUI()
         }
 
-        // proxy
-        tfSocksAddress.text = safeLoadConfig(ProxyType.SOCKS5_PROXY_ADDRESS.name)
-        tfSocksPort.text = safeLoadConfig(ProxyType.SOCKS5_PROXY_PORT.name)
-        tfHTTPAddress.text = safeLoadConfig(ProxyType.HTTP_PROXY_ADDRESS.name)
-        tfHTTPPort.text = safeLoadConfig(ProxyType.HTTP_PROXY_PORT.name)
+        // init proxy
+        tfSocksAddress.text = safeLoadConfig(ProxyType.SOCKS5_PROXY_ADDRESS.name, "")
+        tfSocksPort.text = safeLoadConfig(ProxyType.SOCKS5_PROXY_PORT.name, "")
+        tfHTTPAddress.text = safeLoadConfig(ProxyType.HTTP_PROXY_ADDRESS.name, "")
+        tfHTTPPort.text = safeLoadConfig(ProxyType.HTTP_PROXY_PORT.name, "")
 
-        val proxyType = ProxyType.valueOf(safeLoadConfig(ProxyType.PROXY_TYPE.name, ProxyType.NONE.name))
-        when (proxyType) {
+        when (ProxyType.valueOf(safeLoadConfig(ProxyType.PROXY_TYPE.name, ProxyType.NONE.name))) {
             ProxyType.SOCKS5 -> cbSocks5.isSelected = true
             ProxyType.HTTP -> cbHTTP.isSelected = true
             else -> {
@@ -312,7 +305,7 @@ class MainView : View("GUI-YouGet") {
         btnDonate.action { openInternalWindow(ImageView::class) }
     }
 
-    private fun safeLoadConfig(key: String, defaultValue: String = ""): String {
+    private fun safeLoadConfig(key: String, defaultValue: String): String {
         return try {
             app.config.string(key)
         } catch (e: IllegalStateException) {

@@ -30,3 +30,5 @@ object EngineUtils {
     const val YOU_GET_VERSION = "you-get-version"
     const val REMOTE_YOU_GET_VERSION = "https://raw.githubusercontent.com/soimort/you-get/master/src/you_get/version.py"
 }
+
+class DownloadEngineException(message: String) : Exception(message)

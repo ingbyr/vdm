@@ -12,8 +12,10 @@ import javafx.scene.control.Label
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.Pane
+import javafx.stage.StageStyle
 import org.slf4j.LoggerFactory
-import tornadofx.*
+import tornadofx.View
+import tornadofx.get
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedDeque
 
@@ -60,14 +62,11 @@ class ProgressView : View() {
 
         apBorder.setOnMouseDragged { event: MouseEvent? ->
             event?.let {
-
                 this.currentStage?.x = it.screenX - xOffset
                 this.currentStage?.y = it.screenY - yOffset
             }
         }
 
-
-        // FIXME 最小化有时会重复弹出
         paneMinimize.setOnMouseClicked {
             primaryStage.isIconified = true
         }
@@ -110,43 +109,43 @@ class ProgressView : View() {
                 if (now - lastUpdate.get() > minUpdateInterval) {
                     val msg = msgQueue.poll()
                     msg?.let {
-                        labelTitle.text = translateStatus(it["status"] as EngineStatus)
+                        when (EngineStatus.valueOf(it["status"].toString())) {
+                            EngineStatus.ANALYZE -> {
+                                labelTitle.text = messages["analyzing"]
+                            }
+
+                            EngineStatus.DOWNLOAD -> {
+                                labelTitle.text = messages["downloading"]
+                            }
+
+                            EngineStatus.FAIL -> {
+                                // TODO fire event to reset main UI
+                                find<TipView>(mapOf("title" to messages["failed"], "content" to "")).openWindow(StageStyle.UNDECORATED)
+                                this@ProgressView.close()
+                            }
+
+                            EngineStatus.FINISH -> {
+                                // TODO fire event to reset main UI
+                                find<TipView>(mapOf("title" to messages["completed"], "content" to "")).openWindow(StageStyle.UNDECORATED)
+                                this@ProgressView.close()
+                            }
+
+                            EngineStatus.PAUSE -> {
+                                labelTitle.text = messages["pause"]
+                            }
+
+                            EngineStatus.RESUME -> {
+                                labelTitle.text = messages["resume"]
+                            }
+                        }
                         labelSpeed.text = it["speed"] as String
                         labelTime.text = it["extime"] as String
                         progressbar.progress = it["progress"] as Double
-
-                        if (it["status"] as EngineStatus == EngineStatus.FINISH) {
-                            // todo fire event to reset main UI
-                            this@ProgressView.close()
-                        }
                     }
                     lastUpdate.set(now)
                 }
             }
         }
         timer.start()
-    }
-
-    private fun translateStatus(type: EngineStatus): String {
-        return when (type) {
-            EngineStatus.ANALYZE -> {
-                messages["analyzing"]
-            }
-            EngineStatus.DOWNLOAD -> {
-                messages["downloading"]
-            }
-            EngineStatus.FAIL -> {
-                messages["failed"]
-            }
-            EngineStatus.FINISH -> {
-                messages["completed"]
-            }
-            EngineStatus.PAUSE -> {
-                messages["pause"]
-            }
-            EngineStatus.RESUME -> {
-                messages["resume"]
-            }
-        }
     }
 }

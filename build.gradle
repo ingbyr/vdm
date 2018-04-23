@@ -1,8 +1,8 @@
-group "com.ingbyr.guiyouget"
-version "0.2.3"
+group = "com.ingbyr.guiyouget"
+version = "0.2.3"
 
 buildscript {
-    ext.kotlin_version = "1.2.31"
+    ext.kotlin_version = "1.2.40"
 
     repositories {
         mavenCentral()
@@ -43,16 +43,16 @@ compileTestKotlin {
 jfx {
     verbose = false
     mainClass = "com.ingbyr.guiyouget.MainKt"
-    jfxMainAppJarName="GUI-YouGet.jar"
+    jfxMainAppJarName = "GUI-YouGet.jar"
     vendor = "ingbyr"
     appName = "GUI-YouGet"
     additionalAppResources = "src/main/deploy"
     skipMainClassScanning = true
     jvmProperties = ["-Dfile.encoding": "UTF-8"]
     nativeReleaseVersion = "0.2.3"
-    bundler = 'exe'
+    bundler = "ALL"
     needShortcut = true
     bundleArguments = [
-            installdirChooser: 'true'
+            installdirChooser: "true"
     ]
 }

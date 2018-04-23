@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory
 import tornadofx.*
 import java.util.*
 
-class MediaListView : View("GUI-YouGet") {
+class MediaListView : View() {
 
     init {
         messages = ResourceBundle.getBundle("i18n/MediaListView")
@@ -37,12 +37,12 @@ class MediaListView : View("GUI-YouGet") {
     private val controller: MediaListController by inject()
 
     // args from main view config
-    private val url = params["url"] as String
-    private val proxyType = params["proxyType"] as ProxyType
-    private val address = params["address"] as String
-    private val port = params["port"] as String
-    private val engineType = params["engineType"] as EngineType
-    private val output = params["output"] as String
+    private var url = params["url"] as String
+    private var proxyType = params["proxyType"] as ProxyType
+    private var address = params["address"] as String
+    private var port = params["port"] as String
+    private var engineType = params["engineType"] as EngineType
+    private var output = params["output"] as String
 
     init {
         // Window boarder
@@ -111,6 +111,13 @@ class MediaListView : View("GUI-YouGet") {
     }
 
     override fun onDock() {
+        logger.debug("params: $params")
+        url = params["url"] as String
+        proxyType = params["proxyType"] as ProxyType
+        address = params["address"] as String
+        port = params["port"] as String
+        engineType = params["engineType"] as EngineType
+        output = params["output"] as String
         resetUI()
         displayMedia() // fetch media json and display
     }
