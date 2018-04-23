@@ -1,7 +1,6 @@
 package com.ingbyr.guiyouget.engine
 
 import com.ingbyr.guiyouget.utils.EngineType
-import com.ingbyr.guiyouget.utils.ProxyType
 
 object EngineFactory {
     fun create(engineType: EngineType): AbstractEngine? {
@@ -12,14 +11,14 @@ object EngineFactory {
     }
 }
 
-// todo delete this
-fun main(args: Array<String>) {
-    val engine = EngineFactory.create(EngineType.YOUTUBE_DL)
-    if (engine != null) {
-        engine.url("https://test-url.com")
-        engine.addProxy(ProxyType.HTTP, "127.0.0.1", "1080")
-        engine.displayCommand()
-    } else {
-        println("oop")
-    }
-}
+
+//fun main(args: Array<String>) {
+//    val engine = EngineFactory.create(EngineType.YOUTUBE_DL)
+//    if (engine != null) {
+//        engine.url("https://test-url.com")
+//        engine.addProxy(ProxyType.HTTP, "127.0.0.1", "1080")
+//        engine.displayCommand()
+//    } else {
+//        println("oop")
+//    }
+//}

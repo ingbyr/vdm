@@ -15,7 +15,7 @@ class UpdatesView : View() {
         messages = ResourceBundle.getBundle("i18n/UpdatesView")
     }
 
-    val controller: UpdatesController by inject()
+    private val controller: UpdatesController by inject()
     override val root: AnchorPane by fxml("/fxml/UpdatesWindow.fxml")
 
     private val labelYouget: Label by fxid()
