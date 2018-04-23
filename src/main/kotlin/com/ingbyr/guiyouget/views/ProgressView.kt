@@ -50,20 +50,22 @@ class ProgressView : View() {
     private var yOffset = 0.0
 
     init {
-        // Window boarder
+
         apBorder.setOnMousePressed { event: MouseEvent? ->
             event?.let {
-                xOffset = event.sceneX
-                yOffset = event.sceneY
+                xOffset = it.sceneX
+                yOffset = it.sceneY
             }
         }
 
         apBorder.setOnMouseDragged { event: MouseEvent? ->
             event?.let {
-                primaryStage.x = event.screenX - xOffset
-                primaryStage.y = event.screenY - yOffset
+
+                this.currentStage?.x = it.screenX - xOffset
+                this.currentStage?.y = it.screenY - yOffset
             }
         }
+
 
         // FIXME 最小化有时会重复弹出
         paneMinimize.setOnMouseClicked {

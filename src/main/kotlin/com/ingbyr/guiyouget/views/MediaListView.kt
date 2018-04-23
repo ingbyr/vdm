@@ -76,7 +76,7 @@ class MediaListView : View("GUI-YouGet") {
             listViewMedia.selectedItem?.let {
                 val formatID = it.text.split(" ")[0]
                 logger.debug("start download ${it.text}, format id is $formatID")
-                find<ProgressView>(mapOf("url" to url, "formatID" to formatID, "proxyType" to proxyType, "address" to address, "port" to port, "engineType" to engineType, "output" to output)).openModal(StageStyle.UNDECORATED)
+                find<ProgressView>(mapOf("url" to url, "formatID" to formatID, "proxyType" to proxyType, "address" to address, "port" to port, "engineType" to engineType, "output" to output)).openWindow(StageStyle.UNDECORATED)
             }
         }
     }
