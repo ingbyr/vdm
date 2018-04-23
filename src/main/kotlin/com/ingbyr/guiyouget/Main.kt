@@ -3,7 +3,8 @@ package com.ingbyr.guiyouget
 import com.ingbyr.guiyouget.views.MainView
 import javafx.application.Application
 import org.slf4j.LoggerFactory
-import tornadofx.*
+import tornadofx.App
+import tornadofx.FX
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.*
