@@ -3,6 +3,7 @@ package com.ingbyr.guiyouget.views
 import com.ingbyr.guiyouget.controllers.MainController
 import com.ingbyr.guiyouget.events.RequestCheckUpdatesYouGet
 import com.ingbyr.guiyouget.events.RequestCheckUpdatesYoutubeDL
+import com.ingbyr.guiyouget.models.CurrentConfig
 import com.ingbyr.guiyouget.utils.*
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXCheckBox
@@ -31,8 +32,8 @@ import kotlin.collections.set
 class MainView : View() {
     // TODO Skip the choice of formatID
     // TODO Add download playlist function
-    // TODO Add enable log button
     // TODO Add download with cookie
+    // TODO set external ffmpeg path to handle with media
 
     init {
         messages = ResourceBundle.getBundle("i18n/MainView")
@@ -59,8 +60,8 @@ class MainView : View() {
     private val btnChangePath: JFXButton by fxid()
     private val btnOpenDir: JFXButton by fxid()
 
-    private val cbChooseDeafultFormat: JFXCheckBox by fxid()
-    private val cbAsPlayList: JFXCheckBox by fxid()
+    private val cbDownloadDeafultFormat: JFXCheckBox by fxid()
+    private val cbDownloadPlayList: JFXCheckBox by fxid()
 
     private val tbYoutubeDL: JFXToggleButton by fxid()
     private val tbYouGet: JFXToggleButton by fxid()
@@ -140,44 +141,6 @@ class MainView : View() {
             }
         }
 
-        // fetch media json and display it
-        btnDownload.setOnMouseClicked {
-            if (tfURL.text != null && tfURL.text.trim() != "") {
-                // load proxy settings
-                val proxyType = ProxyType.valueOf(safeLoadConfig(ProxyType.PROXY_TYPE.name, ProxyType.NONE.name))
-                var address = ""
-                var port = ""
-                when (proxyType) {
-                    ProxyType.SOCKS5 -> {
-                        address = safeLoadConfig(ProxyType.SOCKS5_PROXY_ADDRESS.name, "")
-                        port = safeLoadConfig(ProxyType.SOCKS5_PROXY_PORT.name, "")
-                    }
-
-                    ProxyType.HTTP -> {
-                        address = safeLoadConfig(ProxyType.HTTP_PROXY_ADDRESS.name, "")
-                        port = safeLoadConfig(ProxyType.HTTP_PROXY_PORT.name, "")
-                    }
-
-                    ProxyType.NONE -> {
-                    }
-
-                    else -> {
-                        logger.error("error proxy type $proxyType")
-                    }
-                }
-
-                // load engine type
-                val engineType = EngineType.valueOf(safeLoadConfig(EngineType.ENGINE_TYPE.name, EngineType.YOUTUBE_DL.name))
-
-                // load output path
-                val outputPath = app.config.string(ContentUtils.STORAGE_PATH)
-
-                // display the media list view
-                val args = mapOf("url" to tfURL.text, "proxyType" to proxyType, "address" to address, "port" to port, "engineType" to engineType, "output" to outputPath)
-                replaceWith(find<MediaListView>(args), ViewTransition.Slide(0.3.seconds, ViewTransition.Direction.LEFT))
-            }
-        }
-
         // init download engine
         when (EngineType.valueOf(safeLoadConfig(EngineType.ENGINE_TYPE.name, EngineType.YOUTUBE_DL.name))) {
             EngineType.YOUTUBE_DL -> {
@@ -211,7 +174,7 @@ class MainView : View() {
             }
         }
 
-        // updates listener
+        // init updates listener
         btnUpdateCore.setOnMouseClicked {
             UpdatesView().openModal(StageStyle.UNDECORATED)
             fire(RequestCheckUpdatesYouGet)
@@ -296,13 +259,53 @@ class MainView : View() {
             }
         }
 
-        // about view
+        // init about view
         labelVersion.text = app.config[ContentUtils.APP_VERSION] as String
         labelGitHub.setOnMouseClicked { hostServices.showDocument(ContentUtils.APP_SOURCE_CODE) }
         labelLicense.setOnMouseClicked { hostServices.showDocument(ContentUtils.APP_LICENSE) }
         labelAuthor.setOnMouseClicked { hostServices.showDocument(ContentUtils.APP_AUTHOR) }
         btnReportBug.action { hostServices.showDocument(ContentUtils.APP_REPORT_BUGS) }
         btnDonate.action { openInternalWindow(ImageView::class) }
+
+        // fetch media json and display it
+        btnDownload.setOnMouseClicked {
+            // TODO more error handlers
+            if (tfURL.text != null && tfURL.text.trim() != "") {
+                // load proxy settings
+                val proxyType = ProxyType.valueOf(safeLoadConfig(ProxyType.PROXY_TYPE.name, ProxyType.NONE.name))
+                var address = ""
+                var port = ""
+                when (proxyType) {
+                    ProxyType.SOCKS5 -> {
+                        address = safeLoadConfig(ProxyType.SOCKS5_PROXY_ADDRESS.name, "")
+                        port = safeLoadConfig(ProxyType.SOCKS5_PROXY_PORT.name, "")
+                    }
+
+                    ProxyType.HTTP -> {
+                        address = safeLoadConfig(ProxyType.HTTP_PROXY_ADDRESS.name, "")
+                        port = safeLoadConfig(ProxyType.HTTP_PROXY_PORT.name, "")
+                    }
+
+                    ProxyType.NONE -> {
+                    }
+
+                    else -> {
+                        logger.error("error proxy type $proxyType")
+                    }
+                }
+
+                // load engine type
+                val engineType = EngineType.valueOf(safeLoadConfig(EngineType.ENGINE_TYPE.name, EngineType.YOUTUBE_DL.name))
+
+                // load output path
+                val outputPath = app.config.string(ContentUtils.STORAGE_PATH)
+
+                val ccf = CurrentConfig(engineType, tfURL.text, proxyType, address, port, outputPath, "")
+
+                // display the media list view
+                replaceWith(find<MediaListView>(mapOf("ccf" to ccf)), ViewTransition.Slide(0.3.seconds, ViewTransition.Direction.LEFT))
+            }
+        }
     }
 
     private fun safeLoadConfig(key: String, defaultValue: String): String {

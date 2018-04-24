@@ -1,9 +1,9 @@
 package com.ingbyr.guiyouget.views
 
 import com.ingbyr.guiyouget.controllers.MediaListController
+import com.ingbyr.guiyouget.events.DownloadMedia
 import com.ingbyr.guiyouget.events.StopBackgroundTask
-import com.ingbyr.guiyouget.utils.EngineType
-import com.ingbyr.guiyouget.utils.ProxyType
+import com.ingbyr.guiyouget.models.CurrentConfig
 import com.jfoenix.controls.JFXListView
 import javafx.application.Platform
 import javafx.scene.control.Label
@@ -35,14 +35,7 @@ class MediaListView : View() {
     private val labelDescription: Label by fxid()
     private val listViewMedia: JFXListView<Label> by fxid()
     private val controller: MediaListController by inject()
-
-    // args from main view config
-    private var url = params["url"] as String
-    private var proxyType = params["proxyType"] as ProxyType
-    private var address = params["address"] as String
-    private var port = params["port"] as String
-    private var engineType = params["engineType"] as EngineType
-    private var output = params["output"] as String
+    private var ccf = params["ccf"] as CurrentConfig
 
     init {
         // Window boarder
@@ -76,7 +69,9 @@ class MediaListView : View() {
             listViewMedia.selectedItem?.let {
                 val formatID = it.text.split(" ")[0]
                 logger.debug("start download ${it.text}, format id is $formatID")
-                find<ProgressView>(mapOf("url" to url, "formatID" to formatID, "proxyType" to proxyType, "address" to address, "port" to port, "engineType" to engineType, "output" to output)).openWindow(StageStyle.UNDECORATED)
+                ccf.formatID = formatID
+                ProgressView().openWindow(StageStyle.UNDECORATED)
+                fire(DownloadMedia(ccf))
             }
         }
     }
@@ -84,7 +79,7 @@ class MediaListView : View() {
     private fun displayMedia() {
         // fetch media json and display it
         runAsync {
-            controller.requestMedia(engineType, url, proxyType, address, port)
+            controller.requestMedia(ccf.engineType, ccf.url, ccf.proxyType, ccf.address, ccf.port)
         } ui {
             if (it != null) {
                 controller.engine?.displayMediaList(labelTitle, labelDescription, listViewMedia, it)
@@ -111,13 +106,7 @@ class MediaListView : View() {
     }
 
     override fun onDock() {
-        logger.debug("params: $params")
-        url = params["url"] as String
-        proxyType = params["proxyType"] as ProxyType
-        address = params["address"] as String
-        port = params["port"] as String
-        engineType = params["engineType"] as EngineType
-        output = params["output"] as String
+        ccf = params["ccf"] as CurrentConfig
         resetUI()
         displayMedia() // fetch media json and display
     }
