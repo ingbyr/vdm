@@ -1,10 +1,10 @@
 package com.ingbyr.guiyouget.views
 
 import com.ingbyr.guiyouget.controllers.ProgressController
+import com.ingbyr.guiyouget.events.DownloadMedia
 import com.ingbyr.guiyouget.events.StopBackgroundTask
+import com.ingbyr.guiyouget.models.CurrentConfig
 import com.ingbyr.guiyouget.utils.EngineStatus
-import com.ingbyr.guiyouget.utils.EngineType
-import com.ingbyr.guiyouget.utils.ProxyType
 import com.jfoenix.controls.JFXProgressBar
 import javafx.animation.AnimationTimer
 import javafx.beans.property.SimpleLongProperty
@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentLinkedDeque
 class ProgressView : View() {
 
     init {
-        messages = ResourceBundle.getBundle("i18n/engine")
+        messages = ResourceBundle.getBundle("i18n/ProgressView")
     }
 
     private val logger = LoggerFactory.getLogger(this::class.java)
@@ -38,21 +38,12 @@ class ProgressView : View() {
     private val panePause: Pane by fxid()
     private val paneResume: Pane by fxid()
     private val apBorder: AnchorPane by fxid()
-
-    private val url = params["url"] as String
-    private val formatID = params["formatID"] as String
-    private val msgQueue = ConcurrentLinkedDeque<Map<String, Any>>()
-    private val proxyType = params["proxyType"] as ProxyType
-    private val address = params["address"] as String
-    private val port = params["port"] as String
-    private val engineType = params["engineType"] as EngineType
-    private val output = params["output"] as String
-
     private var xOffset = 0.0
     private var yOffset = 0.0
+    private var ccf: CurrentConfig? = null
+    private val msgQueue = ConcurrentLinkedDeque<Map<String, Any>>()
 
     init {
-
         apBorder.setOnMousePressed { event: MouseEvent? ->
             event?.let {
                 xOffset = it.sceneX
@@ -85,7 +76,7 @@ class ProgressView : View() {
             panePause.isVisible = true
             labelTitle.text = messages["resume"]
             runAsync {
-                controller.download(engineType, url, proxyType, address, port, formatID, output, msgQueue)
+                controller.download(ccf!!.engineType, ccf!!.url, ccf!!.proxyType, ccf!!.address, ccf!!.port, ccf!!.formatID, ccf!!.output, msgQueue)
             }
         }
 
@@ -97,11 +88,15 @@ class ProgressView : View() {
             fire(StopBackgroundTask)
         }
 
-        // start download task in background
-        runAsync {
-            controller.download(engineType, url, proxyType, address, port, formatID, output, msgQueue)
+
+        subscribe<DownloadMedia> {
+            ccf = it.ccf
+            runAsync {
+                controller.download(ccf!!.engineType, ccf!!.url, ccf!!.proxyType, ccf!!.address, ccf!!.port, ccf!!.formatID, ccf!!.output, msgQueue)
+            }
         }
 
+        // update display info
         val lastUpdate = SimpleLongProperty()
         val minUpdateInterval: Long = 0
         val timer = object : AnimationTimer() {
@@ -119,14 +114,12 @@ class ProgressView : View() {
                             }
 
                             EngineStatus.FAIL -> {
-                                // TODO fire event to reset main UI
-                                find<TipView>(mapOf("title" to messages["failed"], "content" to "")).openWindow(StageStyle.UNDECORATED)
+                                find<TipView>(mapOf("title" to messages["failed"], "content" to "", "btnText" to messages["btn.close"])).openWindow(StageStyle.UNDECORATED)
                                 this@ProgressView.close()
                             }
 
                             EngineStatus.FINISH -> {
-                                // TODO fire event to reset main UI
-                                find<TipView>(mapOf("title" to messages["completed"], "content" to "")).openWindow(StageStyle.UNDECORATED)
+                                find<TipView>(mapOf("title" to messages["completed"], "content" to "", "btnText" to messages["btn.close"])).openWindow(StageStyle.UNDECORATED)
                                 this@ProgressView.close()
                             }
 

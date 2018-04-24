@@ -62,7 +62,7 @@
          <children>
             <JFXTabPane prefWidth="550.0" stylesheets="@../css/ui.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <tabs>
-                  <Tab text="%tab.generalSetting">
+                  <Tab text="%tab.generalSettings">
                     <content>
                         <VBox>
                            <children>
@@ -190,7 +190,7 @@
                         </VBox>
                     </content>
                   </Tab>
-                  <Tab text="%tab.detailedSetting">
+                  <Tab text="%tab.moreSettings">
                     <content>
                         <VBox prefHeight="390.0" prefWidth="1582.0">
                            <children>
@@ -204,12 +204,12 @@
                                           <Font name="System Bold" size="15.0" />
                                        </font>
                                     </Label>
-                                    <JFXCheckBox fx:id="cbChooseDeafultFormat" style="-jfx-checked-color: #448aff;" text="%checkbox.chooseDefaultFormat" AnchorPane.topAnchor="40.0">
+                                    <JFXCheckBox fx:id="cbDownloadDeafultFormat" style="-jfx-checked-color: #448aff;" text="%checkbox.downloadDefaultFormat" AnchorPane.topAnchor="40.0">
                                        <font>
                                           <Font size="15.0" />
                                        </font>
                                     </JFXCheckBox>
-                                    <JFXCheckBox fx:id="cbAsPlayList" style="-jfx-checked-color: #448aff;" text="%checkbox.asPlayList" AnchorPane.topAnchor="70.0">
+                                    <JFXCheckBox fx:id="cbDownloadPlaylist" style="-jfx-checked-color: #448aff;" text="%checkbox.downloadPlayList" AnchorPane.topAnchor="70.0">
                                        <font>
                                           <Font size="15.0" />
                                        </font>

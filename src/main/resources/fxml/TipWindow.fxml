@@ -9,7 +9,7 @@
 <?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="150.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="150.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <AnchorPane fx:id="apBorder" prefHeight="30.0" prefWidth="550.0" style="-fx-background-color: #303f9f;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -41,7 +41,7 @@
                   </Label>
                   <Label fx:id="labelContent" text="Content" textFill="WHITE">
                      <font>
-                        <Font size="14.0" />
+                        <Font size="15.0" />
                      </font>
                      <VBox.margin>
                         <Insets />
@@ -54,9 +54,9 @@
             </VBox>
          </children>
       </AnchorPane>
-      <JFXButton fx:id="btnClose" style="-fx-background-color: #c5cae9;" textAlignment="CENTER" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="20.0">
+      <JFXButton fx:id="btnClose" buttonType="RAISED" style="-fx-background-color: #c5cae9;" textAlignment="CENTER" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="20.0">
          <font>
-            <Font size="14.0" />
+            <Font size="15.0" />
          </font>
       </JFXButton>
    </children>

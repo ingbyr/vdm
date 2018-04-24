@@ -21,6 +21,7 @@ class UpdatesController : Controller() {
 
     private val logger = LoggerFactory.getLogger(this::class.java)
 
+    // TODO rewrite the upgrade function. Engine needs to handle itself updates func
     fun subscribeEvents() {
 
         subscribe<RequestCheckUpdatesYouGet> {
@@ -80,7 +81,7 @@ class UpdatesController : Controller() {
 
 
     private fun downloadYouGet(remoteV: String) {
-        val url = ContentUtils.yougetUpdateURL(remoteV)
+        val url = EngineUtils.yougetUpdateURL(remoteV)
         logger.debug("[you-get] downloading from $url")
         Fuel.get(url).response { _, response, _ ->
             logger.debug("[you-get] downloading from ${response.url}")
@@ -106,7 +107,7 @@ class UpdatesController : Controller() {
     }
 
     private fun downloadYoutubeDL(remoteV: String) {
-        val url = ContentUtils.youtubedlUpdateURL(remoteV)
+        val url = EngineUtils.youtubedlUpdateURL(remoteV)
         logger.debug("[youtube-dl] downloading from $url")
         Fuel.get(url).response { _, response, _ ->
             logger.debug("[youtube-dl] downloading from ${response.url}")

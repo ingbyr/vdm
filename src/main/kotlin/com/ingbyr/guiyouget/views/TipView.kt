@@ -18,6 +18,7 @@ class TipView : View() {
 
     private val myTitle: String = params["title"] as String
     private val myContent: String = params["content"] as String
+    private val myBtnText: String = params["btnText"] as String
 
     init {
         apBorder.setOnMousePressed { event: MouseEvent? ->
@@ -36,6 +37,7 @@ class TipView : View() {
 
         labelTitle.text = myTitle
         labelContent.text = myContent
+        btnClose.text = myBtnText
 
         btnClose.setOnMouseClicked {
             this.close()
