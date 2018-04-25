@@ -57,12 +57,4 @@ abstract class AbstractEngine {
         logger.debug("exec $args")
         return args
     }
-
-    // TODO delete this
-    fun displayCommand() {
-        /**
-         * Only for debug
-         */
-        println(argsMap.build())
-    }
 }

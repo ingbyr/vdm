@@ -6,7 +6,6 @@ import com.ingbyr.guiyouget.events.RequestCheckUpdatesYouGet
 import com.ingbyr.guiyouget.events.RequestCheckUpdatesYoutubeDL
 import com.ingbyr.guiyouget.events.UpdateYouGetStates
 import com.ingbyr.guiyouget.events.UpdateYoutubeDLStates
-import com.ingbyr.guiyouget.utils.ContentUtils
 import com.ingbyr.guiyouget.utils.EngineUtils
 import org.slf4j.LoggerFactory
 import tornadofx.*

@@ -3,7 +3,8 @@ package com.ingbyr.guiyouget.utils
 enum class EngineType {
     ENGINE_TYPE,
     YOUTUBE_DL,
-    YOU_GET
+    YOU_GET,
+    NONE
 }
 
 enum class EngineStatus {

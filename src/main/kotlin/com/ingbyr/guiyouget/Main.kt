@@ -17,7 +17,7 @@ class Main : App(MainView::class) {
     init {
 
         // TODO i18n debug mode
-        // Locale.setDefault(Locale("en", "test"))
+         Locale.setDefault(Locale("zh", "test"))
 
         val language = Locale.getDefault().language
         if (language !in availableLanguages) {
