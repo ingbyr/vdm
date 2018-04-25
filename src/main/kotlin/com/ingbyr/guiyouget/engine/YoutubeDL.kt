@@ -125,8 +125,12 @@ class YoutubeDL : AbstractEngine() {
     }
 
     override fun format(formatID: String): AbstractEngine {
-        argsMap["-f"] = formatID
-        return this
+        return if (formatID.isEmpty()) {
+            this
+        } else {
+            argsMap["-f"] = formatID
+            this
+        }
     }
 
     override fun output(outputPath: String): AbstractEngine {
@@ -140,6 +144,7 @@ class YoutubeDL : AbstractEngine() {
     }
 
     override fun parseDownloadSingleStatus(line: String) {
+        // TODO parse the ffmpeg merging status output
         progress = progressPattern.matcher(line).takeIf { it.find() }?.group()?.toProgress() ?: progress
         speed = speedPattern.matcher(line).takeIf { it.find() }?.group()?.toString() ?: speed
         extime = extimePattern.matcher(line).takeIf { it.find() }?.group()?.toString() ?: extime

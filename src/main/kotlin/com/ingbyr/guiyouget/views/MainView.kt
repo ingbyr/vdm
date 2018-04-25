@@ -1,6 +1,9 @@
 package com.ingbyr.guiyouget.views
 
 import com.ingbyr.guiyouget.controllers.MainController
+import com.ingbyr.guiyouget.utils.EngineType
+import com.ingbyr.guiyouget.utils.EngineUtils
+import com.ingbyr.guiyouget.events.DownloadMedia
 import com.ingbyr.guiyouget.events.RequestCheckUpdatesYouGet
 import com.ingbyr.guiyouget.events.RequestCheckUpdatesYoutubeDL
 import com.ingbyr.guiyouget.models.CurrentConfig
@@ -18,10 +21,7 @@ import javafx.stage.DirectoryChooser
 import javafx.stage.StageStyle
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import tornadofx.View
-import tornadofx.ViewTransition
-import tornadofx.action
-import tornadofx.seconds
+import tornadofx.*
 import java.awt.Desktop
 import java.lang.IllegalStateException
 import java.nio.file.Paths
@@ -39,43 +39,33 @@ class MainView : View() {
         messages = ResourceBundle.getBundle("i18n/MainView")
     }
 
-    companion object {
-        val logger: Logger = LoggerFactory.getLogger(MainView::class.java)
-    }
-
+    private val logger: Logger = LoggerFactory.getLogger(MainView::class.java)
     private var xOffset = 0.0
     private var yOffset = 0.0
-
     override val root: AnchorPane by fxml("/fxml/MainWindow.fxml")
-
     private val controller: MainController by inject()
+
     private val paneExit: Pane by fxid()
     private val paneMinimize: Pane by fxid()
     private val apBorder: AnchorPane by fxid()
-
     private val tfURL: JFXTextField by fxid()
-
     private val labelStoragePath: Label by fxid()
     private val btnDownload: JFXButton by fxid()
     private val btnChangePath: JFXButton by fxid()
     private val btnOpenDir: JFXButton by fxid()
-
     private val cbDownloadDeafultFormat: JFXCheckBox by fxid()
-    private val cbDownloadPlayList: JFXCheckBox by fxid()
-
+    private val cbDownloadPlaylist: JFXCheckBox by fxid()
     private val tbYoutubeDL: JFXToggleButton by fxid()
     private val tbYouGet: JFXToggleButton by fxid()
     private val labelYoutubeDL: Label by fxid()
     private val labelYouGet: Label by fxid()
     private val btnUpdateCore: JFXButton by fxid()
-
     private val cbSocks5: JFXCheckBox by fxid()
     private val tfSocksAddress: JFXTextField by fxid()
     private val tfSocksPort: JFXTextField by fxid()
     private val cbHTTP: JFXCheckBox by fxid()
     private val tfHTTPAddress: JFXTextField by fxid()
     private val tfHTTPPort: JFXTextField by fxid()
-
     private val labelVersion: Label by fxid()
     private val labelGitHub: Label by fxid()
     private val labelLicense: Label by fxid()
@@ -142,7 +132,7 @@ class MainView : View() {
         }
 
         // init download engine
-        when (EngineType.valueOf(safeLoadConfig(EngineType.ENGINE_TYPE.name, EngineType.YOUTUBE_DL.name))) {
+        when (EngineType.valueOf(safeLoadConfig(EngineType.ENGINE_TYPE.name, EngineType.NONE.name))) {
             EngineType.YOUTUBE_DL -> {
                 tbYoutubeDL.isSelected = true
             }
@@ -150,15 +140,15 @@ class MainView : View() {
                 tbYouGet.isSelected = true
             }
             else -> {
-                app.config[EngineType.ENGINE_TYPE.name] = EngineType.YOUTUBE_DL
+                app.config[EngineType.ENGINE_TYPE.name] = EngineType.YOUTUBE_DL.name
                 app.config.save()
                 tbYoutubeDL.isSelected = true
             }
         }
 
         // init version label
-        labelYouGet.text = app.config[EngineUtils.YOU_GET_VERSION].toString()
-        labelYoutubeDL.text = app.config[EngineUtils.YOUTUBE_DL_VERSION].toString()
+        labelYouGet.text = safeLoadConfig(EngineUtils.YOU_GET_VERSION, messages["noVersionInfo"])
+        labelYoutubeDL.text = safeLoadConfig(EngineUtils.YOUTUBE_DL_VERSION, messages["noVersionInfo"])
 
         // engine toggle button listener
         tbYoutubeDL.action {
@@ -260,12 +250,21 @@ class MainView : View() {
         }
 
         // init about view
-        labelVersion.text = app.config[ContentUtils.APP_VERSION] as String
+        labelVersion.text = safeLoadConfig(ContentUtils.APP_VERSION, messages["noVersionInfo"])
         labelGitHub.setOnMouseClicked { hostServices.showDocument(ContentUtils.APP_SOURCE_CODE) }
         labelLicense.setOnMouseClicked { hostServices.showDocument(ContentUtils.APP_LICENSE) }
         labelAuthor.setOnMouseClicked { hostServices.showDocument(ContentUtils.APP_AUTHOR) }
         btnReportBug.action { hostServices.showDocument(ContentUtils.APP_REPORT_BUGS) }
         btnDonate.action { openInternalWindow(ImageView::class) }
+
+        // init download settings
+        cbDownloadDeafultFormat.isSelected = safeLoadConfig(ContentUtils.DOWNLOAD_DEFAULT, "false").toBoolean()
+        cbDownloadDeafultFormat.action {
+            app.config[ContentUtils.DOWNLOAD_DEFAULT] = cbDownloadDeafultFormat.isSelected.toString()
+            app.config.save()
+        }
+        // TODO enable download playlist
+        cbDownloadPlaylist.isDisable = true
 
         // fetch media json and display it
         btnDownload.setOnMouseClicked {
@@ -293,24 +292,35 @@ class MainView : View() {
                         logger.error("error proxy type $proxyType")
                     }
                 }
-
                 // load engine type
                 val engineType = EngineType.valueOf(safeLoadConfig(EngineType.ENGINE_TYPE.name, EngineType.YOUTUBE_DL.name))
-
                 // load output path
-                val outputPath = app.config.string(ContentUtils.STORAGE_PATH)
+                val output = app.config.string(ContentUtils.STORAGE_PATH)
+                // load download settings
+                val downloadDefaultFormat = safeLoadConfig(ContentUtils.DOWNLOAD_DEFAULT, "false").toBoolean()
+                // create current config instance
+                val ccf = CurrentConfig(engineType, tfURL.text, proxyType, address, port, output, "")
 
-                val ccf = CurrentConfig(engineType, tfURL.text, proxyType, address, port, outputPath, "")
-
-                // display the media list view
-                replaceWith(find<MediaListView>(mapOf("ccf" to ccf)), ViewTransition.Slide(0.3.seconds, ViewTransition.Direction.LEFT))
+                if (downloadDefaultFormat) {
+                    // download default format directly
+                    ProgressView().openWindow(StageStyle.UNDECORATED)
+                    fire(DownloadMedia(ccf))
+                } else {
+                    // display the media list view
+                    replaceWith(find<MediaListView>(mapOf("ccf" to ccf)), ViewTransition.Slide(0.3.seconds, ViewTransition.Direction.LEFT))
+                }
             }
         }
     }
 
     private fun safeLoadConfig(key: String, defaultValue: String): String {
         return try {
-            app.config.string(key)
+            val value = app.config.string(key)
+            if (value.isEmpty()) {
+                throw IllegalStateException("empty value in config file")
+            }else {
+                return value
+            }
         } catch (e: IllegalStateException) {
             app.config[key] = defaultValue
             app.config.save()
