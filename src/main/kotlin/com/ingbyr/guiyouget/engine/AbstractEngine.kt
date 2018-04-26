@@ -22,6 +22,7 @@ abstract class AbstractEngine {
     protected var msgQueue: ConcurrentLinkedDeque<Map<String, Any>>? = null
     protected val running: AtomicBoolean = AtomicBoolean(false)
     protected val argsMap: MutableMap<String, String> = mutableMapOf()
+    protected abstract val remoteVersionUrl: String
 
     abstract fun url(url: String): AbstractEngine
     abstract fun addProxy(type: ProxyType, address: String, port: String): AbstractEngine
@@ -33,6 +34,8 @@ abstract class AbstractEngine {
     abstract fun parseDownloadPlaylistStatus(line: String)
     abstract fun execCommand(command: MutableList<String>, downloadType: DownloadType): StringBuilder?
     abstract fun displayMediaList(labelTitle: Label, labelDescription: Label, listViewMedia: JFXListView<Label>, json: JsonObject)
+
+    abstract fun updateUrl(version: String): String
 
     fun stopTask() {
         /**
