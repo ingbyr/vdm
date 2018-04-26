@@ -22,7 +22,7 @@
 <?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefWidth="550.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefWidth="550.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <AnchorPane fx:id="apBorder" maxHeight="120.0" prefHeight="30.0" prefWidth="550.0" style="-fx-background-color: #303f9f;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -204,7 +204,7 @@
                                           <Font name="System Bold" size="15.0" />
                                        </font>
                                     </Label>
-                                    <JFXCheckBox fx:id="cbDownloadDeafultFormat" style="-jfx-checked-color: #448aff;" text="%checkbox.downloadDefaultFormat" AnchorPane.topAnchor="40.0">
+                                    <JFXCheckBox fx:id="cbDownloadDefaultFormat" style="-jfx-checked-color: #448aff;" text="%checkbox.downloadDefaultFormat" AnchorPane.topAnchor="40.0">
                                        <font>
                                           <Font size="15.0" />
                                        </font>

@@ -19,6 +19,7 @@ import java.util.regex.Pattern
 class YoutubeDL : AbstractEngine() {
 
     override val logger: Logger = LoggerFactory.getLogger(this::class.java)
+    override val remoteVersionUrl: String = "https://raw.githubusercontent.com/rg3/youtube-dl/master/youtube_dl/version.py"
 
     private var speed = "0MiB/s"
     private var extime = "00:00"
@@ -280,5 +281,21 @@ class YoutubeDL : AbstractEngine() {
          */
         val progress = this.split("/")
         return progress[0].trim() >= progress[1].trim()
+    }
+
+    override fun updateUrl(version: String) = when (GUIPlatform.current()) {
+        GUIPlatformType.WINDOWS -> {
+            "https://github.com/rg3/youtube-dl/releases/download/$version/youtube-dl.exe"
+        }
+        GUIPlatformType.LINUX -> {
+            "https://github.com/rg3/youtube-dl/releases/download/$version/youtube-dl"
+        }
+        GUIPlatformType.MAC_OS -> {
+            "https://github.com/rg3/youtube-dl/releases/download/$version/youtube-dl"
+        }
+        GUIPlatformType.NOT_SUPPORTED -> {
+            logger.error("Not supported OS")
+            ""
+        }
     }
 }

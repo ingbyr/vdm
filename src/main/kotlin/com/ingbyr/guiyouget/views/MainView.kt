@@ -30,10 +30,9 @@ import kotlin.collections.set
 
 
 class MainView : View() {
-    // TODO Skip the choice of formatID
     // TODO Add download playlist function
     // TODO Add download with cookie
-    // TODO set external ffmpeg path to handle with media
+    // TODO Wizard to init config and engine env: ffmpeg
 
     init {
         messages = ResourceBundle.getBundle("i18n/MainView")
@@ -53,7 +52,7 @@ class MainView : View() {
     private val btnDownload: JFXButton by fxid()
     private val btnChangePath: JFXButton by fxid()
     private val btnOpenDir: JFXButton by fxid()
-    private val cbDownloadDeafultFormat: JFXCheckBox by fxid()
+    private val cbDownloadDefaultFormat: JFXCheckBox by fxid()
     private val cbDownloadPlaylist: JFXCheckBox by fxid()
     private val tbYoutubeDL: JFXToggleButton by fxid()
     private val tbYouGet: JFXToggleButton by fxid()
@@ -258,9 +257,9 @@ class MainView : View() {
         btnDonate.action { openInternalWindow(ImageView::class) }
 
         // init download settings
-        cbDownloadDeafultFormat.isSelected = safeLoadConfig(ContentUtils.DOWNLOAD_DEFAULT, "false").toBoolean()
-        cbDownloadDeafultFormat.action {
-            app.config[ContentUtils.DOWNLOAD_DEFAULT] = cbDownloadDeafultFormat.isSelected.toString()
+        cbDownloadDefaultFormat.isSelected = safeLoadConfig(ContentUtils.DOWNLOAD_DEFAULT, "false").toBoolean()
+        cbDownloadDefaultFormat.action {
+            app.config[ContentUtils.DOWNLOAD_DEFAULT] = cbDownloadDefaultFormat.isSelected.toString()
             app.config.save()
         }
         // TODO enable download playlist
@@ -268,7 +267,6 @@ class MainView : View() {
 
         // fetch media json and display it
         btnDownload.setOnMouseClicked {
-            // TODO more error handlers
             if (tfURL.text != null && tfURL.text.trim() != "") {
                 // load proxy settings
                 val proxyType = ProxyType.valueOf(safeLoadConfig(ProxyType.PROXY_TYPE.name, ProxyType.NONE.name))
