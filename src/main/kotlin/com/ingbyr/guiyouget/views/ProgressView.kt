@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory
 import tornadofx.View
 import tornadofx.get
 import java.util.*
-import java.util.concurrent.ConcurrentLinkedDeque
+import java.util.concurrent.ConcurrentLinkedQueue
 
 
 class ProgressView : View() {
@@ -41,7 +41,7 @@ class ProgressView : View() {
     private var xOffset = 0.0
     private var yOffset = 0.0
     private var ccf: CurrentConfig? = null
-    private val msgQueue = ConcurrentLinkedDeque<Map<String, Any>>()
+    private val msgQueue = ConcurrentLinkedQueue<Map<String, Any>>()
 
     init {
         apBorder.setOnMousePressed { event: MouseEvent? ->
@@ -76,7 +76,7 @@ class ProgressView : View() {
             panePause.isVisible = true
             labelTitle.text = messages["resume"]
             runAsync {
-                controller.download(ccf!!.engineType, ccf!!.url, ccf!!.proxyType, ccf!!.address, ccf!!.port, ccf!!.formatID, ccf!!.output, msgQueue)
+                controller.download(ccf!!, msgQueue)
             }
         }
 
@@ -92,7 +92,7 @@ class ProgressView : View() {
         subscribe<DownloadMedia> {
             ccf = it.ccf
             runAsync {
-                controller.download(ccf!!.engineType, ccf!!.url, ccf!!.proxyType, ccf!!.address, ccf!!.port, ccf!!.formatID, ccf!!.output, msgQueue)
+                controller.download(ccf!!, msgQueue)
             }
         }
 

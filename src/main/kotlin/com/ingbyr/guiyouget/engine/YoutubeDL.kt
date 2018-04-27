@@ -13,6 +13,7 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.file.Paths
 import java.util.concurrent.ConcurrentLinkedDeque
+import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 
@@ -139,7 +140,7 @@ class YoutubeDL : AbstractEngine() {
         return this
     }
 
-    override fun downloadMedia(messageQuene: ConcurrentLinkedDeque<Map<String, Any>>) {
+    override fun downloadMedia(messageQuene: ConcurrentLinkedQueue<Map<String, Any>>) {
         msgQueue = messageQuene
         execCommand(argsMap.build(), DownloadType.SINGLE)
     }
@@ -165,8 +166,7 @@ class YoutubeDL : AbstractEngine() {
         }
 
         // send the status to msg queue to update UI
-        msgQueue?.offer(
-                mapOf("progress" to progress,
+        msgQueue?.offer(mapOf("progress" to progress,
                         "speed" to speed,
                         "extime" to extime,
                         "status" to status))

@@ -3,11 +3,10 @@ package com.ingbyr.guiyouget.controllers
 import com.ingbyr.guiyouget.engine.AbstractEngine
 import com.ingbyr.guiyouget.engine.EngineFactory
 import com.ingbyr.guiyouget.events.StopBackgroundTask
-import com.ingbyr.guiyouget.utils.EngineType
-import com.ingbyr.guiyouget.utils.ProxyType
+import com.ingbyr.guiyouget.models.CurrentConfig
 import org.slf4j.LoggerFactory
 import tornadofx.Controller
-import java.util.concurrent.ConcurrentLinkedDeque
+import java.util.concurrent.ConcurrentLinkedQueue
 
 // todo import OSGi to add engine dynamically
 
@@ -24,14 +23,13 @@ class ProgressController : Controller() {
         }
     }
 
-    fun download(engineType: EngineType, url: String, proxyType: ProxyType, address: String, port: String,
-                 formatID: String, output: String, msgQueue: ConcurrentLinkedDeque<Map<String, Any>>) {
-        engine = EngineFactory.create(engineType)
+    fun download(ccf: CurrentConfig, msgQueue: ConcurrentLinkedQueue<Map<String, Any>>) {
+        engine = EngineFactory.create(ccf.engineType)
         if (engine != null) {
-            engine!!.url(url).addProxy(proxyType, address, port).format(formatID).output(output).downloadMedia(msgQueue)
+            engine!!.url(ccf.url).addProxy(ccf.proxyType, ccf.address, ccf.port).format(ccf.formatID).output(ccf.output).downloadMedia(msgQueue)
             engine = null
         } else {
-            logger.error("bad engine $engineType when download media")
+            logger.error("bad engine ${ccf.engineType} when download media")
         }
     }
 }

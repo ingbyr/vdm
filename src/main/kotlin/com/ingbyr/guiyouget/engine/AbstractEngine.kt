@@ -7,6 +7,7 @@ import com.jfoenix.controls.JFXListView
 import javafx.scene.control.Label
 import org.slf4j.Logger
 import java.util.concurrent.ConcurrentLinkedDeque
+import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicBoolean
 
 
@@ -19,7 +20,7 @@ abstract class AbstractEngine {
      * Stop thread
      */
     protected abstract val logger: Logger
-    protected var msgQueue: ConcurrentLinkedDeque<Map<String, Any>>? = null
+    protected var msgQueue: ConcurrentLinkedQueue<Map<String, Any>>? = null
     protected val running: AtomicBoolean = AtomicBoolean(false)
     protected val argsMap: MutableMap<String, String> = mutableMapOf()
     protected abstract val remoteVersionUrl: String
@@ -29,7 +30,7 @@ abstract class AbstractEngine {
     abstract fun fetchMediaJson(): JsonObject
     abstract fun format(formatID: String): AbstractEngine
     abstract fun output(outputPath: String): AbstractEngine
-    abstract fun downloadMedia(messageQuene: ConcurrentLinkedDeque<Map<String, Any>>)
+    abstract fun downloadMedia(messageQuene: ConcurrentLinkedQueue<Map<String, Any>>)
     abstract fun parseDownloadSingleStatus(line: String)
     abstract fun parseDownloadPlaylistStatus(line: String)
     abstract fun execCommand(command: MutableList<String>, downloadType: DownloadType): StringBuilder?
