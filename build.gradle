@@ -9,7 +9,7 @@ buildscript {
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath group: "de.dynamicfiles.projects.gradle.plugins", name: "javafx-gradle-plugin", version: "8.8.2"
+        classpath "de.dynamicfiles.projects.gradle.plugins:javafx-gradle-plugin:8.8.2"
     }
 }
 
@@ -27,8 +27,10 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     compile "no.tornado:tornadofx:1.7.15"
     compile "com.jfoenix:jfoenix:8.0.3"
-    compile 'com.beust:klaxon:2.1.13'
-    compile group: "ch.qos.logback", name: "logback-classic", version: "1.2.3"
+    compile "com.beust:klaxon:2.1.13"
+    compile "ch.qos.logback:logback-classic:1.2.3"
+    compile "com.squareup.okhttp3:okhttp:3.10.0"
+    compile "com.squareup.okio:okio:1.14.0"
 }
 
 compileKotlin {
