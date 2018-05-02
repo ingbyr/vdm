@@ -37,7 +37,7 @@ object NetUtils {
                 val sinkBuffer = sink.buffer()
                 var totalBytesRead: Long = 0
                 val bufferSize: Long = 2 * 1024
-                var bytesRead: Long
+                var bytesRead: Long = 0
 
                 while (true) {
                     bytesRead = source.read(sinkBuffer, bufferSize)

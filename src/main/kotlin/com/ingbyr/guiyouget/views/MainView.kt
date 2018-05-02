@@ -30,9 +30,9 @@ import kotlin.collections.set
 
 
 class MainView : View() {
-    // TODO Add download playlist function
-    // TODO Add download with cookie
-    // TODO Wizard to init config and engine env: ffmpeg
+    // TODO add download playlist function
+    // TODO add download with cookie
+    // TODO wizard to init config and engine env: ffmpeg
 
     init {
         messages = ResourceBundle.getBundle("i18n/MainView")
