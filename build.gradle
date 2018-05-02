@@ -2,7 +2,7 @@ group = "com.ingbyr.guiyouget"
 version = "0.2.3"
 
 buildscript {
-    ext.kotlin_version = "1.2.40"
+    ext.kotlin_version = "1.2.41"
 
     repositories {
         mavenCentral()

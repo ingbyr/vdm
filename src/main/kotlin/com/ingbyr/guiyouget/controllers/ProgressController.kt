@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory
 import tornadofx.Controller
 import java.util.concurrent.ConcurrentLinkedQueue
 
-// todo import OSGi to add engine dynamically
 
 class ProgressController : Controller() {
     private val logger = LoggerFactory.getLogger(this::class.java)

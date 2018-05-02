@@ -16,7 +16,7 @@ class UpdatesController : Controller() {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     fun subscribeEvents() {
-        //TODO Engine needs to handle itself updates func
+        //TODO engine needs to handle itself updates func
         subscribe<RequestCheckUpdatesYoutubeDL> {
             //TODO check updates for youtube-dl
         }

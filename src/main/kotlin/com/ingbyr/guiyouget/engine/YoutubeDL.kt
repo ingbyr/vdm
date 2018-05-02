@@ -31,7 +31,6 @@ class YoutubeDL : AbstractEngine() {
     private val progressPattern = Pattern.compile("\\d+\\W?\\d*%")
     private val speedPattern = Pattern.compile("\\d+\\W?\\d*\\w+/s")
     private val extimePattern = Pattern.compile("\\d+:\\d+")
-    // todo parse the playlist output
     private val playlistProgressPattern = Pattern.compile("\\d+\\sof\\s\\d+")
 
     init {
@@ -173,7 +172,7 @@ class YoutubeDL : AbstractEngine() {
     }
 
     override fun parseDownloadPlaylistStatus(line: String) {
-        //todo parse the playlist
+        //TODO parse the playlist
         progress = progressPattern.matcher(line).takeIf { it.find() }?.group()?.toProgress() ?: progress
         speed = speedPattern.matcher(line).takeIf { it.find() }?.group()?.toString() ?: speed
         playlistProgress = playlistProgressPattern.matcher(line).takeIf { it.find() }?.group()?.toString()?.replace("of", "/") ?: playlistProgress
@@ -241,7 +240,7 @@ class YoutubeDL : AbstractEngine() {
                 while (running.get()) {
                     line = r.readLine()
                     if (line != null) {
-                        // todo download playlist
+                        //TODO download playlist
                     } else {
                         break
                     }
