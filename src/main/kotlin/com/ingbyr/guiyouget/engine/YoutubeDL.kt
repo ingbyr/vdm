@@ -12,7 +12,6 @@ import tornadofx.observable
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.file.Paths
-import java.util.concurrent.ConcurrentLinkedDeque
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern

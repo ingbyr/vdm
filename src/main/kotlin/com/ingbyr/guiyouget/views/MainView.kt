@@ -1,8 +1,6 @@
 package com.ingbyr.guiyouget.views
 
 import com.ingbyr.guiyouget.controllers.MainController
-import com.ingbyr.guiyouget.utils.EngineType
-import com.ingbyr.guiyouget.utils.EngineUtils
 import com.ingbyr.guiyouget.events.DownloadMedia
 import com.ingbyr.guiyouget.events.RequestCheckUpdatesYouGet
 import com.ingbyr.guiyouget.events.RequestCheckUpdatesYoutubeDL
@@ -316,7 +314,7 @@ class MainView : View() {
             val value = app.config.string(key)
             if (value.isEmpty()) {
                 throw IllegalStateException("empty value in config file")
-            }else {
+            } else {
                 return value
             }
         } catch (e: IllegalStateException) {

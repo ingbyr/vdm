@@ -1,6 +1,7 @@
 package com.ingbyr.guiyouget.events
 
-import tornadofx.*
+import tornadofx.EventBus
+import tornadofx.FXEvent
 
 // you-get updates
 object RequestCheckUpdatesYouGet : FXEvent(EventBus.RunOn.BackgroundThread)
