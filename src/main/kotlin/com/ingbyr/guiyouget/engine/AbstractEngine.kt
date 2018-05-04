@@ -6,7 +6,6 @@ import com.ingbyr.guiyouget.utils.ProxyType
 import com.jfoenix.controls.JFXListView
 import javafx.scene.control.Label
 import org.slf4j.Logger
-import java.util.concurrent.ConcurrentLinkedDeque
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicBoolean
 

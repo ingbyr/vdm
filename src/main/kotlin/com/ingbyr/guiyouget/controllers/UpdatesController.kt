@@ -1,6 +1,5 @@
 package com.ingbyr.guiyouget.controllers
 
-import com.ingbyr.guiyouget.engine.YoutubeDL
 import com.ingbyr.guiyouget.events.RequestCheckUpdatesYouGet
 import com.ingbyr.guiyouget.events.RequestCheckUpdatesYoutubeDL
 import org.slf4j.LoggerFactory

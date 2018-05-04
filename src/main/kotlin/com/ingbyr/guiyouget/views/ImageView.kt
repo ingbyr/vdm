@@ -1,9 +1,11 @@
 package com.ingbyr.guiyouget.views
 
-import tornadofx.*
+import tornadofx.View
+import tornadofx.imageview
+import tornadofx.vbox
 
 class ImageView : View() {
-    override val root = vbox  {
+    override val root = vbox {
         imageview("/img/zhifubao_compress.jpg", lazyload = false)
     }
 }
