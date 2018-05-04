@@ -1,17 +1,17 @@
 package com.ingbyr.guiyouget.views
 
 import com.ingbyr.guiyouget.controllers.MainController
-import com.ingbyr.guiyouget.models.FileItem
+import com.ingbyr.guiyouget.models.DownloadTask
 import com.jfoenix.controls.JFXButton
-import com.jfoenix.controls.JFXListView
+import com.jfoenix.controls.JFXCheckBox
+import com.jfoenix.controls.JFXProgressBar
+import javafx.geometry.Insets
 import javafx.scene.control.MenuItem
 import javafx.scene.layout.VBox
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import tornadofx.View
-import tornadofx.observable
+import tornadofx.*
 import java.lang.IllegalStateException
-import java.time.LocalDateTime
 import java.util.*
 import kotlin.collections.set
 
@@ -47,17 +47,36 @@ class MainView : View() {
     private val btnOpenFile: JFXButton by fxid()
     private val btnSearch: JFXButton by fxid()
     private val btnPreferences: JFXButton by fxid()
-    private val listView: JFXListView<FileItem> by fxid()
-
-    private val fileItemList = mutableListOf(FileItem(false, "test", "10MB", 0.3),
-            FileItem(true, "title", "1MB", 1.0)).observable()
 
     init {
-        listView.cellFragment(FileListFragment::class)
-        listView.items = fileItemList
+        val downloadTasks = mutableListOf(
+                DownloadTask(false, "1", "1mb", 0.0),
+                DownloadTask(false, "2", "2mb", 0.5),
+                DownloadTask(false, "3", "3mb", 1.0)).observable()
 
         btnNew.setOnMouseClicked {
-            fileItemList.add(FileItem(false, LocalDateTime.now().toString(), "0MB", 0.0))
+            downloadTasks.add(DownloadTask(true, "add test", "0mb", 0.2))
+        }
+
+        root += anchorpane {
+            fitToParentSize()
+            padding = Insets(10.0)
+            tableview(downloadTasks) {
+                fitToParentSize()
+                columnResizePolicy = SmartResize.POLICY
+                column("", DownloadTask::checkedProperty).cellFormat {
+                    val cb = JFXCheckBox("")
+                    cb.isSelected = it
+                    graphic = cb
+                }
+                column(messages["ui.title"], DownloadTask::titleProperty)
+                column(messages["ui.size"], DownloadTask::sizeProperty)
+                column(messages["ui.progress"], DownloadTask::progressProperty).cellFormat {
+                    val pb = JFXProgressBar(it.toDouble())
+                    pb.useMaxSize = true
+                    graphic = pb
+                }
+            }
         }
     }
 
