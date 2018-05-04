@@ -5,19 +5,18 @@ import javafx.application.Application
 import org.slf4j.LoggerFactory
 import tornadofx.App
 import tornadofx.FX
-import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.*
 
 class Main : App(MainView::class) {
     private val logger = LoggerFactory.getLogger(Main::class.java)
-    override val configBasePath: Path = Paths.get(System.getProperty("user.dir"))
+    override val configBasePath = Paths.get(System.getProperty("user.home"), ".vdm").toAbsolutePath()!!
     private val availableLanguages = listOf("zh", "en", "hu")
 
     init {
 
         // TODO i18n debug mode
-         Locale.setDefault(Locale("zh", "test"))
+        // Locale.setDefault(Locale("test", "test"))
 
         val language = Locale.getDefault().language
         if (language !in availableLanguages) {
