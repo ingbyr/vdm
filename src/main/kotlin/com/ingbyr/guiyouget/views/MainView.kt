@@ -17,10 +17,6 @@ import kotlin.collections.set
 
 
 class MainView : View() {
-    // TODO add download playlist function
-    // TODO add download with cookie
-    // TODO wizard to init config and engine env: ffmpeg
-
     init {
         messages = ResourceBundle.getBundle("i18n/MainView")
     }
@@ -71,7 +67,7 @@ class MainView : View() {
                 }
             }
 
-            downloadTaskTableView.selectionModel.selectedItemProperty().addListener { observable, oldValue, newValue ->
+            downloadTaskTableView.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
                 logger.debug(newValue.titleProperty.value)
             }
         }
