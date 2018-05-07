@@ -76,20 +76,25 @@ class MainView : View() {
     }
 
     private fun initListeners() {
-        // create new task
-        btnNew.setOnMouseClicked {
-            downloadTasks.add(DownloadTask(true, "add from button", "0mb", 0.2))
-        }
-        menuNew.action {
-            downloadTasks.add(DownloadTask(true, "add from menu", "0mb", 0.5))
-        }
-
         // preferences view
         btnPreferences.setOnMouseClicked {
             find(PreferencesView::class).openWindow()
         }
         menuPreferences.action {
             find(PreferencesView::class).openWindow()
+        }
+
+        // create task
+        btnNew.setOnMouseClicked {
+            find(CreateDownloadTaskView::class).openWindow()
+        }
+        menuNew.action {
+            find(CreateDownloadTaskView::class).openWindow()
+        }
+
+        // donate
+        menuDonate.action {
+            openInternalWindow(ImageView::class)
         }
     }
 
