@@ -172,3 +172,16 @@
 .jfx-toggle-button {
     -jfx-toggle-color: -color-p;
 }
+
+.jfx-text-field {
+    -jfx-focus-color: -color-p;
+    -jfx-unfocus-color: -color-l;
+}
+
+#media-list-p {
+    -fx-background-color: -color-p;
+}
+
+#media-list-p .label {
+    -fx-text-fill: white;
+}
