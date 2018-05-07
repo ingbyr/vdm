@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXTabPane?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import com.jfoenix.controls.JFXToggleButton?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Group?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <JFXTabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" rotateGraphic="true" side="LEFT" stylesheets="@themes/DefaultTheme.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <tabs>
@@ -23,11 +27,61 @@
 
         </content>
          <content>
-            <VBox prefHeight="200.0" prefWidth="100.0">
-               <children>
-                  <JFXToggleButton text="%ui.downloadDefaultFormat" />
-               </children>
-            </VBox>
+            <SplitPane dividerPositions="0.3, 0.6" orientation="VERTICAL">
+              <items>
+                  <VBox spacing="10.0">
+                     <children>
+                        <AnchorPane>
+                           <children>
+                              <Label layoutX="15.0" text="%ui.storagePath" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font>
+                              </Label>
+                              <JFXButton id="settings-btn" buttonType="RAISED" layoutX="15.0" layoutY="35.0" text="%ui.changePath" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </children>
+                        </AnchorPane>
+                        <Label id="small-text" fx:id="labelStoragePath" text="path" wrapText="true" />
+                     </children>
+                     <padding>
+                        <Insets left="15.0" right="10.0" top="10.0" />
+                     </padding>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </VBox>
+                  <VBox spacing="10.0">
+                     <children>
+                        <AnchorPane>
+                           <children>
+                              <Label layoutX="15.0" text="%ui.ffmpegPath" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font>
+                              </Label>
+                              <JFXButton id="settings-btn" buttonType="RAISED" layoutX="15.0" layoutY="35.0" text="%ui.changePath" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </children>
+                        </AnchorPane>
+                        <Label id="small-text" fx:id="labelFfmpegPath" text="path" wrapText="true" />
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" left="15.0" right="10.0" top="10.0" />
+                     </padding>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </VBox>
+                  <VBox>
+                     <children>
+                        <JFXToggleButton fx:id="btnDownloadDefault" text="%ui.downloadDefaultFormat" />
+                        <JFXToggleButton text="%ui.enableProxy" />
+                     </children>
+                     <padding>
+                        <Insets right="10.0" top="10.0" />
+                     </padding>
+                  </VBox>
+              </items>
+            </SplitPane>
          </content>
       </Tab>
       <Tab>
@@ -39,13 +93,13 @@
             </Group>
          </graphic>
          <content>
-            <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">
-               <children>
+            <SplitPane dividerPositions="0.3, 0.6" orientation="VERTICAL">
+               <items>
                   <VBox>
                      <children>
                         <HBox alignment="CENTER_LEFT">
                            <children>
-                              <JFXToggleButton text="%ui.youtube-dl">
+                              <JFXToggleButton fx:id="tbYoutubeDL" text="%ui.youtube-dl">
                                  <toggleGroup>
                                     <ToggleGroup fx:id="engines" />
                                  </toggleGroup>
@@ -59,20 +113,20 @@
                            </children>
                         </HBox>
                         <Label id="small-text" text="%ui.youtube-dl.desc" wrapText="true">
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
                            <padding>
-                              <Insets left="20.0" />
+                              <Insets left="15.0" />
                            </padding>
                         </Label>
                      </children>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
                   </VBox>
                   <VBox>
                      <children>
                         <HBox alignment="CENTER_LEFT">
                            <children>
-                              <JFXToggleButton text="%ui.you-get" toggleGroup="$engines" />
+                              <JFXToggleButton fx:id="tbYouGet" text="%ui.you-get" toggleGroup="$engines" />
                               <HBox alignment="CENTER" spacing="10.0">
                                  <children>
                                     <Label text="%ui.version" />
@@ -83,7 +137,7 @@
                         </HBox>
                         <Label id="small-text" text="%ui.you-get.desc" wrapText="true">
                            <padding>
-                              <Insets left="20.0" />
+                              <Insets left="15.0" />
                            </padding>
                         </Label>
                      </children>
@@ -92,7 +146,7 @@
                      <children>
                         <HBox alignment="CENTER_LEFT">
                            <children>
-                              <JFXToggleButton text="%ui.ykdl" toggleGroup="$engines" />
+                              <JFXToggleButton fx:id="tbYkdl" text="%ui.ykdl" toggleGroup="$engines" />
                               <HBox alignment="CENTER" spacing="10.0">
                                  <children>
                                     <Label text="%ui.version" />
@@ -103,16 +157,13 @@
                         </HBox>
                         <Label id="small-text" text="%ui.ykdl.desc" wrapText="true">
                            <padding>
-                              <Insets left="20.0" />
+                              <Insets left="15.0" />
                            </padding>
                         </Label>
                      </children>
                   </VBox>
-               </children>
-               <padding>
-                  <Insets right="10.0" />
-               </padding>
-            </VBox>
+               </items>
+            </SplitPane>
          </content>
       </Tab>
       <Tab>
@@ -124,11 +175,11 @@
             </Group>
          </graphic>
          <content>
-            <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">
-               <children>
+            <SplitPane dividerPositions="0.5" orientation="VERTICAL">
+               <items>
                   <VBox spacing="10.0">
                      <children>
-                        <JFXToggleButton text="%ui.socks5">
+                        <JFXToggleButton fx:id="tbSocks5" text="%ui.socks5">
                            <toggleGroup>
                               <ToggleGroup fx:id="proxy" />
                            </toggleGroup>
@@ -136,55 +187,66 @@
                         <HBox alignment="CENTER_LEFT" spacing="10.0">
                            <children>
                               <Label text="%ui.address" />
-                              <JFXTextField HBox.hgrow="ALWAYS" />
+                              <JFXTextField fx:id="tfSocks5Address" HBox.hgrow="ALWAYS" />
                            </children>
                            <padding>
-                              <Insets left="10.0" />
+                              <Insets left="15.0" />
                            </padding>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
                         </HBox>
                         <HBox alignment="CENTER_LEFT" spacing="10.0">
                            <children>
                               <Label text="%ui.port" />
-                              <JFXTextField HBox.hgrow="ALWAYS" />
+                              <JFXTextField fx:id="tfSocks5Port" HBox.hgrow="ALWAYS" />
                            </children>
                            <padding>
-                              <Insets left="10.0" />
+                              <Insets left="15.0" />
                            </padding>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
                         </HBox>
                      </children>
-                     <VBox.margin>
+                     <padding>
                         <Insets right="10.0" />
-                     </VBox.margin>
+                     </padding>
                   </VBox>
                   <VBox spacing="10.0">
                      <children>
-                        <JFXToggleButton text="%ui.http">
-                           <toggleGroup>
-                              <ToggleGroup fx:id="proxy1" />
-                           </toggleGroup>
-                        </JFXToggleButton>
+                        <JFXToggleButton fx:id="tbHTTP" text="%ui.http" toggleGroup="$proxy" />
                         <HBox alignment="CENTER_LEFT" spacing="10.0">
                            <children>
                               <Label text="%ui.address" />
-                              <JFXTextField HBox.hgrow="ALWAYS" />
+                              <JFXTextField fx:id="tfHTTPAddress" HBox.hgrow="ALWAYS" />
                            </children>
                            <padding>
-                              <Insets left="10.0" />
+                              <Insets left="15.0" />
                            </padding>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
                         </HBox>
                         <HBox alignment="CENTER_LEFT" spacing="10.0">
                            <children>
                               <Label text="%ui.port" />
-                              <JFXTextField HBox.hgrow="ALWAYS" />
+                              <JFXTextField fx:id="tfHTTPPort" HBox.hgrow="ALWAYS" />
                            </children>
                            <padding>
-                              <Insets left="10.0" />
+                              <Insets left="15.0" />
                            </padding>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
                         </HBox>
                      </children>
+                     <padding>
+                        <Insets right="10.0" top="10.0" />
+                     </padding>
                   </VBox>
-               </children>
-            </VBox>
+               </items>
+            </SplitPane>
          </content>
       </Tab>
    </tabs>
