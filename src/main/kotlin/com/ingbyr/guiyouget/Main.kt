@@ -3,8 +3,7 @@ package com.ingbyr.guiyouget
 import com.ingbyr.guiyouget.views.MainView
 import javafx.application.Application
 import org.slf4j.LoggerFactory
-import tornadofx.App
-import tornadofx.FX
+import tornadofx.*
 import java.nio.file.Paths
 import java.util.*
 
@@ -23,10 +22,11 @@ class Main : App(MainView::class) {
             Locale.setDefault(Locale("en", "US"))
         }
 
-        val prop = System.getProperties()
-        logger.debug("OS: ${prop["os.name"]?.toString()} Arch: ${prop["os.arch"]?.toString()} Version: ${prop["os.version"]?.toString()}")
-        logger.debug("JAVA: ${prop["java.version"]?.toString()} Vender: ${prop["java.vendor"]?.toString()}")
-        logger.debug("Default Locale: ${FX.locale} Current Locale:${Locale.getDefault().language}_${Locale.getDefault().country}")
+        // TODO uncomment this
+//        val prop = System.getProperties()
+//        logger.debug("OS: ${prop["os.name"]?.toString()} Arch: ${prop["os.arch"]?.toString()} Version: ${prop["os.version"]?.toString()}")
+//        logger.debug("JAVA: ${prop["java.version"]?.toString()} Vender: ${prop["java.vendor"]?.toString()}")
+//        logger.debug("Default Locale: ${FX.locale} Current Locale:${Locale.getDefault().language}_${Locale.getDefault().country}")
     }
 }
 

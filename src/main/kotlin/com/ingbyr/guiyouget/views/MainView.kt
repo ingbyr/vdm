@@ -48,20 +48,13 @@ class MainView : View() {
     private val btnSearch: JFXButton by fxid()
     private val btnPreferences: JFXButton by fxid()
 
+    private val downloadTasks = mutableListOf<DownloadTask>(DownloadTask(true, "1", "34MB", 0.4)).observable()
+
     init {
-        val downloadTasks = mutableListOf(
-                DownloadTask(false, "1", "1mb", 0.0),
-                DownloadTask(false, "2", "2mb", 0.5),
-                DownloadTask(false, "3", "3mb", 1.0)).observable()
-
-        btnNew.setOnMouseClicked {
-            downloadTasks.add(DownloadTask(true, "add test", "0mb", 0.2))
-        }
-
         root += anchorpane {
             fitToParentSize()
             padding = Insets(10.0)
-            tableview(downloadTasks) {
+            val downloadTaskTableView = tableview(downloadTasks) {
                 fitToParentSize()
                 columnResizePolicy = SmartResize.POLICY
                 column("", DownloadTask::checkedProperty).cellFormat {
@@ -77,6 +70,30 @@ class MainView : View() {
                     graphic = pb
                 }
             }
+
+            downloadTaskTableView.selectionModel.selectedItemProperty().addListener { observable, oldValue, newValue ->
+                logger.debug(newValue.titleProperty.value)
+            }
+        }
+
+        initListeners()
+    }
+
+    private fun initListeners() {
+        // create new task
+        btnNew.setOnMouseClicked {
+            downloadTasks.add(DownloadTask(true, "add from button", "0mb", 0.2))
+        }
+        menuNew.action {
+            downloadTasks.add(DownloadTask(true, "add from menu", "0mb", 0.5))
+        }
+
+        // preferences view
+        btnPreferences.setOnMouseClicked {
+            find(PreferencesView::class).openWindow()
+        }
+        menuPreferences.action {
+            find(PreferencesView::class).openWindow()
         }
     }
 

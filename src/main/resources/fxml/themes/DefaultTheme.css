@@ -8,6 +8,10 @@
     -fx-font-size: 20;
 }
 
+#small-text .text {
+    -fx-font-size: 14;
+}
+
 .menu .label {
     -fx-text-fill: #ffffff;
 }
@@ -115,6 +119,35 @@
     -fx-background-color: -color-l;
 }
 
+.table-row-cell:selected {
+    -fx-background-color: -color-l;
+}
+
 .jfx-progress-bar > .bar {
     -fx-background-color: -color-p;
+}
+
+.jfx-tab-pane .tab-header-area .jfx-rippler {
+    -jfx-rippler-fill: -color-l;
+}
+
+.tab-header-background {
+    -fx-background-color: -color-p;
+}
+
+.jfx-tab-pane .tab-selected-line {
+    -fx-background-color: -color-l;
+    -fx-pref-height: 3pt;
+}
+
+.tab {
+    -fx-padding: 2em 0.5em 2em 0.5em;
+}
+
+#label-option {
+    -fx-text-fill: white;
+}
+
+.jfx-toggle-button {
+    -jfx-toggle-color: -color-p;
 }
