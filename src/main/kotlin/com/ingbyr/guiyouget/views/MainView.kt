@@ -32,9 +32,6 @@ class MainView : View() {
     private val menuPreferences: MenuItem by fxid()
     private val menuQuit: MenuItem by fxid()
     private val menuAbout: MenuItem by fxid()
-    private val menuHelp: MenuItem by fxid()
-    private val menuCheckForUpdates: MenuItem by fxid()
-    private val menuReportBug: MenuItem by fxid()
     private val menuDonate: MenuItem by fxid()
     private val btnNew: JFXButton by fxid()
     private val btnStart: JFXButton by fxid()
@@ -60,7 +57,7 @@ class MainView : View() {
                 }
                 column(messages["ui.title"], DownloadTask::titleProperty)
                 column(messages["ui.size"], DownloadTask::sizeProperty)
-                column(messages["ui.progress"], DownloadTask::progressProperty).cellFormat {
+                column(messages["ui.status"], DownloadTask::progressProperty).cellFormat {
                     val pb = JFXProgressBar(it.toDouble())
                     pb.useMaxSize = true
                     graphic = pb
