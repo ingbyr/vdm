@@ -1,9 +1,9 @@
-package com.ingbyr.guiyouget.controllers
+package com.ingbyr.vdm.controllers
 
-import com.ingbyr.guiyouget.engine.AbstractEngine
-import com.ingbyr.guiyouget.engine.EngineFactory
-import com.ingbyr.guiyouget.events.StopBackgroundTask
-import com.ingbyr.guiyouget.models.CurrentConfig
+import com.ingbyr.vdm.engine.AbstractEngine
+import com.ingbyr.vdm.engine.EngineFactory
+import com.ingbyr.vdm.events.StopBackgroundTask
+import com.ingbyr.vdm.models.VDMConfig
 import org.slf4j.LoggerFactory
 import tornadofx.Controller
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -22,7 +22,7 @@ class ProgressController : Controller() {
         }
     }
 
-    fun download(ccf: CurrentConfig, msgQueue: ConcurrentLinkedQueue<Map<String, Any>>) {
+    fun download(ccf: VDMConfig, msgQueue: ConcurrentLinkedQueue<Map<String, Any>>) {
         engine = EngineFactory.create(ccf.engineType)
         if (engine != null) {
             engine!!.url(ccf.url).addProxy(ccf.proxyType, ccf.address, ccf.port).format(ccf.formatID).output(ccf.output).downloadMedia(msgQueue)

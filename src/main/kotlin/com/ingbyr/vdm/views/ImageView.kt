@@ -1,4 +1,4 @@
-package com.ingbyr.guiyouget.views
+package com.ingbyr.vdm.views
 
 import tornadofx.View
 import tornadofx.imageview

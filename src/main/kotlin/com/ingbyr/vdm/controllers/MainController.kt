@@ -1,6 +1,6 @@
-package com.ingbyr.guiyouget.controllers
+package com.ingbyr.vdm.controllers
 
-import com.ingbyr.guiyouget.utils.ContentUtils
+import com.ingbyr.vdm.utils.ContentUtils
 import tornadofx.Controller
 
 

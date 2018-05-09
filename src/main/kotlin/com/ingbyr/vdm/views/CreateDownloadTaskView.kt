@@ -1,6 +1,6 @@
-package com.ingbyr.guiyouget.views
+package com.ingbyr.vdm.views
 
-import com.ingbyr.guiyouget.models.Media
+import com.ingbyr.vdm.models.Media
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXTextField
 import javafx.scene.control.Label

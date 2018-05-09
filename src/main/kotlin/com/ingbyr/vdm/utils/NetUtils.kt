@@ -1,4 +1,4 @@
-package com.ingbyr.guiyouget.utils
+package com.ingbyr.vdm.utils
 
 import okhttp3.OkHttpClient
 import okhttp3.Request

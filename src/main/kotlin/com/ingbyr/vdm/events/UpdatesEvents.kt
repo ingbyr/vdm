@@ -1,4 +1,4 @@
-package com.ingbyr.guiyouget.events
+package com.ingbyr.vdm.events
 
 import tornadofx.EventBus
 import tornadofx.FXEvent

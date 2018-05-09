@@ -1,7 +1,7 @@
-package com.ingbyr.guiyouget.controllers
+package com.ingbyr.vdm.controllers
 
-import com.ingbyr.guiyouget.events.RequestCheckUpdatesYouGet
-import com.ingbyr.guiyouget.events.RequestCheckUpdatesYoutubeDL
+import com.ingbyr.vdm.events.RequestCheckUpdatesYouGet
+import com.ingbyr.vdm.events.RequestCheckUpdatesYoutubeDL
 import org.slf4j.LoggerFactory
 import tornadofx.Controller
 import java.util.*

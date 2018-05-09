@@ -1,4 +1,4 @@
-package com.ingbyr.guiyouget.models
+package com.ingbyr.vdm.models
 
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleDoubleProperty

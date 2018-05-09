@@ -9,6 +9,5 @@ gradlew
 gradlew.bat
 log/
 /engine/
-/src/main/deploy/engine/you-get.exe
-/src/main/deploy/engine/youtube-dl.exe
-GUI-YouGet.iml
+/src/main/deploy/engine/*.exe
+*.iml
