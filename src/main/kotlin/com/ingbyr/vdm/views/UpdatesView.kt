@@ -1,6 +1,6 @@
-package com.ingbyr.guiyouget.views
+package com.ingbyr.vdm.views
 
-import com.ingbyr.guiyouget.controllers.UpdatesController
+import com.ingbyr.vdm.controllers.UpdatesController
 import javafx.scene.layout.AnchorPane
 import tornadofx.View
 import java.util.*

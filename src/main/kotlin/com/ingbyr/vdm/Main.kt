@@ -1,6 +1,6 @@
-package com.ingbyr.guiyouget
+package com.ingbyr.vdm
 
-import com.ingbyr.guiyouget.views.MainView
+import com.ingbyr.vdm.views.MainView
 import javafx.application.Application
 import org.slf4j.LoggerFactory
 import tornadofx.*

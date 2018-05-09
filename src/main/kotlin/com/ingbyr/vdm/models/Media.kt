@@ -1,4 +1,4 @@
-package com.ingbyr.guiyouget.models
+package com.ingbyr.vdm.models
 
 class Media(formatR: String?, formatNoteR: String?, fileSizeR: Int?, formatIDR: String?, extR: String?) {
     val format: String = formatR ?: "None"

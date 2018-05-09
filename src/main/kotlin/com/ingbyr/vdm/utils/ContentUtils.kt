@@ -1,4 +1,4 @@
-package com.ingbyr.guiyouget.utils
+package com.ingbyr.vdm.utils
 
 object ContentUtils {
     const val APP_UPDATE_URL = "https://github.com/ingbyr/GUI-YouGet/releases/latest"

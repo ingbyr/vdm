@@ -1,4 +1,4 @@
-package com.ingbyr.guiyouget.utils
+package com.ingbyr.vdm.utils
 
 enum class GUIPlatformType {
     WINDOWS,

@@ -1,4 +1,4 @@
-group = "com.ingbyr.guiyouget"
+group = "com.ingbyr.vdm"
 version = "0.2.3"
 
 buildscript {
@@ -43,7 +43,7 @@ compileTestKotlin {
 
 jfx {
     verbose = false
-    mainClass = "com.ingbyr.guiyouget.MainKt"
+    mainClass = "com.ingbyr.vdm.MainKt"
     jfxMainAppJarName = "GUI-YouGet.jar"
     vendor = "ingbyr"
     appName = "GUI-YouGet"

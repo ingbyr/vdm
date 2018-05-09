@@ -1,8 +1,8 @@
-package com.ingbyr.guiyouget.engine
+package com.ingbyr.vdm.engine
 
 import com.beust.klaxon.JsonObject
-import com.ingbyr.guiyouget.utils.DownloadType
-import com.ingbyr.guiyouget.utils.ProxyType
+import com.ingbyr.vdm.utils.DownloadType
+import com.ingbyr.vdm.utils.ProxyType
 import com.jfoenix.controls.JFXListView
 import javafx.scene.control.Label
 import org.slf4j.Logger

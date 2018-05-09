@@ -1,7 +1,7 @@
-package com.ingbyr.guiyouget.views
+package com.ingbyr.vdm.views
 
-import com.ingbyr.guiyouget.controllers.MainController
-import com.ingbyr.guiyouget.models.DownloadTask
+import com.ingbyr.vdm.controllers.MainController
+import com.ingbyr.vdm.models.DownloadTask
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXCheckBox
 import com.jfoenix.controls.JFXProgressBar

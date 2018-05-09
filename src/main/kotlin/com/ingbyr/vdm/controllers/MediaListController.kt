@@ -1,11 +1,11 @@
-package com.ingbyr.guiyouget.controllers
+package com.ingbyr.vdm.controllers
 
 import com.beust.klaxon.JsonObject
-import com.ingbyr.guiyouget.engine.AbstractEngine
-import com.ingbyr.guiyouget.engine.EngineFactory
-import com.ingbyr.guiyouget.events.StopBackgroundTask
-import com.ingbyr.guiyouget.utils.EngineType
-import com.ingbyr.guiyouget.utils.ProxyType
+import com.ingbyr.vdm.engine.AbstractEngine
+import com.ingbyr.vdm.engine.EngineFactory
+import com.ingbyr.vdm.events.StopBackgroundTask
+import com.ingbyr.vdm.utils.EngineType
+import com.ingbyr.vdm.utils.ProxyType
 import org.slf4j.LoggerFactory
 import tornadofx.Controller
 import java.util.*

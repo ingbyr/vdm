@@ -1,4 +1,4 @@
-package com.ingbyr.guiyouget.views
+package com.ingbyr.vdm.views
 
 import com.jfoenix.controls.JFXListView
 import javafx.scene.control.Label
