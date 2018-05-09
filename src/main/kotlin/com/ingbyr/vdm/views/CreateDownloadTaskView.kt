@@ -1,6 +1,7 @@
 package com.ingbyr.vdm.views
 
-import com.ingbyr.vdm.models.Media
+import com.ingbyr.vdm.models.DownloadTaskConfig
+import com.ingbyr.vdm.utils.EngineType
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXTextField
 import javafx.scene.control.Label
@@ -21,11 +22,10 @@ class CreateDownloadTaskView : View() {
     private val btnConfirm: JFXButton by fxid()
     private val labelStoragePath: Label by fxid()
     private val btnChangeStoragePath: JFXButton by fxid()
-    private val mediaList = mutableListOf<Media>(Media("22", "HD", 233, "test", "12min")).observable()
+
 
     init {
         initListeners()
-
     }
 
     private fun initListeners() {
@@ -34,10 +34,9 @@ class CreateDownloadTaskView : View() {
         }
 
         btnConfirm.setOnMouseClicked {
-            replaceWith(component = MediaListView::class,
-                    centerOnScreen = true,
-                    sizeToScene = false,
-                    transition = ViewTransition.Slide(0.3.seconds, ViewTransition.Direction.LEFT))
+            val downloadTaskConfig = DownloadTaskConfig(engineType = EngineType.YOUTUBE_DL, url = tfURL.text, formatID = "NONE", outputPath = "user dir")
+            find<MediaFormatsListView>(mapOf("downloadTaskConfig" to downloadTaskConfig)).openWindow()
+            this.close()
         }
     }
 }

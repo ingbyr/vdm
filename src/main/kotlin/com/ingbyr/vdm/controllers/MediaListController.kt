@@ -16,7 +16,7 @@ class MediaListController : Controller() {
     var engine: AbstractEngine? = null
 
     init {
-        messages = ResourceBundle.getBundle("i18n/MediaListView")
+        messages = ResourceBundle.getBundle("i18n/MediaFormatsListView")
         subscribe<StopBackgroundTask> {
             engine?.stopTask()
         }
