@@ -1,6 +1,6 @@
 package com.ingbyr.vdm.events
 
-import com.ingbyr.vdm.models.VDMConfig
+import com.ingbyr.vdm.utils.VDMConfig
 import tornadofx.FXEvent
 
 object StopBackgroundTask : FXEvent()

@@ -2,7 +2,7 @@ package com.ingbyr.vdm.engine
 
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
-import com.ingbyr.vdm.models.Media
+import com.ingbyr.vdm.models.MediaFormat
 import com.ingbyr.vdm.utils.*
 import com.jfoenix.controls.JFXListView
 import javafx.scene.control.Label
@@ -56,9 +56,9 @@ class YoutubeDL : AbstractEngine() {
         labelDescription.text = json.string("description") ?: ""
         val formats = json.array<JsonObject>("formats")
         if (formats != null) {
-            val medias = mutableListOf<Media>().observable()
+            val medias = mutableListOf<MediaFormat>().observable()
             formats.mapTo(medias) {
-                Media(it.string("format"),
+                MediaFormat(it.string("format"),
                         it.string("format_note"),
                         it.int("filesize"),
                         it.string("format_id"),

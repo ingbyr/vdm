@@ -2,6 +2,7 @@ package com.ingbyr.vdm.views
 
 import com.ingbyr.vdm.controllers.MainController
 import com.ingbyr.vdm.models.DownloadTask
+import com.ingbyr.vdm.utils.VDMConfigUtils
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXCheckBox
 import com.jfoenix.controls.JFXProgressBar
@@ -11,9 +12,7 @@ import javafx.scene.layout.VBox
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tornadofx.*
-import java.lang.IllegalStateException
 import java.util.*
-import kotlin.collections.set
 
 
 class MainView : View() {
@@ -41,7 +40,8 @@ class MainView : View() {
     private val btnSearch: JFXButton by fxid()
     private val btnPreferences: JFXButton by fxid()
 
-    private val downloadTasks = mutableListOf<DownloadTask>(DownloadTask(true, "1", "34MB", 0.4)).observable()
+    private val downloadTasks = mutableListOf<DownloadTask>().observable()
+    private val cu = VDMConfigUtils(app.config)
 
     init {
         root += anchorpane {
@@ -69,7 +69,18 @@ class MainView : View() {
             }
         }
 
+        loadVDMConfig()
         initListeners()
+    }
+
+    private fun loadVDMConfig() {
+        // create the config file when first time use VDM
+        val firstTimeUse = cu.safeLoad(VDMConfigUtils.FIRST_TIME_USE, "true").toBoolean()
+        if (firstTimeUse) {
+            find(PreferencesView::class).openWindow()?.hide()
+            cu.update(VDMConfigUtils.FIRST_TIME_USE, "false")
+            cu.saveToConfigFile()
+        }
     }
 
     private fun initListeners() {
@@ -92,21 +103,6 @@ class MainView : View() {
         // donate
         menuDonate.action {
             openInternalWindow(ImageView::class)
-        }
-    }
-
-    private fun safeLoadConfig(key: String, defaultValue: String): String {
-        return try {
-            val value = app.config.string(key)
-            if (value.isEmpty()) {
-                throw IllegalStateException("empty value in config file")
-            } else {
-                return value
-            }
-        } catch (e: IllegalStateException) {
-            app.config[key] = defaultValue
-            app.config.save()
-            defaultValue
         }
     }
 }

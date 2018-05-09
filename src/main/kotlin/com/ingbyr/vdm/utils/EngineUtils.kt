@@ -25,9 +25,11 @@ enum class DownloadType {
     PLAYLIST
 }
 
-object EngineUtils {
-    const val YOUTUBE_DL_VERSION = "YOUTUBE_DL_VERSION"
-    const val YOU_GET_VERSION = "YOU_GET_VERSION"
+class EngineUtils {
+    companion object {
+        const val YOUTUBE_DL_VERSION = "YOUTUBE_DL_VERSION"
+        const val YOU_GET_VERSION = "YOU_GET_VERSION"
+    }
 }
 
 class DownloadEngineException(message: String) : Exception(message)
