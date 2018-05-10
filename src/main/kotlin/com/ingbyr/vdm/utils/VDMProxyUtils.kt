@@ -6,3 +6,4 @@ enum class ProxyType {
     NONE
 }
 
+data class VDMProxy(val proxyType: ProxyType, val address: String, val port: String)

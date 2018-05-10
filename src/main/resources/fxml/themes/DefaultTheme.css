@@ -13,6 +13,10 @@
     -fx-font-size: 1.2em;
 }
 
+.tooltip {
+    -fx-font-size: 1.2em;
+}
+
 .menu-item .label {
     -fx-text-fill: white;
 }
@@ -114,7 +118,7 @@
 
 #button-more-menus {
     -fx-background-color: white;
-    -size: 2.1em;
+    -size: 2em;
     -fx-min-height: -size;
     -fx-min-width: -size;
     -fx-max-height: -size;
@@ -194,11 +198,11 @@
     -jfx-toggle-color: -color-p;
 }
 
-#media-list {
+#formats-list-view-title {
     -fx-background-color: -color-d;
 }
 
-#media-list .label {
+#formats-list-view-title .label {
     -fx-text-fill: white;
 }
 
@@ -206,13 +210,20 @@
     -fx-background-color: -color-d;
 }
 
-#create-download-task-view .label{
+#create-download-task-view .label {
     -fx-text-fill: white;
 }
 
 #create-download-task-view .jfx-text-field {
+    -fx-text-fill: white;
+}
+
+.jfx-text-field {
     -jfx-focus-color: -color-p;
     -jfx-unfocus-color: -color-l;
-    -fx-text-fill: white;
-    -fx-font-size: 1em;
+    -fx-font-size: 1.2em;
+}
+
+.jfx-list-view .list-cell {
+    -fx-text-fill: black;
 }
