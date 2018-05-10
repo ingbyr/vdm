@@ -5,13 +5,12 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.VBox?>
 
-
-<VBox id="media-list" prefHeight="600.0" prefWidth="600.0" stylesheets="@themes/DefaultTheme.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<VBox prefHeight="600.0" prefWidth="600.0" stylesheets="@themes/DefaultTheme.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <VBox alignment="CENTER_LEFT" spacing="20.0">
+      <VBox id="formats-list-view-title" alignment="CENTER_LEFT" spacing="20.0">
          <children>
-            <Label fx:id="labelTitle" text="Title" />
-            <Label id="small-text" fx:id="labelDesc" text="Desc" wrapText="true" />
+            <Label fx:id="labelTitle" text="%ui.loading" />
+            <Label id="small-text" fx:id="labelDesc" wrapText="true" />
          </children>
          <VBox.margin>
             <Insets />

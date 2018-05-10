@@ -12,7 +12,7 @@
       <HBox alignment="CENTER_LEFT" spacing="10.0">
          <children>
             <Label text="%ui.url" />
-            <JFXTextField id="small-text" fx:id="tfURL" HBox.hgrow="ALWAYS" />
+            <JFXTextField fx:id="tfURL" HBox.hgrow="ALWAYS" />
          </children>
       </HBox>
       <VBox spacing="20.0">

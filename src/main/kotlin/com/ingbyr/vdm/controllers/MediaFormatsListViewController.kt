@@ -10,9 +10,9 @@ import org.slf4j.LoggerFactory
 import tornadofx.Controller
 import java.util.*
 
-class MediaListController : Controller() {
+class MediaFormatsListViewController : Controller() {
 
-    private val logger = LoggerFactory.getLogger(MediaListController::class.java)
+    private val logger = LoggerFactory.getLogger(MediaFormatsListViewController::class.java)
     var engine: AbstractEngine? = null
 
     init {
