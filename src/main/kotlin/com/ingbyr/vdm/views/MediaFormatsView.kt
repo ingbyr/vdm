@@ -1,6 +1,6 @@
 package com.ingbyr.vdm.views
 
-import com.ingbyr.vdm.controllers.MediaFormatsListViewController
+import com.ingbyr.vdm.controllers.MediaFormatsController
 import com.ingbyr.vdm.models.DownloadTaskConfig
 import com.ingbyr.vdm.utils.VDMProxy
 import com.jfoenix.controls.JFXListView
@@ -12,14 +12,14 @@ import tornadofx.*
 import java.util.*
 
 
-class MediaFormatsListView : View() {
+class MediaFormatsView : View() {
 
     init {
-        messages = ResourceBundle.getBundle("i18n/MediaFormatsListView")
+        messages = ResourceBundle.getBundle("i18n/MediaFormatsView")
     }
 
-    override val root: VBox by fxml("/fxml/MediaFormatsListView.fxml")
-    private val controller: MediaFormatsListViewController by inject()
+    override val root: VBox by fxml("/fxml/MediaFormatsView.fxml")
+    private val controller: MediaFormatsController by inject()
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     private val labelTitle: Label by fxid()

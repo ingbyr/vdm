@@ -10,13 +10,13 @@ import org.slf4j.LoggerFactory
 import tornadofx.Controller
 import java.util.*
 
-class MediaFormatsListViewController : Controller() {
+class MediaFormatsController : Controller() {
 
-    private val logger = LoggerFactory.getLogger(MediaFormatsListViewController::class.java)
+    private val logger = LoggerFactory.getLogger(MediaFormatsController::class.java)
     var engine: AbstractEngine? = null
 
     init {
-        messages = ResourceBundle.getBundle("i18n/MediaFormatsListView")
+        messages = ResourceBundle.getBundle("i18n/MediaFormatsView")
         subscribe<StopBackgroundTask> {
             engine?.stopTask()
         }
