@@ -72,7 +72,7 @@ class CreateDownloadTaskView : View() {
             }
             val vp = VDMProxy(proxyType, address, port)
 
-            find<MediaFormatsListView>(mapOf("dtc" to dtc, "vp" to vp)).openWindow()
+            find<MediaFormatsView>(mapOf("dtc" to dtc, "vp" to vp)).openWindow()
             this.close()
         }
 
