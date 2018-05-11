@@ -1,6 +1,7 @@
 package com.ingbyr.vdm.views
 
 import com.ingbyr.vdm.controllers.MainController
+import com.ingbyr.vdm.events.CreateDownloadTask
 import com.ingbyr.vdm.models.DownloadTask
 import com.ingbyr.vdm.utils.VDMConfigUtils
 import com.jfoenix.controls.JFXButton
@@ -71,6 +72,11 @@ class MainView : View() {
 
         loadVDMConfig()
         initListeners()
+        subscribeEvents()
+        initDownloadTaskListView()
+
+        // TODO handle with the download task event
+        // TODO save xml config file of download task
     }
 
     private fun loadVDMConfig() {
@@ -104,5 +110,15 @@ class MainView : View() {
         menuDonate.action {
             openInternalWindow(ImageView::class)
         }
+    }
+
+    private fun subscribeEvents() {
+        subscribe<CreateDownloadTask> {
+
+        }
+    }
+
+    private fun initDownloadTaskListView() {
+        // TODO init downloadTasks from xml file
     }
 }

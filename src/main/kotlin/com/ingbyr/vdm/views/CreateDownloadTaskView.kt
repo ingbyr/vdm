@@ -1,10 +1,7 @@
 package com.ingbyr.vdm.views
 
 import com.ingbyr.vdm.models.DownloadTaskConfig
-import com.ingbyr.vdm.utils.EngineType
-import com.ingbyr.vdm.utils.ProxyType
-import com.ingbyr.vdm.utils.VDMConfigUtils
-import com.ingbyr.vdm.utils.VDMProxy
+import com.ingbyr.vdm.utils.*
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXTextField
 import javafx.scene.control.Label
@@ -52,9 +49,10 @@ class CreateDownloadTaskView : View() {
         btnConfirm.setOnMouseClicked {
             val engineType = EngineType.valueOf(cu.load(VDMConfigUtils.ENGINE_TYPE))
             val url = tfURL.text
-            val outputPath = cu.load(VDMConfigUtils.STORAGE_PATH)
-            val dtc = DownloadTaskConfig(engineType, url, outputPath)
-
+            val storagePath = cu.load(VDMConfigUtils.STORAGE_PATH)
+            val downloadDefaultFormat = cu.load(VDMConfigUtils.DOWNLOAD_DEFAULT_FORMAT).toBoolean()
+            val ffmpeg = cu.load(VDMConfigUtils.FFMPEG_PATH)
+            val cookie= ""
             val proxyType = ProxyType.valueOf(cu.load(VDMConfigUtils.PROXY_TYPE))
             var address = ""
             var port = ""
@@ -70,9 +68,10 @@ class CreateDownloadTaskView : View() {
                 ProxyType.NONE -> {
                 }
             }
-            val vp = VDMProxy(proxyType, address, port)
-
-            find<MediaFormatsView>(mapOf("dtc" to dtc, "vp" to vp)).openWindow()
+            val proxy = VDMProxy(proxyType, address, port)
+            val config = VDMConfig(engineType, proxy, downloadDefaultFormat, storagePath, cookie, ffmpeg)
+            val taskConfig = DownloadTaskConfig(url, storagePath, "", config)
+            find<MediaFormatsView>(mapOf("taskConfig" to taskConfig)).openWindow()
             this.close()
         }
 
