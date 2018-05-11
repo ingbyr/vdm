@@ -6,8 +6,8 @@ import tornadofx.*
 /**
  * Instance for the config file
  */
-data class VDMConfig(val engineType: EngineType, val proxyType: ProxyType, val address: String, val port: String,
-                     val downloadDefaultFormat: Boolean, val storagePath: String, val cookieString: String)
+data class VDMConfig(val engineType: EngineType, val proxy: VDMProxy,
+                     val downloadDefaultFormat: Boolean, val storagePath: String, val cookieString: String, val FFMPEGPath: String)
 
 /**
  * Load and update the config file. It's necessary to invoke saveToConfigFile().
@@ -25,6 +25,7 @@ class VDMConfigUtils(private val config: ConfigProperties) {
         const val SOCKS5_PROXY_PORT = "SOCKS5_PROXY_ADDRESS"
         const val HTTP_PROXY_ADDRESS = "HTTP_PROXY_ADDRESS"
         const val HTTP_PROXY_PORT = "HTTP_PROXY_ADDRESS"
+        const val COOKIE = "COOKIE"
     }
 
     fun load(key: String): String {

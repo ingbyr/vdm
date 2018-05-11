@@ -52,6 +52,7 @@ class YoutubeDL : AbstractEngine() {
 
 
     override fun displayMediaList(labelTitle: Label, labelDescription: Label, listViewMedia: JFXListView<Label>, json: JsonObject) {
+        // TODO need a better way to handle with the json to list view
         labelTitle.text = json.string("title")
         labelDescription.text = json.string("description") ?: ""
         val formats = json.array<JsonObject>("formats")
