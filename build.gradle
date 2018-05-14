@@ -31,6 +31,7 @@ dependencies {
     compile "ch.qos.logback:logback-classic:1.2.3"
     compile "com.squareup.okhttp3:okhttp:3.10.0"
     compile "com.squareup.okio:okio:1.14.0"
+    compile "org.mapdb:mapdb:3.0.5"
 }
 
 compileKotlin {

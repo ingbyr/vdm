@@ -3,7 +3,6 @@ package com.ingbyr.vdm.views
 import com.ingbyr.vdm.controllers.MediaFormatsController
 import com.ingbyr.vdm.events.CreateDownloadTask
 import com.ingbyr.vdm.models.DownloadTask
-import com.ingbyr.vdm.models.DownloadTaskConfig
 import com.jfoenix.controls.JFXListView
 import javafx.scene.control.Label
 import javafx.scene.layout.VBox
@@ -27,11 +26,11 @@ class MediaFormatsView : View() {
     private val labelDesc: Label by fxid()
     private val listView: JFXListView<Label> by fxid()
 
-    private val taskConfig = params["taskConfig"] as DownloadTaskConfig
+    private val downloadTask = params["downloadTask"] as DownloadTask
 
     init {
         runAsync {
-            controller.requestMedia(taskConfig.vdmConfig.engineType, taskConfig.url, taskConfig.vdmConfig.proxy.proxyType, taskConfig.vdmConfig.proxy.address, taskConfig.vdmConfig.proxy.port)
+            controller.requestMedia(downloadTask.vdmConfig.engineType, downloadTask.url, downloadTask.vdmConfig.proxy.proxyType, downloadTask.vdmConfig.proxy.address, downloadTask.vdmConfig.proxy.port)
         } ui {
             if (it != null) {
                 controller.engine?.displayMediaList(labelTitle, labelDesc, listView, it)
@@ -47,9 +46,8 @@ class MediaFormatsView : View() {
             listView.selectedItem?.let {
                 val formatID = it.text.split(" ")[0]
                 logger.debug("start download ${it.text}, format id is $formatID")
-                taskConfig.formatID = formatID
-//                fire(CreateDownloadTask(taskConfig))
-//                val downloadTask = DownloadTask(taskConfig, )
+                downloadTask.formatID = formatID
+                fire(CreateDownloadTask(downloadTask))
             }
         }
     }

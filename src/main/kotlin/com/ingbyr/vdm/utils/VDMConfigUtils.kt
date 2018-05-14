@@ -1,13 +1,14 @@
 package com.ingbyr.vdm.utils
 
 import tornadofx.*
+import java.io.Serializable
 
 
 /**
  * Instance for the config file
  */
 data class VDMConfig(val engineType: EngineType, val proxy: VDMProxy,
-                     val downloadDefaultFormat: Boolean, val storagePath: String, val cookieString: String, val FFMPEGPath: String)
+                     val downloadDefaultFormat: Boolean, val storagePath: String, val cookieString: String = "", val FFMPEGPath: String = "") : Serializable
 
 /**
  * Load and update the config file. It's necessary to invoke saveToConfigFile().
