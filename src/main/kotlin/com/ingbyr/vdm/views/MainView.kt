@@ -3,13 +3,16 @@ package com.ingbyr.vdm.views
 import com.ingbyr.vdm.controllers.MainController
 import com.ingbyr.vdm.events.CreateDownloadTask
 import com.ingbyr.vdm.models.DownloadTask
+import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.utils.VDMConfigUtils
+import com.ingbyr.vdm.utils.VDMContent
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXCheckBox
 import com.jfoenix.controls.JFXProgressBar
 import javafx.geometry.Insets
 import javafx.scene.control.MenuItem
 import javafx.scene.layout.VBox
+import org.mapdb.DBMaker
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tornadofx.*
@@ -41,24 +44,26 @@ class MainView : View() {
     private val btnSearch: JFXButton by fxid()
     private val btnPreferences: JFXButton by fxid()
 
-    private val downloadTasks = mutableListOf<DownloadTask>().observable()
+    private val downloadTaskModelList = mutableListOf<DownloadTaskModel>().observable()
     private val cu = VDMConfigUtils(app.config)
+    private val db = DBMaker.fileDB(VDMContent.DATABASE_PATH_STR).transactionEnable().make()
+    private val downloadTaskData = db.treeSet(VDMContent.DB_DOWNLOAD_TASKS).createOrOpen() as NavigableSet<DownloadTask>
 
     init {
         root += anchorpane {
             fitToParentSize()
             padding = Insets(10.0)
-            val downloadTaskTableView = tableview(downloadTasks) {
+            val downloadTaskTableView = tableview(downloadTaskModelList) {
                 fitToParentSize()
                 columnResizePolicy = SmartResize.POLICY
-                column("", DownloadTask::checkedProperty).cellFormat {
+                column("", DownloadTaskModel::checkedProperty).cellFormat {
                     val cb = JFXCheckBox("")
                     cb.isSelected = it
                     graphic = cb
                 }
-                column(messages["ui.title"], DownloadTask::titleProperty)
-                column(messages["ui.size"], DownloadTask::sizeProperty)
-                column(messages["ui.status"], DownloadTask::progressProperty).cellFormat {
+                column(messages["ui.title"], DownloadTaskModel::titleProperty)
+                column(messages["ui.size"], DownloadTaskModel::sizeProperty)
+                column(messages["ui.status"], DownloadTaskModel::progressProperty).cellFormat {
                     val pb = JFXProgressBar(it.toDouble())
                     pb.useMaxSize = true
                     graphic = pb
@@ -74,15 +79,13 @@ class MainView : View() {
         initListeners()
         subscribeEvents()
         initDownloadTaskListView()
-
-        // TODO handle with the download task event
-        // TODO save xml config file of download task
     }
 
     private fun loadVDMConfig() {
         // create the config file when first time use VDM
         val firstTimeUse = cu.safeLoad(VDMConfigUtils.FIRST_TIME_USE, "true").toBoolean()
         if (firstTimeUse) {
+            // init config file
             find(PreferencesView::class).openWindow()?.hide()
             cu.update(VDMConfigUtils.FIRST_TIME_USE, "false")
             cu.saveToConfigFile()
@@ -114,11 +117,14 @@ class MainView : View() {
 
     private fun subscribeEvents() {
         subscribe<CreateDownloadTask> {
-
+            // TODO handle with the event
         }
     }
 
     private fun initDownloadTaskListView() {
-        // TODO init downloadTasks from xml file
+        downloadTaskData.mapTo(downloadTaskModelList) {
+            DownloadTaskModel(it)
+        }
     }
+
 }

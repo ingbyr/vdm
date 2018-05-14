@@ -11,5 +11,7 @@ object VDMContent {
     const val APP_VERSION = "APP_VERSION"
     const val NONE = "NONE"
     val APP_DIR = Paths.get(System.getProperty("user.dir")).toAbsolutePath()!!
-    var USER_DIR = Paths.get(System.getProperty("user.home"), ".vdm").toAbsolutePath()!!
+    val USER_DIR = Paths.get(System.getProperty("user.home"), ".vdm").toAbsolutePath()!!
+    val DATABASE_PATH_STR = Paths.get(System.getProperty("user.home"), ".vdm", "vdm.db").toAbsolutePath().toString()
+    val DB_DOWNLOAD_TASKS = "DB_DOWNLOAD_TASKS"
 }
