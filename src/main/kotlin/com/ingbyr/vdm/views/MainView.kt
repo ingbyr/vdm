@@ -2,17 +2,14 @@ package com.ingbyr.vdm.views
 
 import com.ingbyr.vdm.controllers.MainController
 import com.ingbyr.vdm.events.CreateDownloadTask
-import com.ingbyr.vdm.models.DownloadTask
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.utils.VDMConfigUtils
-import com.ingbyr.vdm.utils.VDMContent
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXCheckBox
 import com.jfoenix.controls.JFXProgressBar
 import javafx.geometry.Insets
 import javafx.scene.control.MenuItem
 import javafx.scene.layout.VBox
-import org.mapdb.DBMaker
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tornadofx.*
@@ -46,8 +43,7 @@ class MainView : View() {
 
     private val downloadTaskModelList = mutableListOf<DownloadTaskModel>().observable()
     private val cu = VDMConfigUtils(app.config)
-    private val db = DBMaker.fileDB(VDMContent.DATABASE_PATH_STR).transactionEnable().make()
-    private val downloadTaskData = db.treeSet(VDMContent.DB_DOWNLOAD_TASKS).createOrOpen() as NavigableSet<DownloadTask>
+
 
     init {
         root += anchorpane {
@@ -122,9 +118,13 @@ class MainView : View() {
     }
 
     private fun initDownloadTaskListView() {
-        downloadTaskData.mapTo(downloadTaskModelList) {
+        controller.downloadTaskData.mapTo(downloadTaskModelList) {
             DownloadTaskModel(it)
         }
     }
 
+    override fun onUndock() {
+        super.onUndock()
+        controller.clear()
+    }
 }

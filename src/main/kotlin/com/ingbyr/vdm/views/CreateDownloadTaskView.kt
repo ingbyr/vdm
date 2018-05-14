@@ -85,4 +85,9 @@ class CreateDownloadTaskView : View() {
             }
         }
     }
+
+    override fun onUndock() {
+        super.onUndock()
+        tfURL.text = ""
+    }
 }

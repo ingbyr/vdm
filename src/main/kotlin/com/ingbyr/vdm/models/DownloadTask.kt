@@ -17,8 +17,6 @@ class DownloadTaskModel(data: DownloadTask) : ViewModel() {
     val progressProperty = SimpleDoubleProperty(this, "progress", data.progress ?: 0.0)
 }
 
-//data class DownloadTaskConfig(val url: String, var formatID: String, val vdmConfig: VDMConfig)
-
 data class DownloadTask(val vdmConfig: VDMConfig, val url: String, var formatID: String = "", var checked: Boolean? = null, var title: String? = null, var size: String? = null, var progress: Double? = null) : Serializable
 
 //fun main(args: Array<String>) {
