@@ -35,12 +35,14 @@ class MediaFormatsView : View() {
     }
 
     private fun initListeners() {
-        listView.setOnMouseClicked {
-            listView.selectedItem?.let {
-                // TODO get the media format instance
-                val formatID = it.text.split(" ")[0]
-                logger.debug("start download ${it.text}, format id is $formatID")
-                downloadTask.formatID = formatID
+        listView.onUserSelect(1) {
+            mediaFormatList?.get(listView.selectionModel.selectedIndex)?.let {
+                downloadTask.checked = false
+                downloadTask.formatID = it.formatID
+                downloadTask.title = it.title
+                downloadTask.size = "${it.fileSize / 1048576}MB"
+                downloadTask.checked = false
+                downloadTask.progress = 0.0
                 fire(CreateDownloadTask(downloadTask))
             }
         }
@@ -61,7 +63,6 @@ class MediaFormatsView : View() {
 
     override fun onDock() {
         super.onDock()
-
         // get download task from create download task view
         downloadTask = params["downloadTask"] as DownloadTask
         // request the media json based on download task in background thread

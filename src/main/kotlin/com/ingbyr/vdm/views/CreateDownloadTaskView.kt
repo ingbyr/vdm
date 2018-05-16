@@ -8,6 +8,7 @@ import javafx.scene.control.Label
 import javafx.scene.layout.VBox
 import javafx.stage.DirectoryChooser
 import tornadofx.*
+import java.time.LocalDateTime
 import java.util.*
 
 
@@ -70,7 +71,8 @@ class CreateDownloadTaskView : View() {
             }
             val proxy = VDMProxy(proxyType, address, port)
             val vdmConfig = VDMConfig(engineType, proxy, downloadDefaultFormat, storagePath, cookie, ffmpeg)
-            val downloadTask = DownloadTask(vdmConfig, url)
+            val date = LocalDateTime.now()
+            val downloadTask = DownloadTask(vdmConfig, date, url)
             find<MediaFormatsView>(mapOf("downloadTask" to downloadTask)).openWindow()
             this.close()
         }

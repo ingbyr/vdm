@@ -57,7 +57,7 @@ class MainView : View() {
                     cb.isSelected = it
                     graphic = cb
                 }
-                column(messages["ui.title"], DownloadTaskModel::titleProperty)
+                column(messages["ui.title"], DownloadTaskModel::titleProperty).pctWidth(50)
                 column(messages["ui.size"], DownloadTaskModel::sizeProperty)
                 column(messages["ui.status"], DownloadTaskModel::progressProperty).cellFormat {
                     val pb = JFXProgressBar(it.toDouble())
@@ -114,6 +114,10 @@ class MainView : View() {
     private fun subscribeEvents() {
         subscribe<CreateDownloadTask> {
             // TODO handle with the event
+            logger.debug("create task:\n ${it.downloadTask} \n")
+            downloadTaskModelList.add(DownloadTaskModel(it.downloadTask))
+            // save to db
+            controller.downloadTaskData.add(it.downloadTask)
         }
     }
 
