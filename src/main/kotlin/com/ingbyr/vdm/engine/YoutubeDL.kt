@@ -53,6 +53,9 @@ class YoutubeDL : AbstractEngine() {
         val formatsJson = json.array<JsonObject>("formats")
         val formats = mutableListOf<MediaFormat>()
         if (formatsJson != null && formatsJson.isNotEmpty()) {
+            formatsJson.sortBy {
+                it.string("format_id")
+            }
             formatsJson.forEachIndexed { index, jsonObject ->
                 formats.add(MediaFormat(
                         title = title,
@@ -64,9 +67,6 @@ class YoutubeDL : AbstractEngine() {
                         fileSize = jsonObject.long("filesize") ?: 0,
                         ext = jsonObject.string("ext") ?: ""
                 ))
-            }
-            formats.sortBy {
-                it.formatID
             }
         }
         return formats

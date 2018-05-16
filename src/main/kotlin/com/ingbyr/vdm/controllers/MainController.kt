@@ -12,10 +12,12 @@ class MainController : Controller() {
     val downloadTaskData = db.treeSet(VDMContent.DB_DOWNLOAD_TASKS).createOrOpen() as NavigableSet<DownloadTask>
 
     fun updateGUI() {
+        // TODO update VDM like as youtube-dl rules
         hostServices.showDocument(VDMContent.APP_UPDATE_URL)
     }
 
     fun clear() {
+        db.commit()
         db.close()
     }
 }
