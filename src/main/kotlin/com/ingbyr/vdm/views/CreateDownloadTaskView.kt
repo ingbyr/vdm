@@ -71,8 +71,7 @@ class CreateDownloadTaskView : View() {
             }
             val proxy = VDMProxy(proxyType, address, port)
             val vdmConfig = VDMConfig(engineType, proxy, downloadDefaultFormat, storagePath, cookie, ffmpeg)
-            val date = LocalDateTime.now()
-            val downloadTask = DownloadTask(vdmConfig, date, url)
+            val downloadTask = DownloadTask(vdmConfig, url, LocalDateTime.now())
             find<MediaFormatsView>(mapOf("downloadTask" to downloadTask)).openWindow()
             this.close()
         }

@@ -9,6 +9,7 @@ import com.jfoenix.controls.JFXCheckBox
 import com.jfoenix.controls.JFXProgressBar
 import javafx.geometry.Insets
 import javafx.scene.control.MenuItem
+import javafx.scene.control.TableView
 import javafx.scene.layout.VBox
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -40,6 +41,7 @@ class MainView : View() {
     private val btnOpenFile: JFXButton by fxid()
     private val btnSearch: JFXButton by fxid()
     private val btnPreferences: JFXButton by fxid()
+    private lateinit var downloadTaskTableView: TableView<DownloadTaskModel>
 
     private val downloadTaskModelList = mutableListOf<DownloadTaskModel>().observable()
     private val cu = VDMConfigUtils(app.config)
@@ -49,7 +51,7 @@ class MainView : View() {
         root += anchorpane {
             fitToParentSize()
             padding = Insets(10.0)
-            val downloadTaskTableView = tableview(downloadTaskModelList) {
+            downloadTaskTableView = tableview(downloadTaskModelList) {
                 fitToParentSize()
                 columnResizePolicy = SmartResize.POLICY
                 column("", DownloadTaskModel::checkedProperty).cellFormat {
@@ -57,17 +59,14 @@ class MainView : View() {
                     cb.isSelected = it
                     graphic = cb
                 }
-                column(messages["ui.title"], DownloadTaskModel::titleProperty).pctWidth(50)
+                column(messages["ui.title"], DownloadTaskModel::titleProperty).pctWidth(40)
                 column(messages["ui.size"], DownloadTaskModel::sizeProperty)
-                column(messages["ui.status"], DownloadTaskModel::progressProperty).cellFormat {
+                column(messages["ui.status"], DownloadTaskModel::progressProperty).pctWidth(20).cellFormat {
                     val pb = JFXProgressBar(it.toDouble())
                     pb.useMaxSize = true
                     graphic = pb
                 }
-            }
-
-            downloadTaskTableView.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
-                logger.debug(newValue.titleProperty.value)
+                column(messages["ui.createdAt"], DownloadTaskModel::createdAtProperty)
             }
         }
 
@@ -89,6 +88,14 @@ class MainView : View() {
     }
 
     private fun initListeners() {
+        // task manager
+        downloadTaskTableView.selectionModel.selectedItemProperty().addListener { _, _, selectedItem ->
+            // TODO handle with selected task
+            val taskID = selectedItem.createdAtProperty.value
+            logger.debug("select task ID: $taskID")
+            logger.debug("select task info: ${controller.downloadTaskData[taskID]}")
+        }
+
         // preferences view
         btnPreferences.setOnMouseClicked {
             find(PreferencesView::class).openWindow()
@@ -113,17 +120,16 @@ class MainView : View() {
 
     private fun subscribeEvents() {
         subscribe<CreateDownloadTask> {
-            // TODO handle with the event
             logger.debug("create task:\n ${it.downloadTask} \n")
             downloadTaskModelList.add(DownloadTaskModel(it.downloadTask))
             // save to db
-            controller.downloadTaskData.add(it.downloadTask)
+            controller.saveTaskToDB(it.downloadTask)
         }
     }
 
     private fun initDownloadTaskListView() {
         controller.downloadTaskData.mapTo(downloadTaskModelList) {
-            DownloadTaskModel(it)
+            DownloadTaskModel(it.value)
         }
     }
 

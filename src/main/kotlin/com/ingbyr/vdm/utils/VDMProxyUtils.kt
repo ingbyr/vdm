@@ -2,7 +2,7 @@ package com.ingbyr.vdm.utils
 
 import java.io.Serializable
 
-enum class ProxyType {
+enum class ProxyType : Serializable {
     SOCKS5,
     HTTP,
     NONE

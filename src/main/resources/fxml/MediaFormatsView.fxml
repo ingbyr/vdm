@@ -10,7 +10,7 @@
         <VBox id="formats-list-view-title" alignment="CENTER_LEFT" spacing="20.0">
             <children>
                 <Label fx:id="labelTitle" text="%ui.loading" />
-                <Label id="small-text" fx:id="labelDesc" wrapText="true" />
+                <Label id="small-text" fx:id="labelDesc" maxHeight="200.0" wrapText="true" />
             </children>
             <VBox.margin>
                 <Insets />

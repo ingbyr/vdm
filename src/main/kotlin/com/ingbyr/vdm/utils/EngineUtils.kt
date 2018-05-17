@@ -1,6 +1,8 @@
 package com.ingbyr.vdm.utils
 
-enum class EngineType {
+import java.io.Serializable
+
+enum class EngineType : Serializable{
     ENGINE_TYPE,
     YOUTUBE_DL,
     YOU_GET,
