@@ -1,13 +1,13 @@
 package com.ingbyr.vdm.controllers
 
-import com.beust.klaxon.JsonObject
 import com.ingbyr.vdm.engine.AbstractEngine
 import com.ingbyr.vdm.engine.EngineFactory
+import com.ingbyr.vdm.engine.MediaFormat
 import com.ingbyr.vdm.events.StopBackgroundTask
 import com.ingbyr.vdm.utils.EngineType
 import com.ingbyr.vdm.utils.ProxyType
 import org.slf4j.LoggerFactory
-import tornadofx.Controller
+import tornadofx.*
 import java.util.*
 
 class MediaFormatsController : Controller() {
@@ -23,12 +23,13 @@ class MediaFormatsController : Controller() {
     }
 
 
-    fun requestMedia(engineType: EngineType, url: String, proxyType: ProxyType, address: String, port: String): JsonObject? {
+    fun requestMedia(engineType: EngineType, url: String, proxyType: ProxyType, address: String, port: String): List<MediaFormat>? {
         engine = EngineFactory.create(engineType)
         if (engine != null) {
             engine!!.url(url).addProxy(proxyType, address, port)
             try {
-                return engine!!.fetchMediaJson()
+                val jsonData = engine!!.fetchMediaJson()
+                return engine!!.parseFormatsJson(jsonData)
             } catch (e: Exception) {
                 logger.error(e.toString())
             }
@@ -36,5 +37,9 @@ class MediaFormatsController : Controller() {
             logger.error("bad engine: $engineType")
         }
         return null
+    }
+
+    fun clear() {
+        engine = null
     }
 }
