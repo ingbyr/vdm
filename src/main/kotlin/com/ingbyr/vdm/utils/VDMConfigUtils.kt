@@ -23,9 +23,9 @@ class VDMConfigUtils(private val config: ConfigProperties) {
         const val ENGINE_TYPE = "ENGINE_TYPE"
         const val PROXY_TYPE = "PROXY_TYPE"
         const val SOCKS5_PROXY_ADDRESS = "SOCKS5_PROXY_ADDRESS"
-        const val SOCKS5_PROXY_PORT = "SOCKS5_PROXY_ADDRESS"
+        const val SOCKS5_PROXY_PORT = "SOCKS5_PROXY_PORT"
         const val HTTP_PROXY_ADDRESS = "HTTP_PROXY_ADDRESS"
-        const val HTTP_PROXY_PORT = "HTTP_PROXY_ADDRESS"
+        const val HTTP_PROXY_PORT = "HTTP_PROXY_PORT"
         const val COOKIE = "COOKIE"
     }
 

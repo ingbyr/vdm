@@ -2,13 +2,9 @@ package com.ingbyr.vdm.engine
 
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
-import com.ingbyr.vdm.models.MediaFormat
 import com.ingbyr.vdm.utils.*
-import com.jfoenix.controls.JFXListView
-import javafx.scene.control.Label
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import tornadofx.observable
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.file.Paths
@@ -51,30 +47,29 @@ class YoutubeDL : AbstractEngine() {
     }
 
 
-    override fun displayMediaList(labelTitle: Label, labelDescription: Label, listViewMedia: JFXListView<Label>, json: JsonObject) {
-        // TODO need a better way to handle with the json to list view
-        labelTitle.text = json.string("title")
-        labelDescription.text = json.string("description") ?: ""
-        val formats = json.array<JsonObject>("formats")
-        if (formats != null) {
-            val medias = mutableListOf<MediaFormat>().observable()
-            formats.mapTo(medias) {
-                MediaFormat(it.string("format"),
-                        it.string("format_note"),
-                        it.int("filesize"),
-                        it.string("format_id"),
-                        it.string("ext"))
+    override fun parseFormatsJson(json: JsonObject): List<MediaFormat> {
+        val title = json.string("title") ?: ""
+        val desc = json.string("description") ?: ""
+        val formatsJson = json.array<JsonObject>("formats")
+        val formats = mutableListOf<MediaFormat>()
+        if (formatsJson != null && formatsJson.isNotEmpty()) {
+            formatsJson.sortBy {
+                it.string("format_id")
             }
-            medias.reverse()
-            medias.forEach {
-                if (it.size == 0) {
-                    listViewMedia.items.add(Label("${it.format} | ${it.ext}"))
-                } else {
-                    listViewMedia.items.add(Label("${it.format} | ${it.ext} | ${it.size}MB"))
-                }
+            formatsJson.forEachIndexed { index, jsonObject ->
+                formats.add(MediaFormat(
+                        title = title,
+                        desc = desc,
+                        vdmTaskID = index,
+                        formatID = jsonObject.string("format_id") ?: "",
+                        format = jsonObject.string("format") ?: "",
+                        formatNote = jsonObject.string("format_note") ?: "",
+                        fileSize = jsonObject.long("filesize") ?: 0,
+                        ext = jsonObject.string("ext") ?: ""
+                ))
             }
         }
-
+        return formats
     }
 
     override fun url(url: String): AbstractEngine {
@@ -103,7 +98,6 @@ class YoutubeDL : AbstractEngine() {
             }
 
             else -> {
-                logger.debug("add ${type.name} proxy to youtube-dl")
             }
         }
         return this
@@ -166,9 +160,9 @@ class YoutubeDL : AbstractEngine() {
 
         // send the status to msg queue to update UI
         msgQueue?.offer(mapOf("progress" to progress,
-                        "speed" to speed,
-                        "extime" to extime,
-                        "status" to status))
+                "speed" to speed,
+                "extime" to extime,
+                "status" to status))
     }
 
     override fun parseDownloadPlaylistStatus(line: String) {

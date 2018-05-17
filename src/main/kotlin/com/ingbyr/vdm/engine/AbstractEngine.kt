@@ -3,8 +3,6 @@ package com.ingbyr.vdm.engine
 import com.beust.klaxon.JsonObject
 import com.ingbyr.vdm.utils.DownloadType
 import com.ingbyr.vdm.utils.ProxyType
-import com.jfoenix.controls.JFXListView
-import javafx.scene.control.Label
 import org.slf4j.Logger
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicBoolean
@@ -33,7 +31,7 @@ abstract class AbstractEngine {
     abstract fun parseDownloadSingleStatus(line: String)
     abstract fun parseDownloadPlaylistStatus(line: String)
     abstract fun execCommand(command: MutableList<String>, downloadType: DownloadType): StringBuilder?
-    abstract fun displayMediaList(labelTitle: Label, labelDescription: Label, listViewMedia: JFXListView<Label>, json: JsonObject)
+    abstract fun parseFormatsJson(json: JsonObject): List<MediaFormat>
 
     abstract fun updateUrl(version: String): String
 
