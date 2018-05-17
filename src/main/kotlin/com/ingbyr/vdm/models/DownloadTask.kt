@@ -1,5 +1,6 @@
 package com.ingbyr.vdm.models
 
+import com.ingbyr.vdm.utils.DateTimeUtils
 import com.ingbyr.vdm.utils.VDMConfig
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleDoubleProperty
@@ -16,10 +17,11 @@ class DownloadTaskModel(data: DownloadTask) : ViewModel() {
     val titleProperty = SimpleStringProperty(this, "title", data.title ?: "No title")
     val sizeProperty = SimpleStringProperty(this, "size", data.size ?: "No size")
     val progressProperty = SimpleDoubleProperty(this, "progress", data.progress ?: 0.0)
+    val createdAtProperty = SimpleStringProperty(this, "createdAt", DateTimeUtils.time2String(data.createdAt))
 }
 
-data class DownloadTask(val vdmConfig: VDMConfig, val time: LocalDateTime, val url: String, var formatID: String = "", var checked: Boolean? = null, var title: String? = null, var size: String? = null, var progress: Double? = null) : Serializable, Comparable<DownloadTask> {
+data class DownloadTask(val vdmConfig: VDMConfig, val url: String, var createdAt: LocalDateTime, var formatID: String = "", var checked: Boolean? = null, var title: String? = null, var size: String? = null, var progress: Double? = null) : Serializable, Comparable<DownloadTask> {
     override fun compareTo(other: DownloadTask): Int {
-        return time.compareTo(other.time)
+        return createdAt.compareTo(other.createdAt)
     }
 }
