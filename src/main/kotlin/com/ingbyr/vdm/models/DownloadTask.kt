@@ -9,14 +9,14 @@ import tornadofx.*
 import java.io.Serializable
 import java.time.LocalDateTime
 
-class DownloadTaskModel(val vdmConfig: VDMConfig, val url: String, createdAt: LocalDateTime? = null, formatID: String? = null, checked: Boolean? = null, title: String? = null, size: String? = null, progress: Double? = null) : ViewModel() {
+class DownloadTaskModel(val vdmConfig: VDMConfig, val url: String, createdAt: LocalDateTime? = null, formatID: String? = null, checked: Boolean? = null, title: String? = null, size: String? = null, progress: Double? = null, status: String? = null) : ViewModel() {
     val checkedProperty = SimpleBooleanProperty(this, "checked", checked ?: false)
     var checked: Boolean by checkedProperty
     val titleProperty = SimpleStringProperty(this, "title", title ?: "")
     var title: String by titleProperty
     val sizeProperty = SimpleStringProperty(this, "size", size ?: "")
     var size: String by sizeProperty
-    val statusProperty = SimpleStringProperty(this, "status", "")
+    val statusProperty = SimpleStringProperty(this, "status", status ?: "")
     var status: String by statusProperty
     val progressProperty = SimpleDoubleProperty(this, "progress", progress ?: 0.0)
     var progress: Double by progressProperty
@@ -25,12 +25,12 @@ class DownloadTaskModel(val vdmConfig: VDMConfig, val url: String, createdAt: Lo
     var formatID = formatID ?: ""
 
     fun toData(): DownloadTaskData {
-        return DownloadTaskData(vdmConfig, url, createdAt, formatID, checked, title, size, progress)
+        return DownloadTaskData(vdmConfig, url, createdAt, formatID, checked, title, size, progress, status)
     }
 }
 
-data class DownloadTaskData(val vdmConfig: VDMConfig, val url: String, var createdAt: LocalDateTime? = null, var formatID: String? = null, var checked: Boolean? = null, var title: String? = null, var size: String? = null, var progress: Double? = null) : Serializable {
+data class DownloadTaskData(val vdmConfig: VDMConfig, val url: String, var createdAt: LocalDateTime? = null, var formatID: String? = null, var checked: Boolean? = null, var title: String? = null, var size: String? = null, var progress: Double? = null, var status: String? = null) : Serializable {
     fun toModel(): DownloadTaskModel {
-        return DownloadTaskModel(vdmConfig, url, createdAt, formatID, checked, title, size, progress)
+        return DownloadTaskModel(vdmConfig, url, createdAt, formatID, checked, title, size, progress, status)
     }
 }

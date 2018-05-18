@@ -154,7 +154,7 @@ class YoutubeDL : AbstractEngine() {
         logger.debug("$line -> $progress, $speed, $extime, $status")
 
         taskModel?.run {
-            if (progress >= 1.0) {
+            if (this@YoutubeDL.progress >= 1.0) {
                 this.progress = 1.0
                 this.status = msg["ui.completed"]
                 return

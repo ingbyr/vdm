@@ -46,7 +46,6 @@ class MainView : View() {
     private var selectedTaskModel: DownloadTaskModel? = null
     private lateinit var downloadTaskTableView: TableView<DownloadTaskModel>
 
-    private val downloadTaskModelList = mutableListOf<DownloadTaskModel>().observable()
     private val cu = VDMConfigUtils(app.config)
 
     // TODO add enable debug mode button
@@ -54,7 +53,7 @@ class MainView : View() {
         root += anchorpane {
             fitToParentSize()
             padding = Insets(10.0)
-            downloadTaskTableView = tableview(downloadTaskModelList) {
+            downloadTaskTableView = tableview(controller.downloadTaskModelList) {
                 fitToParentSize()
                 columnResizePolicy = SmartResize.POLICY
                 column("", DownloadTaskModel::checkedProperty).cellFormat {
@@ -81,7 +80,8 @@ class MainView : View() {
         loadVDMConfig()
         initListeners()
         subscribeEvents()
-        initDownloadTaskListView()
+
+        controller.loadTaskFromDB()
     }
 
     private fun loadVDMConfig() {
@@ -104,7 +104,6 @@ class MainView : View() {
         // task manager
         btnStart.setOnMouseClicked {
             selectedTaskModel?.let {
-                // TODO invoke controller download
                 controller.startDownloadTask(it)
             }
         }
@@ -134,17 +133,12 @@ class MainView : View() {
     private fun subscribeEvents() {
         subscribe<CreateDownloadTask> {
             logger.debug("create task: ${it.downloadTask}")
-            downloadTaskModelList.add(it.downloadTask.toModel())
+            controller.addTaskToList(it.downloadTask)
             // save to db
             controller.saveTaskToDB(it.downloadTask)
         }
     }
 
-    private fun initDownloadTaskListView() {
-        controller.downloadTaskData.forEach {
-            downloadTaskModelList.add(it.value.toModel())
-        }
-    }
 
     override fun onUndock() {
         super.onUndock()
