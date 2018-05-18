@@ -1,10 +1,11 @@
 package com.ingbyr.vdm.engine
 
 import com.beust.klaxon.JsonObject
+import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.utils.DownloadType
-import com.ingbyr.vdm.utils.ProxyType
+import com.ingbyr.vdm.utils.VDMProxy
 import org.slf4j.Logger
-import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
 
@@ -17,17 +18,16 @@ abstract class AbstractEngine {
      * Stop thread
      */
     protected abstract val logger: Logger
-    protected var msgQueue: ConcurrentLinkedQueue<Map<String, Any>>? = null
     protected val running: AtomicBoolean = AtomicBoolean(false)
     protected val argsMap: MutableMap<String, String> = mutableMapOf()
     protected abstract val remoteVersionUrl: String
 
     abstract fun url(url: String): AbstractEngine
-    abstract fun addProxy(type: ProxyType, address: String, port: String): AbstractEngine
+    abstract fun addProxy(proxy: VDMProxy): AbstractEngine
     abstract fun fetchMediaJson(): JsonObject
     abstract fun format(formatID: String): AbstractEngine
     abstract fun output(outputPath: String): AbstractEngine
-    abstract fun downloadMedia(messageQuene: ConcurrentLinkedQueue<Map<String, Any>>)
+    abstract fun downloadMedia(downloadTaskModel: DownloadTaskModel, message: ResourceBundle)
     abstract fun parseDownloadSingleStatus(line: String)
     abstract fun parseDownloadPlaylistStatus(line: String)
     abstract fun execCommand(command: MutableList<String>, downloadType: DownloadType): StringBuilder?

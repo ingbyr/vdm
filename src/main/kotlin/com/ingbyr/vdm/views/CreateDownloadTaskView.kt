@@ -1,6 +1,6 @@
 package com.ingbyr.vdm.views
 
-import com.ingbyr.vdm.models.DownloadTask
+import com.ingbyr.vdm.models.DownloadTaskData
 import com.ingbyr.vdm.utils.*
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXTextField
@@ -8,7 +8,6 @@ import javafx.scene.control.Label
 import javafx.scene.layout.VBox
 import javafx.stage.DirectoryChooser
 import tornadofx.*
-import java.time.LocalDateTime
 import java.util.*
 
 
@@ -71,7 +70,7 @@ class CreateDownloadTaskView : View() {
             }
             val proxy = VDMProxy(proxyType, address, port)
             val vdmConfig = VDMConfig(engineType, proxy, downloadDefaultFormat, storagePath, cookie, ffmpeg)
-            val downloadTask = DownloadTask(vdmConfig, url, LocalDateTime.now())
+            val downloadTask = DownloadTaskData(vdmConfig, url)
             find<MediaFormatsView>(mapOf("downloadTask" to downloadTask)).openWindow()
             this.close()
         }

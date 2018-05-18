@@ -2,13 +2,15 @@ package com.ingbyr.vdm.engine
 
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
+import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.utils.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import tornadofx.*
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.file.Paths
-import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 
@@ -27,6 +29,8 @@ class YoutubeDL : AbstractEngine() {
     private val speedPattern = Pattern.compile("\\d+\\W?\\d*\\w+/s")
     private val extimePattern = Pattern.compile("\\d+:\\d+")
     private val playlistProgressPattern = Pattern.compile("\\d+\\sof\\s\\d+")
+    private var taskModel: DownloadTaskModel? = null
+    private lateinit var msg: ResourceBundle
 
     init {
         argsMap["engine"] = when (GUIPlatform.current()) {
@@ -77,23 +81,23 @@ class YoutubeDL : AbstractEngine() {
         return this
     }
 
-    override fun addProxy(type: ProxyType, address: String, port: String): AbstractEngine {
-        when (type) {
+    override fun addProxy(proxy: VDMProxy): AbstractEngine {
+        when (proxy.proxyType) {
             ProxyType.SOCKS5 -> {
-                if (address.isEmpty() or port.isEmpty()) {
+                if (proxy.address.isEmpty() or proxy.port.isEmpty()) {
                     logger.debug("add an empty proxy to youtube-dl")
                     return this
                 } else {
-                    argsMap["--proxy"] = "socks5://$address:$port"
+                    argsMap["--proxy"] = "socks5://${proxy.address}:${proxy.port}"
                 }
             }
 
             ProxyType.HTTP -> {
-                if (address.isEmpty() or port.isEmpty()) {
+                if (proxy.address.isEmpty() or proxy.port.isEmpty()) {
                     logger.debug("add an empty proxy to youtube-dl")
                     return this
                 } else {
-                    argsMap["--proxy"] = "$address:$port"
+                    argsMap["--proxy"] = "${proxy.address}:${proxy.port}"
                 }
             }
 
@@ -133,9 +137,13 @@ class YoutubeDL : AbstractEngine() {
         return this
     }
 
-    override fun downloadMedia(messageQuene: ConcurrentLinkedQueue<Map<String, Any>>) {
-        msgQueue = messageQuene
-        execCommand(argsMap.build(), DownloadType.SINGLE)
+    override fun downloadMedia(downloadTaskModel: DownloadTaskModel, message: ResourceBundle) {
+        taskModel = downloadTaskModel
+        msg = message
+        taskModel?.run {
+            this.statusProperty.value = message["ui.analyzing"]
+            execCommand(argsMap.build(), DownloadType.SINGLE)
+        }
     }
 
     override fun parseDownloadSingleStatus(line: String) {
@@ -145,24 +153,16 @@ class YoutubeDL : AbstractEngine() {
         extime = extimePattern.matcher(line).takeIf { it.find() }?.group()?.toString() ?: extime
         logger.debug("$line -> $progress, $speed, $extime, $status")
 
-        when {
-            progress >= 1.0 -> {
-                status = EngineStatus.FINISH
-                logger.debug("finished single media task of ${argsMap.build()}")
+        taskModel?.run {
+            if (progress >= 1.0) {
+                this.progress = 1.0
+                this.status = msg["ui.completed"]
+                return
+            } else {
+                this.progress = this@YoutubeDL.progress
+                this.status = msg["ui.downloading"]
             }
-            progress > 0 -> status = EngineStatus.DOWNLOAD
-            else -> return
         }
-
-        if (!running.get()) {
-            status = EngineStatus.PAUSE
-        }
-
-        // send the status to msg queue to update UI
-        msgQueue?.offer(mapOf("progress" to progress,
-                "speed" to speed,
-                "extime" to extime,
-                "status" to status))
     }
 
     override fun parseDownloadPlaylistStatus(line: String) {
@@ -187,11 +187,11 @@ class YoutubeDL : AbstractEngine() {
             status = EngineStatus.PAUSE
         }
 
-        msgQueue?.offer(
-                mapOf("progress" to progress,
-                        "speed" to speed,
-                        "extime" to playlistProgress,
-                        "status" to status))
+//        msgQueue?.offer(
+//                mapOf("progress" to progress,
+//                        "speed" to speed,
+//                        "extime" to playlistProgress,
+//                        "status" to status))
     }
 
     override fun execCommand(command: MutableList<String>, downloadType: DownloadType): StringBuilder? {
