@@ -3,7 +3,7 @@ package com.ingbyr.vdm.views
 import com.ingbyr.vdm.controllers.MediaFormatsController
 import com.ingbyr.vdm.engine.MediaFormat
 import com.ingbyr.vdm.events.CreateDownloadTask
-import com.ingbyr.vdm.models.DownloadTask
+import com.ingbyr.vdm.models.DownloadTaskData
 import com.jfoenix.controls.JFXListView
 import javafx.scene.control.Label
 import javafx.scene.layout.VBox
@@ -28,7 +28,8 @@ class MediaFormatsView : View() {
     private val labelDesc: Label by fxid()
     private val listView: JFXListView<Label> by fxid()
 
-    private var downloadTask = params["downloadTask"] as DownloadTask
+    // downloadTask's type must be DownloadTaskData
+    private var downloadTask = params["downloadTask"] as DownloadTaskData
     private var mediaFormatList: List<MediaFormat>? = null
 
     init {
@@ -38,11 +39,11 @@ class MediaFormatsView : View() {
     private fun initListeners() {
         listView.onUserSelect(1) {
             mediaFormatList?.get(listView.selectionModel.selectedIndex)?.let {
+                logger.debug("format id: ${it.formatID}")
                 downloadTask.checked = false
                 downloadTask.formatID = it.formatID
                 downloadTask.title = it.title
                 downloadTask.size = "${it.fileSize / 1048576}MB"
-                downloadTask.checked = false
                 downloadTask.progress = 0.0
                 downloadTask.createdAt = LocalDateTime.now()
                 fire(CreateDownloadTask(downloadTask))
@@ -66,10 +67,10 @@ class MediaFormatsView : View() {
     override fun onDock() {
         super.onDock()
         // get download task from create download task view
-        downloadTask = params["downloadTask"] as DownloadTask
+        downloadTask = params["downloadTask"] as DownloadTaskData
         // request the media json based on download task in background thread
         runAsync {
-            controller.requestMedia(downloadTask.vdmConfig.engineType, downloadTask.url, downloadTask.vdmConfig.proxy.proxyType, downloadTask.vdmConfig.proxy.address, downloadTask.vdmConfig.proxy.port)
+            controller.requestMedia(downloadTask.vdmConfig.engineType, downloadTask.url, downloadTask.vdmConfig.proxy)
         } ui {
             mediaFormatList = it
             displayFormatList()

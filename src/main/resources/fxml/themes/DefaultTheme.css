@@ -6,15 +6,15 @@
 }
 
 .text {
-    -fx-font-size: 1.5em;
+    -fx-font-size: 1.8em;
 }
 
 #small-text .text {
-    -fx-font-size: 1.2em;
+    -fx-font-size: 1.5em;
 }
 
 .tooltip {
-    -fx-font-size: 1.2em;
+    -fx-font-size: 1.5em;
 }
 
 .menu-item .label {

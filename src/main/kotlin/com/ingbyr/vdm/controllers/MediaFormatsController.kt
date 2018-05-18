@@ -5,7 +5,7 @@ import com.ingbyr.vdm.engine.EngineFactory
 import com.ingbyr.vdm.engine.MediaFormat
 import com.ingbyr.vdm.events.StopBackgroundTask
 import com.ingbyr.vdm.utils.EngineType
-import com.ingbyr.vdm.utils.ProxyType
+import com.ingbyr.vdm.utils.VDMProxy
 import org.slf4j.LoggerFactory
 import tornadofx.*
 import java.util.*
@@ -23,10 +23,10 @@ class MediaFormatsController : Controller() {
     }
 
 
-    fun requestMedia(engineType: EngineType, url: String, proxyType: ProxyType, address: String, port: String): List<MediaFormat>? {
+    fun requestMedia(engineType: EngineType, url: String, proxy: VDMProxy): List<MediaFormat>? {
         engine = EngineFactory.create(engineType)
         if (engine != null) {
-            engine!!.url(url).addProxy(proxyType, address, port)
+            engine!!.url(url).addProxy(proxy)
             try {
                 val jsonData = engine!!.fetchMediaJson()
                 return engine!!.parseFormatsJson(jsonData)

@@ -8,6 +8,7 @@ import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXCheckBox
 import com.jfoenix.controls.JFXProgressBar
 import javafx.geometry.Insets
+import javafx.scene.control.Label
 import javafx.scene.control.MenuItem
 import javafx.scene.control.TableView
 import javafx.scene.layout.VBox
@@ -41,12 +42,14 @@ class MainView : View() {
     private val btnOpenFile: JFXButton by fxid()
     private val btnSearch: JFXButton by fxid()
     private val btnPreferences: JFXButton by fxid()
+    private lateinit var labelStatus: Label
+    private var selectedTaskModel: DownloadTaskModel? = null
     private lateinit var downloadTaskTableView: TableView<DownloadTaskModel>
 
     private val downloadTaskModelList = mutableListOf<DownloadTaskModel>().observable()
     private val cu = VDMConfigUtils(app.config)
 
-
+    // TODO add enable debug mode button
     init {
         root += anchorpane {
             fitToParentSize()
@@ -61,7 +64,12 @@ class MainView : View() {
                 }
                 column(messages["ui.title"], DownloadTaskModel::titleProperty).pctWidth(40)
                 column(messages["ui.size"], DownloadTaskModel::sizeProperty)
-                column(messages["ui.status"], DownloadTaskModel::progressProperty).pctWidth(20).cellFormat {
+                column(messages["ui.status"], DownloadTaskModel::statusProperty).cellFormat {
+                    // TODO use different color
+                    labelStatus = Label(it)
+                    graphic = labelStatus
+                }
+                column(messages["ui.progress"], DownloadTaskModel::progressProperty).pctWidth(20).cellFormat {
                     val pb = JFXProgressBar(it.toDouble())
                     pb.useMaxSize = true
                     graphic = pb
@@ -90,10 +98,15 @@ class MainView : View() {
     private fun initListeners() {
         // task manager
         downloadTaskTableView.selectionModel.selectedItemProperty().addListener { _, _, selectedItem ->
-            // TODO handle with selected task
-            val taskID = selectedItem.createdAtProperty.value
-            logger.debug("select task ID: $taskID")
-            logger.debug("select task info: ${controller.downloadTaskData[taskID]}")
+            selectedTaskModel = selectedItem
+        }
+
+        // task manager
+        btnStart.setOnMouseClicked {
+            selectedTaskModel?.let {
+                // TODO invoke controller download
+                controller.startDownloadTask(it)
+            }
         }
 
         // preferences view
@@ -120,16 +133,16 @@ class MainView : View() {
 
     private fun subscribeEvents() {
         subscribe<CreateDownloadTask> {
-            logger.debug("create task:\n ${it.downloadTask} \n")
-            downloadTaskModelList.add(DownloadTaskModel(it.downloadTask))
+            logger.debug("create task: ${it.downloadTask}")
+            downloadTaskModelList.add(it.downloadTask.toModel())
             // save to db
             controller.saveTaskToDB(it.downloadTask)
         }
     }
 
     private fun initDownloadTaskListView() {
-        controller.downloadTaskData.mapTo(downloadTaskModelList) {
-            DownloadTaskModel(it.value)
+        controller.downloadTaskData.forEach {
+            downloadTaskModelList.add(it.value.toModel())
         }
     }
 
