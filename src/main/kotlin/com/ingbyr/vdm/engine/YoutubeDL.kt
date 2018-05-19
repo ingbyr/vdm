@@ -14,22 +14,22 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 
+/**
+ * TODO wrap download playlist
+ */
 class YoutubeDL : AbstractEngine() {
-
     override val logger: Logger = LoggerFactory.getLogger(this::class.java)
     override val remoteVersionUrl: String = "https://raw.githubusercontent.com/rg3/youtube-dl/master/youtube_dl/version.py"
 
     private var speed = "0MiB/s"
     private var progress = 0.0
     private var size = ""
-    private var playlistProgress = "0 / 1"
     private var title = ""
     private val nameTemplate = "%(title)s.%(ext)s"
     private val progressPattern = Pattern.compile("\\d+\\W?\\d*%")
     private val speedPattern = Pattern.compile("\\d+\\W?\\d*\\w+/s")
     private val titlePattern = Pattern.compile("[/\\\\][^/^\\\\]+\\.\\w+")
     private val fileSizePattern = Pattern.compile("\\d+\\W?\\d*\\w+B")
-    private val playlistProgressPattern = Pattern.compile("\\d+\\sof\\s\\d+")
     private var taskModel: DownloadTaskModel? = null
     private lateinit var msg: ResourceBundle
 
@@ -50,7 +50,6 @@ class YoutubeDL : AbstractEngine() {
             }
         }
     }
-
 
     override fun parseFormatsJson(json: JsonObject): List<MediaFormat> {
         val title = json.string("title") ?: ""
@@ -147,7 +146,7 @@ class YoutubeDL : AbstractEngine() {
         }
     }
 
-    override fun parseDownloadSingleStatus(line: String) {
+    override fun parseDownloadOutput(line: String) {
         if (title.isEmpty()) {
             title = titlePattern.matcher(line).takeIf { it.find() }?.group()?.toString() ?: title
             title = title.removePrefix("/")
@@ -176,10 +175,6 @@ class YoutubeDL : AbstractEngine() {
         }
     }
 
-    override fun parseDownloadPlaylistStatus(line: String) {
-        //TODO parse the playlist
-    }
-
     override fun execCommand(command: MutableList<String>, downloadType: DownloadType): StringBuilder? {
         /**
          * Exec the command by invoking the system shell etc.
@@ -205,22 +200,11 @@ class YoutubeDL : AbstractEngine() {
                 }
             }
 
-            DownloadType.SINGLE -> {
+            DownloadType.SINGLE, DownloadType.PLAYLIST -> {
                 while (running.get()) {
                     line = r.readLine()
                     if (line != null) {
-                        parseDownloadSingleStatus(line)
-                    } else {
-                        break
-                    }
-                }
-            }
-
-            DownloadType.PLAYLIST -> {
-                while (running.get()) {
-                    line = r.readLine()
-                    if (line != null) {
-                        //TODO download playlist
+                        parseDownloadOutput(line)
                     } else {
                         break
                     }
@@ -228,20 +212,23 @@ class YoutubeDL : AbstractEngine() {
             }
         }
 
-        // wait to clean up thread
-        p.waitFor(200, TimeUnit.MICROSECONDS)
-        if (p.isAlive) {
-            logger.debug("force to stop process $p")
+        if (p.isAlive) { // means user stop this task manually
+            p.destroy()
+            p.waitFor(200, TimeUnit.MICROSECONDS)
+        }
+
+        if (p.isAlive) {// can not destroy process
             p.destroyForcibly()
-            p.waitFor()
-            logger.debug("stop the process")
         }
 
         return if (running.get()) {
             running.set(false)
             output
-        } else {
-            // clear output if stopped by user
+        } else { // means user stop this task manually
+            taskModel?.run {
+                status = msg["ui.stopped"]
+            }
+            logger.debug("stop the task of $taskModel")
             null
         }
     }

@@ -1,6 +1,8 @@
 package com.ingbyr.vdm.controllers
 
+import com.ingbyr.vdm.engine.AbstractEngine
 import com.ingbyr.vdm.engine.EngineFactory
+import com.ingbyr.vdm.events.StopBackgroundTask
 import com.ingbyr.vdm.models.DownloadTaskData
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.utils.DateTimeUtils
@@ -9,7 +11,9 @@ import org.mapdb.DBMaker
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tornadofx.*
+import java.time.LocalDateTime
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 
 class MainController : Controller() {
@@ -22,11 +26,29 @@ class MainController : Controller() {
     private val db = DBMaker.fileDB(VDMContent.DATABASE_PATH_STR).transactionEnable().make()
     private val downloadTaskData = db.hashMap(VDMContent.DB_DOWNLOAD_TASKS).createOrOpen() as MutableMap<String, DownloadTaskData>
     val downloadTaskModelList = mutableListOf<DownloadTaskModel>().observable()
+    private val engineList = ConcurrentHashMap<LocalDateTime, AbstractEngine>()
+
+    init {
+        subscribe<StopBackgroundTask> {
+            if (it.stopAll) {
+                logger.debug("try to stop all download tasks")
+                engineList.forEach {
+                    it.value.stopTask()
+                }
+            } else if (it.downloadTask != null) {
+                logger.debug("try to stop download task ${it.downloadTask}")
+                engineList[it.downloadTask.createdAt]?.stopTask()
+            }
+        }
+    }
 
     fun startDownloadTask(downloadTask: DownloadTaskModel) {
+        downloadTask.status = messages["ui.analyzing"]
         runAsync {
+            // download
             val engine = EngineFactory.create(downloadTask.vdmConfig.engineType)
             engine?.run {
+                engineList[downloadTask.createdAt] = this
                 this.url(downloadTask.url).addProxy(downloadTask.vdmConfig.proxy).format(downloadTask.formatID).output(downloadTask.vdmConfig.storagePath).downloadMedia(downloadTask, messages)
             }
         }
@@ -48,7 +70,9 @@ class MainController : Controller() {
     }
 
     fun addTaskToList(taskItem: DownloadTaskData) {
-        downloadTaskModelList.add(taskItem.toModel())
+        val downloadTaskModel = taskItem.toModel()
+        downloadTaskModelList.add(downloadTaskModel)
+        startDownloadTask(downloadTaskModel)
     }
 
     fun loadTaskFromDB() {

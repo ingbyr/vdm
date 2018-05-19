@@ -2,6 +2,7 @@ package com.ingbyr.vdm.views
 
 import com.ingbyr.vdm.controllers.MainController
 import com.ingbyr.vdm.events.CreateDownloadTask
+import com.ingbyr.vdm.events.StopBackgroundTask
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.utils.VDMConfigUtils
 import com.jfoenix.controls.JFXButton
@@ -17,7 +18,11 @@ import org.slf4j.LoggerFactory
 import tornadofx.*
 import java.util.*
 
-
+/**
+ * TODO add enable debug mode button
+ * TODO add FFMPEG and cookie
+ * TODO add about view
+ */
 class MainView : View() {
     init {
         messages = ResourceBundle.getBundle("i18n/MainView")
@@ -48,7 +53,6 @@ class MainView : View() {
 
     private val cu = VDMConfigUtils(app.config)
 
-    // TODO add enable debug mode button
     init {
         root += anchorpane {
             fitToParentSize()
@@ -96,12 +100,12 @@ class MainView : View() {
     }
 
     private fun initListeners() {
-        // task manager
+        // task list view
         downloadTaskTableView.selectionModel.selectedItemProperty().addListener { _, _, selectedItem ->
             selectedTaskModel = selectedItem
         }
 
-        // task manager
+        // start task
         btnStart.setOnMouseClicked {
             selectedTaskModel?.let {
                 controller.startDownloadTask(it)
@@ -131,6 +135,13 @@ class MainView : View() {
             }
         }
 
+        // stop task
+        btnStop.setOnMouseClicked {
+            selectedTaskModel?.run {
+                fire(StopBackgroundTask(this, false))
+            }
+        }
+
         // donate
         menuDonate.action {
             openInternalWindow(ImageView::class)
@@ -150,5 +161,6 @@ class MainView : View() {
     override fun onUndock() {
         super.onUndock()
         controller.clear()
+        selectedTaskModel = null
     }
 }
