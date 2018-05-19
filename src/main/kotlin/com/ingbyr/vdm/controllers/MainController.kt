@@ -32,14 +32,19 @@ class MainController : Controller() {
         }
     }
 
+    fun deleteTask(taskItem: DownloadTaskModel) {
+        downloadTaskModelList.removeAll(taskItem)
+        downloadTaskData.remove(DateTimeUtils.time2String(taskItem.createdAt))
+    }
+
     /**
      * Key of map is "yyyy-MM-dd HH:mm:ss.SSS" which is defined in DateTimeUtils.kt
      * Value of map is a instance of DownloadTask
      */
-    fun saveTaskToDB(downloadTask: DownloadTaskData) {
-        val taskID = DateTimeUtils.time2String(downloadTask.createdAt!!)
+    fun saveTaskToDB(taskItem: DownloadTaskData) {
+        val taskID = DateTimeUtils.time2String(taskItem.createdAt!!)
         logger.debug("add task $taskID to download task db")
-        downloadTaskData[taskID] = downloadTask
+        downloadTaskData[taskID] = taskItem
     }
 
     fun addTaskToList(taskItem: DownloadTaskData) {
@@ -49,6 +54,10 @@ class MainController : Controller() {
     fun loadTaskFromDB() {
         downloadTaskData.forEach {
             downloadTaskModelList.add(it.value.toModel())
+        }
+
+        downloadTaskModelList.sortBy {
+            it.createdAt
         }
     }
 

@@ -20,14 +20,15 @@ class YoutubeDL : AbstractEngine() {
     override val remoteVersionUrl: String = "https://raw.githubusercontent.com/rg3/youtube-dl/master/youtube_dl/version.py"
 
     private var speed = "0MiB/s"
-    private var extime = "00:00"
     private var progress = 0.0
+    private var size = ""
     private var playlistProgress = "0 / 1"
-    private var status = EngineStatus.ANALYZE
+    private var title = ""
     private val nameTemplate = "%(title)s.%(ext)s"
     private val progressPattern = Pattern.compile("\\d+\\W?\\d*%")
     private val speedPattern = Pattern.compile("\\d+\\W?\\d*\\w+/s")
-    private val extimePattern = Pattern.compile("\\d+:\\d+")
+    private val titlePattern = Pattern.compile("[/\\\\][^/^\\\\]+\\.\\w+")
+    private val fileSizePattern = Pattern.compile("\\d+\\W?\\d*\\w+B")
     private val playlistProgressPattern = Pattern.compile("\\d+\\sof\\s\\d+")
     private var taskModel: DownloadTaskModel? = null
     private lateinit var msg: ResourceBundle
@@ -141,24 +142,34 @@ class YoutubeDL : AbstractEngine() {
         taskModel = downloadTaskModel
         msg = message
         taskModel?.run {
-            this.statusProperty.value = message["ui.analyzing"]
+            // init display
             execCommand(argsMap.build(), DownloadType.SINGLE)
         }
     }
 
     override fun parseDownloadSingleStatus(line: String) {
-        // TODO parse the ffmpeg merging status output
+        if (title.isEmpty()) {
+            title = titlePattern.matcher(line).takeIf { it.find() }?.group()?.toString() ?: title
+            title = title.removePrefix("/")
+            if (title.isNotEmpty()) taskModel?.title = title
+        }
+        if (size.isEmpty()) {
+            size = fileSizePattern.matcher(line).takeIf { it.find() }?.group()?.toString() ?: size
+            if (size.isNotEmpty()) taskModel?.size = size
+        }
+
         progress = progressPattern.matcher(line).takeIf { it.find() }?.group()?.toProgress() ?: progress
         speed = speedPattern.matcher(line).takeIf { it.find() }?.group()?.toString() ?: speed
-        extime = extimePattern.matcher(line).takeIf { it.find() }?.group()?.toString() ?: extime
-        logger.debug("$line -> $progress, $speed, $extime, $status")
+        logger.debug("$line -> title=$title, progress=$progress, size=$size, speed=$speed")
 
         taskModel?.run {
             if (this@YoutubeDL.progress >= 1.0) {
                 this.progress = 1.0
-                this.status = msg["ui.completed"]
-                return
-            } else {
+                if (line.trim().startsWith("[ffmpeg]"))
+                    this.status = msg["ui.merging"]
+                else
+                    this.status = msg["ui.completed"]
+            } else if (this@YoutubeDL.progress > 0) {
                 this.progress = this@YoutubeDL.progress
                 this.status = msg["ui.downloading"]
             }
@@ -167,31 +178,6 @@ class YoutubeDL : AbstractEngine() {
 
     override fun parseDownloadPlaylistStatus(line: String) {
         //TODO parse the playlist
-        progress = progressPattern.matcher(line).takeIf { it.find() }?.group()?.toProgress() ?: progress
-        speed = speedPattern.matcher(line).takeIf { it.find() }?.group()?.toString() ?: speed
-        playlistProgress = playlistProgressPattern.matcher(line).takeIf { it.find() }?.group()?.toString()?.replace("of", "/") ?: playlistProgress
-
-        when {
-            progress >= 1.0 -> {
-                if (playlistProgress.playlistIsCompleted()) {
-                    status = EngineStatus.FINISH
-                    logger.debug("finished playlist media task of ${argsMap.build()}")
-                }
-            }
-            progress > 0 -> {
-                status = EngineStatus.DOWNLOAD
-            }
-        }
-
-        if (!running.get()) {
-            status = EngineStatus.PAUSE
-        }
-
-//        msgQueue?.offer(
-//                mapOf("progress" to progress,
-//                        "speed" to speed,
-//                        "extime" to playlistProgress,
-//                        "status" to status))
     }
 
     override fun execCommand(command: MutableList<String>, downloadType: DownloadType): StringBuilder? {
