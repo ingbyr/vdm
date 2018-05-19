@@ -8,15 +8,19 @@ import javafx.beans.property.SimpleStringProperty
 import tornadofx.*
 import java.io.Serializable
 import java.time.LocalDateTime
+import java.util.*
 
 class DownloadTaskModel(val vdmConfig: VDMConfig, val url: String, createdAt: LocalDateTime? = null, formatID: String? = null, checked: Boolean? = null, title: String? = null, size: String? = null, progress: Double? = null, status: String? = null) : ViewModel() {
+    init {
+        messages = ResourceBundle.getBundle("i18n/MainView")
+    }
     val checkedProperty = SimpleBooleanProperty(this, "checked", checked ?: false)
     var checked: Boolean by checkedProperty
-    val titleProperty = SimpleStringProperty(this, "title", title ?: "")
+    val titleProperty = SimpleStringProperty(this, "title", title ?: messages["ui.analyzing"])
     var title: String by titleProperty
-    val sizeProperty = SimpleStringProperty(this, "size", size ?: "")
+    val sizeProperty = SimpleStringProperty(this, "size", size ?: messages["ui.analyzing"])
     var size: String by sizeProperty
-    val statusProperty = SimpleStringProperty(this, "status", status ?: "")
+    val statusProperty = SimpleStringProperty(this, "status", status ?: messages["ui.analyzing"])
     var status: String by statusProperty
     val progressProperty = SimpleDoubleProperty(this, "progress", progress ?: 0.0)
     var progress: Double by progressProperty

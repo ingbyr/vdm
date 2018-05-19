@@ -124,6 +124,13 @@ class MainView : View() {
             find(CreateDownloadTaskView::class).openWindow()
         }
 
+        // delete task
+        btnDelete.setOnMouseClicked {
+            selectedTaskModel?.run {
+                controller.deleteTask(this)
+            }
+        }
+
         // donate
         menuDonate.action {
             openInternalWindow(ImageView::class)
