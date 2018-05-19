@@ -28,14 +28,13 @@ abstract class AbstractEngine {
     abstract fun format(formatID: String): AbstractEngine
     abstract fun output(outputPath: String): AbstractEngine
     abstract fun downloadMedia(downloadTaskModel: DownloadTaskModel, message: ResourceBundle)
-    abstract fun parseDownloadSingleStatus(line: String)
-    abstract fun parseDownloadPlaylistStatus(line: String)
+    abstract fun parseDownloadOutput(line: String)
     abstract fun execCommand(command: MutableList<String>, downloadType: DownloadType): StringBuilder?
     abstract fun parseFormatsJson(json: JsonObject): List<MediaFormat>
 
     abstract fun updateUrl(version: String): String
 
-    fun stopTask() {
+    open fun stopTask() {
         /**
          * Please overwrite this if need extra operation.
          */

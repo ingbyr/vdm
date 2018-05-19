@@ -28,7 +28,6 @@ class CreateDownloadTaskView : View() {
 
     private val cu = VDMConfigUtils(app.config)
 
-    // TODO add task to task list view of main view
     init {
         // validation for the url text field
         ValidationContext().addValidator(tfURL, tfURL.textProperty()) {
