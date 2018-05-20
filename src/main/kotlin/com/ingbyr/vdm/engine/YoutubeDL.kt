@@ -20,7 +20,7 @@ import java.util.regex.Pattern
 class YoutubeDL : AbstractEngine() {
     override val logger: Logger = LoggerFactory.getLogger(this::class.java)
     override val remoteVersionUrl: String = "https://raw.githubusercontent.com/rg3/youtube-dl/master/youtube_dl/version.py"
-
+    override val engineType = EngineType.YOUTUBE_DL
     private var speed = "0MiB/s"
     private var progress = 0.0
     private var size = ""
@@ -30,6 +30,7 @@ class YoutubeDL : AbstractEngine() {
     private val speedPattern = Pattern.compile("\\d+\\W?\\d*\\w+/s")
     private val titlePattern = Pattern.compile("[/\\\\][^/^\\\\]+\\.\\w+")
     private val fileSizePattern = Pattern.compile("\\d+\\W?\\d*\\w+B")
+    private val remoteVersionPattern = Pattern.compile("'\\d+.+'")
     private var taskModel: DownloadTaskModel? = null
     private lateinit var msg: ResourceBundle
 
@@ -40,10 +41,6 @@ class YoutubeDL : AbstractEngine() {
             }
             OSType.LINUX, OSType.MAC_OS -> {
                 Paths.get(System.getProperty("user.dir"), "engine", "youtube-dl").toAbsolutePath().toString()
-            }
-            OSType.NOT_SUPPORTED -> {
-                logger.error("Not supported OS")
-                throw OSException("Not supported OS")
             }
         }
     }
@@ -250,15 +247,25 @@ class YoutubeDL : AbstractEngine() {
         OSType.WINDOWS -> {
             "https://github.com/rg3/youtube-dl/releases/download/$version/youtube-dl.exe"
         }
-        OSType.LINUX -> {
+        OSType.LINUX, OSType.MAC_OS -> {
             "https://github.com/rg3/youtube-dl/releases/download/$version/youtube-dl"
         }
-        OSType.MAC_OS -> {
-            "https://github.com/rg3/youtube-dl/releases/download/$version/youtube-dl"
-        }
-        OSType.NOT_SUPPORTED -> {
-            logger.error("Not supported OS")
-            ""
+    }
+
+    override fun existNewVersion(localVersion: String): Boolean {
+        val remoteVersionInfo = NetUtils.get(remoteVersionUrl)
+        return if (remoteVersionInfo?.isNotEmpty() == true) {
+            val remoteVersion = remoteVersionPattern.matcher(remoteVersionInfo).takeIf { it.find() }?.group()?.toString()?.replace("'", "")?.replace("\"", "")
+            if (remoteVersion != null) {
+                logger.debug("[$engineType] local version $localVersion, remote version $remoteVersion")
+                VDMUtils.newVersion(localVersion, remoteVersion)
+            } else {
+                logger.error("[$engineType] get remote version failed")
+                false
+            }
+        } else {
+            logger.error("[$engineType] get remote version failed")
+            false
         }
     }
 }

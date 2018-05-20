@@ -9,7 +9,6 @@ enum class OSType {
     WINDOWS,
     LINUX,
     MAC_OS,
-    NOT_SUPPORTED
 }
 
 object OSUtils {
@@ -22,7 +21,7 @@ object OSUtils {
             platform.startsWith("Linux") -> OSType.LINUX
             platform.startsWith("Win") -> OSType.WINDOWS
             platform.startsWith("MAC") -> OSType.MAC_OS
-            else -> OSType.NOT_SUPPORTED
+            else -> throw VDMOSException("not supported os")
         }
     }
 
@@ -38,11 +37,8 @@ object OSUtils {
             OSType.MAC_OS -> {
                 Desktop.getDesktop().open(file)
             }
-            OSType.NOT_SUPPORTED -> {
-                logger.error("can not open dir on $platform")
-            }
         }
     }
 }
 
-class OSException(override var message: String) : Exception(message)
+class VDMOSException(override var message: String) : Exception(message)
