@@ -1,5 +1,6 @@
 package com.ingbyr.vdm.utils
 
+import javafx.beans.property.SimpleLongProperty
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.internal.Util
@@ -10,7 +11,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.IOException
-import java.util.concurrent.ConcurrentLinkedQueue
 
 
 object NetUtils {
@@ -23,7 +23,7 @@ object NetUtils {
         return response.body()?.string() ?: "No response"
     }
 
-    fun download(url: String, destFile: File, msgQueue: ConcurrentLinkedQueue<Long>) {
+    fun download(url: String, destFile: File, progress: SimpleLongProperty) {
         var sink: BufferedSink? = null
         var source: BufferedSource? = null
         try {
@@ -44,9 +44,8 @@ object NetUtils {
                     if (bytesRead == -1L) break
                     sink.emit()
                     totalBytesRead += bytesRead
-                    val progress = totalBytesRead * 100 / contentLength
+                    progress.value = totalBytesRead * 100 / contentLength
                     logger.trace("download $url progress: $progress")
-                    msgQueue.offer(progress)
                 }
                 sink.flush()
             } else {
@@ -60,9 +59,3 @@ object NetUtils {
         }
     }
 }
-
-//TODO delete this
-//fun main(args: Array<String>) {
-//    println(NetUtils.get("https://raw.githubusercontent.com/rg3/youtube-dl/master/youtube_dl/version.py"))
-//    NetUtils.downloadFile("https://github.com/rg3/youtube-dl/releases/download/2018.04.25/youtube-dl", File("/home/ingbyr/Downloads/youtube-dl"), ConcurrentLinkedQueue())
-//}

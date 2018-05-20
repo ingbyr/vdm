@@ -21,7 +21,6 @@ import java.util.*
 /**
  * TODO add enable debug mode button
  * TODO add FFMPEG and cookie
- * TODO add about view
  */
 class MainView : View() {
     init {
@@ -146,6 +145,18 @@ class MainView : View() {
             selectedTaskModel?.run {
                 fire(StopBackgroundTask(this, false))
             }
+        }
+        // open dir
+        btnOpenFile.setOnMouseClicked {
+            if (selectedTaskModel != null) {
+                OSUtils.openDir(selectedTaskModel!!.vdmConfig.storagePath)
+            } else {
+                OSUtils.openDir(cu.load(VDMConfigUtils.STORAGE_PATH))
+            }
+        }
+        // search
+        btnSearch.setOnMouseClicked {
+            // TODO search task
         }
 
         // menus

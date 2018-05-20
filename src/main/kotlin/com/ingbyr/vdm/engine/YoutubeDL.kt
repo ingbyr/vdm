@@ -38,11 +38,8 @@ class YoutubeDL : AbstractEngine() {
             OSType.WINDOWS -> {
                 Paths.get(System.getProperty("user.dir"), "engine", "youtube-dl.exe").toAbsolutePath().toString()
             }
-            OSType.LINUX -> {
-                "youtube-dl"
-            }
-            OSType.MAC_OS -> {
-                "youtube-dl"
+            OSType.LINUX, OSType.MAC_OS -> {
+                Paths.get(System.getProperty("user.dir"), "engine", "youtube-dl").toAbsolutePath().toString()
             }
             OSType.NOT_SUPPORTED -> {
                 logger.error("Not supported OS")
