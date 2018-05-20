@@ -163,7 +163,7 @@ class MainView : View() {
             }
         }
         menuStartAllTask.action {
-            // TODO start all task
+            controller.startAllDownloadTask()
         }
         menuStopAllTask.action {
             fire(StopBackgroundTask(stopAll = true))
