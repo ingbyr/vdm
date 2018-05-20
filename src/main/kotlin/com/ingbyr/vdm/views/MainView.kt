@@ -4,19 +4,19 @@ import com.ingbyr.vdm.controllers.MainController
 import com.ingbyr.vdm.events.CreateDownloadTask
 import com.ingbyr.vdm.events.StopBackgroundTask
 import com.ingbyr.vdm.models.DownloadTaskModel
+import com.ingbyr.vdm.utils.OSUtils
 import com.ingbyr.vdm.utils.VDMConfigUtils
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXCheckBox
 import com.jfoenix.controls.JFXProgressBar
 import javafx.geometry.Insets
-import javafx.scene.control.Label
-import javafx.scene.control.MenuItem
-import javafx.scene.control.TableView
+import javafx.scene.control.*
 import javafx.scene.layout.VBox
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tornadofx.*
 import java.util.*
+
 
 /**
  * TODO add enable debug mode button
@@ -32,14 +32,6 @@ class MainView : View() {
     override val root: VBox by fxml("/fxml/MainView.fxml")
     private val controller: MainController by inject()
 
-    private val menuNew: MenuItem by fxid()
-    private val menuOpenDir: MenuItem by fxid()
-    private val menuStopAll: MenuItem by fxid()
-    private val menuStartAll: MenuItem by fxid()
-    private val menuPreferences: MenuItem by fxid()
-    private val menuQuit: MenuItem by fxid()
-    private val menuAbout: MenuItem by fxid()
-    private val menuDonate: MenuItem by fxid()
     private val btnNew: JFXButton by fxid()
     private val btnStart: JFXButton by fxid()
     private val btnStop: JFXButton by fxid()
@@ -47,7 +39,19 @@ class MainView : View() {
     private val btnOpenFile: JFXButton by fxid()
     private val btnSearch: JFXButton by fxid()
     private val btnPreferences: JFXButton by fxid()
+    private val btnMenu: JFXButton by fxid()
+    private val contextMenu: ContextMenu = ContextMenu()
+
+    private var menuNew: MenuItem
+    private var menuOpenDir: MenuItem
+    private var menuStartAllTask: MenuItem
+    private var menuStopAllTask: MenuItem
+    private var menuPreferences: MenuItem
+    private var menuAbout: MenuItem
+    private var menuQuit: MenuItem
+    private var menuDonate: MenuItem
     private lateinit var labelStatus: Label
+
     private var selectedTaskModel: DownloadTaskModel? = null
     private lateinit var downloadTaskTableView: TableView<DownloadTaskModel>
 
@@ -81,6 +85,17 @@ class MainView : View() {
             }
         }
 
+        // init context menu
+        menuNew = MenuItem(messages["ui.new"])
+        menuOpenDir = MenuItem(messages["ui.openDirectory"])
+        menuStartAllTask = MenuItem(messages["ui.startAllTask"])
+        menuStopAllTask = MenuItem(messages["ui.stopAllTask"])
+        menuPreferences = MenuItem(messages["ui.preferences"])
+        menuAbout = MenuItem(messages["ui.about"])
+        menuQuit = MenuItem(messages["ui.quit"])
+        menuDonate = MenuItem(messages["ui.donate"])
+        contextMenu.items.addAll(menuNew, menuOpenDir, menuStartAllTask, menuStopAllTask, SeparatorMenuItem(), menuPreferences, menuAbout, menuQuit, SeparatorMenuItem(), menuDonate)
+
         loadVDMConfig()
         initListeners()
         subscribeEvents()
@@ -105,36 +120,27 @@ class MainView : View() {
             selectedTaskModel = selectedItem
         }
 
+        // shortcut buttons
         // start task
         btnStart.setOnMouseClicked {
             selectedTaskModel?.let {
                 controller.startDownloadTask(it)
             }
         }
-
         // preferences view
         btnPreferences.setOnMouseClicked {
             find(PreferencesView::class).openWindow()
         }
-        menuPreferences.action {
-            find(PreferencesView::class).openWindow()
-        }
-
         // create task
         btnNew.setOnMouseClicked {
             find(CreateDownloadTaskView::class).openWindow()
         }
-        menuNew.action {
-            find(CreateDownloadTaskView::class).openWindow()
-        }
-
         // delete task
         btnDelete.setOnMouseClicked {
             selectedTaskModel?.run {
                 controller.deleteTask(this)
             }
         }
-
         // stop task
         btnStop.setOnMouseClicked {
             selectedTaskModel?.run {
@@ -142,9 +148,37 @@ class MainView : View() {
             }
         }
 
-        // donate
+        // menus
+        btnMenu.setOnMouseClicked {
+            contextMenu.show(primaryStage, it.screenX, it.screenY)
+        }
+        menuNew.action {
+            find(CreateDownloadTaskView::class).openWindow()
+        }
+        menuOpenDir.action {
+            if (selectedTaskModel != null) {
+                OSUtils.openDir(selectedTaskModel!!.vdmConfig.storagePath)
+            } else {
+                OSUtils.openDir(cu.load(VDMConfigUtils.STORAGE_PATH))
+            }
+        }
+        menuStartAllTask.action {
+            // TODO start all task
+        }
+        menuStopAllTask.action {
+            fire(StopBackgroundTask(stopAll = true))
+        }
+        menuPreferences.action {
+            find(PreferencesView::class).openWindow()
+        }
+        menuAbout.action {
+            // TODO about view
+        }
+        menuQuit.action {
+            this.close()
+        }
         menuDonate.action {
-            openInternalWindow(ImageView::class)
+            openInternalWindow(ImageView())
         }
     }
 

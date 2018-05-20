@@ -34,17 +34,17 @@ class YoutubeDL : AbstractEngine() {
     private lateinit var msg: ResourceBundle
 
     init {
-        argsMap["engine"] = when (GUIPlatform.current()) {
-            GUIPlatformType.WINDOWS -> {
+        argsMap["engine"] = when (OSUtils.currentOS) {
+            OSType.WINDOWS -> {
                 Paths.get(System.getProperty("user.dir"), "engine", "youtube-dl.exe").toAbsolutePath().toString()
             }
-            GUIPlatformType.LINUX -> {
+            OSType.LINUX -> {
                 "youtube-dl"
             }
-            GUIPlatformType.MAC_OS -> {
+            OSType.MAC_OS -> {
                 "youtube-dl"
             }
-            GUIPlatformType.NOT_SUPPORTED -> {
+            OSType.NOT_SUPPORTED -> {
                 logger.error("Not supported OS")
                 throw OSException("Not supported OS")
             }
@@ -249,17 +249,17 @@ class YoutubeDL : AbstractEngine() {
         return progress[0].trim() >= progress[1].trim()
     }
 
-    override fun updateUrl(version: String) = when (GUIPlatform.current()) {
-        GUIPlatformType.WINDOWS -> {
+    override fun updateUrl(version: String) = when (OSUtils.currentOS) {
+        OSType.WINDOWS -> {
             "https://github.com/rg3/youtube-dl/releases/download/$version/youtube-dl.exe"
         }
-        GUIPlatformType.LINUX -> {
+        OSType.LINUX -> {
             "https://github.com/rg3/youtube-dl/releases/download/$version/youtube-dl"
         }
-        GUIPlatformType.MAC_OS -> {
+        OSType.MAC_OS -> {
             "https://github.com/rg3/youtube-dl/releases/download/$version/youtube-dl"
         }
-        GUIPlatformType.NOT_SUPPORTED -> {
+        OSType.NOT_SUPPORTED -> {
             logger.error("Not supported OS")
             ""
         }

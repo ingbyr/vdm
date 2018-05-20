@@ -118,7 +118,7 @@
 
 #button-more-menus {
     -fx-background-color: white;
-    -size: 2em;
+    -size: 2.5em;
     -fx-min-height: -size;
     -fx-min-width: -size;
     -fx-max-height: -size;
