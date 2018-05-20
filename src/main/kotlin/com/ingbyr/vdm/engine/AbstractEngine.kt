@@ -3,6 +3,7 @@ package com.ingbyr.vdm.engine
 import com.beust.klaxon.JsonObject
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.utils.DownloadType
+import com.ingbyr.vdm.utils.EngineType
 import com.ingbyr.vdm.utils.VDMProxy
 import org.slf4j.Logger
 import java.util.*
@@ -21,7 +22,7 @@ abstract class AbstractEngine {
     protected val running: AtomicBoolean = AtomicBoolean(false)
     protected val argsMap: MutableMap<String, String> = mutableMapOf()
     protected abstract val remoteVersionUrl: String
-
+    abstract val engineType: EngineType
     abstract fun url(url: String): AbstractEngine
     abstract fun addProxy(proxy: VDMProxy): AbstractEngine
     abstract fun fetchMediaJson(): JsonObject
@@ -33,6 +34,7 @@ abstract class AbstractEngine {
     abstract fun parseFormatsJson(json: JsonObject): List<MediaFormat>
 
     abstract fun updateUrl(version: String): String
+    abstract fun existNewVersion(localVersion: String): Boolean
 
     open fun stopTask() {
         /**

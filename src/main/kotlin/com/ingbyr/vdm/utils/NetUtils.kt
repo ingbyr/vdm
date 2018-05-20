@@ -17,10 +17,10 @@ object NetUtils {
     private val client = OkHttpClient()
     private val logger: Logger = LoggerFactory.getLogger(NetUtils::class.java)
 
-    fun get(url: String): String {
+    fun get(url: String): String? {
         val request = Request.Builder().url(url).build()
         val response = client.newCall(request).execute()
-        return response.body()?.string() ?: "No response"
+        return response.body()?.string()
     }
 
     fun download(url: String, destFile: File, progress: SimpleLongProperty) {
