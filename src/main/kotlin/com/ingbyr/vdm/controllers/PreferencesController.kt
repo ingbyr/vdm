@@ -1,5 +1,6 @@
 package com.ingbyr.vdm.controllers
 
+import com.ingbyr.vdm.engine.EngineFactory
 import com.ingbyr.vdm.utils.EngineType
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -15,6 +16,7 @@ class PreferencesController : Controller() {
 
     fun updateEngine(engineType: EngineType) {
         logger.debug("[$engineType] check for updates")
-        // TODO update engines
+        val engine = EngineFactory.create(engineType)
+
     }
 }

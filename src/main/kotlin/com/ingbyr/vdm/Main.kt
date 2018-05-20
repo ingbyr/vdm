@@ -1,6 +1,6 @@
 package com.ingbyr.vdm
 
-import com.ingbyr.vdm.utils.VDMContent
+import com.ingbyr.vdm.utils.VDMUtils
 import com.ingbyr.vdm.views.MainView
 import javafx.application.Application
 import org.slf4j.LoggerFactory
@@ -9,7 +9,7 @@ import java.util.*
 
 class Main : App(MainView::class) {
     private val logger = LoggerFactory.getLogger(Main::class.java)
-    override val configBasePath = VDMContent.USER_DIR
+    override val configBasePath = VDMUtils.USER_DIR
     private val availableLanguages = listOf("zh", "en", "hu")
 
     init {

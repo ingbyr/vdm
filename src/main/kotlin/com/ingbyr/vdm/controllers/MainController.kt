@@ -6,7 +6,7 @@ import com.ingbyr.vdm.events.StopBackgroundTask
 import com.ingbyr.vdm.models.DownloadTaskData
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.utils.DateTimeUtils
-import com.ingbyr.vdm.utils.VDMContent
+import com.ingbyr.vdm.utils.VDMUtils
 import org.mapdb.DBMaker
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -23,8 +23,8 @@ class MainController : Controller() {
     }
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
-    private val db = DBMaker.fileDB(VDMContent.DATABASE_PATH_STR).transactionEnable().make()
-    private val downloadTaskData = db.hashMap(VDMContent.DB_DOWNLOAD_TASKS).createOrOpen() as MutableMap<String, DownloadTaskData>
+    private val db = DBMaker.fileDB(VDMUtils.DATABASE_PATH_STR).transactionEnable().make()
+    private val downloadTaskData = db.hashMap(VDMUtils.DB_DOWNLOAD_TASKS).createOrOpen() as MutableMap<String, DownloadTaskData>
     val downloadTaskModelList = mutableListOf<DownloadTaskModel>().observable()
     private val engineList = ConcurrentHashMap<LocalDateTime, AbstractEngine>()
 
@@ -95,7 +95,7 @@ class MainController : Controller() {
 
     fun updateVDM() {
         // TODO update VDM like as youtube-dl rules
-        hostServices.showDocument(VDMContent.APP_UPDATE_URL)
+        hostServices.showDocument(VDMUtils.APP_UPDATE_URL)
     }
 
     fun clear() {
