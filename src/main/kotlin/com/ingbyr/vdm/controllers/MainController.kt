@@ -54,6 +54,14 @@ class MainController : Controller() {
         }
     }
 
+    fun startAllDownloadTask() {
+        downloadTaskModelList.forEach {
+            if (it.status != messages["ui.completed"]) {
+                startDownloadTask(it)
+            }
+        }
+    }
+
     fun deleteTask(taskItem: DownloadTaskModel) {
         downloadTaskModelList.removeAll(taskItem)
         downloadTaskData.remove(DateTimeUtils.time2String(taskItem.createdAt))
