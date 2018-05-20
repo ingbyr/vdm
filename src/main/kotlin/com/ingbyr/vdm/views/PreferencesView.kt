@@ -50,7 +50,7 @@ class PreferencesView : View() {
 
         // download settings area
         labelStoragePath.text = cu.safeLoad(VDMConfigUtils.STORAGE_PATH, VDMContent.APP_DIR)
-        labelFFMPEGPath.text = cu.safeLoad(VDMConfigUtils.FFMPEG_PATH, VDMContent.NONE)
+        labelFFMPEGPath.text = cu.safeLoad(VDMConfigUtils.FFMPEG_PATH, "")
         tbDownloadDefault.isSelected = cu.safeLoad(VDMConfigUtils.DOWNLOAD_DEFAULT_FORMAT, "false").toBoolean()
 
         // engine settings area

@@ -94,7 +94,7 @@ class MainView : View() {
         menuAbout = MenuItem(messages["ui.about"])
         menuQuit = MenuItem(messages["ui.quit"])
         menuDonate = MenuItem(messages["ui.donate"])
-        contextMenu.items.addAll(menuNew, menuOpenDir, menuStartAllTask, menuStopAllTask, SeparatorMenuItem(), menuPreferences, menuAbout, menuQuit, SeparatorMenuItem(), menuDonate)
+        contextMenu.items.addAll(menuNew, menuOpenDir, menuStartAllTask, menuStopAllTask, SeparatorMenuItem(), menuPreferences, menuAbout, menuDonate, SeparatorMenuItem(), menuQuit)
 
         loadVDMConfig()
         initListeners()
@@ -178,7 +178,7 @@ class MainView : View() {
             this.close()
         }
         menuDonate.action {
-            openInternalWindow(ImageView())
+            openInternalWindow(DonationView())
         }
     }
 
