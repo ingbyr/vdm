@@ -1,11 +1,15 @@
 package com.ingbyr.vdm.views
 
-import tornadofx.View
-import tornadofx.imageview
-import tornadofx.vbox
+import com.ingbyr.vdm.utils.VDMContent
+import tornadofx.*
 
-class ImageView : View() {
-    override val root = vbox {
-        imageview("/img/zhifubao_compress.jpg", lazyload = false)
+
+class DonationView : View() {
+    override val root = hbox {
+        spacing = 10.0
+        imageview("/imgs/zhifubao-min.png")
+        imageview("/imgs/paypal-min.png").setOnMouseClicked {
+            hostServices.showDocument(VDMContent.DONATION_URL)
+        }
     }
 }
