@@ -1,5 +1,6 @@
 package com.ingbyr.vdm.views
 
+import com.ingbyr.vdm.controllers.PreferencesController
 import com.ingbyr.vdm.utils.*
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXTabPane
@@ -20,6 +21,7 @@ class PreferencesView : View() {
 
     override val root: JFXTabPane by fxml("/fxml/PreferencesView.fxml")
     private val logger: Logger = LoggerFactory.getLogger(PreferencesView::class.java)
+    private val controller: PreferencesController by inject()
 
     private val labelStoragePath: Label by fxid()
     private val btnChangeStoragePath: JFXButton by fxid()
@@ -28,8 +30,10 @@ class PreferencesView : View() {
     private val tbDownloadDefault: JFXToggleButton by fxid()
 
     private val tbYoutubeDL: JFXToggleButton by fxid()
+    private val btnUpdateYoutubeDL: JFXButton by fxid()
     private val labelYoutubeDLVersion: Label by fxid()
     private val tbYouGet: JFXToggleButton by fxid()
+    private val btnUpdateYouGet: JFXButton by fxid()
     private val labelYouGetVersion: Label by fxid()
 
     private val tbSocks5: JFXToggleButton by fxid()
@@ -72,7 +76,6 @@ class PreferencesView : View() {
             ProxyType.NONE -> {
             }
         }
-        // TODO add validations for proxy textfield
         tfSocks5Address.text = cu.safeLoad(VDMConfigUtils.SOCKS5_PROXY_ADDRESS, "")
         tfSocks5Port.text = cu.safeLoad(VDMConfigUtils.SOCKS5_PROXY_PORT, "")
         tfHTTPAddress.text = cu.safeLoad(VDMConfigUtils.HTTP_PROXY_ADDRESS, "")
@@ -107,6 +110,12 @@ class PreferencesView : View() {
         }
         tbYouGet.whenSelected {
             cu.update(VDMConfigUtils.ENGINE_TYPE, EngineType.YOU_GET)
+        }
+        btnUpdateYoutubeDL.setOnMouseClicked {
+            controller.updateEngine(EngineType.YOUTUBE_DL)
+        }
+        btnUpdateYouGet.setOnMouseClicked {
+            controller.updateEngine(EngineType.YOU_GET)
         }
 
         // proxy settings area
