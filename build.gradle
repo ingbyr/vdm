@@ -32,6 +32,7 @@ dependencies {
     compile "com.squareup.okhttp3:okhttp:3.10.0"
     compile "com.squareup.okio:okio:1.14.0"
     compile "org.mapdb:mapdb:3.0.5"
+    testCompile "io.kotlintest:kotlintest-runner-junit5:3.1.0"
 }
 
 compileKotlin {
@@ -40,6 +41,10 @@ compileKotlin {
 
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
+}
+
+test {
+    useJUnitPlatform()
 }
 
 jfx {
