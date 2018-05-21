@@ -22,6 +22,7 @@ abstract class AbstractEngine {
     protected val running: AtomicBoolean = AtomicBoolean(false)
     protected val argsMap: MutableMap<String, String> = mutableMapOf()
     protected abstract val remoteVersionUrl: String
+    abstract var remoteVersion: String?
 
     abstract val enginePath: String
     abstract val engineType: EngineType

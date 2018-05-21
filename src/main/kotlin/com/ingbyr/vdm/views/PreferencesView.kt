@@ -1,6 +1,7 @@
 package com.ingbyr.vdm.views
 
 import com.ingbyr.vdm.controllers.PreferencesController
+import com.ingbyr.vdm.events.RefreshEngineVersion
 import com.ingbyr.vdm.utils.*
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXTabPane
@@ -46,8 +47,26 @@ class PreferencesView : View() {
     private val cu = VDMConfigUtils(app.config)
 
     init {
+        subscribeEvents()
         loadVDMConfig()
         initListeners()
+    }
+
+    private fun subscribeEvents() {
+        subscribe<RefreshEngineVersion> {
+            when (it.engineType) {
+                EngineType.YOUTUBE_DL -> {
+                    labelYoutubeDLVersion.text = it.newVersion
+                    cu.update(EngineUtils.YOUTUBE_DL_VERSION, it.newVersion)
+                }
+                EngineType.YOU_GET -> {
+                    labelYouGetVersion.text = it.newVersion
+                    cu.update(EngineUtils.YOU_GET_VERSION, it.newVersion)
+                }
+                else -> {
+                }
+            }
+        }
     }
 
     private fun loadVDMConfig() {
@@ -113,9 +132,11 @@ class PreferencesView : View() {
         }
         btnUpdateYoutubeDL.setOnMouseClicked {
             controller.updateEngine(EngineType.YOUTUBE_DL, cu.load(EngineUtils.YOUTUBE_DL_VERSION))
+            this.currentStage?.isIconified = true
         }
         btnUpdateYouGet.setOnMouseClicked {
             controller.updateEngine(EngineType.YOU_GET, cu.load(EngineUtils.YOU_GET_VERSION))
+            this.currentStage?.isIconified = true
         }
 
         // proxy settings area

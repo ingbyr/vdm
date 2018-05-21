@@ -25,6 +25,7 @@ class MainController : Controller() {
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
     private val db = DBMaker.fileDB(VDMUtils.DATABASE_PATH_STR).transactionEnable().make()
+    @Suppress("UNCHECKED_CAST")
     private val downloadTaskData = db.hashMap(VDMUtils.DB_DOWNLOAD_TASKS).createOrOpen() as MutableMap<String, DownloadTaskData>
     val downloadTaskModelList = mutableListOf<DownloadTaskModel>().observable()
     private val engineList = ConcurrentHashMap<LocalDateTime, AbstractEngine>()
@@ -53,14 +54,20 @@ class MainController : Controller() {
         subscribe<UpdateEngineTask> {
             val engine = EngineFactory.create(it.engineType)
             val vdmConfig = VDMConfig(it.engineType, VDMProxy(ProxyType.NONE), false, engine!!.enginePath)
-            val downloadTask = DownloadTaskModel(vdmConfig, "", LocalDateTime.now(), title = it.engineType.name)
+            val downloadTask = DownloadTaskModel(vdmConfig, "", LocalDateTime.now(), title = "[${messages["ui.update"]} ${it.engineType.name}] ")
             downloadTaskModelList.add(downloadTask)
             if (engine.existNewVersion(it.localVersion)) {
                 downloadTask.url = engine.updateUrl()
-                NetUtils.download(downloadTask, messages)
+                NetUtils().downloadEngine(downloadTask, engine.remoteVersion!!)
+            } else {
+                downloadTask.title += messages["ui.noAvailableUpdates"]
+                downloadTask.size = ""
+                downloadTask.status = messages["ui.completed"]
+                downloadTask.progress = 1.0
             }
         }
     }
+
 
     fun startDownloadTask(downloadTask: DownloadTaskModel) {
         downloadTask.status = messages["ui.analyzing"]

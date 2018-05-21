@@ -2,9 +2,10 @@ package com.ingbyr.vdm.views
 
 import com.ingbyr.vdm.controllers.MainController
 import com.ingbyr.vdm.events.StopBackgroundTask
+import com.ingbyr.vdm.events.UpdateEngineTask
 import com.ingbyr.vdm.models.DownloadTaskModel
-import com.ingbyr.vdm.utils.OSUtils
 import com.ingbyr.vdm.utils.VDMConfigUtils
+import com.ingbyr.vdm.utils.VDMOSUtils
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXCheckBox
 import com.jfoenix.controls.JFXProgressBar
@@ -93,7 +94,6 @@ class MainView : View() {
         menuQuit = MenuItem(messages["ui.quit"])
         menuDonate = MenuItem(messages["ui.donate"])
         contextMenu.items.addAll(menuNew, menuOpenDir, menuStartAllTask, menuStopAllTask, SeparatorMenuItem(), menuPreferences, menuAbout, menuDonate, SeparatorMenuItem(), menuQuit)
-
         loadVDMConfig()
         initListeners()
         controller.loadTaskFromDB()
@@ -146,9 +146,9 @@ class MainView : View() {
         // open dir
         btnOpenFile.setOnMouseClicked {
             if (selectedTaskModel != null) {
-                OSUtils.openDir(selectedTaskModel!!.vdmConfig.storagePath)
+                VDMOSUtils.openDir(selectedTaskModel!!.vdmConfig.storagePath)
             } else {
-                OSUtils.openDir(cu.load(VDMConfigUtils.STORAGE_PATH))
+                VDMOSUtils.openDir(cu.load(VDMConfigUtils.STORAGE_PATH))
             }
         }
         // search
@@ -165,9 +165,9 @@ class MainView : View() {
         }
         menuOpenDir.action {
             if (selectedTaskModel != null) {
-                OSUtils.openDir(selectedTaskModel!!.vdmConfig.storagePath)
+                VDMOSUtils.openDir(selectedTaskModel!!.vdmConfig.storagePath)
             } else {
-                OSUtils.openDir(cu.load(VDMConfigUtils.STORAGE_PATH))
+                VDMOSUtils.openDir(cu.load(VDMConfigUtils.STORAGE_PATH))
             }
         }
         menuStartAllTask.action {
