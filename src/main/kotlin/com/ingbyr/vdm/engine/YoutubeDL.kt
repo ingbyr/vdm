@@ -10,6 +10,7 @@ import tornadofx.*
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.file.Paths
+import java.text.DecimalFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
@@ -240,7 +241,8 @@ class YoutubeDL : AbstractEngine() {
          * Transfer "42.3%"(String) to 0.423(Double)
          */
         val s = this.replace("%", "")
-        return s.trim().toDouble() / 100
+        val sizeFormat = DecimalFormat("#.##")
+        return sizeFormat.format(s.trim().toDouble() / 100).toDouble()
     }
 
     private fun String.playlistIsCompleted(): Boolean {

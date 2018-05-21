@@ -2,7 +2,6 @@ package com.ingbyr.vdm.views
 
 import com.ingbyr.vdm.controllers.MainController
 import com.ingbyr.vdm.events.StopBackgroundTask
-import com.ingbyr.vdm.events.UpdateEngineTask
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.utils.VDMConfigUtils
 import com.ingbyr.vdm.utils.VDMOSUtils
@@ -71,14 +70,17 @@ class MainView : View() {
                 column(messages["ui.title"], DownloadTaskModel::titleProperty).pctWidth(40)
                 column(messages["ui.size"], DownloadTaskModel::sizeProperty)
                 column(messages["ui.status"], DownloadTaskModel::statusProperty).cellFormat {
-                    // TODO use different color
                     labelStatus = Label(it)
                     graphic = labelStatus
                 }
                 column(messages["ui.progress"], DownloadTaskModel::progressProperty).pctWidth(20).cellFormat {
+                    val progressBox = hbox(spacing = 10.0)
                     val pb = JFXProgressBar(it.toDouble())
+                    val labelProgress = Label("${it.toDouble() * 100.0}%")
                     pb.useMaxSize = true
-                    graphic = pb
+                    progressBox += pb
+                    progressBox += labelProgress
+                    graphic = progressBox
                 }
                 column(messages["ui.createdAt"], DownloadTaskModel::createdAtProperty)
             }
