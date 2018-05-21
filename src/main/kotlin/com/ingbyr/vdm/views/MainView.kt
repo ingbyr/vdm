@@ -1,7 +1,6 @@
 package com.ingbyr.vdm.views
 
 import com.ingbyr.vdm.controllers.MainController
-import com.ingbyr.vdm.events.CreateDownloadTask
 import com.ingbyr.vdm.events.StopBackgroundTask
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.utils.OSUtils
@@ -97,8 +96,6 @@ class MainView : View() {
 
         loadVDMConfig()
         initListeners()
-        subscribeEvents()
-
         controller.loadTaskFromDB()
     }
 
@@ -192,16 +189,6 @@ class MainView : View() {
             openInternalWindow(DonationView())
         }
     }
-
-    private fun subscribeEvents() {
-        subscribe<CreateDownloadTask> {
-            logger.debug("create task: ${it.downloadTask}")
-            controller.addTaskToList(it.downloadTask)
-            // save to db
-            controller.saveTaskToDB(it.downloadTask)
-        }
-    }
-
 
     override fun onUndock() {
         super.onUndock()

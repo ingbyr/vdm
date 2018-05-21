@@ -64,8 +64,8 @@ class PreferencesView : View() {
             EngineType.YOU_GET -> tbYouGet.isSelected = true
             else -> logger.error("no engine type of $engineType")
         }
-        labelYoutubeDLVersion.text = cu.safeLoad(EngineUtils.YOUTUBE_DL_VERSION, messages["unknown"])
-        labelYouGetVersion.text = cu.safeLoad(EngineUtils.YOU_GET_VERSION, messages["unknown"])
+        labelYoutubeDLVersion.text = cu.safeLoad(EngineUtils.YOUTUBE_DL_VERSION, VDMUtils.UNKNOWN_VERSION)
+        labelYouGetVersion.text = cu.safeLoad(EngineUtils.YOU_GET_VERSION, VDMUtils.UNKNOWN_VERSION)
 
 
         // proxy settings area
@@ -112,10 +112,10 @@ class PreferencesView : View() {
             cu.update(VDMConfigUtils.ENGINE_TYPE, EngineType.YOU_GET)
         }
         btnUpdateYoutubeDL.setOnMouseClicked {
-            controller.updateEngine(EngineType.YOUTUBE_DL)
+            controller.updateEngine(EngineType.YOUTUBE_DL, cu.load(EngineUtils.YOUTUBE_DL_VERSION))
         }
         btnUpdateYouGet.setOnMouseClicked {
-            controller.updateEngine(EngineType.YOU_GET)
+            controller.updateEngine(EngineType.YOU_GET, cu.load(EngineUtils.YOU_GET_VERSION))
         }
 
         // proxy settings area

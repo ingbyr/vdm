@@ -21,6 +21,8 @@ class YoutubeDL : AbstractEngine() {
     override val logger: Logger = LoggerFactory.getLogger(this::class.java)
     override val remoteVersionUrl: String = "https://raw.githubusercontent.com/rg3/youtube-dl/master/youtube_dl/version.py"
     override val engineType = EngineType.YOUTUBE_DL
+    override val enginePath: String = initEnginePath()
+
     private var speed = "0MiB/s"
     private var progress = 0.0
     private var size = ""
@@ -33,9 +35,14 @@ class YoutubeDL : AbstractEngine() {
     private val remoteVersionPattern = Pattern.compile("'\\d+.+'")
     private var taskModel: DownloadTaskModel? = null
     private lateinit var msg: ResourceBundle
+    private var remoteVersion: String? = null
 
     init {
-        argsMap["engine"] = when (OSUtils.currentOS) {
+        argsMap["engine"] = enginePath
+    }
+
+    private fun initEnginePath(): String {
+        return when (OSUtils.currentOS) {
             OSType.WINDOWS -> {
                 Paths.get(System.getProperty("user.dir"), "engine", "youtube-dl.exe").toAbsolutePath().toString()
             }
@@ -243,22 +250,22 @@ class YoutubeDL : AbstractEngine() {
         return progress[0].trim() >= progress[1].trim()
     }
 
-    override fun updateUrl(version: String) = when (OSUtils.currentOS) {
+    override fun updateUrl() = when (OSUtils.currentOS) {
         OSType.WINDOWS -> {
-            "https://github.com/rg3/youtube-dl/releases/download/$version/youtube-dl.exe"
+            "https://github.com/rg3/youtube-dl/releases/download/$remoteVersion/youtube-dl.exe"
         }
         OSType.LINUX, OSType.MAC_OS -> {
-            "https://github.com/rg3/youtube-dl/releases/download/$version/youtube-dl"
+            "https://github.com/rg3/youtube-dl/releases/download/$remoteVersion/youtube-dl"
         }
     }
 
     override fun existNewVersion(localVersion: String): Boolean {
         val remoteVersionInfo = NetUtils.get(remoteVersionUrl)
         return if (remoteVersionInfo?.isNotEmpty() == true) {
-            val remoteVersion = remoteVersionPattern.matcher(remoteVersionInfo).takeIf { it.find() }?.group()?.toString()?.replace("'", "")?.replace("\"", "")
+            remoteVersion = remoteVersionPattern.matcher(remoteVersionInfo).takeIf { it.find() }?.group()?.toString()?.replace("'", "")?.replace("\"", "")
             if (remoteVersion != null) {
                 logger.debug("[$engineType] local version $localVersion, remote version $remoteVersion")
-                VDMUtils.newVersion(localVersion, remoteVersion)
+                VDMUtils.newVersion(localVersion, remoteVersion!!)
             } else {
                 logger.error("[$engineType] get remote version failed")
                 false

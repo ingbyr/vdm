@@ -10,10 +10,11 @@ import java.io.Serializable
 import java.time.LocalDateTime
 import java.util.*
 
-class DownloadTaskModel(val vdmConfig: VDMConfig, val url: String, createdAt: LocalDateTime? = null, formatID: String? = null, checked: Boolean? = null, title: String? = null, size: String? = null, progress: Double? = null, status: String? = null) : ViewModel() {
+class DownloadTaskModel(val vdmConfig: VDMConfig, var url: String, createdAt: LocalDateTime? = null, formatID: String? = null, checked: Boolean? = null, title: String? = null, size: String? = null, progress: Double? = null, status: String? = null) : ViewModel() {
     init {
         messages = ResourceBundle.getBundle("i18n/MainView")
     }
+
     val checkedProperty = SimpleBooleanProperty(this, "checked", checked ?: false)
     var checked: Boolean by checkedProperty
     val titleProperty = SimpleStringProperty(this, "title", title ?: messages["ui.analyzing"])
@@ -33,7 +34,7 @@ class DownloadTaskModel(val vdmConfig: VDMConfig, val url: String, createdAt: Lo
     }
 }
 
-data class DownloadTaskData(val vdmConfig: VDMConfig, val url: String, var createdAt: LocalDateTime? = null, var formatID: String? = null, var checked: Boolean? = null, var title: String? = null, var size: String? = null, var progress: Double? = null, var status: String? = null) : Serializable {
+data class DownloadTaskData(val vdmConfig: VDMConfig, var url: String, var createdAt: LocalDateTime? = null, var formatID: String? = null, var checked: Boolean? = null, var title: String? = null, var size: String? = null, var progress: Double? = null, var status: String? = null) : Serializable {
     fun toModel(): DownloadTaskModel {
         return DownloadTaskModel(vdmConfig, url, createdAt, formatID, checked, title, size, progress, status)
     }
