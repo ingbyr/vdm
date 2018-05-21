@@ -2,11 +2,12 @@ package com.ingbyr.vdm.controllers
 
 import com.ingbyr.vdm.engine.AbstractEngine
 import com.ingbyr.vdm.engine.EngineFactory
+import com.ingbyr.vdm.events.CreateDownloadTask
 import com.ingbyr.vdm.events.StopBackgroundTask
+import com.ingbyr.vdm.events.UpdateEngineTask
 import com.ingbyr.vdm.models.DownloadTaskData
 import com.ingbyr.vdm.models.DownloadTaskModel
-import com.ingbyr.vdm.utils.DateTimeUtils
-import com.ingbyr.vdm.utils.VDMUtils
+import com.ingbyr.vdm.utils.*
 import org.mapdb.DBMaker
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -40,6 +41,25 @@ class MainController : Controller() {
                 engineList[it.downloadTask.createdAt]?.stopTask()
             }
         }
+
+        subscribe<CreateDownloadTask> {
+            logger.debug("create task: ${it.downloadTask}")
+            addTaskToList(it.downloadTask)
+            // save to db
+            saveTaskToDB(it.downloadTask)
+        }
+
+        // background thread
+        subscribe<UpdateEngineTask> {
+            val engine = EngineFactory.create(it.engineType)
+            val vdmConfig = VDMConfig(it.engineType, VDMProxy(ProxyType.NONE), false, engine!!.enginePath)
+            val downloadTask = DownloadTaskModel(vdmConfig, "", LocalDateTime.now(), title = it.engineType.name)
+            downloadTaskModelList.add(downloadTask)
+            if (engine.existNewVersion(it.localVersion)) {
+                downloadTask.url = engine.updateUrl()
+                NetUtils.download(downloadTask, messages)
+            }
+        }
     }
 
     fun startDownloadTask(downloadTask: DownloadTaskModel) {
@@ -71,13 +91,13 @@ class MainController : Controller() {
      * Key of map is "yyyy-MM-dd HH:mm:ss.SSS" which is defined in DateTimeUtils.kt
      * Value of map is a instance of DownloadTask
      */
-    fun saveTaskToDB(taskItem: DownloadTaskData) {
+    private fun saveTaskToDB(taskItem: DownloadTaskData) {
         val taskID = DateTimeUtils.time2String(taskItem.createdAt!!)
         logger.debug("add task $taskID to download task db")
         downloadTaskData[taskID] = taskItem
     }
 
-    fun addTaskToList(taskItem: DownloadTaskData) {
+    private fun addTaskToList(taskItem: DownloadTaskData) {
         val downloadTaskModel = taskItem.toModel()
         downloadTaskModelList.add(downloadTaskModel)
         startDownloadTask(downloadTaskModel)
