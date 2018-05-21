@@ -22,6 +22,7 @@ class YoutubeDL : AbstractEngine() {
     override val remoteVersionUrl: String = "https://raw.githubusercontent.com/rg3/youtube-dl/master/youtube_dl/version.py"
     override val engineType = EngineType.YOUTUBE_DL
     override val enginePath: String = initEnginePath()
+    override var remoteVersion: String? = null
 
     private var speed = "0MiB/s"
     private var progress = 0.0
@@ -35,18 +36,18 @@ class YoutubeDL : AbstractEngine() {
     private val remoteVersionPattern = Pattern.compile("'\\d+.+'")
     private var taskModel: DownloadTaskModel? = null
     private lateinit var msg: ResourceBundle
-    private var remoteVersion: String? = null
+
 
     init {
         argsMap["engine"] = enginePath
     }
 
     private fun initEnginePath(): String {
-        return when (OSUtils.currentOS) {
-            OSType.WINDOWS -> {
+        return when (VDMOSUtils.currentOS) {
+            VDMOSType.WINDOWS -> {
                 Paths.get(System.getProperty("user.dir"), "engine", "youtube-dl.exe").toAbsolutePath().toString()
             }
-            OSType.LINUX, OSType.MAC_OS -> {
+            VDMOSType.LINUX, VDMOSType.MAC_OS -> {
                 Paths.get(System.getProperty("user.dir"), "engine", "youtube-dl").toAbsolutePath().toString()
             }
         }
@@ -250,17 +251,17 @@ class YoutubeDL : AbstractEngine() {
         return progress[0].trim() >= progress[1].trim()
     }
 
-    override fun updateUrl() = when (OSUtils.currentOS) {
-        OSType.WINDOWS -> {
+    override fun updateUrl() = when (VDMOSUtils.currentOS) {
+        VDMOSType.WINDOWS -> {
             "https://github.com/rg3/youtube-dl/releases/download/$remoteVersion/youtube-dl.exe"
         }
-        OSType.LINUX, OSType.MAC_OS -> {
+        VDMOSType.LINUX, VDMOSType.MAC_OS -> {
             "https://github.com/rg3/youtube-dl/releases/download/$remoteVersion/youtube-dl"
         }
     }
 
     override fun existNewVersion(localVersion: String): Boolean {
-        val remoteVersionInfo = NetUtils.get(remoteVersionUrl)
+        val remoteVersionInfo = NetUtils().get(remoteVersionUrl)
         return if (remoteVersionInfo?.isNotEmpty() == true) {
             remoteVersion = remoteVersionPattern.matcher(remoteVersionInfo).takeIf { it.find() }?.group()?.toString()?.replace("'", "")?.replace("\"", "")
             if (remoteVersion != null) {
