@@ -78,7 +78,7 @@ class CreateDownloadTaskView : View() {
                 downloadTask.progress = 0.0
                 downloadTask.createdAt = LocalDateTime.now()
                 fire(CreateDownloadTask(downloadTask))
-            }else {
+            } else {
                 find<MediaFormatsView>(mapOf("downloadTask" to downloadTask)).openWindow()
             }
             this.close()

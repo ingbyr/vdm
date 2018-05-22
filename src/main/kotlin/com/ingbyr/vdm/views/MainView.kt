@@ -10,10 +10,13 @@ import com.jfoenix.controls.JFXCheckBox
 import com.jfoenix.controls.JFXProgressBar
 import javafx.geometry.Insets
 import javafx.scene.control.*
+import javafx.scene.layout.ColumnConstraints
+import javafx.scene.layout.GridPane
 import javafx.scene.layout.VBox
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tornadofx.*
+import java.text.DecimalFormat
 import java.util.*
 
 
@@ -74,13 +77,22 @@ class MainView : View() {
                     graphic = labelStatus
                 }
                 column(messages["ui.progress"], DownloadTaskModel::progressProperty).pctWidth(20).cellFormat {
-                    val progressBox = hbox(spacing = 10.0)
-                    val pb = JFXProgressBar(it.toDouble())
-                    val labelProgress = Label("${it.toDouble() * 100.0}%")
-                    pb.useMaxSize = true
-                    progressBox += pb
-                    progressBox += labelProgress
-                    graphic = progressBox
+                    val progressFormat = DecimalFormat("#.##")
+                    val progressPane = GridPane()
+                    val progressBar = JFXProgressBar(it.toDouble())
+                    val progressLabel = Label(progressFormat.format(it.toDouble() * 100) + "%")
+                    progressPane.useMaxSize = true
+                    progressPane.add(progressBar, 0, 0)
+                    progressPane.add(progressLabel, 1, 0)
+                    val columnBar = ColumnConstraints()
+                    columnBar.percentWidth = 75.0
+                    val columnLabel = ColumnConstraints()
+                    columnLabel.percentWidth = 25.0
+                    progressPane.columnConstraints.addAll(columnBar, columnLabel)
+                    progressPane.hgap = 10.0
+                    progressBar.useMaxSize = true
+                    progressLabel.useMaxWidth = true
+                    graphic = progressPane
                 }
                 column(messages["ui.createdAt"], DownloadTaskModel::createdAtProperty)
             }

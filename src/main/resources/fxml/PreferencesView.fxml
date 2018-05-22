@@ -135,7 +135,7 @@
                         <Insets bottom="10.0" right="10.0" />
                      </padding>
                   </VBox>
-                  <VBox spacing="10.0">
+                  <VBox disable="true" spacing="10.0">
                      <children>
                         <AnchorPane>
                            <children>

@@ -2,9 +2,9 @@ package com.ingbyr.vdm.controllers
 
 import com.ingbyr.vdm.engine.AbstractEngine
 import com.ingbyr.vdm.engine.EngineFactory
-import com.ingbyr.vdm.engine.MediaFormat
 import com.ingbyr.vdm.events.StopBackgroundTask
 import com.ingbyr.vdm.utils.EngineType
+import com.ingbyr.vdm.utils.MediaFormat
 import com.ingbyr.vdm.utils.VDMProxy
 import org.slf4j.LoggerFactory
 import tornadofx.*
