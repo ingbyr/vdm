@@ -18,6 +18,7 @@ class MediaFormatsView : View() {
 
     init {
         messages = ResourceBundle.getBundle("i18n/MediaFormatsView")
+        title = messages["ui.mediaList"]
     }
 
     override val root: VBox by fxml("/fxml/MediaFormatsView.fxml")

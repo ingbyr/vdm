@@ -16,6 +16,7 @@ import java.util.*
 class CreateDownloadTaskView : View() {
     init {
         messages = ResourceBundle.getBundle("i18n/CreateDownloadTaskView")
+        title = messages["ui.create"]
     }
 
     override val root: VBox by fxml("/fxml/CreateDownloadTaskView.fxml")
