@@ -21,12 +21,12 @@ import java.util.*
 
 
 /**
- * TODO add enable debug mode button
  * TODO add FFMPEG and cookie
  */
 class MainView : View() {
     init {
         messages = ResourceBundle.getBundle("i18n/MainView")
+        title = messages["ui.vdm"]
     }
 
     private val logger: Logger = LoggerFactory.getLogger(MainView::class.java)

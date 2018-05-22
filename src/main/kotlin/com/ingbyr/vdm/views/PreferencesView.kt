@@ -19,6 +19,7 @@ import java.util.*
 class PreferencesView : View() {
     init {
         messages = ResourceBundle.getBundle("i18n/PreferencesView")
+        title = messages["ui.preferences"]
     }
 
     override val root: JFXTabPane by fxml("/fxml/PreferencesView.fxml")
