@@ -241,8 +241,7 @@ class YoutubeDL : AbstractEngine() {
          * Transfer "42.3%"(String) to 0.423(Double)
          */
         val s = this.replace("%", "")
-        val sizeFormat = DecimalFormat("#.##")
-        return sizeFormat.format(s.trim().toDouble() / 100).toDouble()
+        return s.trim().toDouble() / 100
     }
 
     private fun String.playlistIsCompleted(): Boolean {

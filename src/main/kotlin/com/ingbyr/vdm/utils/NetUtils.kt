@@ -23,6 +23,7 @@ class NetUtils : Controller() {
     init {
         messages = ResourceBundle.getBundle("i18n/MainView")
     }
+
     private val client = OkHttpClient()
     private val logger: Logger = LoggerFactory.getLogger(NetUtils::class.java)
 

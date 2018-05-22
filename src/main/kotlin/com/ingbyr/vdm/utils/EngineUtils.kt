@@ -2,7 +2,7 @@ package com.ingbyr.vdm.utils
 
 import java.io.Serializable
 
-enum class EngineType : Serializable{
+enum class EngineType : Serializable {
     YOUTUBE_DL,
     YOU_GET,
     NONE
