@@ -1,5 +1,6 @@
 package com.ingbyr.vdm.views
 
+import ch.qos.logback.classic.Level
 import com.ingbyr.vdm.controllers.PreferencesController
 import com.ingbyr.vdm.events.RefreshEngineVersion
 import com.ingbyr.vdm.utils.*
@@ -21,7 +22,7 @@ class PreferencesView : View() {
     }
 
     override val root: JFXTabPane by fxml("/fxml/PreferencesView.fxml")
-    private val logger: Logger = LoggerFactory.getLogger(PreferencesView::class.java)
+    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
     private val controller: PreferencesController by inject()
 
     private val labelStoragePath: Label by fxid()
@@ -29,6 +30,7 @@ class PreferencesView : View() {
     private val labelFFMPEGPath: Label by fxid()
     private val btnChangeFFMPEGPath: JFXButton by fxid()
     private val tbDownloadDefault: JFXToggleButton by fxid()
+    private val tbEnableDebug: JFXToggleButton by fxid()
 
     private val tbYoutubeDL: JFXToggleButton by fxid()
     private val btnUpdateYoutubeDL: JFXButton by fxid()
@@ -86,7 +88,6 @@ class PreferencesView : View() {
         labelYoutubeDLVersion.text = cu.safeLoad(EngineUtils.YOUTUBE_DL_VERSION, VDMUtils.UNKNOWN_VERSION)
         labelYouGetVersion.text = cu.safeLoad(EngineUtils.YOU_GET_VERSION, VDMUtils.UNKNOWN_VERSION)
 
-
         // proxy settings area
         val proxyType = ProxyType.valueOf(cu.safeLoad(VDMConfigUtils.PROXY_TYPE, ProxyType.NONE))
         when (proxyType) {
@@ -99,10 +100,13 @@ class PreferencesView : View() {
         tfSocks5Port.text = cu.safeLoad(VDMConfigUtils.SOCKS5_PROXY_PORT, "")
         tfHTTPAddress.text = cu.safeLoad(VDMConfigUtils.HTTP_PROXY_ADDRESS, "")
         tfHTTPPort.text = cu.safeLoad(VDMConfigUtils.HTTP_PROXY_PORT, "")
+
+        // debug mode
+        tbEnableDebug.isSelected = cu.safeLoad(VDMConfigUtils.DEBUG_MODE, "false").toBoolean()
     }
 
     private fun initListeners() {
-        // download settings area
+        // general settings area
         btnChangeStoragePath.setOnMouseClicked {
             val file = DirectoryChooser().showDialog(primaryStage)
             file?.apply {
@@ -122,6 +126,17 @@ class PreferencesView : View() {
         tbDownloadDefault.action {
             cu.update(VDMConfigUtils.DOWNLOAD_DEFAULT_FORMAT, tbDownloadDefault.isSelected)
         }
+        tbEnableDebug.action {
+            val rootLogger = LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME) as ch.qos.logback.classic.Logger
+            if (tbEnableDebug.isSelected) {
+                rootLogger.level = Level.DEBUG
+                cu.update(VDMConfigUtils.DEBUG_MODE, true)
+            } else {
+                rootLogger.level = Level.ERROR
+                cu.update(VDMConfigUtils.DEBUG_MODE, false)
+            }
+        }
+
 
         // engine settings area
         tbYoutubeDL.whenSelected {
