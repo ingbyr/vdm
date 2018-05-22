@@ -27,6 +27,7 @@ class VDMConfigUtils(private val config: ConfigProperties) {
         const val HTTP_PROXY_ADDRESS = "HTTP_PROXY_ADDRESS"
         const val HTTP_PROXY_PORT = "HTTP_PROXY_PORT"
         const val COOKIE = "COOKIE"
+        const val DEBUG_MODE = "DEBUG_MODE"
     }
 
     fun load(key: String): String {
