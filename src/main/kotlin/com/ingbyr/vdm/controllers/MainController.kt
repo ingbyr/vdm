@@ -1,7 +1,7 @@
 package com.ingbyr.vdm.controllers
 
 import com.ingbyr.vdm.engine.AbstractEngine
-import com.ingbyr.vdm.engine.EngineFactory
+import com.ingbyr.vdm.engine.utils.EngineFactory
 import com.ingbyr.vdm.events.CreateDownloadTask
 import com.ingbyr.vdm.events.StopBackgroundTask
 import com.ingbyr.vdm.events.UpdateEngineTask
@@ -122,7 +122,7 @@ class MainController : Controller() {
 
     fun updateVDM() {
         // TODO update VDM like as youtube-dl rules
-        hostServices.showDocument(VDMUtils.APP_UPDATE_URL)
+        hostServices.showDocument(VDMUtils.VDM_UPDATE_URL)
     }
 
     fun clear() {

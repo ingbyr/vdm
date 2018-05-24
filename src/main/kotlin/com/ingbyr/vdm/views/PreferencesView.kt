@@ -2,8 +2,11 @@ package com.ingbyr.vdm.views
 
 import ch.qos.logback.classic.Level
 import com.ingbyr.vdm.controllers.PreferencesController
+import com.ingbyr.vdm.engine.utils.EngineType
 import com.ingbyr.vdm.events.RefreshEngineVersion
-import com.ingbyr.vdm.utils.*
+import com.ingbyr.vdm.utils.ProxyType
+import com.ingbyr.vdm.utils.VDMConfigUtils
+import com.ingbyr.vdm.utils.VDMUtils
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXTabPane
 import com.jfoenix.controls.JFXTextField
@@ -60,11 +63,11 @@ class PreferencesView : View() {
             when (it.engineType) {
                 EngineType.YOUTUBE_DL -> {
                     labelYoutubeDLVersion.text = it.newVersion
-                    cu.update(EngineUtils.YOUTUBE_DL_VERSION, it.newVersion)
+                    cu.update(VDMConfigUtils.YOUTUBE_DL_VERSION, it.newVersion)
                 }
                 EngineType.YOU_GET -> {
                     labelYouGetVersion.text = it.newVersion
-                    cu.update(EngineUtils.YOU_GET_VERSION, it.newVersion)
+                    cu.update(VDMConfigUtils.YOU_GET_VERSION, it.newVersion)
                 }
                 else -> {
                 }
@@ -73,7 +76,6 @@ class PreferencesView : View() {
     }
 
     private fun loadVDMConfig() {
-
         // download settings area
         labelStoragePath.text = cu.safeLoad(VDMConfigUtils.STORAGE_PATH, VDMUtils.APP_DIR)
         labelFFMPEGPath.text = cu.safeLoad(VDMConfigUtils.FFMPEG_PATH, "")
@@ -86,8 +88,8 @@ class PreferencesView : View() {
             EngineType.YOU_GET -> tbYouGet.isSelected = true
             else -> logger.error("no engine type of $engineType")
         }
-        labelYoutubeDLVersion.text = cu.safeLoad(EngineUtils.YOUTUBE_DL_VERSION, VDMUtils.UNKNOWN_VERSION)
-        labelYouGetVersion.text = cu.safeLoad(EngineUtils.YOU_GET_VERSION, VDMUtils.UNKNOWN_VERSION)
+        labelYoutubeDLVersion.text = cu.safeLoad(VDMConfigUtils.YOUTUBE_DL_VERSION, VDMUtils.UNKNOWN_VERSION)
+        labelYouGetVersion.text = cu.safeLoad(VDMConfigUtils.YOU_GET_VERSION, VDMUtils.UNKNOWN_VERSION)
 
         // proxy settings area
         val proxyType = ProxyType.valueOf(cu.safeLoad(VDMConfigUtils.PROXY_TYPE, ProxyType.NONE))
@@ -147,11 +149,11 @@ class PreferencesView : View() {
             cu.update(VDMConfigUtils.ENGINE_TYPE, EngineType.YOU_GET)
         }
         btnUpdateYoutubeDL.setOnMouseClicked {
-            controller.updateEngine(EngineType.YOUTUBE_DL, cu.load(EngineUtils.YOUTUBE_DL_VERSION))
+            controller.updateEngine(EngineType.YOUTUBE_DL, cu.load(VDMConfigUtils.YOUTUBE_DL_VERSION))
             this.currentStage?.isIconified = true
         }
         btnUpdateYouGet.setOnMouseClicked {
-            controller.updateEngine(EngineType.YOU_GET, cu.load(EngineUtils.YOU_GET_VERSION))
+            controller.updateEngine(EngineType.YOU_GET, cu.load(VDMConfigUtils.YOU_GET_VERSION))
             this.currentStage?.isIconified = true
         }
 

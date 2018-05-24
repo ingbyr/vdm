@@ -227,3 +227,16 @@
 .jfx-list-view .list-cell {
     -fx-text-fill: black;
 }
+
+#about-view {
+    -fx-background-color: -color-d;
+}
+
+#about-view .label {
+    -fx-text-fill: white;
+}
+
+#about-view .jfx-button {
+    -fx-text-fill: white;
+    -fx-background-color: -color-p;
+}

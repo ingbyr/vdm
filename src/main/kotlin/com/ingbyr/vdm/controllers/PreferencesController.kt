@@ -1,7 +1,7 @@
 package com.ingbyr.vdm.controllers
 
+import com.ingbyr.vdm.engine.utils.EngineType
 import com.ingbyr.vdm.events.UpdateEngineTask
-import com.ingbyr.vdm.utils.EngineType
 import tornadofx.*
 import java.util.*
 

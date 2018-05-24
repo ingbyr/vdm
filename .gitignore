@@ -2,7 +2,6 @@
 .idea/
 build/
 out/
-/app.properties
 conf/
 gradle/
 gradlew
@@ -10,4 +9,4 @@ gradlew.bat
 log/
 /engine/
 /src/main/deploy/engine/*.exe
-*.iml
+/VDM.iml

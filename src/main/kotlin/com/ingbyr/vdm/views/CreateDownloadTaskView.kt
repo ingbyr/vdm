@@ -1,8 +1,12 @@
 package com.ingbyr.vdm.views
 
+import com.ingbyr.vdm.engine.utils.EngineType
 import com.ingbyr.vdm.events.CreateDownloadTask
 import com.ingbyr.vdm.models.DownloadTaskData
-import com.ingbyr.vdm.utils.*
+import com.ingbyr.vdm.utils.ProxyType
+import com.ingbyr.vdm.utils.VDMConfig
+import com.ingbyr.vdm.utils.VDMConfigUtils
+import com.ingbyr.vdm.utils.VDMProxy
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXTextField
 import javafx.scene.control.Label
