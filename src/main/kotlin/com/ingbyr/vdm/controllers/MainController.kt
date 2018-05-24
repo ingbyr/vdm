@@ -63,7 +63,7 @@ class MainController : Controller() {
             val engine = EngineFactory.create(downloadTask.vdmConfig.engineType)
             engine?.run {
                 engineList[downloadTask.createdAt] = this
-                this.url(downloadTask.url).addProxy(downloadTask.vdmConfig.proxy).format(downloadTask.formatID).output(downloadTask.vdmConfig.storagePath).downloadMedia(downloadTask, messages)
+                this.url(downloadTask.url).addProxy(downloadTask.vdmConfig.proxy).format(downloadTask.formatID).output(downloadTask.vdmConfig.storagePath).cookies(downloadTask.vdmConfig.cookie).ffmpegPath(downloadTask.vdmConfig.ffmpeg).downloadMedia(downloadTask, messages)
             }
         }
     }

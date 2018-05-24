@@ -33,6 +33,8 @@ abstract class AbstractEngine {
     abstract fun fetchMediaJson(): JsonObject
     abstract fun format(formatID: String): AbstractEngine
     abstract fun output(outputPath: String): AbstractEngine
+    abstract fun ffmpegPath(ffmpegPath: String): AbstractEngine
+    abstract fun cookies(cookies: String): AbstractEngine
     abstract fun downloadMedia(downloadTaskModel: DownloadTaskModel, message: ResourceBundle)
     abstract fun parseDownloadOutput(line: String)
     abstract fun execCommand(command: MutableList<String>, downloadType: EngineDownloadType): StringBuilder?

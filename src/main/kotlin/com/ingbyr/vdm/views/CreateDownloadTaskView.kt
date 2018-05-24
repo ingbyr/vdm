@@ -58,7 +58,7 @@ class CreateDownloadTaskView : View() {
             val storagePath = cu.load(VDMConfigUtils.STORAGE_PATH)
             val downloadDefaultFormat = cu.load(VDMConfigUtils.DOWNLOAD_DEFAULT_FORMAT).toBoolean()
             val ffmpeg = cu.load(VDMConfigUtils.FFMPEG_PATH)
-            val cookie = ""
+            val cookie = "" // TODO support cookie
             val proxyType = ProxyType.valueOf(cu.load(VDMConfigUtils.PROXY_TYPE))
             var address = ""
             var port = ""
