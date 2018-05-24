@@ -1,9 +1,9 @@
 package com.ingbyr.vdm.engine
 
 import com.beust.klaxon.JsonObject
+import com.ingbyr.vdm.engine.utils.EngineDownloadType
+import com.ingbyr.vdm.engine.utils.EngineType
 import com.ingbyr.vdm.models.DownloadTaskModel
-import com.ingbyr.vdm.utils.DownloadType
-import com.ingbyr.vdm.utils.EngineType
 import com.ingbyr.vdm.utils.MediaFormat
 import com.ingbyr.vdm.utils.VDMProxy
 import org.slf4j.Logger
@@ -35,7 +35,7 @@ abstract class AbstractEngine {
     abstract fun output(outputPath: String): AbstractEngine
     abstract fun downloadMedia(downloadTaskModel: DownloadTaskModel, message: ResourceBundle)
     abstract fun parseDownloadOutput(line: String)
-    abstract fun execCommand(command: MutableList<String>, downloadType: DownloadType): StringBuilder?
+    abstract fun execCommand(command: MutableList<String>, downloadType: EngineDownloadType): StringBuilder?
     abstract fun parseFormatsJson(json: JsonObject): List<MediaFormat>
 
     abstract fun updateUrl(): String

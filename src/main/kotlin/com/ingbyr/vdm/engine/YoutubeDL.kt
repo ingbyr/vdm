@@ -2,6 +2,9 @@ package com.ingbyr.vdm.engine
 
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
+import com.ingbyr.vdm.engine.utils.EngineDownloadType
+import com.ingbyr.vdm.engine.utils.EngineException
+import com.ingbyr.vdm.engine.utils.EngineType
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.utils.*
 import org.slf4j.Logger
@@ -10,13 +13,13 @@ import tornadofx.*
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.file.Paths
-import java.text.DecimalFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 
 /**
  * TODO wrap download playlist
+ * TODO replace ResourceBundle
  */
 class YoutubeDL : AbstractEngine() {
     override val logger: Logger = LoggerFactory.getLogger(this::class.java)
@@ -33,7 +36,7 @@ class YoutubeDL : AbstractEngine() {
     private val progressPattern = Pattern.compile("\\d+\\W?\\d*%")
     private val speedPattern = Pattern.compile("\\d+\\W?\\d*\\w+/s")
     private val titlePattern = Pattern.compile("[/\\\\][^/^\\\\]+\\.\\w+")
-    private val fileSizePattern = Pattern.compile("\\d+\\W?\\d*\\w+B")
+    private val fileSizePattern = Pattern.compile("\\s\\d+\\W?\\d*\\w+B\\s")
     private val remoteVersionPattern = Pattern.compile("'\\d+.+'")
     private var taskModel: DownloadTaskModel? = null
     private lateinit var msg: ResourceBundle
@@ -112,17 +115,17 @@ class YoutubeDL : AbstractEngine() {
 
     override fun fetchMediaJson(): JsonObject {
         argsMap["SimulateJson"] = "-j"
-        val mediaData = execCommand(argsMap.build(), DownloadType.JSON)
+        val mediaData = execCommand(argsMap.build(), EngineDownloadType.JSON)
         if (mediaData != null) {
             try {
                 return Parser().parse(mediaData) as JsonObject
             } catch (e: Exception) {
                 logger.error(e.toString())
-                throw DownloadEngineException("parse data failed:\n $mediaData")
+                throw EngineException("parse data failed:\n $mediaData")
             }
         } else {
             logger.error("no media json return")
-            throw DownloadEngineException("no media json return")
+            throw EngineException("no media json return")
         }
     }
 
@@ -145,7 +148,7 @@ class YoutubeDL : AbstractEngine() {
         msg = message
         taskModel?.run {
             // init display
-            execCommand(argsMap.build(), DownloadType.SINGLE)
+            execCommand(argsMap.build(), EngineDownloadType.SINGLE)
         }
     }
 
@@ -157,7 +160,7 @@ class YoutubeDL : AbstractEngine() {
         }
         if (size.isEmpty()) {
             size = fileSizePattern.matcher(line).takeIf { it.find() }?.group()?.toString() ?: size
-            if (size.isNotEmpty()) taskModel?.size = size
+            if (size.isNotEmpty()) taskModel?.size = size.trim()
         }
 
         progress = progressPattern.matcher(line).takeIf { it.find() }?.group()?.toProgress() ?: progress
@@ -178,7 +181,7 @@ class YoutubeDL : AbstractEngine() {
         }
     }
 
-    override fun execCommand(command: MutableList<String>, downloadType: DownloadType): StringBuilder? {
+    override fun execCommand(command: MutableList<String>, downloadType: EngineDownloadType): StringBuilder? {
         /**
          * Exec the command by invoking the system shell etc.
          * Long time task
@@ -191,7 +194,7 @@ class YoutubeDL : AbstractEngine() {
         val output = StringBuilder()
         var line: String?
         when (downloadType) {
-            DownloadType.JSON -> {
+            EngineDownloadType.JSON -> {
                 // fetch the media json and return string builder
                 while (running.get()) {
                     line = r.readLine()
@@ -203,7 +206,7 @@ class YoutubeDL : AbstractEngine() {
                 }
             }
 
-            DownloadType.SINGLE, DownloadType.PLAYLIST -> {
+            EngineDownloadType.SINGLE, EngineDownloadType.PLAYLIST -> {
                 while (running.get()) {
                     line = r.readLine()
                     if (line != null) {
@@ -220,7 +223,7 @@ class YoutubeDL : AbstractEngine() {
             p.waitFor(200, TimeUnit.MICROSECONDS)
         }
 
-        if (p.isAlive) {// can not destroy process
+        if (p.isAlive) {// TODO can not destroy process, change Process to JNA?
             p.destroyForcibly()
         }
 

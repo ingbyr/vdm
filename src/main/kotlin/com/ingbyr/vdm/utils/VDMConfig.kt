@@ -1,5 +1,6 @@
 package com.ingbyr.vdm.utils
 
+import com.ingbyr.vdm.engine.utils.EngineType
 import java.io.Serializable
 
 /**

@@ -5,6 +5,7 @@ import com.ingbyr.vdm.events.StopBackgroundTask
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.utils.VDMConfigUtils
 import com.ingbyr.vdm.utils.VDMOSUtils
+import com.ingbyr.vdm.utils.VDMUtils
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXCheckBox
 import com.jfoenix.controls.JFXProgressBar
@@ -118,6 +119,11 @@ class MainView : View() {
         val firstTimeUse = cu.safeLoad(VDMConfigUtils.FIRST_TIME_USE, "true").toBoolean()
         if (firstTimeUse) {
             // init config file
+            // TODO update version when released new one
+            cu.update(VDMConfigUtils.VDM_VERSION, "0.3.0")
+            cu.update(VDMConfigUtils.YOUTUBE_DL_VERSION, "2018.05.18")
+            cu.update(VDMConfigUtils.YOU_GET_VERSION, VDMUtils.UNKNOWN_VERSION)
+
             find(PreferencesView::class).openWindow()?.hide()
             cu.update(VDMConfigUtils.FIRST_TIME_USE, "false")
             cu.saveToConfigFile()
@@ -194,7 +200,7 @@ class MainView : View() {
             find(PreferencesView::class).openWindow()
         }
         menuAbout.action {
-            // TODO about view
+            find(AboutView::class).openWindow()
         }
         menuQuit.action {
             this.close()

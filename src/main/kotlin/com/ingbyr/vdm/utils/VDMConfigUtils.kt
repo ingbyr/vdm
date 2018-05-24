@@ -21,6 +21,11 @@ class VDMConfigUtils(private val config: ConfigProperties) {
         const val HTTP_PROXY_PORT = "HTTP_PROXY_PORT"
         const val COOKIE = "COOKIE"
         const val DEBUG_MODE = "DEBUG_MODE"
+        const val VDM_VERSION = "VDM_VERSION"
+        const val YOUTUBE_DL_VERSION = "YOUTUBE_DL_VERSION"
+        const val YOU_GET_VERSION = "YOU_GET_VERSION"
+
+        val configFilePath = VDMUtils.USER_DIR.resolve("vdm.properties")!!
     }
 
     fun load(key: String): String {
