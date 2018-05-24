@@ -1,7 +1,6 @@
 package com.ingbyr.vdm.views
 
 import com.ingbyr.vdm.controllers.MainController
-import com.ingbyr.vdm.events.StopBackgroundTask
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.utils.VDMConfigUtils
 import com.ingbyr.vdm.utils.VDMOSUtils
@@ -96,8 +95,21 @@ class MainView : View() {
                     graphic = progressPane
                 }
                 column(messages["ui.createdAt"], DownloadTaskModel::createdAtProperty)
+
+                contextmenu {
+                    item(messages["ui.stopTask"]).action {
+                        selectedTaskModel?.run { controller.stopTask(this) }
+                    }
+                    item(messages["ui.startTask"]).action {
+                        selectedTaskModel?.run { controller.startTask(this) }
+                    }
+                    item(messages["ui.deleteTask"]).action {
+                        selectedTaskModel?.run { controller.deleteTask(this) }
+                    }
+                }
             }
         }
+        downloadTaskTableView.placeholder = Label(messages["ui.noTaskInList"])
 
         // init context menu
         menuNew = MenuItem(messages["ui.new"])
@@ -139,9 +151,7 @@ class MainView : View() {
         // shortcut buttons
         // start task
         btnStart.setOnMouseClicked {
-            selectedTaskModel?.let {
-                controller.startDownloadTask(it)
-            }
+            selectedTaskModel?.let { controller.startTask(it) }
         }
         // preferences view
         btnPreferences.setOnMouseClicked {
@@ -153,15 +163,11 @@ class MainView : View() {
         }
         // delete task
         btnDelete.setOnMouseClicked {
-            selectedTaskModel?.run {
-                controller.deleteTask(this)
-            }
+            selectedTaskModel?.run { controller.deleteTask(this) }
         }
         // stop task
         btnStop.setOnMouseClicked {
-            selectedTaskModel?.run {
-                fire(StopBackgroundTask(this, false))
-            }
+            selectedTaskModel?.run { controller.stopTask(this) }
         }
         // open dir
         btnOpenFile.setOnMouseClicked {
@@ -191,10 +197,10 @@ class MainView : View() {
             }
         }
         menuStartAllTask.action {
-            controller.startAllDownloadTask()
+            controller.startAllTask()
         }
         menuStopAllTask.action {
-            fire(StopBackgroundTask(stopAll = true))
+            controller.stopAllTask()
         }
         menuPreferences.action {
             find(PreferencesView::class).openWindow()
@@ -206,7 +212,7 @@ class MainView : View() {
             this.close()
         }
         menuDonate.action {
-            openInternalWindow(DonationView())
+            openInternalWindow(DonationView::class)
         }
     }
 

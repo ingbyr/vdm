@@ -3,7 +3,6 @@ package com.ingbyr.vdm.controllers
 import com.ingbyr.vdm.engine.AbstractEngine
 import com.ingbyr.vdm.engine.utils.EngineFactory
 import com.ingbyr.vdm.events.CreateDownloadTask
-import com.ingbyr.vdm.events.StopBackgroundTask
 import com.ingbyr.vdm.events.UpdateEngineTask
 import com.ingbyr.vdm.models.DownloadTaskData
 import com.ingbyr.vdm.models.DownloadTaskModel
@@ -31,18 +30,6 @@ class MainController : Controller() {
     private val engineList = ConcurrentHashMap<LocalDateTime, AbstractEngine>()
 
     init {
-        subscribe<StopBackgroundTask> {
-            if (it.stopAll) {
-                logger.debug("try to stop all download tasks")
-                engineList.forEach {
-                    it.value.stopTask()
-                }
-            } else if (it.downloadTask != null) {
-                logger.debug("try to stop download task ${it.downloadTask}")
-                engineList[it.downloadTask.createdAt]?.stopTask()
-            }
-        }
-
         subscribe<CreateDownloadTask> {
             logger.debug("create task: ${it.downloadTask}")
             addTaskToList(it.downloadTask)
@@ -69,7 +56,7 @@ class MainController : Controller() {
     }
 
 
-    fun startDownloadTask(downloadTask: DownloadTaskModel) {
+    fun startTask(downloadTask: DownloadTaskModel) {
         downloadTask.status = messages["ui.analyzing"]
         runAsync {
             // download
@@ -81,17 +68,30 @@ class MainController : Controller() {
         }
     }
 
-    fun startAllDownloadTask() {
+    fun startAllTask() {
         downloadTaskModelList.forEach {
             if (it.status != messages["ui.completed"]) {
-                startDownloadTask(it)
+                startTask(it)
             }
         }
     }
 
-    fun deleteTask(taskItem: DownloadTaskModel) {
-        downloadTaskModelList.removeAll(taskItem)
-        downloadTaskData.remove(DateTimeUtils.time2String(taskItem.createdAt))
+    fun stopTask(downloadTask: DownloadTaskModel) {
+        logger.debug("try to stop download task $downloadTask")
+        engineList[downloadTask.createdAt]?.stopTask()
+    }
+
+    fun stopAllTask() {
+        logger.debug("try to stop all download tasks")
+        engineList.forEach {
+            it.value.stopTask()
+        }
+    }
+
+    fun deleteTask(downloadTaskModel: DownloadTaskModel) {
+        stopTask(downloadTaskModel)
+        downloadTaskModelList.remove(downloadTaskModel)
+        downloadTaskData.remove(DateTimeUtils.time2String(downloadTaskModel.createdAt))
     }
 
     /**
@@ -107,7 +107,7 @@ class MainController : Controller() {
     private fun addTaskToList(taskItem: DownloadTaskData) {
         val downloadTaskModel = taskItem.toModel()
         downloadTaskModelList.add(downloadTaskModel)
-        startDownloadTask(downloadTaskModel)
+        startTask(downloadTaskModel)
     }
 
     fun loadTaskFromDB() {
@@ -118,11 +118,6 @@ class MainController : Controller() {
         downloadTaskModelList.sortBy {
             it.createdAt
         }
-    }
-
-    fun updateVDM() {
-        // TODO update VDM like as youtube-dl rules
-        hostServices.showDocument(VDMUtils.VDM_UPDATE_URL)
     }
 
     fun clear() {
