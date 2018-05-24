@@ -121,6 +121,7 @@ class MainController : Controller() {
     }
 
     fun clear() {
+        stopAllTask()
         downloadTaskModelList.forEach {
             downloadTaskData[DateTimeUtils.time2String(it.createdAt)] = it.toData()
         }
