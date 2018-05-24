@@ -123,7 +123,7 @@ class PreferencesView : View() {
             file?.apply {
                 val newPath = this.absoluteFile.toString()
                 app.config[VDMConfigUtils.FFMPEG_PATH] = newPath
-                labelStoragePath.text = newPath
+                labelFFMPEGPath.text = newPath
             }
         }
         tbDownloadDefault.action {

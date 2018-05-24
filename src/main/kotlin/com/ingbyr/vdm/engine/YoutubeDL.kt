@@ -143,6 +143,24 @@ class YoutubeDL : AbstractEngine() {
         return this
     }
 
+    override fun ffmpegPath(ffmpegPath: String): AbstractEngine {
+        return if (ffmpegPath.isEmpty()) {
+            this
+        }else {
+            argsMap["--ffmpeg-location"] = ffmpegPath
+            this
+        }
+    }
+
+    override fun cookies(cookies: String): AbstractEngine {
+        return if (cookies.isEmpty()) {
+            this
+        }else {
+            argsMap["--cookies"] = cookies
+            this
+        }
+    }
+
     override fun downloadMedia(downloadTaskModel: DownloadTaskModel, message: ResourceBundle) {
         taskModel = downloadTaskModel
         msg = message

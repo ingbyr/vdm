@@ -6,4 +6,4 @@ import java.io.Serializable
 /**
  * Instance for the config file
  */
-data class VDMConfig(val engineType: EngineType, val proxy: VDMProxy, val downloadDefaultFormat: Boolean, val storagePath: String, val cookieString: String = "", val FFMPEGPath: String = "") : Serializable
+data class VDMConfig(val engineType: EngineType, val proxy: VDMProxy, val downloadDefaultFormat: Boolean, val storagePath: String, val cookie: String = "", val ffmpeg: String = "") : Serializable

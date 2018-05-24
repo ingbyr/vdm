@@ -20,9 +20,6 @@ import java.text.DecimalFormat
 import java.util.*
 
 
-/**
- * TODO add FFMPEG and cookie
- */
 class MainView : View() {
     init {
         messages = ResourceBundle.getBundle("i18n/MainView")
