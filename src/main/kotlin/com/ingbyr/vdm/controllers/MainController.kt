@@ -29,7 +29,7 @@ class MainController : Controller() {
     @Suppress("UNCHECKED_CAST")
     private val downloadTaskData = db.hashMap(VDMUtils.DB_DOWNLOAD_TASKS).createOrOpen() as MutableMap<String, DownloadTaskData>
     val downloadTaskModelList = mutableListOf<DownloadTaskModel>().observable()
-    private val engineList = ConcurrentHashMap<LocalDateTime, AbstractEngine>()
+    private val engineList = ConcurrentHashMap<LocalDateTime, AbstractEngine>() // FIXME auto clean the finished task engine
 
     init {
         subscribe<CreateDownloadTask> {

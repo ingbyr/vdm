@@ -17,6 +17,10 @@
     -fx-font-size: 1.5em;
 }
 
+.menu .separator .line {
+    -fx-border-color: -color-p;
+}
+
 .menu-item .label {
     -fx-text-fill: white;
 }
@@ -25,20 +29,20 @@
     -fx-background-color: -color-d;
 }
 
-.menu .separator .line {
-    -fx-border-color: -color-p;
-}
-
 .menu-item:focused {
     -fx-background-color: -color-p;
 }
 
-#shortcut-icons {
-    -fx-background-color: -color-d;
+.menu-button .arrow-button {
+    -fx-padding: 0;
 }
 
-.jfx-button .jfx-rippler {
-    -jfx-rippler-fill: -color-l;
+.menu-button .arrow-button .arrow {
+    -fx-padding: 0;
+}
+
+#shortcut-icons {
+    -fx-background-color: -color-d;
 }
 
 #settings-btn {
@@ -126,12 +130,8 @@
     -fx-shape: "M192 32q0-13 9.5-22.5T224 0h768q13 0 22.5 9.5T1024 32q0 14-9.5 23T992 64H224q-13 0-22.5-9T192 32zM0 32Q0 18 9.5 9T32 0t22.5 9T64 32q0 13-9.5 22.5T32 64 9.5 54.5 0 32zm192 320q0-14 9.5-23t22.5-9h768q13 0 22.5 9t9.5 23q0 13-9.5 22.5T992 384H224q-13 0-22.5-9.5T192 352zM0 350q0-13 9.5-22.5T32 318t22.5 9.5T64 350q0 14-9.5 23T32 382t-22.5-9T0 350zm192 323q0-13 9.5-22.5T224 641h768q13 0 22.5 9.5t9.5 22.5-9.5 22.5T992 705H224q-13 0-22.5-9.5T192 673zM0 672q0-13 9.5-22.5T32 640t22.5 9.5T64 672t-9.5 22.5T32 704t-22.5-9.5T0 672z";
 }
 
-.menu-button .arrow-button {
-    -fx-padding: 0;
-}
-
-.menu-button .arrow-button .arrow {
-    -fx-padding: 0;
+.jfx-button .jfx-rippler {
+    -jfx-rippler-fill: -color-l;
 }
 
 .jfx-check-box {
@@ -164,12 +164,26 @@
     -fx-font-weight: bold;
 }
 
+.jfx-text-field {
+    -jfx-focus-color: -color-p;
+    -jfx-unfocus-color: -color-l;
+    -fx-font-size: 1.2em;
+}
+
+.jfx-list-view .list-cell {
+    -fx-text-fill: black;
+}
+
 .jfx-progress-bar .bar {
     -fx-background-color: -color-p;
 }
 
 .jfx-tab-pane .tab-header-area .jfx-rippler {
     -jfx-rippler-fill: -color-l;
+}
+
+.jfx-toggle-button {
+    -jfx-toggle-color: -color-p;
 }
 
 .tab-header-background {
@@ -194,10 +208,6 @@
     -fx-padding: 0 0.05em 0 0.05em;
 }
 
-.jfx-toggle-button {
-    -jfx-toggle-color: -color-p;
-}
-
 #formats-list-view-title {
     -fx-background-color: -color-d;
 }
@@ -208,6 +218,7 @@
 
 #create-download-task-view {
     -fx-background-color: -color-d;
+    -fx-pref-width: 600;
 }
 
 #create-download-task-view .label {
@@ -218,18 +229,10 @@
     -fx-text-fill: white;
 }
 
-.jfx-text-field {
-    -jfx-focus-color: -color-p;
-    -jfx-unfocus-color: -color-l;
-    -fx-font-size: 1.2em;
-}
-
-.jfx-list-view .list-cell {
-    -fx-text-fill: black;
-}
-
 #about-view {
     -fx-background-color: -color-d;
+    -fx-pref-height: 400;
+    -fx-pref-width: 800;
 }
 
 #about-view .label {
@@ -239,4 +242,19 @@
 #about-view .jfx-button {
     -fx-text-fill: white;
     -fx-background-color: -color-p;
+}
+
+#main-view {
+    -fx-pref-height: 600;
+    -fx-pref-width: 1600;
+}
+
+#preferences-view {
+    -fx-pref-height: 400;
+    -fx-pref-width: 800;
+}
+
+#media-formats-view {
+    -fx-pref-height: 800;
+    -fx-pref-width: 600;
 }

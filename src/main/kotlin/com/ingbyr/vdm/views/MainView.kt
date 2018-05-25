@@ -182,9 +182,9 @@ class MainView : View() {
                 VDMOSUtils.openDir(cu.load(VDMConfigUtils.STORAGE_PATH))
             }
         }
-        // search
+        // TODO search task
+        btnSearch.isVisible = false
         btnSearch.setOnMouseClicked {
-            // TODO search task
         }
 
         // menus
