@@ -1,8 +1,8 @@
 package com.ingbyr.vdm.events
 
 import com.ingbyr.vdm.engine.utils.EngineType
-import com.ingbyr.vdm.models.DownloadTaskData
-import com.ingbyr.vdm.models.DownloadTaskModel
+import com.ingbyr.vdm.task.DownloadTaskData
+import com.ingbyr.vdm.task.DownloadTaskModel
 import tornadofx.*
 
 class StopBackgroundTask(val downloadTask: DownloadTaskModel? = null, val stopAll: Boolean = false) : FXEvent()
