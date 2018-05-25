@@ -2,7 +2,7 @@ package com.ingbyr.vdm.views
 
 import com.ingbyr.vdm.controllers.MediaFormatsController
 import com.ingbyr.vdm.events.CreateDownloadTask
-import com.ingbyr.vdm.models.DownloadTaskData
+import com.ingbyr.vdm.task.DownloadTaskData
 import com.ingbyr.vdm.utils.MediaFormat
 import com.jfoenix.controls.JFXListView
 import javafx.scene.control.Label

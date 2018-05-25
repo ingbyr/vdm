@@ -4,8 +4,10 @@ import com.ingbyr.vdm.engine.AbstractEngine
 import com.ingbyr.vdm.engine.utils.EngineFactory
 import com.ingbyr.vdm.events.CreateDownloadTask
 import com.ingbyr.vdm.events.UpdateEngineTask
-import com.ingbyr.vdm.models.DownloadTaskData
-import com.ingbyr.vdm.models.DownloadTaskModel
+import com.ingbyr.vdm.task.DownloadTaskData
+import com.ingbyr.vdm.task.DownloadTaskModel
+import com.ingbyr.vdm.task.DownloadTaskStatus
+import com.ingbyr.vdm.task.DownloadTaskType
 import com.ingbyr.vdm.utils.*
 import org.mapdb.DBMaker
 import org.slf4j.Logger
@@ -41,23 +43,30 @@ class MainController : Controller() {
         subscribe<UpdateEngineTask> {
             val engine = EngineFactory.create(it.engineType)
             val vdmConfig = VDMConfig(it.engineType, VDMProxy(ProxyType.NONE), false, engine!!.enginePath)
-            val downloadTask = DownloadTaskModel(vdmConfig, "", LocalDateTime.now(), title = "[${messages["ui.update"]} ${it.engineType.name}] ")
+            val downloadTask = DownloadTaskModel(vdmConfig, "", LocalDateTime.now(), title = "[${messages["ui.update"]} ${it.engineType.name}] ", type = DownloadTaskType.ENGINE)
             downloadTaskModelList.add(downloadTask)
-            if (engine.existNewVersion(it.localVersion)) {
-                downloadTask.url = engine.updateUrl()
-                NetUtils().downloadEngine(downloadTask, engine.remoteVersion!!)
-            } else {
-                downloadTask.title += messages["ui.noAvailableUpdates"]
-                downloadTask.size = ""
-                downloadTask.status = messages["ui.completed"]
-                downloadTask.progress = 1.0
+
+            try {
+                if (engine.existNewVersion(it.localVersion)) {
+                    downloadTask.url = engine.updateUrl()
+                    NetUtils().downloadEngine(downloadTask, engine.remoteVersion!!)
+                } else {
+                    downloadTask.title += messages["ui.noAvailableUpdates"]
+                    downloadTask.size = ""
+                    downloadTask.status = DownloadTaskStatus.COMPLETED
+                    downloadTask.progress = 1.0
+                }
+            } catch (e: Exception) {
+                logger.error(e.toString())
+                downloadTask.status = DownloadTaskStatus.FAILED
             }
         }
     }
 
 
     fun startTask(downloadTask: DownloadTaskModel) {
-        downloadTask.status = messages["ui.analyzing"]
+        if (downloadTask.type == DownloadTaskType.ENGINE) return
+        downloadTask.status = DownloadTaskStatus.ANALYZING
         runAsync {
             // download
             val engine = EngineFactory.create(downloadTask.vdmConfig.engineType)
@@ -70,7 +79,7 @@ class MainController : Controller() {
 
     fun startAllTask() {
         downloadTaskModelList.forEach {
-            if (it.status != messages["ui.completed"]) {
+            if (it.status != DownloadTaskStatus.COMPLETED && it.type != DownloadTaskType.ENGINE) {
                 startTask(it)
             }
         }

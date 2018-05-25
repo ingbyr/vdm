@@ -5,11 +5,11 @@ import com.beust.klaxon.Parser
 import com.ingbyr.vdm.engine.utils.EngineDownloadType
 import com.ingbyr.vdm.engine.utils.EngineException
 import com.ingbyr.vdm.engine.utils.EngineType
-import com.ingbyr.vdm.models.DownloadTaskModel
+import com.ingbyr.vdm.task.DownloadTaskModel
+import com.ingbyr.vdm.task.DownloadTaskStatus
 import com.ingbyr.vdm.utils.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import tornadofx.*
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.file.Paths
@@ -19,7 +19,6 @@ import java.util.regex.Pattern
 
 /**
  * TODO wrap download playlist
- * TODO replace ResourceBundle
  */
 class YoutubeDL : AbstractEngine() {
     override val logger: Logger = LoggerFactory.getLogger(this::class.java)
@@ -27,7 +26,6 @@ class YoutubeDL : AbstractEngine() {
     override val engineType = EngineType.YOUTUBE_DL
     override val enginePath: String = initEnginePath()
     override var remoteVersion: String? = null
-
     private var speed = "0MiB/s"
     private var progress = 0.0
     private var size = ""
@@ -39,7 +37,6 @@ class YoutubeDL : AbstractEngine() {
     private val fileSizePattern = Pattern.compile("\\s\\d+\\W?\\d*\\w+B\\s")
     private val remoteVersionPattern = Pattern.compile("'\\d+.+'")
     private var taskModel: DownloadTaskModel? = null
-    private lateinit var msg: ResourceBundle
 
 
     init {
@@ -146,7 +143,7 @@ class YoutubeDL : AbstractEngine() {
     override fun ffmpegPath(ffmpegPath: String): AbstractEngine {
         return if (ffmpegPath.isEmpty()) {
             this
-        }else {
+        } else {
             argsMap["--ffmpeg-location"] = ffmpegPath
             this
         }
@@ -155,7 +152,7 @@ class YoutubeDL : AbstractEngine() {
     override fun cookies(cookies: String): AbstractEngine {
         return if (cookies.isEmpty()) {
             this
-        }else {
+        } else {
             argsMap["--cookies"] = cookies
             this
         }
@@ -163,7 +160,6 @@ class YoutubeDL : AbstractEngine() {
 
     override fun downloadMedia(downloadTaskModel: DownloadTaskModel, message: ResourceBundle) {
         taskModel = downloadTaskModel
-        msg = message
         taskModel?.run {
             // init display
             execCommand(argsMap.build(), EngineDownloadType.SINGLE)
@@ -189,12 +185,12 @@ class YoutubeDL : AbstractEngine() {
             if (this@YoutubeDL.progress >= 1.0) {
                 this.progress = 1.0
                 if (line.trim().startsWith("[ffmpeg]"))
-                    this.status = msg["ui.merging"]
+                    this.status = DownloadTaskStatus.MERGING
                 else
-                    this.status = msg["ui.completed"]
+                    this.status = DownloadTaskStatus.COMPLETED
             } else if (this@YoutubeDL.progress > 0) {
                 this.progress = this@YoutubeDL.progress
-                this.status = msg["ui.downloading"]
+                this.status = DownloadTaskStatus.DOWNLOADING
             }
         }
     }
@@ -250,7 +246,7 @@ class YoutubeDL : AbstractEngine() {
             output
         } else { // means user stop this task manually
             taskModel?.run {
-                status = msg["ui.stopped"]
+                status = DownloadTaskStatus.STOPPED
             }
             logger.debug("stop the task of $taskModel")
             null

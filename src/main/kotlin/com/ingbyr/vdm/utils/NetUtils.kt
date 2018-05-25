@@ -1,7 +1,8 @@
 package com.ingbyr.vdm.utils
 
 import com.ingbyr.vdm.events.RefreshEngineVersion
-import com.ingbyr.vdm.models.DownloadTaskModel
+import com.ingbyr.vdm.task.DownloadTaskModel
+import com.ingbyr.vdm.task.DownloadTaskStatus
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.internal.Util
@@ -36,13 +37,13 @@ class NetUtils : Controller() {
     fun downloadEngine(downloadTaskModel: DownloadTaskModel, remoteVersion: String) {
         var sink: BufferedSink? = null
         var source: BufferedSource? = null
-        downloadTaskModel.status = messages["ui.analyzing"]
+        downloadTaskModel.status = DownloadTaskStatus.ANALYZING
         try {
             val request = Request.Builder().url(downloadTaskModel.url).build()
             val response = client.newCall(request).execute()
             val body = response.body()
             if (body != null) {
-                downloadTaskModel.status = messages["ui.downloading"]
+                downloadTaskModel.status = DownloadTaskStatus.DOWNLOADING
                 val contentLength = body.contentLength()
                 val sizeFormat = DecimalFormat("#.##")
                 downloadTaskModel.size = "${sizeFormat.format(contentLength / 1000000.0)}MB"
@@ -61,7 +62,7 @@ class NetUtils : Controller() {
                     downloadTaskModel.progress = totalBytesRead.toDouble() / contentLength.toDouble()
                 }
                 sink.flush()
-                downloadTaskModel.status = messages["ui.completed"]
+                downloadTaskModel.status = DownloadTaskStatus.COMPLETED
 
                 // add execution permission to the engine file
                 if (VDMOSUtils.currentOS == VDMOSType.LINUX || VDMOSUtils.currentOS == VDMOSType.MAC_OS) {
@@ -75,6 +76,7 @@ class NetUtils : Controller() {
                 logger.error("no response body")
             }
         } catch (e: IOException) {
+            downloadTaskModel.status = DownloadTaskStatus.FAILED
             logger.error(e.toString())
         } finally {
             Util.closeQuietly(sink)

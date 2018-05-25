@@ -1,7 +1,8 @@
 package com.ingbyr.vdm.views
 
 import com.ingbyr.vdm.controllers.MainController
-import com.ingbyr.vdm.models.DownloadTaskModel
+import com.ingbyr.vdm.task.DownloadTaskModel
+import com.ingbyr.vdm.task.DownloadTaskStatus
 import com.ingbyr.vdm.utils.VDMConfigUtils
 import com.ingbyr.vdm.utils.VDMOSUtils
 import com.ingbyr.vdm.utils.VDMUtils
@@ -48,7 +49,6 @@ class MainView : View() {
     private var menuAbout: MenuItem
     private var menuQuit: MenuItem
     private var menuDonate: MenuItem
-    private lateinit var labelStatus: Label
 
     private var selectedTaskModel: DownloadTaskModel? = null
     private lateinit var downloadTaskTableView: TableView<DownloadTaskModel>
@@ -70,7 +70,15 @@ class MainView : View() {
                 column(messages["ui.title"], DownloadTaskModel::titleProperty).pctWidth(40)
                 column(messages["ui.size"], DownloadTaskModel::sizeProperty)
                 column(messages["ui.status"], DownloadTaskModel::statusProperty).cellFormat {
-                    labelStatus = Label(it)
+                    val labelStatus = Label()
+                    when (it!!) {
+                        DownloadTaskStatus.COMPLETED -> labelStatus.text = messages["ui.completed"]
+                        DownloadTaskStatus.STOPPED -> labelStatus.text = messages["ui.stopped"]
+                        DownloadTaskStatus.MERGING -> labelStatus.text = messages["ui.merging"]
+                        DownloadTaskStatus.ANALYZING -> labelStatus.text = messages["ui.analyzing"]
+                        DownloadTaskStatus.DOWNLOADING -> labelStatus.text = messages["ui.downloading"]
+                        DownloadTaskStatus.FAILED -> labelStatus.text = messages["ui.failed"]
+                    }
                     graphic = labelStatus
                 }
                 column(messages["ui.progress"], DownloadTaskModel::progressProperty).pctWidth(20).cellFormat {
