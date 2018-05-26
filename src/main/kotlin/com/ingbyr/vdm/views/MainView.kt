@@ -63,11 +63,12 @@ class MainView : View() {
             downloadTaskTableView = tableview(controller.downloadTaskModelList) {
                 fitToParentSize()
                 columnResizePolicy = SmartResize.POLICY
-                column("", DownloadTaskModel::checkedProperty).cellFormat {
-                    val cb = JFXCheckBox("")
-                    cb.isSelected = it
-                    graphic = cb
-                }
+                // TODO multi options
+//                column("", DownloadTaskModel::checkedProperty).cellFormat {
+//                    val cb = JFXCheckBox("")
+//                    cb.isSelected = it
+//                    graphic = cb
+//                }
                 column(messages["ui.title"], DownloadTaskModel::titleProperty).pctWidth(40)
                 column(messages["ui.size"], DownloadTaskModel::sizeProperty)
                 column(messages["ui.status"], DownloadTaskModel::statusProperty).cellFormat {
