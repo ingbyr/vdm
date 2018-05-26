@@ -169,7 +169,7 @@ class YoutubeDL : AbstractEngine() {
     override fun parseDownloadOutput(line: String) {
         if (title.isEmpty()) {
             title = titlePattern.matcher(line).takeIf { it.find() }?.group()?.toString() ?: title
-            title = title.removePrefix("/")
+            title = title.removePrefix("/").removePrefix("\\")
             if (title.isNotEmpty()) taskModel?.title = title
         }
         if (size.isEmpty()) {

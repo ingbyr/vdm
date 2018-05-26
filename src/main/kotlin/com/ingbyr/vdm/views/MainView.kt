@@ -1,5 +1,6 @@
 package com.ingbyr.vdm.views
 
+import ch.qos.logback.classic.Level
 import com.ingbyr.vdm.controllers.MainController
 import com.ingbyr.vdm.task.DownloadTaskModel
 import com.ingbyr.vdm.task.DownloadTaskStatus
@@ -144,6 +145,15 @@ class MainView : View() {
             find(PreferencesView::class).openWindow()?.hide()
             cu.update(VDMConfigUtils.FIRST_TIME_USE, "false")
             cu.saveToConfigFile()
+        }
+
+        // debug mode
+        val rootLogger = LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME) as ch.qos.logback.classic.Logger
+        if (cu.load(VDMConfigUtils.DEBUG_MODE).toBoolean()) {
+            rootLogger.level = Level.DEBUG
+        } else {
+            rootLogger.level = Level.ERROR
+            cu.update(VDMConfigUtils.DEBUG_MODE, false)
         }
     }
 
