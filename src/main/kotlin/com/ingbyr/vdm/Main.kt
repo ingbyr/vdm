@@ -1,10 +1,12 @@
 package com.ingbyr.vdm
 
 import com.ingbyr.vdm.utils.VDMConfigUtils
+import com.ingbyr.vdm.utils.VDMUtils
 import com.ingbyr.vdm.views.MainView
 import javafx.application.Application
 import org.slf4j.LoggerFactory
 import tornadofx.*
+import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
 
@@ -24,6 +26,11 @@ class Main : App(MainView::class) {
         logger.debug("JAVA: ${prop["java.version"]?.toString()} Vender: ${prop["java.vendor"]?.toString()}")
         logger.debug("Default Locale: ${FX.locale} Current Locale:${Locale.getDefault().language}_${Locale.getDefault().country}")
         logger.debug("Save config file to $configPath")
+
+        // create .vdm dir
+        if (!Files.exists(VDMUtils.USER_DIR)) {
+            Files.createDirectory(VDMUtils.USER_DIR)
+        }
     }
 }
 

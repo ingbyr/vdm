@@ -33,12 +33,12 @@ class DownloadTaskModel(val vdmConfig: VDMConfig, var url: String, createdAt: Lo
     var type: DownloadTaskType by typeProperty
 
     fun toData(): DownloadTaskData {
-        return DownloadTaskData(vdmConfig, url, createdAt, formatID, checked, title, size, progress, status)
+        return DownloadTaskData(vdmConfig, url, createdAt, formatID, checked, title, size, progress, status, type)
     }
 }
 
 data class DownloadTaskData(val vdmConfig: VDMConfig, var url: String, var createdAt: LocalDateTime? = null, var formatID: String? = null, var checked: Boolean? = null, var title: String? = null, var size: String? = null, var progress: Double? = null, var status: DownloadTaskStatus? = null, var type: DownloadTaskType? = null) : Serializable {
     fun toModel(): DownloadTaskModel {
-        return DownloadTaskModel(vdmConfig, url, createdAt, formatID, checked, title, size, progress, status)
+        return DownloadTaskModel(vdmConfig, url, createdAt, formatID, checked, title, size, progress, status, type)
     }
 }

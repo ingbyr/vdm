@@ -6,15 +6,15 @@
 }
 
 .text {
-    -fx-font-size: 1.2em;
+    -fx-font-size: 1.8em;
 }
 
 #small-text .text {
-    -fx-font-size: 1.0em;
+    -fx-font-size: 1.5em;
 }
 
 .tooltip {
-    -fx-font-size: 1.0em;
+    -fx-font-size: 1.5em;
 }
 
 .menu .separator .line {
@@ -52,7 +52,7 @@
 
 #button-download-region {
     -fx-background-color: white;
-    -size: 2.0em;
+    -size: 2.5em;
     -fx-min-height: -size;
     -fx-min-width: -size;
     -fx-max-height: -size;
@@ -62,7 +62,7 @@
 
 #button-pause-region {
     -fx-background-color: white;
-    -size: 2.0em;
+    -size: 2.5em;
     -fx-min-height: -size;
     -fx-min-width: -size;
     -fx-max-height: -size;
@@ -72,7 +72,7 @@
 
 #button-play-region {
     -fx-background-color: white;
-    -size: 2.0em;
+    -size: 2.5em;
     -fx-min-height: -size;
     -fx-min-width: -size;
     -fx-max-height: -size;
@@ -82,7 +82,7 @@
 
 #button-delete-region {
     -fx-background-color: white;
-    -size: 2.0em;
+    -size: 2.5em;
     -fx-min-height: -size;
     -fx-min-width: -size;
     -fx-max-height: -size;
@@ -92,7 +92,7 @@
 
 #button-open-region {
     -fx-background-color: white;
-    -size: 2.0em;
+    -size: 2.5em;
     -fx-min-height: -size;
     -fx-min-width: -size;
     -fx-max-height: -size;
@@ -102,7 +102,7 @@
 
 #button-search-region {
     -fx-background-color: white;
-    -size: 2.0em;
+    -size: 2.5em;
     -fx-min-height: -size;
     -fx-min-width: -size;
     -fx-max-height: -size;
@@ -112,7 +112,7 @@
 
 #button-setting-region {
     -fx-background-color: white;
-    -size: 2.0em;
+    -size: 2.5em;
     -fx-min-height: -size;
     -fx-min-width: -size;
     -fx-max-height: -size;
@@ -122,7 +122,7 @@
 
 #button-more-menus {
     -fx-background-color: white;
-    -size: 2.0em;
+    -size: 2.5em;
     -fx-min-height: -size;
     -fx-min-width: -size;
     -fx-max-height: -size;
@@ -167,7 +167,7 @@
 .jfx-text-field {
     -jfx-focus-color: -color-p;
     -jfx-unfocus-color: -color-l;
-    -fx-font-size: 1.0em;
+    -fx-font-size: 1.2em;
 }
 
 .jfx-list-view .list-cell {
@@ -184,7 +184,6 @@
 
 .jfx-toggle-button {
     -jfx-toggle-color: -color-p;
-    -jfx-size: 0.5em;
 }
 
 .tab-header-background {
@@ -193,16 +192,11 @@
 
 .jfx-tab-pane .tab-selected-line {
     -fx-background-color: -color-l;
-    -fx-pref-height: 0.5em;
+    -fx-pref-height: 1em;
 }
 
 .tab {
-    -fx-padding: 0.5em 0.2em 0.5em 0.2em;
-}
-
-.tab .text {
-    -fx-font-size: 1.0em;
-    -fx-font-weight: normal;
+    -fx-padding: 1.5em 0.5em 1.5em 0.5em;
 }
 
 #label-option {
@@ -237,8 +231,8 @@
 
 #about-view {
     -fx-background-color: -color-d;
-    -fx-pref-height: 300;
-    -fx-pref-width: 400;
+    -fx-pref-height: 400;
+    -fx-pref-width: 800;
 }
 
 #about-view .label {
@@ -251,16 +245,16 @@
 }
 
 #main-view {
-    -fx-pref-height: 400;
-    -fx-pref-width: 1200;
+    -fx-pref-height: 600;
+    -fx-pref-width: 1600;
 }
 
 #preferences-view {
-    -fx-pref-height: 300;
-    -fx-pref-width: 600;
+    -fx-pref-height: 400;
+    -fx-pref-width: 800;
 }
 
 #media-formats-view {
-    -fx-pref-height: 500;
-    -fx-pref-width: 500;
+    -fx-pref-height: 800;
+    -fx-pref-width: 600;
 }

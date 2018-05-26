@@ -13,6 +13,5 @@
       <Label />
       <JFXButton fx:id="btnUpdate" buttonType="RAISED" text="%ui.checkForUpdates" />
       <JFXButton fx:id="btnReport" buttonType="RAISED" text="%ui.reportBug" />
-      <JFXButton fx:id="btnDonate" buttonType="RAISED" text="%ui.donate" />
    </children>
 </VBox>
