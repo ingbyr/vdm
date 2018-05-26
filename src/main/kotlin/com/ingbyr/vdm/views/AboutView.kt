@@ -21,7 +21,6 @@ class AboutView : View() {
     private val labelSourceCode: Label by fxid()
     private val btnUpdate: JFXButton by fxid()
     private val btnReport: JFXButton by fxid()
-    private val btnDonate: JFXButton by fxid()
 
     init {
         labelVersion.text = cu.load(VDMConfigUtils.VDM_VERSION)
@@ -40,9 +39,6 @@ class AboutView : View() {
         }
         btnReport.setOnMouseClicked {
             hostServices.showDocument(VDMUtils.VDM_REPORT_BUGS)
-        }
-        btnDonate.setOnMouseClicked {
-            openInternalWindow(DonationView::class)
         }
     }
 }

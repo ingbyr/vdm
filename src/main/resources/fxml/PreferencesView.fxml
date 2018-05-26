@@ -13,7 +13,6 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
 <JFXTabPane id="preferences-view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" rotateGraphic="true" side="LEFT" stylesheets="@themes/DefaultTheme.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <tabs>
@@ -33,11 +32,7 @@
                      <children>
                         <AnchorPane>
                            <children>
-                              <Label layoutX="15.0" text="%ui.storagePath" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                 <font>
-                                    <Font name="System Bold" size="13.0" />
-                                 </font>
-                              </Label>
+                              <Label layoutX="15.0" text="%ui.storagePath" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
                               <JFXButton id="settings-btn" fx:id="btnChangeStoragePath" buttonType="RAISED" layoutX="15.0" layoutY="35.0" text="%ui.changePath" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                            </children>
                         </AnchorPane>
@@ -54,11 +49,7 @@
                      <children>
                         <AnchorPane>
                            <children>
-                              <Label layoutX="15.0" text="%ui.ffmpegPath" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                 <font>
-                                    <Font name="System Bold" size="13.0" />
-                                 </font>
-                              </Label>
+                              <Label layoutX="15.0" text="%ui.ffmpegPath" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
                               <JFXButton id="settings-btn" fx:id="btnChangeFFMPEGPath" buttonType="RAISED" layoutX="15.0" layoutY="35.0" text="%ui.changePath" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                            </children>
                         </AnchorPane>
@@ -99,11 +90,16 @@
                      <children>
                         <AnchorPane>
                            <children>
-                              <JFXToggleButton fx:id="tbYoutubeDL" text="%ui.youtube-dl" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                 <toggleGroup>
-                                    <ToggleGroup fx:id="engines" />
-                                 </toggleGroup>
-                              </JFXToggleButton>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <JFXToggleButton fx:id="tbYoutubeDL">
+                                       <toggleGroup>
+                                          <ToggleGroup fx:id="engines" />
+                                       </toggleGroup>
+                                    </JFXToggleButton>
+                                    <Label text="%ui.youtube-dl" />
+                                 </children>
+                              </HBox>
                               <JFXButton id="settings-btn" fx:id="btnUpdateYoutubeDL" buttonType="RAISED" layoutY="60.0" text="%ui.checkForUpdates" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0" />
                            </children>
                            <VBox.margin>
@@ -139,7 +135,12 @@
                      <children>
                         <AnchorPane>
                            <children>
-                              <JFXToggleButton fx:id="tbYouGet" text="%ui.you-get" toggleGroup="$engines" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <JFXToggleButton fx:id="tbYouGet" toggleGroup="$engines" />
+                                    <Label text="%ui.you-get" />
+                                 </children>
+                              </HBox>
                               <JFXButton id="settings-btn" fx:id="btnUpdateYouGet" buttonType="RAISED" layoutY="60.0" text="%ui.checkForUpdates" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0" />
                            </children>
                         </AnchorPane>
@@ -185,11 +186,16 @@
                <items>
                   <VBox spacing="10.0">
                      <children>
-                        <JFXToggleButton fx:id="tbSocks5" text="%ui.socks5">
-                           <toggleGroup>
-                              <ToggleGroup fx:id="proxy" />
-                           </toggleGroup>
-                        </JFXToggleButton>
+                        <HBox alignment="CENTER_LEFT">
+                           <children>
+                              <JFXToggleButton fx:id="tbSocks5">
+                                 <toggleGroup>
+                                    <ToggleGroup fx:id="proxy" />
+                                 </toggleGroup>
+                              </JFXToggleButton>
+                              <Label text="%ui.socks5" />
+                           </children>
+                        </HBox>
                         <HBox alignment="CENTER_LEFT" spacing="10.0">
                            <children>
                               <Label text="%ui.address" />
@@ -221,7 +227,12 @@
                   </VBox>
                   <VBox spacing="10.0">
                      <children>
-                        <JFXToggleButton fx:id="tbHTTP" text="%ui.http" toggleGroup="$proxy" />
+                        <HBox alignment="CENTER_LEFT">
+                           <children>
+                              <JFXToggleButton fx:id="tbHTTP" toggleGroup="$proxy" />
+                              <Label text="%ui.http" />
+                           </children>
+                        </HBox>
                         <HBox alignment="CENTER_LEFT" spacing="10.0">
                            <children>
                               <Label text="%ui.address" />
