@@ -4,6 +4,7 @@ import com.ingbyr.vdm.utils.VDMConfigUtils
 import com.ingbyr.vdm.utils.VDMUtils
 import com.ingbyr.vdm.views.MainView
 import javafx.application.Application
+import javafx.scene.image.Image
 import org.slf4j.LoggerFactory
 import tornadofx.*
 import java.nio.file.Files
@@ -31,6 +32,8 @@ class Main : App(MainView::class) {
         if (!Files.exists(VDMUtils.USER_DIR)) {
             Files.createDirectory(VDMUtils.USER_DIR)
         }
+
+        addStageIcon(Image("/imgs/logo.jpg"))
     }
 }
 

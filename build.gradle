@@ -1,5 +1,5 @@
 group = "com.ingbyr.vdm"
-version = "0.2.3"
+version = "0.3.0"
 
 buildscript {
     ext.kotlin_version = "1.2.41"
@@ -51,14 +51,14 @@ test {
 jfx {
     verbose = false
     mainClass = "com.ingbyr.vdm.MainKt"
-    jfxMainAppJarName = "GUI-YouGet.jar"
+    jfxMainAppJarName = "VDM.jar"
     vendor = "ingbyr"
-    appName = "GUI-YouGet"
+    appName = "VDM"
     additionalAppResources = "src/main/deploy"
     skipMainClassScanning = true
     jvmProperties = ["-Dfile.encoding": "UTF-8"]
-    nativeReleaseVersion = "0.2.3"
-    bundler = "ALL"
+    nativeReleaseVersion = "0.3.0"
+    bundler = "exe"
     needShortcut = true
     bundleArguments = [
             installdirChooser: "true"

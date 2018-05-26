@@ -48,6 +48,7 @@ class MediaFormatsView : View() {
                 downloadTask.progress = 0.0
                 downloadTask.createdAt = LocalDateTime.now()
                 fire(CreateDownloadTask(downloadTask))
+                this.close()
             }
         }
     }

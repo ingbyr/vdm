@@ -1,5 +1,5 @@
 ﻿# GUI-YouGet
-![](https://img.shields.io/badge/version-0.2.3-green.svg)
+![](https://img.shields.io/badge/version-0.3.0-green.svg)
 ![](https://img.shields.io/github/forks/ingbyr/GUI-YouGet.svg)
 ![](https://img.shields.io/github/stars/ingbyr/GUI-YouGet.svg)
 ![](https://img.shields.io/github/issues/ingbyr/GUI-YouGet.svg)
@@ -16,8 +16,6 @@
 
 # Screenshots
 ![](screenshots/main.png)
-![](screenshots/medias.png)
-![](screenshots/download.png)
 
 
 # Feedback Bugs
@@ -42,4 +40,4 @@ SOFTWARE.
 
 
 # Authors
-Made by [@ingbyr](http://www.ingbyr.com)
+Made by [@ingbyr](https://www.ingbyr.com)

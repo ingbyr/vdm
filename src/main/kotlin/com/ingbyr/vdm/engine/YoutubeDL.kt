@@ -46,7 +46,7 @@ class YoutubeDL : AbstractEngine() {
     private fun initEnginePath(): String {
         return when (VDMOSUtils.currentOS) {
             VDMOSType.WINDOWS -> {
-                Paths.get(System.getProperty("user.dir"), "engine", "youtube-dl.exe").toAbsolutePath().toString()
+                Paths.get(System.getProperty("user.dir"), "package", "windows", "engine", "youtube-dl.exe").toAbsolutePath().toString()
             }
             VDMOSType.LINUX, VDMOSType.MAC_OS -> {
                 Paths.get(System.getProperty("user.dir"), "engine", "youtube-dl").toAbsolutePath().toString()
