@@ -6,10 +6,10 @@ import java.nio.file.Paths
 import kotlin.math.max
 
 object VDMUtils {
-    const val VDM_UPDATE_URL = "https://github.com/ingbyr/GUI-YouGet/releases/latest"
-    const val VDM_SOURCE_CODE = "https://github.com/ingbyr/GUI-YouGet"
-    const val VDM_LICENSE = "https://raw.githubusercontent.com/ingbyr/GUI-YouGet/master/LICENSE.txt"
-    const val VDM_REPORT_BUGS = "https://github.com/ingbyr/GUI-YouGet/issues"
+    const val VDM_UPDATE_URL = "https://github.com/ingbyr/VDM/releases/latest"
+    const val VDM_SOURCE_CODE = "https://github.com/ingbyr/VDM"
+    const val VDM_LICENSE = "https://raw.githubusercontent.com/ingbyr/VDM/master/LICENSE.txt"
+    const val VDM_REPORT_BUGS = "https://github.com/ingbyr/VDM/issues"
     const val UNKNOWN_VERSION = "0.0.0"
     const val DONATION_URL = "https://paypal.me/ingbyr"
     const val DB_DOWNLOAD_TASKS = "DB_DOWNLOAD_TASKS"
