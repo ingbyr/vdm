@@ -204,7 +204,10 @@ class YoutubeDL : AbstractEngine() {
         val builder = ProcessBuilder(command)
         builder.redirectErrorStream(true)
         val p = builder.start()
-        val r = BufferedReader(InputStreamReader(p.inputStream))
+        val r = when (Locale.getDefault().language) {
+            "zh" -> BufferedReader(InputStreamReader(p.inputStream, "GBK"))
+            else -> BufferedReader(InputStreamReader(p.inputStream, "UTF-8"))
+        }
         val output = StringBuilder()
         var line: String?
         when (downloadType) {
