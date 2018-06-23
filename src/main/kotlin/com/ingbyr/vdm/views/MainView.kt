@@ -57,65 +57,62 @@ class MainView : View() {
     private val cu = VDMConfigUtils(app.config)
 
     init {
-        root += anchorpane {
+        downloadTaskTableView = tableview(controller.downloadTaskModelList) {
             fitToParentSize()
-            padding = Insets(10.0)
-            downloadTaskTableView = tableview(controller.downloadTaskModelList) {
-                fitToParentSize()
-                columnResizePolicy = SmartResize.POLICY
-                // TODO multi options
+            columnResizePolicy = SmartResize.POLICY
+            // TODO multi options
 //                column("", DownloadTaskModel::checkedProperty).cellFormat {
 //                    val cb = JFXCheckBox("")
 //                    cb.isSelected = it
 //                    graphic = cb
 //                }
-                column(messages["ui.title"], DownloadTaskModel::titleProperty).pctWidth(40)
-                column(messages["ui.size"], DownloadTaskModel::sizeProperty)
-                column(messages["ui.status"], DownloadTaskModel::statusProperty).cellFormat {
-                    val labelStatus = Label()
-                    when (it!!) {
-                        DownloadTaskStatus.COMPLETED -> labelStatus.text = messages["ui.completed"]
-                        DownloadTaskStatus.STOPPED -> labelStatus.text = messages["ui.stopped"]
-                        DownloadTaskStatus.MERGING -> labelStatus.text = messages["ui.merging"]
-                        DownloadTaskStatus.ANALYZING -> labelStatus.text = messages["ui.analyzing"]
-                        DownloadTaskStatus.DOWNLOADING -> labelStatus.text = messages["ui.downloading"]
-                        DownloadTaskStatus.FAILED -> labelStatus.text = messages["ui.failed"]
-                    }
-                    graphic = labelStatus
+            column(messages["ui.title"], DownloadTaskModel::titleProperty).remainingWidth()
+            column(messages["ui.size"], DownloadTaskModel::sizeProperty)
+            column(messages["ui.status"], DownloadTaskModel::statusProperty).cellFormat {
+                val labelStatus = Label()
+                when (it!!) {
+                    DownloadTaskStatus.COMPLETED -> labelStatus.text = messages["ui.completed"]
+                    DownloadTaskStatus.STOPPED -> labelStatus.text = messages["ui.stopped"]
+                    DownloadTaskStatus.MERGING -> labelStatus.text = messages["ui.merging"]
+                    DownloadTaskStatus.ANALYZING -> labelStatus.text = messages["ui.analyzing"]
+                    DownloadTaskStatus.DOWNLOADING -> labelStatus.text = messages["ui.downloading"]
+                    DownloadTaskStatus.FAILED -> labelStatus.text = messages["ui.failed"]
                 }
-                column(messages["ui.progress"], DownloadTaskModel::progressProperty).pctWidth(20).cellFormat {
-                    val progressFormat = DecimalFormat("#.##")
-                    val progressPane = GridPane()
-                    val progressBar = JFXProgressBar(it.toDouble())
-                    val progressLabel = Label(progressFormat.format(it.toDouble() * 100) + "%")
-                    progressPane.useMaxSize = true
-                    progressPane.add(progressBar, 0, 0)
-                    progressPane.add(progressLabel, 1, 0)
-                    val columnBar = ColumnConstraints()
-                    columnBar.percentWidth = 75.0
-                    val columnLabel = ColumnConstraints()
-                    columnLabel.percentWidth = 25.0
-                    progressPane.columnConstraints.addAll(columnBar, columnLabel)
-                    progressPane.hgap = 10.0
-                    progressBar.useMaxSize = true
-                    progressLabel.useMaxWidth = true
-                    graphic = progressPane
-                }
-                column(messages["ui.createdAt"], DownloadTaskModel::createdAtProperty)
+                graphic = labelStatus
+            }
+            column(messages["ui.progress"], DownloadTaskModel::progressProperty).pctWidth(20).cellFormat {
+                val progressFormat = DecimalFormat("#.##")
+                val progressPane = GridPane()
+                val progressBar = JFXProgressBar(it.toDouble())
+                val progressLabel = Label(progressFormat.format(it.toDouble() * 100) + "%")
+                progressPane.useMaxSize = true
+                progressPane.add(progressBar, 0, 0)
+                progressPane.add(progressLabel, 1, 0)
+                val columnBar = ColumnConstraints()
+                columnBar.percentWidth = 75.0
+                val columnLabel = ColumnConstraints()
+                columnLabel.percentWidth = 25.0
+                progressPane.columnConstraints.addAll(columnBar, columnLabel)
+                progressPane.hgap = 10.0
+                progressBar.useMaxSize = true
+                progressLabel.useMaxWidth = true
+                graphic = progressPane
+            }
+            column(messages["ui.createdAt"], DownloadTaskModel::createdAtProperty)
 
-                contextmenu {
-                    item(messages["ui.stopTask"]).action {
-                        selectedTaskModel?.run { controller.stopTask(this) }
-                    }
-                    item(messages["ui.startTask"]).action {
-                        selectedTaskModel?.run { controller.startTask(this) }
-                    }
-                    item(messages["ui.deleteTask"]).action {
-                        selectedTaskModel?.run { controller.deleteTask(this) }
-                    }
+            contextmenu {
+                item(messages["ui.stopTask"]).action {
+                    selectedTaskModel?.run { controller.stopTask(this) }
+                }
+                item(messages["ui.startTask"]).action {
+                    selectedTaskModel?.run { controller.startTask(this) }
+                }
+                item(messages["ui.deleteTask"]).action {
+                    selectedTaskModel?.run { controller.deleteTask(this) }
                 }
             }
         }
+        root += downloadTaskTableView
         downloadTaskTableView.placeholder = Label(messages["ui.noTaskInList"])
 
         // init context menu

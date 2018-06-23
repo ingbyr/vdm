@@ -25,7 +25,7 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    compile "no.tornado:tornadofx:1.7.15"
+    compile "no.tornado:tornadofx:1.7.16"
     compile "com.jfoenix:jfoenix:8.0.3"
     compile "com.beust:klaxon:2.1.13"
     compile "ch.qos.logback:logback-core:1.2.3"
