@@ -8,9 +8,7 @@ import com.ingbyr.vdm.utils.VDMConfigUtils
 import com.ingbyr.vdm.utils.VDMOSUtils
 import com.ingbyr.vdm.utils.VDMUtils
 import com.jfoenix.controls.JFXButton
-import com.jfoenix.controls.JFXCheckBox
 import com.jfoenix.controls.JFXProgressBar
-import javafx.geometry.Insets
 import javafx.scene.control.*
 import javafx.scene.layout.ColumnConstraints
 import javafx.scene.layout.GridPane
@@ -27,6 +25,8 @@ class MainView : View() {
         messages = ResourceBundle.getBundle("i18n/MainView")
         title = messages["ui.vdm"]
     }
+
+    private val vdmVersion = "0.3.1"
 
     private val logger: Logger = LoggerFactory.getLogger(MainView::class.java)
     override val root: VBox by fxml("/fxml/MainView.fxml")
@@ -52,7 +52,7 @@ class MainView : View() {
     private var menuDonate: MenuItem
 
     private var selectedTaskModel: DownloadTaskModel? = null
-    private lateinit var downloadTaskTableView: TableView<DownloadTaskModel>
+    private var downloadTaskTableView: TableView<DownloadTaskModel>
 
     private val cu = VDMConfigUtils(app.config)
 
@@ -136,14 +136,16 @@ class MainView : View() {
         if (firstTimeUse) {
             // init config file
             // TODO update version when released new one
-            cu.update(VDMConfigUtils.VDM_VERSION, "0.3.0")
-            cu.update(VDMConfigUtils.YOUTUBE_DL_VERSION, "2018.05.18")
+            cu.update(VDMConfigUtils.VDM_VERSION, vdmVersion)
+            cu.update(VDMConfigUtils.YOUTUBE_DL_VERSION, "2018.06.19")
             cu.update(VDMConfigUtils.YOU_GET_VERSION, VDMUtils.UNKNOWN_VERSION)
 
             find(PreferencesView::class).openWindow()?.hide()
             cu.update(VDMConfigUtils.FIRST_TIME_USE, "false")
-            cu.saveToConfigFile()
+        } else {
+            cu.update(VDMConfigUtils.VDM_VERSION, vdmVersion)
         }
+        cu.saveToConfigFile()
 
         // debug mode
         val rootLogger = LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME) as ch.qos.logback.classic.Logger

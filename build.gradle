@@ -1,5 +1,5 @@
 group = "com.ingbyr.vdm"
-version = "0.3.0"
+version = "0.3.1"
 
 buildscript {
     ext.kotlin_version = "1.2.41"
@@ -57,7 +57,7 @@ jfx {
     additionalAppResources = "src/main/deploy"
     skipMainClassScanning = true
     jvmProperties = ["-Dfile.encoding": "UTF-8"]
-    nativeReleaseVersion = "0.3.0"
+    nativeReleaseVersion = "0.3.1"
     bundler = "exe"
     needShortcut = true
     bundleArguments = [

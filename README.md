@@ -1,5 +1,5 @@
 ﻿# Video Download Manager
-![](https://img.shields.io/badge/version-0.3.0-green.svg)
+![](https://img.shields.io/badge/version-0.3.1-green.svg)
 ![](https://img.shields.io/github/stars/ingbyr/VDM.svg)
 ![](https://img.shields.io/github/forks/ingbyr/VDM.svg)
 ![](https://img.shields.io/github/issues/ingbyr/VDM.svg)
