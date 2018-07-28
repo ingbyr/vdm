@@ -2,7 +2,7 @@ package com.ingbyr.vdm.views
 
 import com.ingbyr.vdm.controllers.MediaFormatsController
 import com.ingbyr.vdm.events.CreateDownloadTask
-import com.ingbyr.vdm.task.DownloadTaskData
+import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.utils.MediaFormat
 import com.jfoenix.controls.JFXListView
 import javafx.scene.control.Label
@@ -30,7 +30,7 @@ class MediaFormatsView : View() {
     private val listView: JFXListView<Label> by fxid()
 
     // downloadTask's type must be DownloadTaskData
-    private var downloadTask = params["downloadTask"] as DownloadTaskData
+    private var downloadTask = params["downloadTask"] as DownloadTaskModel
     private var mediaFormatList: List<MediaFormat>? = null
 
     init {
@@ -68,9 +68,9 @@ class MediaFormatsView : View() {
 
     override fun onDock() {
         super.onDock()
-        // get download task from create download task view
-        downloadTask = params["downloadTask"] as DownloadTaskData
-        // request the media json based on download task in background thread
+        // get download models from create download models view
+        downloadTask = params["downloadTask"] as DownloadTaskModel
+        // request the media json based on download models in background thread
         runAsync {
             controller.requestMedia(downloadTask.vdmConfig.engineType, downloadTask.url, downloadTask.vdmConfig.proxy)
         } ui {

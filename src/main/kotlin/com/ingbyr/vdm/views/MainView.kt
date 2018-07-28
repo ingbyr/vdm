@@ -2,11 +2,11 @@ package com.ingbyr.vdm.views
 
 import ch.qos.logback.classic.Level
 import com.ingbyr.vdm.controllers.MainController
-import com.ingbyr.vdm.task.DownloadTaskModel
-import com.ingbyr.vdm.task.DownloadTaskStatus
+import com.ingbyr.vdm.models.DownloadTaskModel
+import com.ingbyr.vdm.models.DownloadTaskStatus
 import com.ingbyr.vdm.utils.VDMConfigUtils
 import com.ingbyr.vdm.utils.VDMOSUtils
-import com.ingbyr.vdm.utils.VDMUtils
+import com.ingbyr.vdm.utils.VDMProperties
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXProgressBar
 import javafx.scene.control.*
@@ -138,7 +138,7 @@ class MainView : View() {
             // TODO update version when released new one
             cu.update(VDMConfigUtils.VDM_VERSION, vdmVersion)
             cu.update(VDMConfigUtils.YOUTUBE_DL_VERSION, "2018.06.19")
-            cu.update(VDMConfigUtils.YOU_GET_VERSION, VDMUtils.UNKNOWN_VERSION)
+            cu.update(VDMConfigUtils.YOU_GET_VERSION, VDMProperties.UNKNOWN_VERSION)
 
             find(PreferencesView::class).openWindow()?.hide()
             cu.update(VDMConfigUtils.FIRST_TIME_USE, "false")
@@ -158,13 +158,13 @@ class MainView : View() {
     }
 
     private fun initListeners() {
-        // task list view
+        // models list view
         downloadTaskTableView.selectionModel.selectedItemProperty().addListener { _, _, selectedItem ->
             selectedTaskModel = selectedItem
         }
 
         // shortcut buttons
-        // start task
+        // start models
         btnStart.setOnMouseClicked {
             selectedTaskModel?.let { controller.startTask(it) }
         }
@@ -172,15 +172,15 @@ class MainView : View() {
         btnPreferences.setOnMouseClicked {
             find(PreferencesView::class).openWindow()
         }
-        // create task
+        // create models
         btnNew.setOnMouseClicked {
             find(CreateDownloadTaskView::class).openWindow()
         }
-        // delete task
+        // delete models
         btnDelete.setOnMouseClicked {
             selectedTaskModel?.run { controller.deleteTask(this) }
         }
-        // stop task
+        // stop models
         btnStop.setOnMouseClicked {
             selectedTaskModel?.run { controller.stopTask(this) }
         }
@@ -192,7 +192,7 @@ class MainView : View() {
                 VDMOSUtils.openDir(cu.load(VDMConfigUtils.STORAGE_PATH))
             }
         }
-        // TODO search task
+        // TODO search models
         btnSearch.isVisible = false
         btnSearch.setOnMouseClicked {
         }

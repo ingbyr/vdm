@@ -1,8 +1,8 @@
 package com.ingbyr.vdm.utils
 
 import com.ingbyr.vdm.events.RefreshEngineVersion
-import com.ingbyr.vdm.task.DownloadTaskModel
-import com.ingbyr.vdm.task.DownloadTaskStatus
+import com.ingbyr.vdm.models.DownloadTaskModel
+import com.ingbyr.vdm.models.DownloadTaskStatus
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.internal.Util
@@ -64,7 +64,7 @@ class NetUtils : Controller() {
                 sink.flush()
                 downloadTaskModel.status = DownloadTaskStatus.COMPLETED
 
-                // add execution permission to the engine file
+                // add execution permission to the engines file
                 if (VDMOSUtils.currentOS == VDMOSType.LINUX || VDMOSUtils.currentOS == VDMOSType.MAC_OS) {
                     Files.setPosixFilePermissions(storagePath,
                             mutableSetOf(PosixFilePermission.OWNER_READ, PosixFilePermission.OWNER_WRITE, PosixFilePermission.OWNER_EXECUTE,

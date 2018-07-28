@@ -1,7 +1,7 @@
 package com.ingbyr.vdm.views
 
 import com.ingbyr.vdm.utils.VDMConfigUtils
-import com.ingbyr.vdm.utils.VDMUtils
+import com.ingbyr.vdm.utils.VDMProperties
 import com.jfoenix.controls.JFXButton
 import javafx.scene.control.Label
 import javafx.scene.layout.VBox
@@ -29,16 +29,16 @@ class AboutView : View() {
 
     private fun initListeners() {
         labelLicense.setOnMouseClicked {
-            hostServices.showDocument(VDMUtils.VDM_LICENSE)
+            hostServices.showDocument(VDMProperties.VDM_LICENSE)
         }
         labelSourceCode.setOnMouseClicked {
-            hostServices.showDocument(VDMUtils.VDM_SOURCE_CODE)
+            hostServices.showDocument(VDMProperties.VDM_SOURCE_CODE)
         }
         btnUpdate.setOnMouseClicked {
-            hostServices.showDocument(VDMUtils.VDM_UPDATE_URL)
+            hostServices.showDocument(VDMProperties.VDM_UPDATE_URL)
         }
         btnReport.setOnMouseClicked {
-            hostServices.showDocument(VDMUtils.VDM_REPORT_BUGS)
+            hostServices.showDocument(VDMProperties.VDM_REPORT_BUGS)
         }
     }
 }

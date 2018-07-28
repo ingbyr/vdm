@@ -1,7 +1,7 @@
 package com.ingbyr.vdm
 
 import com.ingbyr.vdm.utils.VDMConfigUtils
-import com.ingbyr.vdm.utils.VDMUtils
+import com.ingbyr.vdm.utils.VDMProperties
 import com.ingbyr.vdm.views.MainView
 import javafx.application.Application
 import javafx.scene.image.Image
@@ -29,8 +29,8 @@ class Main : App(MainView::class) {
         logger.debug("Save config file to $configPath")
 
         // create .vdm dir
-        if (!Files.exists(VDMUtils.USER_DIR)) {
-            Files.createDirectory(VDMUtils.USER_DIR)
+        if (!Files.exists(VDMProperties.USER_DIR)) {
+            Files.createDirectory(VDMProperties.USER_DIR)
         }
 
         addStageIcon(Image("/imgs/logo.jpg"))

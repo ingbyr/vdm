@@ -1,15 +1,13 @@
 package com.ingbyr.vdm.controllers
 
-import com.ingbyr.vdm.engine.AbstractEngine
-import com.ingbyr.vdm.engine.utils.EngineFactory
+import com.ingbyr.vdm.engines.AbstractEngine
+import com.ingbyr.vdm.engines.utils.EngineFactory
 import com.ingbyr.vdm.events.CreateDownloadTask
 import com.ingbyr.vdm.events.UpdateEngineTask
-import com.ingbyr.vdm.task.DownloadTaskData
-import com.ingbyr.vdm.task.DownloadTaskModel
-import com.ingbyr.vdm.task.DownloadTaskStatus
-import com.ingbyr.vdm.task.DownloadTaskType
+import com.ingbyr.vdm.models.DownloadTaskModel
+import com.ingbyr.vdm.models.DownloadTaskStatus
+import com.ingbyr.vdm.models.DownloadTaskType
 import com.ingbyr.vdm.utils.*
-import org.mapdb.DBMaker
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tornadofx.*
@@ -25,15 +23,12 @@ class MainController : Controller() {
     }
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
-    private val db = DBMaker.fileDB(VDMUtils.DATABASE_PATH_STR).transactionEnable().make()
-    @Suppress("UNCHECKED_CAST")
-    private val downloadTaskData = db.hashMap(VDMUtils.DB_DOWNLOAD_TASKS).createOrOpen() as MutableMap<String, DownloadTaskData>
     val downloadTaskModelList = mutableListOf<DownloadTaskModel>().observable()
-    private val engineList = ConcurrentHashMap<LocalDateTime, AbstractEngine>() // FIXME auto clean the finished task engine
+    private val engineList = ConcurrentHashMap<LocalDateTime, AbstractEngine>() // FIXME auto clean the finished models engines
 
     init {
         subscribe<CreateDownloadTask> {
-            logger.debug("create task: ${it.downloadTask}")
+            logger.debug("create models: ${it.downloadTask}")
             addTaskToList(it.downloadTask)
             // save to db
             saveTaskToDB(it.downloadTask)
@@ -49,6 +44,7 @@ class MainController : Controller() {
             try {
                 if (engine.existNewVersion(it.localVersion)) {
                     downloadTask.url = engine.updateUrl()
+                    logger.info("update the ${downloadTask.vdmConfig.engineType} from ${downloadTask.url}")
                     NetUtils().downloadEngine(downloadTask, engine.remoteVersion!!)
                 } else {
                     downloadTask.title += messages["ui.noAvailableUpdates"]
@@ -86,7 +82,7 @@ class MainController : Controller() {
     }
 
     fun stopTask(downloadTask: DownloadTaskModel) {
-        logger.debug("try to stop download task $downloadTask")
+        logger.debug("try to stop download models $downloadTask")
         engineList[downloadTask.createdAt]?.stopTask()
     }
 
@@ -100,28 +96,27 @@ class MainController : Controller() {
     fun deleteTask(downloadTaskModel: DownloadTaskModel) {
         stopTask(downloadTaskModel)
         downloadTaskModelList.remove(downloadTaskModel)
-        downloadTaskData.remove(DateTimeUtils.time2String(downloadTaskModel.createdAt))
+        DownLoadTaskDBUtils.deleteDownloadTask(downloadTaskModel)
     }
 
     /**
      * Key of map is "yyyy-MM-dd HH:mm:ss.SSS" which is defined in DateTimeUtils.kt
      * Value of map is a instance of DownloadTask
      */
-    private fun saveTaskToDB(taskItem: DownloadTaskData) {
-        val taskID = DateTimeUtils.time2String(taskItem.createdAt!!)
-        logger.debug("add task $taskID to download task db")
-        downloadTaskData[taskID] = taskItem
+    private fun saveTaskToDB(downloadTask: DownloadTaskModel) {
+        val taskID = DateTimeUtils.time2String(downloadTask.createdAt!!)
+        logger.debug("add models $taskID to download models db")
+        DownLoadTaskDBUtils.saveDownloadTask(downloadTask)
     }
 
-    private fun addTaskToList(taskItem: DownloadTaskData) {
-        val downloadTaskModel = taskItem.toModel()
-        downloadTaskModelList.add(downloadTaskModel)
-        startTask(downloadTaskModel)
+    private fun addTaskToList(downloadTask: DownloadTaskModel) {
+        downloadTaskModelList.add(downloadTask)
+        startTask(downloadTask)
     }
 
     fun loadTaskFromDB() {
-        downloadTaskData.forEach {
-            downloadTaskModelList.add(it.value.toModel())
+        DownLoadTaskDBUtils.loadAllDownloadTasks().forEach {
+            downloadTaskModelList.add(it)
         }
 
         downloadTaskModelList.sortBy {
@@ -131,10 +126,6 @@ class MainController : Controller() {
 
     fun clear() {
         stopAllTask()
-        downloadTaskModelList.forEach {
-            downloadTaskData[DateTimeUtils.time2String(it.createdAt)] = it.toData()
-        }
-        db.commit()
-        db.close()
+        // TODO refresh in db
     }
 }

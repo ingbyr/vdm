@@ -1,4 +1,4 @@
-package com.ingbyr.vdm.task
+package com.ingbyr.vdm.models
 
 import com.ingbyr.vdm.utils.VDMConfig
 import javafx.beans.property.SimpleBooleanProperty
@@ -6,11 +6,18 @@ import javafx.beans.property.SimpleDoubleProperty
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
 import tornadofx.*
-import java.io.Serializable
 import java.time.LocalDateTime
 import java.util.*
 
-class DownloadTaskModel(val vdmConfig: VDMConfig, var url: String, createdAt: LocalDateTime? = null, formatID: String? = null, checked: Boolean? = null, title: String? = null, size: String? = null, progress: Double? = null, status: DownloadTaskStatus? = null, type: DownloadTaskType? = null) : ViewModel() {
+class DownloadTaskModel(
+        val vdmConfig: VDMConfig,
+        var url: String, createdAt: LocalDateTime? = null,
+        formatID: String? = null, checked: Boolean? = null,
+        title: String? = null, size: String? = null,
+        progress: Double? = null,
+        status: DownloadTaskStatus? = null,
+        type: DownloadTaskType? = null) : ViewModel() {
+
     init {
         messages = ResourceBundle.getBundle("i18n/MainView")
     }
@@ -31,14 +38,4 @@ class DownloadTaskModel(val vdmConfig: VDMConfig, var url: String, createdAt: Lo
     var formatID = formatID ?: ""
     var typeProperty = SimpleObjectProperty<DownloadTaskType>(this, "type", type)
     var type: DownloadTaskType by typeProperty
-
-    fun toData(): DownloadTaskData {
-        return DownloadTaskData(vdmConfig, url, createdAt, formatID, checked, title, size, progress, status, type)
-    }
-}
-
-data class DownloadTaskData(val vdmConfig: VDMConfig, var url: String, var createdAt: LocalDateTime? = null, var formatID: String? = null, var checked: Boolean? = null, var title: String? = null, var size: String? = null, var progress: Double? = null, var status: DownloadTaskStatus? = null, var type: DownloadTaskType? = null) : Serializable {
-    fun toModel(): DownloadTaskModel {
-        return DownloadTaskModel(vdmConfig, url, createdAt, formatID, checked, title, size, progress, status, type)
-    }
 }

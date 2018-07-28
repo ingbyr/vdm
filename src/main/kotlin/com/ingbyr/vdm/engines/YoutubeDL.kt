@@ -1,12 +1,12 @@
-package com.ingbyr.vdm.engine
+package com.ingbyr.vdm.engines
 
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
-import com.ingbyr.vdm.engine.utils.EngineDownloadType
-import com.ingbyr.vdm.engine.utils.EngineException
-import com.ingbyr.vdm.engine.utils.EngineType
-import com.ingbyr.vdm.task.DownloadTaskModel
-import com.ingbyr.vdm.task.DownloadTaskStatus
+import com.ingbyr.vdm.engines.utils.EngineDownloadType
+import com.ingbyr.vdm.engines.utils.EngineException
+import com.ingbyr.vdm.engines.utils.EngineType
+import com.ingbyr.vdm.models.DownloadTaskModel
+import com.ingbyr.vdm.models.DownloadTaskStatus
 import com.ingbyr.vdm.utils.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -40,16 +40,16 @@ class YoutubeDL : AbstractEngine() {
 
 
     init {
-        argsMap["engine"] = enginePath
+        argsMap["engines"] = enginePath
     }
 
     private fun initEnginePath(): String {
         return when (VDMOSUtils.currentOS) {
             VDMOSType.WINDOWS -> {
-                Paths.get(System.getProperty("user.dir"), "package", "windows", "engine", "youtube-dl.exe").toAbsolutePath().toString()
+                Paths.get(System.getProperty("user.dir"), "package", "windows", "engines", "youtube-dl.exe").toAbsolutePath().toString()
             }
             VDMOSType.LINUX, VDMOSType.MAC_OS -> {
-                Paths.get(System.getProperty("user.dir"), "engine", "youtube-dl").toAbsolutePath().toString()
+                Paths.get(System.getProperty("user.dir"), "package", "unix", "engines", "youtube-dl").toAbsolutePath().toString()
             }
         }
     }
@@ -198,7 +198,7 @@ class YoutubeDL : AbstractEngine() {
     override fun execCommand(command: MutableList<String>, downloadType: EngineDownloadType): StringBuilder? {
         /**
          * Exec the command by invoking the system shell etc.
-         * Long time task
+         * Long time models
          */
         running.set(true)
         val builder = ProcessBuilder(command)
@@ -235,7 +235,7 @@ class YoutubeDL : AbstractEngine() {
             }
         }
 
-        if (p.isAlive) { // means user stop this task manually
+        if (p.isAlive) { // means user stop this models manually
             p.destroy()
             p.waitFor(200, TimeUnit.MICROSECONDS)
         }
@@ -247,11 +247,11 @@ class YoutubeDL : AbstractEngine() {
         return if (running.get()) {
             running.set(false)
             output
-        } else { // means user stop this task manually
+        } else { // means user stop this models manually
             taskModel?.run {
                 status = DownloadTaskStatus.STOPPED
             }
-            logger.debug("stop the task of $taskModel")
+            logger.debug("stop the models of $taskModel")
             null
         }
     }
@@ -287,7 +287,7 @@ class YoutubeDL : AbstractEngine() {
             remoteVersion = remoteVersionPattern.matcher(remoteVersionInfo).takeIf { it.find() }?.group()?.toString()?.replace("'", "")?.replace("\"", "")
             if (remoteVersion != null) {
                 logger.debug("[$engineType] local version $localVersion, remote version $remoteVersion")
-                VDMUtils.newVersion(localVersion, remoteVersion!!)
+                UpdateUtils.check(localVersion, remoteVersion!!)
             } else {
                 logger.error("[$engineType] get remote version failed")
                 false

@@ -1,4 +1,4 @@
-package com.ingbyr.vdm.engine.utils
+package com.ingbyr.vdm.engines.utils
 
 enum class EngineDownloadType {
     JSON,

@@ -25,7 +25,7 @@ class VDMConfigUtils(private val config: ConfigProperties) {
         const val YOUTUBE_DL_VERSION = "YOUTUBE_DL_VERSION"
         const val YOU_GET_VERSION = "YOU_GET_VERSION"
 
-        val configFilePath = VDMUtils.USER_DIR.resolve("vdm.properties")!!
+        val configFilePath = VDMProperties.USER_DIR.resolve("vdm.properties")!!
     }
 
     fun load(key: String): String {

@@ -1,9 +1,9 @@
 package com.ingbyr.vdm.views
 
-import com.ingbyr.vdm.engine.utils.EngineType
+import com.ingbyr.vdm.engines.utils.EngineType
 import com.ingbyr.vdm.events.CreateDownloadTask
-import com.ingbyr.vdm.task.DownloadTaskData
-import com.ingbyr.vdm.task.DownloadTaskType
+import com.ingbyr.vdm.models.DownloadTaskModel
+import com.ingbyr.vdm.models.DownloadTaskType
 import com.ingbyr.vdm.utils.ProxyType
 import com.ingbyr.vdm.utils.VDMConfig
 import com.ingbyr.vdm.utils.VDMConfigUtils
@@ -77,7 +77,7 @@ class CreateDownloadTaskView : View() {
             }
             val proxy = VDMProxy(proxyType, address, port)
             val vdmConfig = VDMConfig(engineType, proxy, downloadDefaultFormat, storagePath, cookie, ffmpeg)
-            val downloadTask = DownloadTaskData(vdmConfig, url, type = DownloadTaskType.SINGLE_MEDIA)
+            val downloadTask = DownloadTaskModel(vdmConfig, url, type = DownloadTaskType.SINGLE_MEDIA)
 
             if (cu.load(VDMConfigUtils.DOWNLOAD_DEFAULT_FORMAT).toBoolean()) {
                 downloadTask.checked = false

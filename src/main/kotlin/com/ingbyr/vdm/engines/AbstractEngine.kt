@@ -1,9 +1,9 @@
-package com.ingbyr.vdm.engine
+package com.ingbyr.vdm.engines
 
 import com.beust.klaxon.JsonObject
-import com.ingbyr.vdm.engine.utils.EngineDownloadType
-import com.ingbyr.vdm.engine.utils.EngineType
-import com.ingbyr.vdm.task.DownloadTaskModel
+import com.ingbyr.vdm.engines.utils.EngineDownloadType
+import com.ingbyr.vdm.engines.utils.EngineType
+import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.utils.MediaFormat
 import com.ingbyr.vdm.utils.VDMProxy
 import org.slf4j.Logger

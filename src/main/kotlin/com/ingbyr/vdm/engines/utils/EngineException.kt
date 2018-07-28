@@ -1,3 +1,3 @@
-package com.ingbyr.vdm.engine.utils
+package com.ingbyr.vdm.engines.utils
 
 class EngineException(message: String) : Exception(message)

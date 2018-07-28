@@ -1,4 +1,4 @@
-package com.ingbyr.vdm.task
+package com.ingbyr.vdm.models
 
 import java.io.Serializable
 

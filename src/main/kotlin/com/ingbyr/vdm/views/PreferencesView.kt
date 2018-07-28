@@ -2,11 +2,11 @@ package com.ingbyr.vdm.views
 
 import ch.qos.logback.classic.Level
 import com.ingbyr.vdm.controllers.PreferencesController
-import com.ingbyr.vdm.engine.utils.EngineType
+import com.ingbyr.vdm.engines.utils.EngineType
 import com.ingbyr.vdm.events.RefreshEngineVersion
 import com.ingbyr.vdm.utils.ProxyType
 import com.ingbyr.vdm.utils.VDMConfigUtils
-import com.ingbyr.vdm.utils.VDMUtils
+import com.ingbyr.vdm.utils.VDMProperties
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXTabPane
 import com.jfoenix.controls.JFXTextField
@@ -77,19 +77,19 @@ class PreferencesView : View() {
 
     private fun loadVDMConfig() {
         // download settings area
-        labelStoragePath.text = cu.safeLoad(VDMConfigUtils.STORAGE_PATH, VDMUtils.APP_DIR)
+        labelStoragePath.text = cu.safeLoad(VDMConfigUtils.STORAGE_PATH, VDMProperties.APP_DIR)
         labelFFMPEGPath.text = cu.safeLoad(VDMConfigUtils.FFMPEG_PATH, "")
         tbDownloadDefault.isSelected = cu.safeLoad(VDMConfigUtils.DOWNLOAD_DEFAULT_FORMAT, "false").toBoolean()
 
-        // engine settings area
+        // engines settings area
         val engineType = EngineType.valueOf(cu.safeLoad(VDMConfigUtils.ENGINE_TYPE, EngineType.YOUTUBE_DL))
         when (engineType) {
             EngineType.YOUTUBE_DL -> tbYoutubeDL.isSelected = true
             EngineType.YOU_GET -> tbYouGet.isSelected = true
-            else -> logger.error("no engine type of $engineType")
+            else -> logger.error("no engines type of $engineType")
         }
-        labelYoutubeDLVersion.text = cu.safeLoad(VDMConfigUtils.YOUTUBE_DL_VERSION, VDMUtils.UNKNOWN_VERSION)
-        labelYouGetVersion.text = cu.safeLoad(VDMConfigUtils.YOU_GET_VERSION, VDMUtils.UNKNOWN_VERSION)
+        labelYoutubeDLVersion.text = cu.safeLoad(VDMConfigUtils.YOUTUBE_DL_VERSION, VDMProperties.UNKNOWN_VERSION)
+        labelYouGetVersion.text = cu.safeLoad(VDMConfigUtils.YOU_GET_VERSION, VDMProperties.UNKNOWN_VERSION)
 
         // proxy settings area
         val proxyType = ProxyType.valueOf(cu.safeLoad(VDMConfigUtils.PROXY_TYPE, ProxyType.NONE))
@@ -141,7 +141,7 @@ class PreferencesView : View() {
         }
 
 
-        // engine settings area
+        // engines settings area
         tbYoutubeDL.whenSelected {
             cu.update(VDMConfigUtils.ENGINE_TYPE, EngineType.YOUTUBE_DL)
         }
