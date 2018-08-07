@@ -7,7 +7,6 @@ class DBUtilsTests {
 
     @Test
     fun `init database`() {
-        DBUtils.initDatabase()
-    }
 
+    }
 }

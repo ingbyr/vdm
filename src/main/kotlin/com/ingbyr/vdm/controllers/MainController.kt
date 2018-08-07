@@ -30,8 +30,8 @@ class MainController : Controller() {
     init {
         subscribe<CreateDownloadTask> {
             logger.debug("create models: ${it.downloadTask}")
-            addTaskToList(it.downloadTask)
-            // save to db
+            // TODO for debug. need uncomment this
+            // addTaskToList(it.downloadTask)
             saveTaskToDB(it.downloadTask)
         }
 
