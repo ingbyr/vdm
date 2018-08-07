@@ -1,15 +1,12 @@
-package com.ingbyr.vdm.utils
+package com.ingbyr.vdm.models
 
 import com.ingbyr.vdm.engines.utils.EngineType
-import java.io.Serializable
+import com.ingbyr.vdm.utils.VDMProxy
 
-/**
- * Instance for the config file
- */
-data class VDMConfig(
+data class TaskEngineConfig(
         val engineType: EngineType,
         val proxy: VDMProxy,
         val downloadDefaultFormat: Boolean,
         val storagePath: String,
         val cookie: String = "",
-        val ffmpeg: String = "") : Serializable
+        val ffmpeg: String = "")

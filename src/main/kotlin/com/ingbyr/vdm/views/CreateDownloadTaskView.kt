@@ -4,9 +4,10 @@ import com.ingbyr.vdm.engines.utils.EngineType
 import com.ingbyr.vdm.events.CreateDownloadTask
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.models.DownloadTaskType
+import com.ingbyr.vdm.models.TaskEngineConfig
+import com.ingbyr.vdm.utils.AppConfigUtils
+import com.ingbyr.vdm.utils.AppProperties
 import com.ingbyr.vdm.utils.ProxyType
-import com.ingbyr.vdm.utils.VDMConfig
-import com.ingbyr.vdm.utils.VDMConfigUtils
 import com.ingbyr.vdm.utils.VDMProxy
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXTextField
@@ -32,7 +33,7 @@ class CreateDownloadTaskView : View() {
     private val labelStoragePath: Label by fxid()
     private val btnChangeStoragePath: JFXButton by fxid()
 
-    private val cu = VDMConfigUtils(app.config)
+    private val cu = AppConfigUtils(app.config)
 
     init {
         // validation for the url text field
@@ -45,7 +46,7 @@ class CreateDownloadTaskView : View() {
     }
 
     private fun loadVDMConfig() {
-        labelStoragePath.text = cu.load(VDMConfigUtils.STORAGE_PATH)
+        labelStoragePath.text = cu.load(AppProperties.STORAGE_PATH)
     }
 
     private fun initListeners() {
@@ -54,32 +55,32 @@ class CreateDownloadTaskView : View() {
         }
 
         btnConfirm.setOnMouseClicked {
-            val engineType = EngineType.valueOf(cu.load(VDMConfigUtils.ENGINE_TYPE))
+            val engineType = EngineType.valueOf(cu.load(AppProperties.ENGINE_TYPE))
             val url = tfURL.text
-            val storagePath = cu.load(VDMConfigUtils.STORAGE_PATH)
-            val downloadDefaultFormat = cu.load(VDMConfigUtils.DOWNLOAD_DEFAULT_FORMAT).toBoolean()
-            val ffmpeg = cu.load(VDMConfigUtils.FFMPEG_PATH)
+            val storagePath = cu.load(AppProperties.STORAGE_PATH)
+            val downloadDefaultFormat = cu.load(AppProperties.DOWNLOAD_DEFAULT_FORMAT).toBoolean()
+            val ffmpeg = cu.load(AppProperties.FFMPEG_PATH)
             val cookie = "" // TODO support cookie
-            val proxyType = ProxyType.valueOf(cu.load(VDMConfigUtils.PROXY_TYPE))
+            val proxyType = ProxyType.valueOf(cu.load(AppProperties.PROXY_TYPE))
             var address = ""
             var port = ""
             when (proxyType) {
                 ProxyType.SOCKS5 -> {
-                    address = cu.load(VDMConfigUtils.SOCKS5_PROXY_ADDRESS)
-                    port = cu.load(VDMConfigUtils.SOCKS5_PROXY_PORT)
+                    address = cu.load(AppProperties.SOCKS5_PROXY_ADDRESS)
+                    port = cu.load(AppProperties.SOCKS5_PROXY_PORT)
                 }
                 ProxyType.HTTP -> {
-                    address = cu.load(VDMConfigUtils.HTTP_PROXY_ADDRESS)
-                    port = cu.load(VDMConfigUtils.HTTP_PROXY_PORT)
+                    address = cu.load(AppProperties.HTTP_PROXY_ADDRESS)
+                    port = cu.load(AppProperties.HTTP_PROXY_PORT)
                 }
                 ProxyType.NONE -> {
                 }
             }
             val proxy = VDMProxy(proxyType, address, port)
-            val vdmConfig = VDMConfig(engineType, proxy, downloadDefaultFormat, storagePath, cookie, ffmpeg)
-            val downloadTask = DownloadTaskModel(vdmConfig, url, type = DownloadTaskType.SINGLE_MEDIA)
+            val taskEngineConfig = TaskEngineConfig(engineType, proxy, downloadDefaultFormat, storagePath, cookie, ffmpeg)
+            val downloadTask = DownloadTaskModel(taskEngineConfig, url, type = DownloadTaskType.SINGLE_MEDIA)
 
-            if (cu.load(VDMConfigUtils.DOWNLOAD_DEFAULT_FORMAT).toBoolean()) {
+            if (cu.load(AppProperties.DOWNLOAD_DEFAULT_FORMAT).toBoolean()) {
                 downloadTask.checked = false
                 downloadTask.progress = 0.0
                 downloadTask.createdAt = LocalDateTime.now()
@@ -94,7 +95,7 @@ class CreateDownloadTaskView : View() {
             val file = DirectoryChooser().showDialog(primaryStage)
             file?.apply {
                 val newPath = this.absoluteFile.toString()
-                app.config[VDMConfigUtils.STORAGE_PATH] = newPath
+                app.config[AppProperties.STORAGE_PATH] = newPath
                 labelStoragePath.text = newPath
                 cu.saveToConfigFile()
             }

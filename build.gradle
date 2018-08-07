@@ -21,6 +21,9 @@ sourceCompatibility = 1.8
 repositories {
     jcenter()
     mavenCentral()
+    maven {
+        url  "https://dl.bintray.com/kotlin/exposed"
+    }
 }
 
 dependencies {
@@ -34,9 +37,7 @@ dependencies {
     compile "com.squareup.okio:okio:1.14.0"
     compile "org.mapdb:mapdb:3.0.5"
     compile "com.h2database:h2:1.4.197"
-    compile "org.jooq:jooq:3.11.3"
-    compile "org.jooq:jooq-meta:3.11.3"
-    compile "org.jooq:jooq-codegen:3.11.3"
+    compile 'org.jetbrains.exposed:exposed:0.10.4'
 
     testCompile('org.junit.jupiter:junit-jupiter-api:5.2.0')
     testRuntime('org.junit.jupiter:junit-jupiter-engine:5.2.0')

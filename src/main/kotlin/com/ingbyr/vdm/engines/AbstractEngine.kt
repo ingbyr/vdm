@@ -4,7 +4,7 @@ import com.beust.klaxon.JsonObject
 import com.ingbyr.vdm.engines.utils.EngineDownloadType
 import com.ingbyr.vdm.engines.utils.EngineType
 import com.ingbyr.vdm.models.DownloadTaskModel
-import com.ingbyr.vdm.utils.MediaFormat
+import com.ingbyr.vdm.models.MediaFormat
 import com.ingbyr.vdm.utils.VDMProxy
 import org.slf4j.Logger
 import java.util.*

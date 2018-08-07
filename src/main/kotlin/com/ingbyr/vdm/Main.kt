@@ -1,7 +1,7 @@
 package com.ingbyr.vdm
 
-import com.ingbyr.vdm.utils.VDMConfigUtils
-import com.ingbyr.vdm.utils.VDMProperties
+import com.ingbyr.vdm.utils.AppConfigUtils
+import com.ingbyr.vdm.utils.AppProperties
 import com.ingbyr.vdm.views.MainView
 import javafx.application.Application
 import javafx.scene.image.Image
@@ -13,7 +13,7 @@ import java.util.*
 
 class Main : App(MainView::class) {
     private val logger = LoggerFactory.getLogger(Main::class.java)
-    override val configPath: Path = VDMConfigUtils.configFilePath
+    override val configPath: Path = AppConfigUtils.configFilePath
     private val availableLanguages = listOf("zh", "en", "hu")
 
     init {
@@ -29,8 +29,8 @@ class Main : App(MainView::class) {
         logger.debug("Save config file to $configPath")
 
         // create .vdm dir
-        if (!Files.exists(VDMProperties.USER_DIR)) {
-            Files.createDirectory(VDMProperties.USER_DIR)
+        if (!Files.exists(AppProperties.USER_DIR)) {
+            Files.createDirectory(AppProperties.USER_DIR)
         }
 
         addStageIcon(Image("/imgs/logo.jpg"))

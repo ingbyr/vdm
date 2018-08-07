@@ -1,4 +1,4 @@
-package com.ingbyr.vdm.utils
+package com.ingbyr.vdm.models
 
 data class MediaFormat(
         val title: String,

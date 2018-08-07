@@ -7,6 +7,7 @@ import com.ingbyr.vdm.engines.utils.EngineException
 import com.ingbyr.vdm.engines.utils.EngineType
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.models.DownloadTaskStatus
+import com.ingbyr.vdm.models.MediaFormat
 import com.ingbyr.vdm.utils.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

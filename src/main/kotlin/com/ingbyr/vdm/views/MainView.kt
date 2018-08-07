@@ -4,9 +4,9 @@ import ch.qos.logback.classic.Level
 import com.ingbyr.vdm.controllers.MainController
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.models.DownloadTaskStatus
-import com.ingbyr.vdm.utils.VDMConfigUtils
+import com.ingbyr.vdm.utils.AppConfigUtils
 import com.ingbyr.vdm.utils.VDMOSUtils
-import com.ingbyr.vdm.utils.VDMProperties
+import com.ingbyr.vdm.utils.AppProperties
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXProgressBar
 import javafx.scene.control.*
@@ -54,7 +54,7 @@ class MainView : View() {
     private var selectedTaskModel: DownloadTaskModel? = null
     private var downloadTaskTableView: TableView<DownloadTaskModel>
 
-    private val cu = VDMConfigUtils(app.config)
+    private val cu = AppConfigUtils(app.config)
 
     init {
         downloadTaskTableView = tableview(controller.downloadTaskModelList) {
@@ -132,28 +132,28 @@ class MainView : View() {
 
     private fun loadVDMConfig() {
         // create the config file when first time use VDM
-        val firstTimeUse = cu.safeLoad(VDMConfigUtils.FIRST_TIME_USE, "true").toBoolean()
+        val firstTimeUse = cu.safeLoad(AppProperties.FIRST_TIME_USE, "true").toBoolean()
         if (firstTimeUse) {
             // init config file
             // TODO update version when released new one
-            cu.update(VDMConfigUtils.VDM_VERSION, vdmVersion)
-            cu.update(VDMConfigUtils.YOUTUBE_DL_VERSION, "2018.06.19")
-            cu.update(VDMConfigUtils.YOU_GET_VERSION, VDMProperties.UNKNOWN_VERSION)
+            cu.update(AppProperties.VDM_VERSION, vdmVersion)
+            cu.update(AppProperties.YOUTUBE_DL_VERSION, "2018.06.19")
+            cu.update(AppProperties.YOU_GET_VERSION, AppProperties.UNKNOWN_VERSION)
 
             find(PreferencesView::class).openWindow()?.hide()
-            cu.update(VDMConfigUtils.FIRST_TIME_USE, "false")
+            cu.update(AppProperties.FIRST_TIME_USE, "false")
         } else {
-            cu.update(VDMConfigUtils.VDM_VERSION, vdmVersion)
+            cu.update(AppProperties.VDM_VERSION, vdmVersion)
         }
         cu.saveToConfigFile()
 
         // debug mode
         val rootLogger = LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME) as ch.qos.logback.classic.Logger
-        if (cu.load(VDMConfigUtils.DEBUG_MODE).toBoolean()) {
+        if (cu.load(AppProperties.DEBUG_MODE).toBoolean()) {
             rootLogger.level = Level.DEBUG
         } else {
             rootLogger.level = Level.ERROR
-            cu.update(VDMConfigUtils.DEBUG_MODE, false)
+            cu.update(AppProperties.DEBUG_MODE, false)
         }
     }
 
@@ -187,9 +187,9 @@ class MainView : View() {
         // open dir
         btnOpenFile.setOnMouseClicked {
             if (selectedTaskModel != null) {
-                VDMOSUtils.openDir(selectedTaskModel!!.vdmConfig.storagePath)
+                VDMOSUtils.openDir(selectedTaskModel!!.taskEngineConfig.storagePath)
             } else {
-                VDMOSUtils.openDir(cu.load(VDMConfigUtils.STORAGE_PATH))
+                VDMOSUtils.openDir(cu.load(AppProperties.STORAGE_PATH))
             }
         }
         // TODO search models
@@ -206,9 +206,9 @@ class MainView : View() {
         }
         menuOpenDir.action {
             if (selectedTaskModel != null) {
-                VDMOSUtils.openDir(selectedTaskModel!!.vdmConfig.storagePath)
+                VDMOSUtils.openDir(selectedTaskModel!!.taskEngineConfig.storagePath)
             } else {
-                VDMOSUtils.openDir(cu.load(VDMConfigUtils.STORAGE_PATH))
+                VDMOSUtils.openDir(cu.load(AppProperties.STORAGE_PATH))
             }
         }
         menuStartAllTask.action {

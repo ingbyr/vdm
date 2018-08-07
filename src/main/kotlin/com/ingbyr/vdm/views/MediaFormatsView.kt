@@ -3,7 +3,7 @@ package com.ingbyr.vdm.views
 import com.ingbyr.vdm.controllers.MediaFormatsController
 import com.ingbyr.vdm.events.CreateDownloadTask
 import com.ingbyr.vdm.models.DownloadTaskModel
-import com.ingbyr.vdm.utils.MediaFormat
+import com.ingbyr.vdm.models.MediaFormat
 import com.jfoenix.controls.JFXListView
 import javafx.scene.control.Label
 import javafx.scene.layout.VBox
@@ -72,7 +72,7 @@ class MediaFormatsView : View() {
         downloadTask = params["downloadTask"] as DownloadTaskModel
         // request the media json based on download models in background thread
         runAsync {
-            controller.requestMedia(downloadTask.vdmConfig.engineType, downloadTask.url, downloadTask.vdmConfig.proxy)
+            controller.requestMedia(downloadTask.taskEngineConfig.engineType, downloadTask.url, downloadTask.taskEngineConfig.proxy)
         } ui {
             mediaFormatList = it
             displayFormatList()

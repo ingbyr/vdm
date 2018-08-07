@@ -1,6 +1,5 @@
 package com.ingbyr.vdm.models
 
-import com.ingbyr.vdm.utils.VDMConfig
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleDoubleProperty
 import javafx.beans.property.SimpleObjectProperty
@@ -10,7 +9,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 class DownloadTaskModel(
-        val vdmConfig: VDMConfig,
+        val taskEngineConfig: TaskEngineConfig,
         var url: String, createdAt: LocalDateTime? = null,
         formatID: String? = null, checked: Boolean? = null,
         title: String? = null, size: String? = null,
