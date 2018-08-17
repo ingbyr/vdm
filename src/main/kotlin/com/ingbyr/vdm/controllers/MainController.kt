@@ -116,13 +116,7 @@ class MainController : Controller() {
     }
 
     fun loadTaskFromDB() {
-        DBUtils.loadAllDownloadTasks().forEach {
-            downloadTaskModelList.add(it)
-        }
-
-        downloadTaskModelList.sortBy {
-            it.createdAt
-        }
+        DBUtils.loadAllDownloadTasks(downloadTaskModelList)
     }
 
     fun clear() {

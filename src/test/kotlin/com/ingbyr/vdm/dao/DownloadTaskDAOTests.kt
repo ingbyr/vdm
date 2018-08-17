@@ -11,6 +11,7 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -26,7 +27,7 @@ class DownloadTaskDAOTests {
     @Test
     fun `insert download task to db`() {
         val downloadTask = transaction {
-            val newTaskConfig= TaskConfigDAO.new {
+            val newTaskConfig = TaskConfigDAO.new {
                 url = "test url"
                 downloadType = DownloadTaskType.SINGLE_MEDIA.name
                 engineType = EngineType.YOUTUBE_DL.name
@@ -40,9 +41,9 @@ class DownloadTaskDAOTests {
                 proxyPort = "1080"
             }
             DownloadTaskDAO.new {
-                taskConfig = newTaskConfig.id
+                taskConfig = newTaskConfig
                 checked = false
-                title = "db test"
+                title = "test title"
                 size = "1024 mb"
                 status = DownloadTaskStatus.ANALYZING.name
                 progress = 0.0F
@@ -53,6 +54,17 @@ class DownloadTaskDAOTests {
         transaction {
             val taskInDb = DownloadTaskDAO.findById(downloadTask.id)
             Assertions.assertNotNull(taskInDb)
+            Assertions.assertTrue(taskInDb?.taskConfig is TaskConfigDAO)
+        }
+    }
+
+    @AfterEach
+    fun `clear test data`() {
+        transaction {
+            DownloadTaskDAO.find { DownloadTaskTable.title eq "test title" }.forEach {
+                it.delete()
+                it.taskConfig.delete()
+            }
         }
     }
 }

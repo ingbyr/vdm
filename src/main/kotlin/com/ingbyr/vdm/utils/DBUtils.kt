@@ -2,7 +2,7 @@ package com.ingbyr.vdm.utils
 
 import com.ingbyr.vdm.dao.*
 import com.ingbyr.vdm.models.DownloadTaskModel
-import org.jetbrains.exposed.dao.EntityID
+import javafx.collections.ObservableList
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.StdOutSqlLogger
@@ -44,7 +44,7 @@ object DBUtils {
             }
 
             DownloadTaskDAO.new {
-                taskConfig = taskConfigDB.id
+                taskConfig = taskConfigDB
                 checked = downloadTask.checked
                 title = downloadTask.title
                 size = downloadTask.size
@@ -65,15 +65,12 @@ object DBUtils {
         }
     }
 
-    fun loadAllDownloadTasks(): MutableList<DownloadTaskModel> {
+    fun loadAllDownloadTasks(downloadTaskModelList: ObservableList<DownloadTaskModel>){
         log.debug("load all download tasks")
-        val tasks = mutableListOf<DownloadTaskModel>()
         transaction {
-            val loadTaskConfig = {id:EntityID<Int> -> TaskConfigDAO.findById(id)?.trans()}
-            DownloadTaskDAO.all().forEach {
-                tasks.add(it.trans(loadTaskConfig))
+            DownloadTaskDAO.all().sortedBy { it.createdAt }.forEach {
+                downloadTaskModelList.add(it.trans())
             }
         }
-        return tasks
     }
 }
