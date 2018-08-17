@@ -11,7 +11,6 @@ import javafx.scene.layout.VBox
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tornadofx.*
-import java.time.LocalDateTime
 import java.util.*
 
 
@@ -45,7 +44,7 @@ class MediaFormatsView : View() {
                 downloadTask.taskConfig.formatId = it.formatID
                 downloadTask.title = it.title
                 downloadTask.size = "${it.fileSize / 1048576}MB"
-                downloadTask.createdAt = DateTimeUtils.nowTimeString()
+                downloadTask.createdAt = DateTimeUtils.now()
                 fire(CreateDownloadTask(downloadTask))
                 this.close()
             }

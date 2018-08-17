@@ -15,7 +15,6 @@ import javafx.scene.control.Label
 import javafx.scene.layout.VBox
 import javafx.stage.DirectoryChooser
 import tornadofx.*
-import java.time.LocalDateTime
 import java.util.*
 
 
@@ -83,7 +82,7 @@ class CreateDownloadTaskView : View() {
 
             if (downloadDefaultFormat) {
                 // start download task directly
-                downloadTask.createdAt = DateTimeUtils.nowTimeString()
+                downloadTask.createdAt = DateTimeUtils.now()
                 fire(CreateDownloadTask(downloadTask))
             } else {
                 find<MediaFormatsView>(mapOf("downloadTask" to downloadTask)).openWindow()

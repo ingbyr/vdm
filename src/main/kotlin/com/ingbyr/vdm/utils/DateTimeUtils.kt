@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter
 object DateTimeUtils {
     private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
 
-    fun nowTimeString():String {
+    fun now():String {
         return LocalDateTime.now().format(formatter)
     }
 

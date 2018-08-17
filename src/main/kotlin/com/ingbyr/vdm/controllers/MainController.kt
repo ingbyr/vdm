@@ -41,7 +41,7 @@ class MainController : Controller() {
 //            val vdmConfig = TaskConfig(it.engineType, VDMProxy(ProxyType.NONE), false, engine!!.enginePath)
             val taskConfig = TaskConfig("", it.engineType, DownloadTaskType.ENGINE, true, engine.enginePath)
 //            val downloadTask = DownloadTaskModel(vdmConfig, "", LocalDateTime.now(), title = "[${messages["ui.update"]} ${it.engineType.name}] ", type = DownloadTaskType.ENGINE)
-            val downloadTask = DownloadTaskModel(taskConfig, DateTimeUtils.nowTimeString(), title = "[${messages["ui.update"]} ${it.engineType.name}]")
+            val downloadTask = DownloadTaskModel(taskConfig, DateTimeUtils.now(), title = "[${messages["ui.update"]} ${it.engineType.name}]")
             downloadTaskModelList.add(downloadTask)
 
             try {
