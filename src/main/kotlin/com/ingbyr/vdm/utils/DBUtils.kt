@@ -1,8 +1,8 @@
 package com.ingbyr.vdm.utils
 
-import com.ingbyr.vdm.dao.DownloadTaskTable
-import com.ingbyr.vdm.dao.TaskConfigTable
+import com.ingbyr.vdm.dao.*
 import com.ingbyr.vdm.models.DownloadTaskModel
+import org.jetbrains.exposed.dao.EntityID
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.StdOutSqlLogger
@@ -26,66 +26,54 @@ object DBUtils {
     // TODO handle with db
     fun saveDownloadTask(downloadTask: DownloadTaskModel) {
         log.debug("save download models to db")
-        val taskConfig = downloadTask.taskConfig
+        val tc = downloadTask.taskConfig
         transaction {
             // save taskConfig
+            val taskConfigDB = TaskConfigDAO.new {
+                url = tc.url
+                downloadType = tc.downloadType.name
+                engineType = tc.engineType.name
+                downloadDefaultFormat = tc.downloadDefaultFormat
+                storagePath = tc.storagePath
+                cookie = tc.cookie
+                ffmpeg = tc.ffmpeg
+                formatId = tc.formatId
+                proxyType = tc.proxyType.name
+                proxyAddress = tc.proxyPort
+                proxyPort = tc.proxyPort
+            }
 
+            DownloadTaskDAO.new {
+                taskConfig = taskConfigDB.id
+                checked = downloadTask.checked
+                title = downloadTask.title
+                size = downloadTask.size
+                status = downloadTask.status.name
+                progress = downloadTask.progress.toFloat()
+                createdAt = downloadTask.createdAt
+            }
         }
     }
 
     fun deleteDownloadTask(downloadTask: DownloadTaskModel) {
         log.debug("delete download models from db")
         transaction {
-            //            val task = DownloadTaskTable.slice(DownloadTaskTable.taskEngineConfig).select {
-//                DownloadTaskTable.id eq DateTimeUtils.time2String(downloadTask.createdAt)
-//            }.firstOrNull()
-//            if (task != null) {
-//                val taskEngineConfigId = task[DownloadTaskTable.taskEngineConfig]
-//                TaskConfigTable.deleteWhere { TaskConfigTable.id eq taskEngineConfigId }
-//                DownloadTaskTable.deleteWhere {
-//                    DownloadTaskTable.id eq DateTimeUtils.time2String(downloadTask.createdAt)
-//                }
-//            }
+            val downloadTaskDB = DownloadTaskDAO.find {
+                DownloadTaskTable.createdAt eq downloadTask.createdAt
+            }.firstOrNull()
+            downloadTaskDB?.delete()
         }
     }
 
-    fun loadAllDownloadTasks(): List<DownloadTaskModel> {
+    fun loadAllDownloadTasks(): MutableList<DownloadTaskModel> {
         log.debug("load all download tasks")
         val tasks = mutableListOf<DownloadTaskModel>()
-//        transaction {
-//            DownloadTaskTable.selectAll().forEach {
-//                val taskEngineConfig = TaskConfigTable.select {
-//                    TaskConfigTable.id eq it[DownloadTaskTable.taskEngineConfig]
-//                }.firstOrNull()
-//                if (taskEngineConfig != null) {
-//                    val config = TaskConfig(
-//                            EngineType.valueOf(taskEngineConfig[TaskConfigTable.engineType]),
-//                            VDMProxy(ProxyType.valueOf(taskEngineConfig[TaskConfigTable.proxyType]), taskEngineConfig[TaskConfigTable.proxyAddress], taskEngineConfig[TaskConfigTable.proxyPort]),
-//                            taskEngineConfig[TaskConfigTable.downloadDefaultFormat],
-//                            taskEngineConfig[TaskConfigTable.storagePath],
-//                            taskEngineConfig[TaskConfigTable.cookie],
-//                            taskEngineConfig[TaskConfigTable.ffmpeg]
-//                    )
-//                    val task  = DownloadTaskModel(
-//                            config,
-//                            it[DownloadTaskTable.url],
-//                            DateTimeUtils.string2time(it[DownloadTaskTable.createdAt]),
-//                            it[DownloadTaskTable.formatID],
-//                            it[DownloadTaskTable.checked],
-//                            it[DownloadTaskTable.title],
-//                            it[DownloadTaskTable.size],
-//                            it[DownloadTaskTable.progress].toDouble(),
-//                            DownloadTaskStatus.valueOf(it[DownloadTaskTable.status]),
-//                            DownloadTaskType.valueOf(it[DownloadTaskTable.type])
-//                    )
-//                    tasks.add(task)
-//                }
-//            }
-//        }
+        transaction {
+            val loadTaskConfig = {id:EntityID<Int> -> TaskConfigDAO.findById(id)?.trans()}
+            DownloadTaskDAO.all().forEach {
+                tasks.add(it.trans(loadTaskConfig))
+            }
+        }
         return tasks
-    }
-
-    fun closeDB() {
-
     }
 }
