@@ -2,6 +2,7 @@ package com.ingbyr.vdm.utils
 
 import com.ingbyr.vdm.dao.*
 import com.ingbyr.vdm.models.DownloadTaskModel
+import com.ingbyr.vdm.models.TaskConfig
 import javafx.collections.ObservableList
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -23,37 +24,84 @@ object DBUtils {
     }
 
 
-    // TODO handle with db
-    fun saveDownloadTask(downloadTask: DownloadTaskModel) {
-        log.debug("save download models to db")
-        val tc = downloadTask.taskConfig
+    fun saveDownloadTask(newDownloadTaskModel: DownloadTaskModel) {
+        val newTaskConfig = newDownloadTaskModel.taskConfig
         transaction {
-            // save taskConfig
-            val taskConfigDB = TaskConfigDAO.new {
-                url = tc.url
-                downloadType = tc.downloadType.name
-                engineType = tc.engineType.name
-                downloadDefaultFormat = tc.downloadDefaultFormat
-                storagePath = tc.storagePath
-                cookie = tc.cookie
-                ffmpeg = tc.ffmpeg
-                formatId = tc.formatId
-                proxyType = tc.proxyType.name
-                proxyAddress = tc.proxyPort
-                proxyPort = tc.proxyPort
-            }
-
-            DownloadTaskDAO.new {
-                taskConfig = taskConfigDB
-                checked = downloadTask.checked
-                title = downloadTask.title
-                size = downloadTask.size
-                status = downloadTask.status.name
-                progress = downloadTask.progress.toFloat()
-                createdAt = downloadTask.createdAt
+            val oldDownloadTask = DownloadTaskDAO.find { DownloadTaskTable.createdAt eq newDownloadTaskModel.createdAt }.firstOrNull()
+            if (oldDownloadTask != null) {
+                // update task config
+                updateTaskConfigInDB(oldDownloadTask.taskConfig, newTaskConfig)
+                // update download task model
+                updateDownloadTaskModelInDB(oldDownloadTask, newDownloadTaskModel)
+            } else {
+                // create new one and save to db
+                val taskConfigDB = createTaskConfigInDB(newTaskConfig)
+                createDownloadTaskModelInDB(newDownloadTaskModel, taskConfigDB)
             }
         }
+
     }
+
+    /**
+     * must be wrapped in transaction block
+     */
+    private fun updateTaskConfigInDB(oldTaskConfig: TaskConfigDAO, newTaskConfig: TaskConfig) {
+        log.debug("update download task config data in db")
+        // update task config
+        oldTaskConfig.url = newTaskConfig.url
+        oldTaskConfig.downloadType = newTaskConfig.downloadType.name
+        oldTaskConfig.engineType = newTaskConfig.engineType.name
+        oldTaskConfig.downloadDefaultFormat = newTaskConfig.downloadDefaultFormat
+        oldTaskConfig.storagePath = newTaskConfig.storagePath
+        oldTaskConfig.cookie = newTaskConfig.cookie
+        oldTaskConfig.ffmpeg = newTaskConfig.ffmpeg
+        oldTaskConfig.proxyType = newTaskConfig.proxyType.name
+        oldTaskConfig.proxyAddress = newTaskConfig.proxyAddress
+        oldTaskConfig.proxyPort = newTaskConfig.proxyPort
+    }
+
+    /**
+     * must be wrapped in transaction block
+     */
+    private fun updateDownloadTaskModelInDB(oldDownloadTaskModel: DownloadTaskDAO, newDownloadTaskModel: DownloadTaskModel) {
+        log.debug("update download task data in db")
+        oldDownloadTaskModel.checked = newDownloadTaskModel.checked
+        oldDownloadTaskModel.title = newDownloadTaskModel.title
+        oldDownloadTaskModel.size = newDownloadTaskModel.size
+        oldDownloadTaskModel.status = newDownloadTaskModel.status.name
+        oldDownloadTaskModel.progress = newDownloadTaskModel.progress.toFloat()
+        oldDownloadTaskModel.createdAt = newDownloadTaskModel.createdAt
+    }
+
+    /**
+     * must be wrapped in transaction block
+     */
+    private fun createTaskConfigInDB(taskConfig: TaskConfig) = TaskConfigDAO.new {
+        log.debug("create task config and save to db")
+        url = taskConfig.url
+        downloadType = taskConfig.downloadType.name
+        engineType = taskConfig.engineType.name
+        downloadDefaultFormat = taskConfig.downloadDefaultFormat
+        storagePath = taskConfig.storagePath
+        cookie = taskConfig.cookie
+        ffmpeg = taskConfig.ffmpeg
+        formatId = taskConfig.formatId
+        proxyType = taskConfig.proxyType.name
+        proxyAddress = taskConfig.proxyPort
+        proxyPort = taskConfig.proxyPort
+    }
+
+    private fun createDownloadTaskModelInDB(downloadTask: DownloadTaskModel, taskConfigDAO: TaskConfigDAO) = DownloadTaskDAO.new {
+        log.debug("create download task model and save to db")
+        taskConfig = taskConfigDAO
+        checked = downloadTask.checked
+        title = downloadTask.title
+        size = downloadTask.size
+        status = downloadTask.status.name
+        progress = downloadTask.progress.toFloat()
+        createdAt = downloadTask.createdAt
+    }
+
 
     fun deleteDownloadTask(downloadTask: DownloadTaskModel) {
         log.debug("delete download models from db")
@@ -65,11 +113,11 @@ object DBUtils {
         }
     }
 
-    fun loadAllDownloadTasks(downloadTaskModelList: ObservableList<DownloadTaskModel>){
+    fun loadAllDownloadTasks(downloadTaskModelList: ObservableList<DownloadTaskModel>) {
         log.debug("load all download tasks")
         transaction {
             DownloadTaskDAO.all().sortedBy { it.createdAt }.forEach {
-                downloadTaskModelList.add(it.trans())
+                downloadTaskModelList.add(it.toModel())
             }
         }
     }

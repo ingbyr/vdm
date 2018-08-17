@@ -31,7 +31,7 @@ class MainController : Controller() {
     init {
         subscribe<CreateDownloadTask> {
             logger.debug("create models: ${it.downloadTask}")
-            addTaskToList(it.downloadTask)
+            addToModelListAndStartTask(it.downloadTask)
             saveTaskToDB(it.downloadTask)
         }
 
@@ -110,7 +110,7 @@ class MainController : Controller() {
         DBUtils.saveDownloadTask(downloadTask)
     }
 
-    private fun addTaskToList(downloadTask: DownloadTaskModel) {
+    private fun addToModelListAndStartTask(downloadTask: DownloadTaskModel) {
         downloadTaskModelList.add(downloadTask)
         // startTask(downloadTask)  // TODO debug. uncomment this
     }
@@ -121,6 +121,6 @@ class MainController : Controller() {
 
     fun clear() {
         stopAllTask()
-        // TODO refresh in db
+        downloadTaskModelList.forEach { saveTaskToDB(it) }
     }
 }

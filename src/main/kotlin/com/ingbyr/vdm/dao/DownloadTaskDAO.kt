@@ -21,8 +21,8 @@ class DownloadTaskDAO(id: EntityID<Int>) : IntEntity(id) {
 /**
  * transfer DownloadTaskDAO to DownloadTaskModel
  */
-fun DownloadTaskDAO.trans(): DownloadTaskModel = DownloadTaskModel(
-        this.taskConfig.trans(),
+fun DownloadTaskDAO.toModel(): DownloadTaskModel = DownloadTaskModel(
+        this.taskConfig.toModel(),
         this.createdAt,
         this.checked,
         this.title,

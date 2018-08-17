@@ -24,7 +24,7 @@ class TaskConfigDAO(id: EntityID<Int>) : IntEntity(id) {
     var proxyPort by TaskConfigTable.proxyPort
 }
 
-fun TaskConfigDAO.trans() = TaskConfig(
+fun TaskConfigDAO.toModel() = TaskConfig(
         this.url,
         EngineType.valueOf(this.engineType),
         DownloadTaskType.valueOf(this.downloadType),
