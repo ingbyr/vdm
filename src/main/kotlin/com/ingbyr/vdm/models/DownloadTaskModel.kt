@@ -9,13 +9,13 @@ import java.time.LocalDateTime
 import java.util.*
 
 class DownloadTaskModel(
-        val taskEngineConfig: TaskEngineConfig,
-        var url: String, createdAt: LocalDateTime? = null,
-        formatID: String? = null, checked: Boolean? = null,
-        title: String? = null, size: String? = null,
-        progress: Double? = null,
-        status: DownloadTaskStatus? = null,
-        type: DownloadTaskType? = null) : ViewModel() {
+        val taskConfig: TaskConfig,
+        createdAt: String? = null,
+        checked: Boolean? = false,
+        title: String? = null,
+        size: String? = null,
+        progress: Double? = 0.0,
+        status: DownloadTaskStatus? = null) : ViewModel() {
 
     init {
         messages = ResourceBundle.getBundle("i18n/MainView")
@@ -32,9 +32,6 @@ class DownloadTaskModel(
     var status: DownloadTaskStatus by statusProperty
     val progressProperty = SimpleDoubleProperty(this, "progress", progress ?: 0.0)
     var progress: Double by progressProperty
-    val createdAtProperty = SimpleObjectProperty<LocalDateTime>(this, "createdAt", createdAt)
-    var createdAt: LocalDateTime by createdAtProperty
-    var formatID = formatID ?: ""
-    var typeProperty = SimpleObjectProperty<DownloadTaskType>(this, "type", type)
-    var type: DownloadTaskType by typeProperty
+    val createdAtProperty = SimpleStringProperty(this, "createdAt", createdAt)
+    var createdAt: String by createdAtProperty
 }

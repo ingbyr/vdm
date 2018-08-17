@@ -4,7 +4,7 @@ import ch.qos.logback.classic.Level
 import com.ingbyr.vdm.controllers.PreferencesController
 import com.ingbyr.vdm.engines.utils.EngineType
 import com.ingbyr.vdm.events.RefreshEngineVersion
-import com.ingbyr.vdm.utils.ProxyType
+import com.ingbyr.vdm.models.ProxyType
 import com.ingbyr.vdm.utils.AppConfigUtils
 import com.ingbyr.vdm.utils.AppProperties
 import com.jfoenix.controls.JFXButton

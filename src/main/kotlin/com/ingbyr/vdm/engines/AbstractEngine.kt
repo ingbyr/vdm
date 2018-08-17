@@ -5,7 +5,7 @@ import com.ingbyr.vdm.engines.utils.EngineDownloadType
 import com.ingbyr.vdm.engines.utils.EngineType
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.models.MediaFormat
-import com.ingbyr.vdm.utils.VDMProxy
+import com.ingbyr.vdm.models.ProxyType
 import org.slf4j.Logger
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
@@ -29,7 +29,7 @@ abstract class AbstractEngine {
     abstract val engineType: EngineType
 
     abstract fun url(url: String): AbstractEngine
-    abstract fun addProxy(proxy: VDMProxy): AbstractEngine
+    abstract fun addProxy(type: ProxyType, address:String, port:String): AbstractEngine
     abstract fun fetchMediaJson(): JsonObject
     abstract fun format(formatID: String): AbstractEngine
     abstract fun output(outputPath: String): AbstractEngine

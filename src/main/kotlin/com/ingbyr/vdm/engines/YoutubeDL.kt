@@ -8,7 +8,11 @@ import com.ingbyr.vdm.engines.utils.EngineType
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.models.DownloadTaskStatus
 import com.ingbyr.vdm.models.MediaFormat
-import com.ingbyr.vdm.utils.*
+import com.ingbyr.vdm.models.ProxyType
+import com.ingbyr.vdm.utils.NetUtils
+import com.ingbyr.vdm.utils.UpdateUtils
+import com.ingbyr.vdm.utils.VDMOSType
+import com.ingbyr.vdm.utils.VDMOSUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.BufferedReader
@@ -85,28 +89,15 @@ class YoutubeDL : AbstractEngine() {
         return this
     }
 
-    override fun addProxy(proxy: VDMProxy): AbstractEngine {
-        when (proxy.proxyType) {
-            ProxyType.SOCKS5 -> {
-                if (proxy.address.isEmpty() or proxy.port.isEmpty()) {
-                    logger.debug("add an empty proxy to youtube-dl")
-                    return this
-                } else {
-                    argsMap["--proxy"] = "socks5://${proxy.address}:${proxy.port}"
-                }
-            }
-
-            ProxyType.HTTP -> {
-                if (proxy.address.isEmpty() or proxy.port.isEmpty()) {
-                    logger.debug("add an empty proxy to youtube-dl")
-                    return this
-                } else {
-                    argsMap["--proxy"] = "${proxy.address}:${proxy.port}"
-                }
-            }
-
-            else -> {
-            }
+    override fun addProxy(type: ProxyType, address: String, port: String): AbstractEngine {
+        if (address.isEmpty() or port.isEmpty()) {
+            logger.debug("receive an empty proxy config to youtube-dl")
+            return this
+        }
+        when (type) {
+            ProxyType.SOCKS5 -> { argsMap["--proxy"] = "socks5://$address:$port" }
+            ProxyType.HTTP -> { argsMap["--proxy"] = "$address:$port" }
+            else -> { logger.debug("no proxy")}
         }
         return this
     }

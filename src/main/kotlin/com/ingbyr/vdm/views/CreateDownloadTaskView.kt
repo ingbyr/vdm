@@ -4,11 +4,11 @@ import com.ingbyr.vdm.engines.utils.EngineType
 import com.ingbyr.vdm.events.CreateDownloadTask
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.models.DownloadTaskType
-import com.ingbyr.vdm.models.TaskEngineConfig
+import com.ingbyr.vdm.models.ProxyType
+import com.ingbyr.vdm.models.TaskConfig
 import com.ingbyr.vdm.utils.AppConfigUtils
 import com.ingbyr.vdm.utils.AppProperties
-import com.ingbyr.vdm.utils.ProxyType
-import com.ingbyr.vdm.utils.VDMProxy
+import com.ingbyr.vdm.utils.DateTimeUtils
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXTextField
 import javafx.scene.control.Label
@@ -61,29 +61,29 @@ class CreateDownloadTaskView : View() {
             val downloadDefaultFormat = cu.load(AppProperties.DOWNLOAD_DEFAULT_FORMAT).toBoolean()
             val ffmpeg = cu.load(AppProperties.FFMPEG_PATH)
             val cookie = "" // TODO support cookie
+
+            val taskConfig = TaskConfig(
+                    url, engineType, DownloadTaskType.SINGLE_MEDIA,
+                    downloadDefaultFormat, storagePath, cookie, ffmpeg)
+
             val proxyType = ProxyType.valueOf(cu.load(AppProperties.PROXY_TYPE))
-            var address = ""
-            var port = ""
             when (proxyType) {
                 ProxyType.SOCKS5 -> {
-                    address = cu.load(AppProperties.SOCKS5_PROXY_ADDRESS)
-                    port = cu.load(AppProperties.SOCKS5_PROXY_PORT)
+                    taskConfig.proxy(proxyType, cu.load(AppProperties.SOCKS5_PROXY_ADDRESS), cu.load(AppProperties.SOCKS5_PROXY_PORT))
                 }
                 ProxyType.HTTP -> {
-                    address = cu.load(AppProperties.HTTP_PROXY_ADDRESS)
-                    port = cu.load(AppProperties.HTTP_PROXY_PORT)
+                    taskConfig.proxy(proxyType, cu.load(AppProperties.SOCKS5_PROXY_ADDRESS), cu.load(AppProperties.SOCKS5_PROXY_PORT))
                 }
                 ProxyType.NONE -> {
+                    taskConfig.proxy(proxyType, "", "")
                 }
             }
-            val proxy = VDMProxy(proxyType, address, port)
-            val taskEngineConfig = TaskEngineConfig(engineType, proxy, downloadDefaultFormat, storagePath, cookie, ffmpeg)
-            val downloadTask = DownloadTaskModel(taskEngineConfig, url, type = DownloadTaskType.SINGLE_MEDIA)
 
-            if (cu.load(AppProperties.DOWNLOAD_DEFAULT_FORMAT).toBoolean()) {
-                downloadTask.checked = false
-                downloadTask.progress = 0.0
-                downloadTask.createdAt = LocalDateTime.now()
+            val downloadTask = DownloadTaskModel(taskConfig)
+
+            if (downloadDefaultFormat) {
+                // start download task directly
+                downloadTask.createdAt = DateTimeUtils.nowTimeString()
                 fire(CreateDownloadTask(downloadTask))
             } else {
                 find<MediaFormatsView>(mapOf("downloadTask" to downloadTask)).openWindow()

@@ -4,6 +4,7 @@ import com.ingbyr.vdm.controllers.MediaFormatsController
 import com.ingbyr.vdm.events.CreateDownloadTask
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.models.MediaFormat
+import com.ingbyr.vdm.utils.DateTimeUtils
 import com.jfoenix.controls.JFXListView
 import javafx.scene.control.Label
 import javafx.scene.layout.VBox
@@ -41,12 +42,10 @@ class MediaFormatsView : View() {
         listView.onUserSelect(1) {
             mediaFormatList?.get(listView.selectionModel.selectedIndex)?.let {
                 logger.debug("format id: ${it.formatID}")
-                downloadTask.checked = false
-                downloadTask.formatID = it.formatID
+                downloadTask.taskConfig.formatId = it.formatID
                 downloadTask.title = it.title
                 downloadTask.size = "${it.fileSize / 1048576}MB"
-                downloadTask.progress = 0.0
-                downloadTask.createdAt = LocalDateTime.now()
+                downloadTask.createdAt = DateTimeUtils.nowTimeString()
                 fire(CreateDownloadTask(downloadTask))
                 this.close()
             }
@@ -72,7 +71,7 @@ class MediaFormatsView : View() {
         downloadTask = params["downloadTask"] as DownloadTaskModel
         // request the media json based on download models in background thread
         runAsync {
-            controller.requestMedia(downloadTask.taskEngineConfig.engineType, downloadTask.url, downloadTask.taskEngineConfig.proxy)
+            controller.requestMedia(downloadTask)
         } ui {
             mediaFormatList = it
             displayFormatList()

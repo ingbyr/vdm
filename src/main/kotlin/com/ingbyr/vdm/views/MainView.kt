@@ -187,7 +187,7 @@ class MainView : View() {
         // open dir
         btnOpenFile.setOnMouseClicked {
             if (selectedTaskModel != null) {
-                VDMOSUtils.openDir(selectedTaskModel!!.taskEngineConfig.storagePath)
+                VDMOSUtils.openDir(selectedTaskModel!!.taskConfig.storagePath)
             } else {
                 VDMOSUtils.openDir(cu.load(AppProperties.STORAGE_PATH))
             }
@@ -206,7 +206,7 @@ class MainView : View() {
         }
         menuOpenDir.action {
             if (selectedTaskModel != null) {
-                VDMOSUtils.openDir(selectedTaskModel!!.taskEngineConfig.storagePath)
+                VDMOSUtils.openDir(selectedTaskModel!!.taskConfig.storagePath)
             } else {
                 VDMOSUtils.openDir(cu.load(AppProperties.STORAGE_PATH))
             }

@@ -39,7 +39,7 @@ class NetUtils : Controller() {
         var source: BufferedSource? = null
         downloadTaskModel.status = DownloadTaskStatus.ANALYZING
         try {
-            val request = Request.Builder().url(downloadTaskModel.url).build()
+            val request = Request.Builder().url(downloadTaskModel.taskConfig.url).build()
             val response = client.newCall(request).execute()
             val body = response.body()
             if (body != null) {
@@ -48,7 +48,7 @@ class NetUtils : Controller() {
                 val sizeFormat = DecimalFormat("#.##")
                 downloadTaskModel.size = "${sizeFormat.format(contentLength / 1000000.0)}MB"
                 source = body.source()
-                val storagePath = Paths.get(downloadTaskModel.taskEngineConfig.storagePath)
+                val storagePath = Paths.get(downloadTaskModel.taskConfig.storagePath)
                 sink = Okio.buffer(Okio.sink(storagePath))
                 val sinkBuffer = sink.buffer()
                 var totalBytesRead: Long = 0
@@ -71,7 +71,7 @@ class NetUtils : Controller() {
                                     PosixFilePermission.GROUP_EXECUTE, PosixFilePermission.OTHERS_EXECUTE))
                 }
                 // update ui
-                fire(RefreshEngineVersion(downloadTaskModel.taskEngineConfig.engineType, remoteVersion))
+                fire(RefreshEngineVersion(downloadTaskModel.taskConfig.engineType, remoteVersion))
             } else {
                 logger.error("no response body")
             }

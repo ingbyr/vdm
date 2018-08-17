@@ -1,9 +1,12 @@
 package com.ingbyr.vdm.utils
 
+import com.ingbyr.vdm.dao.DownloadTaskTable
+import com.ingbyr.vdm.dao.TaskConfigTable
 import com.ingbyr.vdm.models.DownloadTaskModel
-import com.ingbyr.vdm.tables.DownloadTaskTable
-import com.ingbyr.vdm.tables.TaskEngineConfigTable
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.StdOutSqlLogger
+import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.LoggerFactory
 
@@ -15,52 +18,71 @@ object DBUtils {
         Database.connect(AppProperties.DATABASE_URL, driver = "org.h2.Driver", user = "vdm", password = "vdm")
         transaction {
             addLogger(StdOutSqlLogger)
-            SchemaUtils.create(TaskEngineConfigTable, DownloadTaskTable)
+            SchemaUtils.create(TaskConfigTable, DownloadTaskTable)
         }
     }
 
 
     // TODO handle with db
-    fun saveDownloadTask(taskID: String, downloadTask: DownloadTaskModel) {
+    fun saveDownloadTask(downloadTask: DownloadTaskModel) {
         log.debug("save download models to db")
-        val config = downloadTask.taskEngineConfig
+        val taskConfig = downloadTask.taskConfig
         transaction {
-            // save taskEngineConfig
-            val configId = (TaskEngineConfigTable.insert {
-                it[engineType] = config.engineType.name
-                it[proxyType] = config.proxy.proxyType.name
-                it[proxyAddress] = config.proxy.address
-                it[proxyPort] = config.proxy.port
-                it[downloadDefaultFormat] = config.downloadDefaultFormat
-                it[storagePath] = config.storagePath
-                it[cookie] = config.cookie
-                it[ffmpeg] = config.ffmpeg
-            } get TaskEngineConfigTable.id)!!
-            log.debug("taskEngineConfigId is $configId")
+            // save taskConfig
 
-            DownloadTaskTable.insert {
-                it[id] = taskID
-                it[taskEngineConfig] = configId
-                it[url] = downloadTask.url
-                it[checked] = downloadTask.checked
-                it[title] = downloadTask.title
-                it[size] = downloadTask.size
-                it[status] = downloadTask.status.name
-                it[progress] = downloadTask.progress.toFloat()
-                it[createdAt] = DateTimeUtils.time2String(downloadTask.createdAt)
-                it[formatID] = downloadTask.formatID
-                it[type] = downloadTask.type.name
-            }
         }
     }
 
     fun deleteDownloadTask(downloadTask: DownloadTaskModel) {
         log.debug("delete download models from db")
+        transaction {
+            //            val task = DownloadTaskTable.slice(DownloadTaskTable.taskEngineConfig).select {
+//                DownloadTaskTable.id eq DateTimeUtils.time2String(downloadTask.createdAt)
+//            }.firstOrNull()
+//            if (task != null) {
+//                val taskEngineConfigId = task[DownloadTaskTable.taskEngineConfig]
+//                TaskConfigTable.deleteWhere { TaskConfigTable.id eq taskEngineConfigId }
+//                DownloadTaskTable.deleteWhere {
+//                    DownloadTaskTable.id eq DateTimeUtils.time2String(downloadTask.createdAt)
+//                }
+//            }
+        }
     }
 
     fun loadAllDownloadTasks(): List<DownloadTaskModel> {
         log.debug("load all download tasks")
-        return listOf()
+        val tasks = mutableListOf<DownloadTaskModel>()
+//        transaction {
+//            DownloadTaskTable.selectAll().forEach {
+//                val taskEngineConfig = TaskConfigTable.select {
+//                    TaskConfigTable.id eq it[DownloadTaskTable.taskEngineConfig]
+//                }.firstOrNull()
+//                if (taskEngineConfig != null) {
+//                    val config = TaskConfig(
+//                            EngineType.valueOf(taskEngineConfig[TaskConfigTable.engineType]),
+//                            VDMProxy(ProxyType.valueOf(taskEngineConfig[TaskConfigTable.proxyType]), taskEngineConfig[TaskConfigTable.proxyAddress], taskEngineConfig[TaskConfigTable.proxyPort]),
+//                            taskEngineConfig[TaskConfigTable.downloadDefaultFormat],
+//                            taskEngineConfig[TaskConfigTable.storagePath],
+//                            taskEngineConfig[TaskConfigTable.cookie],
+//                            taskEngineConfig[TaskConfigTable.ffmpeg]
+//                    )
+//                    val task  = DownloadTaskModel(
+//                            config,
+//                            it[DownloadTaskTable.url],
+//                            DateTimeUtils.string2time(it[DownloadTaskTable.createdAt]),
+//                            it[DownloadTaskTable.formatID],
+//                            it[DownloadTaskTable.checked],
+//                            it[DownloadTaskTable.title],
+//                            it[DownloadTaskTable.size],
+//                            it[DownloadTaskTable.progress].toDouble(),
+//                            DownloadTaskStatus.valueOf(it[DownloadTaskTable.status]),
+//                            DownloadTaskType.valueOf(it[DownloadTaskTable.type])
+//                    )
+//                    tasks.add(task)
+//                }
+//            }
+//        }
+        return tasks
     }
 
     fun closeDB() {

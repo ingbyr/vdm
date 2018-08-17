@@ -2,10 +2,9 @@ package com.ingbyr.vdm.controllers
 
 import com.ingbyr.vdm.engines.AbstractEngine
 import com.ingbyr.vdm.engines.utils.EngineFactory
-import com.ingbyr.vdm.engines.utils.EngineType
 import com.ingbyr.vdm.events.StopBackgroundTask
+import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.models.MediaFormat
-import com.ingbyr.vdm.utils.VDMProxy
 import org.slf4j.LoggerFactory
 import tornadofx.*
 import java.util.*
@@ -23,10 +22,11 @@ class MediaFormatsController : Controller() {
     }
 
 
-    fun requestMedia(engineType: EngineType, url: String, proxy: VDMProxy): List<MediaFormat>? {
-        engine = EngineFactory.create(engineType)
+    fun requestMedia(downloadTaskModel: DownloadTaskModel): List<MediaFormat>? {
+        val config = downloadTaskModel.taskConfig
+        engine = EngineFactory.create(config.engineType)
         if (engine != null) {
-            engine!!.url(url).addProxy(proxy)
+            engine!!.url(config.url).addProxy(config.proxyType, config.proxyAddress, config.proxyPort)
             try {
                 val jsonData = engine!!.fetchMediaJson()
                 return engine!!.parseFormatsJson(jsonData)
@@ -34,7 +34,7 @@ class MediaFormatsController : Controller() {
                 logger.error(e.toString())
             }
         } else {
-            logger.error("bad engines: $engineType")
+            logger.error("bad engine: ${downloadTaskModel.taskConfig.engineType}")
         }
         return null
     }

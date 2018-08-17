@@ -7,12 +7,13 @@ import com.ingbyr.vdm.events.UpdateEngineTask
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.models.DownloadTaskStatus
 import com.ingbyr.vdm.models.DownloadTaskType
-import com.ingbyr.vdm.models.TaskEngineConfig
-import com.ingbyr.vdm.utils.*
+import com.ingbyr.vdm.models.TaskConfig
+import com.ingbyr.vdm.utils.DBUtils
+import com.ingbyr.vdm.utils.DateTimeUtils
+import com.ingbyr.vdm.utils.NetUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tornadofx.*
-import java.time.LocalDateTime
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -25,27 +26,28 @@ class MainController : Controller() {
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
     val downloadTaskModelList = mutableListOf<DownloadTaskModel>().observable()
-    private val engineList = ConcurrentHashMap<LocalDateTime, AbstractEngine>() // FIXME auto clean the finished models engines
+    private val engineList = ConcurrentHashMap<String, AbstractEngine>() // FIXME auto clean the finished models engines
 
     init {
         subscribe<CreateDownloadTask> {
             logger.debug("create models: ${it.downloadTask}")
-            // TODO for debug. need uncomment this
-            // addTaskToList(it.downloadTask)
+            addTaskToList(it.downloadTask)
             saveTaskToDB(it.downloadTask)
         }
 
         // background thread
         subscribe<UpdateEngineTask> {
             val engine = EngineFactory.create(it.engineType)
-            val vdmConfig = TaskEngineConfig(it.engineType, VDMProxy(ProxyType.NONE), false, engine!!.enginePath)
-            val downloadTask = DownloadTaskModel(vdmConfig, "", LocalDateTime.now(), title = "[${messages["ui.update"]} ${it.engineType.name}] ", type = DownloadTaskType.ENGINE)
+//            val vdmConfig = TaskConfig(it.engineType, VDMProxy(ProxyType.NONE), false, engine!!.enginePath)
+            val taskConfig = TaskConfig("", it.engineType, DownloadTaskType.ENGINE, true, engine.enginePath)
+//            val downloadTask = DownloadTaskModel(vdmConfig, "", LocalDateTime.now(), title = "[${messages["ui.update"]} ${it.engineType.name}] ", type = DownloadTaskType.ENGINE)
+            val downloadTask = DownloadTaskModel(taskConfig, DateTimeUtils.nowTimeString(), title = "[${messages["ui.update"]} ${it.engineType.name}]")
             downloadTaskModelList.add(downloadTask)
 
             try {
                 if (engine.existNewVersion(it.localVersion)) {
-                    downloadTask.url = engine.updateUrl()
-                    logger.info("update the ${downloadTask.taskEngineConfig.engineType} from ${downloadTask.url}")
+                    downloadTask.taskConfig.url = engine.updateUrl()
+                    logger.info("update the ${downloadTask.taskConfig.engineType} from ${downloadTask.taskConfig.url}")
                     NetUtils().downloadEngine(downloadTask, engine.remoteVersion!!)
                 } else {
                     downloadTask.title += messages["ui.noAvailableUpdates"]
@@ -62,21 +64,26 @@ class MainController : Controller() {
 
 
     fun startTask(downloadTask: DownloadTaskModel) {
-        if (downloadTask.type == DownloadTaskType.ENGINE) return
+        if (downloadTask.taskConfig.downloadType == DownloadTaskType.ENGINE) return
         downloadTask.status = DownloadTaskStatus.ANALYZING
         runAsync {
             // download
-            val engine = EngineFactory.create(downloadTask.taskEngineConfig.engineType)
-            engine?.run {
-                engineList[downloadTask.createdAt] = this
-                this.url(downloadTask.url).addProxy(downloadTask.taskEngineConfig.proxy).format(downloadTask.formatID).output(downloadTask.taskEngineConfig.storagePath).cookies(downloadTask.taskEngineConfig.cookie).ffmpegPath(downloadTask.taskEngineConfig.ffmpeg).downloadMedia(downloadTask, messages)
-            }
+            val engine = EngineFactory.create(downloadTask.taskConfig.engineType)
+            engineList[downloadTask.createdAt] = engine
+            val taskConfig = downloadTask.taskConfig
+            engine.url(taskConfig.url)
+                    .addProxy(taskConfig.proxyType, taskConfig.proxyAddress, taskConfig.proxyPort)
+                    .format(taskConfig.formatId)
+                    .output(taskConfig.storagePath)
+                    .cookies(taskConfig.cookie)
+                    .ffmpegPath(taskConfig.ffmpeg)
+                    .downloadMedia(downloadTask, messages)
         }
     }
 
     fun startAllTask() {
         downloadTaskModelList.forEach {
-            if (it.status != DownloadTaskStatus.COMPLETED && it.type != DownloadTaskType.ENGINE) {
+            if (it.status != DownloadTaskStatus.COMPLETED && it.taskConfig.downloadType != DownloadTaskType.ENGINE) {
                 startTask(it)
             }
         }
@@ -100,19 +107,14 @@ class MainController : Controller() {
         DBUtils.deleteDownloadTask(downloadTaskModel)
     }
 
-    /**
-     * Key of map is "yyyy-MM-dd HH:mm:ss.SSS" which is defined in DateTimeUtils.kt
-     * Value of map is a instance of DownloadTask
-     */
     private fun saveTaskToDB(downloadTask: DownloadTaskModel) {
-        val taskID = DateTimeUtils.time2String(downloadTask.createdAt)
-        logger.debug("add models $taskID to download models db")
-        DBUtils.saveDownloadTask(taskID, downloadTask)
+        logger.debug("add download task $downloadTask to db")
+        DBUtils.saveDownloadTask(downloadTask)
     }
 
     private fun addTaskToList(downloadTask: DownloadTaskModel) {
         downloadTaskModelList.add(downloadTask)
-        startTask(downloadTask)
+        // startTask(downloadTask)  // TODO debug. uncomment this
     }
 
     fun loadTaskFromDB() {

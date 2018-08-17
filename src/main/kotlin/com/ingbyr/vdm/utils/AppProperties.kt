@@ -33,7 +33,7 @@ object AppProperties {
     val USER_DIR = Paths.get(System.getProperty("user.home"), ".vdm").toAbsolutePath()!!
 
     // database
-    val DATABASE_URL ="jdbc:h2:${Paths.get(System.getProperty("user.home"), ".vdm", "vdm.db").toAbsolutePath()}"
+    val DATABASE_URL ="jdbc:h2:${Paths.get(System.getProperty("user.home"), ".vdm", "vdm").toAbsolutePath()}"
     const val DB_DOWNLOAD_TASKS = "DOWNLOAD_TASKS"
 
 }
