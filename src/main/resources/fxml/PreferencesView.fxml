@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXTabPane?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import com.jfoenix.controls.JFXToggleButton?>
@@ -14,7 +15,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<JFXTabPane id="preferences-view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" rotateGraphic="true" side="LEFT" stylesheets="@themes/DefaultTheme.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<JFXTabPane id="preferences-view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" rotateGraphic="true" side="LEFT" xmlns="http://javafx.com/javafx/8.0.172" xmlns:fx="http://javafx.com/fxml/1">
    <tabs>
       <Tab>
           <graphic>
@@ -26,9 +27,9 @@
 
         </content>
          <content>
-            <SplitPane dividerPositions="0.3, 0.6" orientation="VERTICAL">
+            <SplitPane dividerPositions="0.25, 0.5, 0.7" orientation="VERTICAL">
               <items>
-                  <VBox spacing="10.0">
+                  <VBox>
                      <children>
                         <AnchorPane>
                            <children>
@@ -61,6 +62,19 @@
                      <padding>
                         <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
                      </padding>
+                  </VBox>
+                  <VBox spacing="10.0">
+                     <padding>
+                        <Insets bottom="10.0" left="20.0" right="15.0" top="10.0" />
+                     </padding>
+                     <children>
+                        <AnchorPane>
+                           <children>
+                              <Label text="%ui.changeTheme" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <JFXComboBox fx:id="themeSelector" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </children>
+                        </AnchorPane>
+                     </children>
                   </VBox>
                   <VBox>
                      <children>

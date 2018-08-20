@@ -2,6 +2,7 @@ package com.ingbyr.vdm.views
 
 import ch.qos.logback.classic.Level
 import com.ingbyr.vdm.controllers.MainController
+import com.ingbyr.vdm.controllers.ThemeController
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.models.DownloadTaskStatus
 import com.ingbyr.vdm.utils.AppConfigUtils
@@ -31,6 +32,8 @@ class MainView : View() {
     private val logger: Logger = LoggerFactory.getLogger(MainView::class.java)
     override val root: VBox by fxml("/fxml/MainView.fxml")
     private val controller: MainController by inject()
+    private val themeController: ThemeController by inject()
+
 
     private val btnNew: JFXButton by fxid()
     private val btnStart: JFXButton by fxid()
@@ -57,6 +60,9 @@ class MainView : View() {
     private val cu = AppConfigUtils(app.config)
 
     init {
+        // init theme
+        themeController.initTheme()
+
         downloadTaskTableView = tableview(controller.downloadTaskModelList) {
             fitToParentSize()
             columnResizePolicy = SmartResize.POLICY
@@ -164,7 +170,7 @@ class MainView : View() {
         }
 
         // shortcut buttons
-        // start models
+        // initTheme models
         btnStart.setOnMouseClicked {
             selectedTaskModel?.let { controller.startTask(it) }
         }

@@ -1,5 +1,6 @@
 package com.ingbyr.vdm
 
+import com.ingbyr.vdm.controllers.ThemeController
 import com.ingbyr.vdm.utils.AppConfigUtils
 import com.ingbyr.vdm.utils.AppProperties
 import com.ingbyr.vdm.views.MainView
@@ -34,6 +35,7 @@ class Main : App(MainView::class) {
         addStageIcon(Image("/imgs/logo.jpg"))
     }
 }
+
 
 fun main(args: Array<String>) {
     Application.launch(Main::class.java, *args)

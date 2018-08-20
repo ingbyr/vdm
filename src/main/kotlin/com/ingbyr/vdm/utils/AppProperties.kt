@@ -19,6 +19,7 @@ object AppProperties {
     const val VDM_VERSION = "VDM_VERSION"
     const val YOUTUBE_DL_VERSION = "YOUTUBE_DL_VERSION"
     const val YOU_GET_VERSION = "YOU_GET_VERSION"
+    const val THEME = "THEME"
 
     // app content
     const val VDM_UPDATE_URL = "https://github.com/ingbyr/VDM/releases/latest"
@@ -34,6 +35,4 @@ object AppProperties {
 
     // database
     val DATABASE_URL ="jdbc:h2:${Paths.get(System.getProperty("user.home"), ".vdm", "vdm").toAbsolutePath()}"
-    const val DB_DOWNLOAD_TASKS = "DOWNLOAD_TASKS"
-
 }

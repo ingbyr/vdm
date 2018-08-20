@@ -2,16 +2,16 @@ package com.ingbyr.vdm.views
 
 import ch.qos.logback.classic.Level
 import com.ingbyr.vdm.controllers.PreferencesController
+import com.ingbyr.vdm.controllers.ThemeController
 import com.ingbyr.vdm.engines.utils.EngineType
 import com.ingbyr.vdm.events.RefreshEngineVersion
 import com.ingbyr.vdm.models.ProxyType
 import com.ingbyr.vdm.utils.AppConfigUtils
 import com.ingbyr.vdm.utils.AppProperties
-import com.jfoenix.controls.JFXButton
-import com.jfoenix.controls.JFXTabPane
-import com.jfoenix.controls.JFXTextField
-import com.jfoenix.controls.JFXToggleButton
+import com.jfoenix.controls.*
 import javafx.scene.control.Label
+import javafx.scene.layout.AnchorPane
+import javafx.scene.layout.VBox
 import javafx.stage.DirectoryChooser
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -28,6 +28,7 @@ class PreferencesView : View() {
     override val root: JFXTabPane by fxml("/fxml/PreferencesView.fxml")
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
     private val controller: PreferencesController by inject()
+    private val themeController: ThemeController by inject()
 
     private val labelStoragePath: Label by fxid()
     private val btnChangeStoragePath: JFXButton by fxid()
@@ -35,6 +36,7 @@ class PreferencesView : View() {
     private val btnChangeFFMPEGPath: JFXButton by fxid()
     private val tbDownloadDefault: JFXToggleButton by fxid()
     private val tbEnableDebug: JFXToggleButton by fxid()
+    private val themeSelector : JFXComboBox<String> by fxid()
 
     private val tbYoutubeDL: JFXToggleButton by fxid()
     private val btnUpdateYoutubeDL: JFXButton by fxid()
@@ -56,6 +58,12 @@ class PreferencesView : View() {
         subscribeEvents()
         loadVDMConfig()
         initListeners()
+
+        // init theme selector
+        themeController.themes.forEach {
+            themeSelector.items.add(it)
+        }
+        themeSelector.bind(themeController.activeThemeProperty)
     }
 
     private fun subscribeEvents() {
