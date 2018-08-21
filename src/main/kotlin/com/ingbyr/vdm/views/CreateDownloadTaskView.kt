@@ -81,7 +81,7 @@ class CreateDownloadTaskView : View() {
             val downloadTask = DownloadTaskModel(taskConfig)
 
             if (downloadDefaultFormat) {
-                // initTheme download task directly
+                // create download task directly
                 downloadTask.createdAt = DateTimeUtils.now()
                 fire(CreateDownloadTask(downloadTask))
             } else {

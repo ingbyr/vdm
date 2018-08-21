@@ -170,7 +170,7 @@ class MainView : View() {
         }
 
         // shortcut buttons
-        // initTheme models
+        // start models
         btnStart.setOnMouseClicked {
             selectedTaskModel?.let { controller.startTask(it) }
         }
