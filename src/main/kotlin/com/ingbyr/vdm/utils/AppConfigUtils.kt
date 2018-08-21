@@ -21,15 +21,13 @@ class AppConfigUtils(private val config: ConfigProperties) {
             config.string(key)
         } catch (e: IllegalStateException) {
             config[key] = defaultValue.toString()
+            config.save()
             defaultValue.toString()
         }
     }
 
     fun update(key: String, value: Any) {
         config[key] = value.toString()
-    }
-
-    fun saveToConfigFile() {
         config.save()
     }
 }

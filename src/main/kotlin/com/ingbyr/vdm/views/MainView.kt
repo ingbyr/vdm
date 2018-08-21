@@ -151,7 +151,6 @@ class MainView : View() {
         } else {
             cu.update(AppProperties.VDM_VERSION, vdmVersion)
         }
-        cu.saveToConfigFile()
 
         // debug mode
         val rootLogger = LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME) as ch.qos.logback.classic.Logger

@@ -16,6 +16,7 @@ import javafx.stage.DirectoryChooser
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tornadofx.*
+import java.nio.charset.Charset
 import java.util.*
 
 
@@ -37,6 +38,7 @@ class PreferencesView : View() {
     private val tbDownloadDefault: JFXToggleButton by fxid()
     private val tbEnableDebug: JFXToggleButton by fxid()
     private val themeSelector : JFXComboBox<String> by fxid()
+    private val charsetSelector : JFXComboBox<String> by fxid()
 
     private val tbYoutubeDL: JFXToggleButton by fxid()
     private val btnUpdateYoutubeDL: JFXButton by fxid()
@@ -58,12 +60,20 @@ class PreferencesView : View() {
         subscribeEvents()
         loadVDMConfig()
         initListeners()
+        initSelectorContent()
+    }
 
+    private fun initSelectorContent() {
         // init theme selector
-        themeController.themes.forEach {
-            themeSelector.items.add(it)
-        }
+        themeSelector.items.addAll(themeController.themes)
         themeSelector.bind(themeController.activeThemeProperty)
+
+        // init charset
+        charsetSelector.items.addAll(Charset.availableCharsets().keys.toList())
+        charsetSelector.selectionModel.select(cu.safeLoad(AppProperties.CHARSET, "UTF-8"))
+        charsetSelector.selectionModel.selectedItemProperty().addListener { _, _, newCharset ->
+            cu.update(AppProperties.CHARSET, newCharset)
+        }
     }
 
     private fun subscribeEvents() {
@@ -195,6 +205,5 @@ class PreferencesView : View() {
     override fun onUndock() {
         super.onUndock()
         saveTextFieldContent()
-        cu.saveToConfigFile()
     }
 }

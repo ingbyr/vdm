@@ -20,6 +20,7 @@ object AppProperties {
     const val YOUTUBE_DL_VERSION = "YOUTUBE_DL_VERSION"
     const val YOU_GET_VERSION = "YOU_GET_VERSION"
     const val THEME = "THEME"
+    const val CHARSET = "CHARSET"
 
     // app content
     const val VDM_UPDATE_URL = "https://github.com/ingbyr/VDM/releases/latest"

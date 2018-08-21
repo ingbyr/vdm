@@ -28,7 +28,6 @@ open class ThemeController : Controller() {
     fun initTheme() {
         // load theme config
         activeTheme = cu.safeLoad(AppProperties.THEME, messages["theme.default"])
-        cu.saveToConfigFile()
         importStylesheet(themesNameAndUrl[activeTheme] ?: "DefaultTheme".resourceUrl())
 
         // add listener to change theme
@@ -44,7 +43,6 @@ open class ThemeController : Controller() {
                 importStylesheet(this)
                 // save to config
                 cu.update(AppProperties.THEME, newTheme)
-                cu.saveToConfigFile()
             }
         }
     }

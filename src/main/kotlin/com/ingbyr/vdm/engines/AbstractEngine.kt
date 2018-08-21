@@ -19,6 +19,8 @@ abstract class AbstractEngine {
      * Parse the output and update the main UI thread
      * Stop thread
      */
+    var charset = "UTF-8"
+
     protected abstract val logger: Logger
     protected val running: AtomicBoolean = AtomicBoolean(false)
     protected val argsMap: MutableMap<String, String> = mutableMapOf()

@@ -25,7 +25,7 @@ import java.util.regex.Pattern
 /**
  * TODO wrap download playlist
  */
-class YoutubeDL : AbstractEngine() {
+class YoutubeDL : AbstractEngine(){
     override val logger: Logger = LoggerFactory.getLogger(this::class.java)
     override val remoteVersionUrl: String = "https://raw.githubusercontent.com/rg3/youtube-dl/master/youtube_dl/version.py"
     override val engineType = EngineType.YOUTUBE_DL
@@ -95,9 +95,15 @@ class YoutubeDL : AbstractEngine() {
             return this
         }
         when (type) {
-            ProxyType.SOCKS5 -> { argsMap["--proxy"] = "socks5://$address:$port" }
-            ProxyType.HTTP -> { argsMap["--proxy"] = "$address:$port" }
-            else -> { logger.debug("no proxy")}
+            ProxyType.SOCKS5 -> {
+                argsMap["--proxy"] = "socks5://$address:$port"
+            }
+            ProxyType.HTTP -> {
+                argsMap["--proxy"] = "$address:$port"
+            }
+            else -> {
+                logger.debug("no proxy")
+            }
         }
         return this
     }
@@ -196,10 +202,8 @@ class YoutubeDL : AbstractEngine() {
         val builder = ProcessBuilder(command)
         builder.redirectErrorStream(true)
         val p = builder.start()
-        val r = when (Locale.getDefault().language) {
-            "zh" -> BufferedReader(InputStreamReader(p.inputStream, "GBK"))
-            else -> BufferedReader(InputStreamReader(p.inputStream, "UTF-8"))
-        }
+        val r = BufferedReader(InputStreamReader(p.inputStream, charset))
+        logger.debug("parse output as $charset")
         val output = StringBuilder()
         var line: String?
         when (downloadType) {

@@ -8,9 +8,7 @@ import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.models.DownloadTaskStatus
 import com.ingbyr.vdm.models.DownloadTaskType
 import com.ingbyr.vdm.models.TaskConfig
-import com.ingbyr.vdm.utils.DBUtils
-import com.ingbyr.vdm.utils.DateTimeUtils
-import com.ingbyr.vdm.utils.NetUtils
+import com.ingbyr.vdm.utils.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tornadofx.*
@@ -27,6 +25,7 @@ class MainController : Controller() {
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
     val downloadTaskModelList = mutableListOf<DownloadTaskModel>().observable()
     private val engineList = ConcurrentHashMap<String, AbstractEngine>() // FIXME auto clean the finished models engines
+    private val cu = AppConfigUtils(app.config)
 
     init {
         subscribe<CreateDownloadTask> {
@@ -37,7 +36,8 @@ class MainController : Controller() {
 
         // background thread
         subscribe<UpdateEngineTask> {
-            val engine = EngineFactory.create(it.engineType)
+            val charset = cu.safeLoad(AppProperties.CHARSET, "UTF-8")
+            val engine = EngineFactory.create(it.engineType, charset)
             val taskConfig = TaskConfig("", it.engineType, DownloadTaskType.ENGINE, true, engine.enginePath)
             val downloadTask = DownloadTaskModel(taskConfig, DateTimeUtils.now(), title = "[${messages["ui.update"]} ${it.engineType.name}]")
             downloadTaskModelList.add(downloadTask)
@@ -64,9 +64,10 @@ class MainController : Controller() {
     fun startTask(downloadTask: DownloadTaskModel) {
         if (downloadTask.taskConfig.downloadType == DownloadTaskType.ENGINE) return
         downloadTask.status = DownloadTaskStatus.ANALYZING
+        val charset = cu.safeLoad(AppProperties.CHARSET, "UTF-8")
         runAsync {
             // download
-            val engine = EngineFactory.create(downloadTask.taskConfig.engineType)
+            val engine = EngineFactory.create(downloadTask.taskConfig.engineType, charset)
             engineList[downloadTask.createdAt] = engine
             val taskConfig = downloadTask.taskConfig
             engine.url(taskConfig.url)

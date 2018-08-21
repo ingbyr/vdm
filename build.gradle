@@ -37,7 +37,6 @@ dependencies {
     compile "org.mapdb:mapdb:3.0.5"
     compile "com.h2database:h2:1.4.197"
     compile 'org.jetbrains.exposed:exposed:0.10.4'
-
     testCompile('org.junit.jupiter:junit-jupiter-api:5.2.0')
     testRuntime('org.junit.jupiter:junit-jupiter-engine:5.2.0')
 

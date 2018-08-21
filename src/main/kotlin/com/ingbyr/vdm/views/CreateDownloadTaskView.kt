@@ -96,7 +96,6 @@ class CreateDownloadTaskView : View() {
                 val newPath = this.absoluteFile.toString()
                 app.config[AppProperties.STORAGE_PATH] = newPath
                 labelStoragePath.text = newPath
-                cu.saveToConfigFile()
             }
         }
     }
