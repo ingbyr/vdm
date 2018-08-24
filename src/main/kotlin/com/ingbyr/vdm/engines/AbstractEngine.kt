@@ -1,6 +1,5 @@
 package com.ingbyr.vdm.engines
 
-import com.beust.klaxon.JsonObject
 import com.ingbyr.vdm.engines.utils.EngineDownloadType
 import com.ingbyr.vdm.engines.utils.EngineType
 import com.ingbyr.vdm.models.DownloadTaskModel
@@ -31,8 +30,8 @@ abstract class AbstractEngine {
     abstract val engineType: EngineType
 
     abstract fun url(url: String): AbstractEngine
-    abstract fun addProxy(type: ProxyType, address:String, port:String): AbstractEngine
-    abstract fun fetchMediaJson(): JsonObject
+    abstract fun addProxy(type: ProxyType, address: String, port: String): AbstractEngine
+    abstract fun fetchMediaJson(): String
     abstract fun format(formatID: String): AbstractEngine
     abstract fun output(outputPath: String): AbstractEngine
     abstract fun ffmpegPath(ffmpegPath: String): AbstractEngine
@@ -40,7 +39,7 @@ abstract class AbstractEngine {
     abstract fun downloadMedia(downloadTaskModel: DownloadTaskModel, message: ResourceBundle)
     abstract fun parseDownloadOutput(line: String)
     abstract fun execCommand(command: MutableList<String>, downloadType: EngineDownloadType): StringBuilder?
-    abstract fun parseFormatsJson(json: JsonObject): List<MediaFormat>
+    abstract fun parseFormatsJson(jsonString: String): List<MediaFormat>
 
     abstract fun updateUrl(): String
     abstract fun existNewVersion(localVersion: String): Boolean

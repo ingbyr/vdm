@@ -1,7 +1,9 @@
 package com.ingbyr.vdm.engines
 
-import com.beust.klaxon.JsonObject
-import com.beust.klaxon.Parser
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.ingbyr.vdm.engines.utils.EngineDownloadType
 import com.ingbyr.vdm.engines.utils.EngineException
 import com.ingbyr.vdm.engines.utils.EngineType
@@ -22,10 +24,11 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 
+
 /**
  * TODO wrap download playlist
  */
-class YoutubeDL : AbstractEngine(){
+class YoutubeDL : AbstractEngine() {
     override val logger: Logger = LoggerFactory.getLogger(this::class.java)
     override val remoteVersionUrl: String = "https://raw.githubusercontent.com/rg3/youtube-dl/master/youtube_dl/version.py"
     override val engineType = EngineType.YOUTUBE_DL
@@ -43,7 +46,6 @@ class YoutubeDL : AbstractEngine(){
     private val remoteVersionPattern = Pattern.compile("'\\d+.+'")
     private var taskModel: DownloadTaskModel? = null
 
-
     init {
         argsMap["engines"] = enginePath
     }
@@ -59,27 +61,20 @@ class YoutubeDL : AbstractEngine(){
         }
     }
 
-    override fun parseFormatsJson(json: JsonObject): List<MediaFormat> {
-        val title = json.string("title") ?: ""
-        val desc = json.string("description") ?: ""
-        val formatsJson = json.array<JsonObject>("formats")
+    override fun parseFormatsJson(jsonString: String): List<MediaFormat> {
         val formats = mutableListOf<MediaFormat>()
-        if (formatsJson != null && formatsJson.isNotEmpty()) {
-            formatsJson.sortBy {
-                it.string("format_id")
-            }
-            formatsJson.forEachIndexed { index, jsonObject ->
-                formats.add(MediaFormat(
-                        title = title,
-                        desc = desc,
-                        vdmTaskID = index,
-                        formatID = jsonObject.string("format_id") ?: "",
-                        format = jsonObject.string("format") ?: "",
-                        formatNote = jsonObject.string("format_note") ?: "",
-                        fileSize = jsonObject.long("filesize") ?: 0,
-                        ext = jsonObject.string("ext") ?: ""
-                ))
-            }
+        val mapper = jacksonObjectMapper()
+        val mediaJson = mapper.readValue<YoutubeDlMediaJson>(jsonString)
+        mediaJson.formats.forEach {
+            formats.add(MediaFormat(
+                    title = mediaJson.title,
+                    desc = mediaJson.description,
+                    formatID = it.formatId,
+                    format = it.format,
+                    formatNote = it.formatNote,
+                    fileSize = it.filesize,
+                    ext = it.ext
+            ))
         }
         return formats
     }
@@ -108,16 +103,11 @@ class YoutubeDL : AbstractEngine(){
         return this
     }
 
-    override fun fetchMediaJson(): JsonObject {
+    override fun fetchMediaJson(): String {
         argsMap["SimulateJson"] = "-j"
         val mediaData = execCommand(argsMap.build(), EngineDownloadType.JSON)
         if (mediaData != null) {
-            try {
-                return Parser().parse(mediaData) as JsonObject
-            } catch (e: Exception) {
-                logger.error(e.toString())
-                throw EngineException("parse data failed:\n $mediaData")
-            }
+            return mediaData.toString()
         } else {
             logger.error("no media json return")
             throw EngineException("no media json return")
@@ -292,5 +282,56 @@ class YoutubeDL : AbstractEngine(){
             logger.error("[$engineType] get remote version failed")
             false
         }
+    }
+}
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class YoutubeDlMediaJson(
+        @JsonProperty("formats") val formats: List<Format> = listOf(),
+        @JsonProperty("fulltitle") val fulltitle: String = "",
+        @JsonProperty("resolution") val resolution: Any? = Any(),
+        @JsonProperty("format_id") val formatId: String = "",
+        @JsonProperty("description") val description: String = "",
+        @JsonProperty("title") val title: String = "",
+        @JsonProperty("format") val format: String = "",
+        @JsonProperty("ext") val ext: String = "",
+        @JsonProperty("playlist") val playlist: Any? = Any()
+) {
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class Format(
+            @JsonProperty("abr") val abr: Int = 0,
+            @JsonProperty("format") val format: String = "",
+            @JsonProperty("format_note") val formatNote: String = "",
+            @JsonProperty("ext") val ext: String = "",
+            @JsonProperty("filesize") val filesize: Long = 0,
+            @JsonProperty("vcodec") val vcodec: String = "",
+            @JsonProperty("acodec") val acodec: String = "",
+            @JsonProperty("container") val container: String = "",
+            @JsonProperty("player_url") val playerUrl: String = "",
+            @JsonProperty("downloader_options") val downloaderOptions: DownloaderOptions = DownloaderOptions(),
+            @JsonProperty("url") val url: String = "",
+            @JsonProperty("quality") val quality: Int = 0,
+            @JsonProperty("http_headers") val httpHeaders: HttpHeaders = HttpHeaders(),
+            @JsonProperty("tbr") val tbr: Double = 0.0,
+            @JsonProperty("format_id") val formatId: String = "",
+            @JsonProperty("protocol") val protocol: String = "",
+            @JsonProperty("height") val height: Int = 0,
+            @JsonProperty("fps") val fps: Int = 0,
+            @JsonProperty("width") val width: Int = 0,
+            @JsonProperty("resolution") val resolution: String = ""
+    ) {
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        data class HttpHeaders(
+                @JsonProperty("Accept-Language") val acceptLanguage: String = "",
+                @JsonProperty("User-Agent") val userAgent: String = "",
+                @JsonProperty("Accept") val accept: String = "",
+                @JsonProperty("Accept-Charset") val acceptCharset: String = "",
+                @JsonProperty("Accept-Encoding") val acceptEncoding: String = ""
+        )
+
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        data class DownloaderOptions(
+                @JsonProperty("http_chunk_size") val httpChunkSize: Int = 0
+        )
     }
 }
