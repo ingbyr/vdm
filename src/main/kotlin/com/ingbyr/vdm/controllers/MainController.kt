@@ -2,7 +2,9 @@ package com.ingbyr.vdm.controllers
 
 import com.ingbyr.vdm.engines.AbstractEngine
 import com.ingbyr.vdm.engines.utils.EngineFactory
+import com.ingbyr.vdm.engines.utils.EngineType
 import com.ingbyr.vdm.events.CreateDownloadTask
+import com.ingbyr.vdm.events.RefreshEngineVersion
 import com.ingbyr.vdm.events.UpdateEngineTask
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.models.DownloadTaskStatus
@@ -45,7 +47,7 @@ class MainController : Controller() {
             try {
                 if (engine.existNewVersion(it.localVersion)) {
                     downloadTask.taskConfig.url = engine.updateUrl()
-                    logger.info("update the ${downloadTask.taskConfig.engineType} from ${downloadTask.taskConfig.url}")
+                    logger.info("[${downloadTask.taskConfig.engineType}] update engine from ${downloadTask.taskConfig.url}")
                     NetUtils().downloadEngine(downloadTask, engine.remoteVersion!!)
                 } else {
                     downloadTask.title += messages["ui.noAvailableUpdates"]

@@ -5,40 +5,36 @@ import org.slf4j.LoggerFactory
 import java.awt.Desktop
 import java.nio.file.Paths
 
-enum class VDMOSType {
+enum class OSType {
     WINDOWS,
     LINUX,
     MAC_OS,
 }
 
-object VDMOSUtils {
+object OSUtils {
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
     private val platform = System.getProperties()["os.name"]?.toString() ?: "Unknown"
-    var currentOS: VDMOSType
-
-    init {
-        currentOS = when {
-            platform.startsWith("Linux") -> VDMOSType.LINUX
-            platform.startsWith("Win") -> VDMOSType.WINDOWS
-            platform.startsWith("MAC") -> VDMOSType.MAC_OS
-            else -> throw VDMOSException("not supported os")
-        }
+    val currentOS: OSType = when {
+        platform.startsWith("Linux") -> OSType.LINUX
+        platform.startsWith("Win") -> OSType.WINDOWS
+        platform.startsWith("MAC") -> OSType.MAC_OS
+        else -> throw OSException("not supported os")
     }
 
     fun openDir(pathStr: String) {
         val file = Paths.get(pathStr).toFile()
         when (currentOS) {
-            VDMOSType.LINUX -> {
+            OSType.LINUX -> {
                 Runtime.getRuntime().exec("xdg-open $file")
             }
-            VDMOSType.WINDOWS -> {
+            OSType.WINDOWS -> {
                 Desktop.getDesktop().open(file)
             }
-            VDMOSType.MAC_OS -> {
+            OSType.MAC_OS -> {
                 Desktop.getDesktop().open(file)
             }
         }
     }
 }
 
-class VDMOSException(override var message: String) : Exception(message)
+class OSException(override var message: String) : Exception(message)

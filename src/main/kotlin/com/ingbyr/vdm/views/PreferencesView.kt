@@ -8,6 +8,7 @@ import com.ingbyr.vdm.events.RefreshEngineVersion
 import com.ingbyr.vdm.models.ProxyType
 import com.ingbyr.vdm.utils.AppConfigUtils
 import com.ingbyr.vdm.utils.AppProperties
+import com.ingbyr.vdm.utils.EnginesJsonUtils
 import com.jfoenix.controls.*
 import javafx.scene.control.Label
 import javafx.scene.layout.AnchorPane
@@ -57,7 +58,22 @@ class PreferencesView : View() {
     private val cu = AppConfigUtils(app.config)
 
     init {
-        subscribeEvents()
+        subscribe<RefreshEngineVersion> {
+            when (it.engineType) {
+                EngineType.YOUTUBE_DL -> {
+                    labelYoutubeDLVersion.text = it.newVersion
+                    EnginesJsonUtils.engineInfo(AppProperties.YOUTUBE_DL).version = it.newVersion
+                }
+                EngineType.YOU_GET -> { // todo change to annie
+                    labelYouGetVersion.text = it.newVersion
+                    EnginesJsonUtils.engineInfo(AppProperties.ANNIE).version = it.newVersion
+                }
+                else -> {
+                }
+            }
+            EnginesJsonUtils.save2JsonFile()
+        }
+
         loadVDMConfig()
         initListeners()
         initSelectorContent()
@@ -76,23 +92,6 @@ class PreferencesView : View() {
         }
     }
 
-    private fun subscribeEvents() {
-        subscribe<RefreshEngineVersion> {
-            when (it.engineType) {
-                EngineType.YOUTUBE_DL -> {
-                    labelYoutubeDLVersion.text = it.newVersion
-                    cu.update(AppProperties.YOUTUBE_DL_VERSION, it.newVersion)
-                }
-                EngineType.YOU_GET -> {
-                    labelYouGetVersion.text = it.newVersion
-                    cu.update(AppProperties.YOU_GET_VERSION, it.newVersion)
-                }
-                else -> {
-                }
-            }
-        }
-    }
-
     private fun loadVDMConfig() {
         // download settings area
         labelStoragePath.text = cu.safeLoad(AppProperties.STORAGE_PATH, AppProperties.APP_DIR)
@@ -106,8 +105,9 @@ class PreferencesView : View() {
             EngineType.YOU_GET -> tbYouGet.isSelected = true
             else -> logger.error("no engines type of $engineType")
         }
-        labelYoutubeDLVersion.text = cu.safeLoad(AppProperties.YOUTUBE_DL_VERSION, AppProperties.UNKNOWN_VERSION)
-        labelYouGetVersion.text = cu.safeLoad(AppProperties.YOU_GET_VERSION, AppProperties.UNKNOWN_VERSION)
+        labelYoutubeDLVersion.text = EnginesJsonUtils.engineInfo(AppProperties.YOUTUBE_DL).version
+        // todo change to annie downloader
+        labelYouGetVersion.text = EnginesJsonUtils.engineInfo(AppProperties.ANNIE).version
 
         // proxy settings area
         val proxyType = ProxyType.valueOf(cu.safeLoad(AppProperties.PROXY_TYPE, ProxyType.NONE))
@@ -158,7 +158,6 @@ class PreferencesView : View() {
             }
         }
 
-
         // engines settings area
         tbYoutubeDL.whenSelected {
             cu.update(AppProperties.ENGINE_TYPE, EngineType.YOUTUBE_DL)
@@ -167,11 +166,11 @@ class PreferencesView : View() {
             cu.update(AppProperties.ENGINE_TYPE, EngineType.YOU_GET)
         }
         btnUpdateYoutubeDL.setOnMouseClicked {
-            controller.updateEngine(EngineType.YOUTUBE_DL, cu.load(AppProperties.YOUTUBE_DL_VERSION))
-            this.currentStage?.isIconified = true
+            controller.updateEngine(EngineType.YOUTUBE_DL, EnginesJsonUtils.engineInfo(AppProperties.YOUTUBE_DL).version)
+            this.currentStage?.isIconified = true // todo not work perfectly
         }
         btnUpdateYouGet.setOnMouseClicked {
-            controller.updateEngine(EngineType.YOU_GET, cu.load(AppProperties.YOU_GET_VERSION))
+            controller.updateEngine(EngineType.YOU_GET, EnginesJsonUtils.engineInfo(AppProperties.ANNIE).version)
             this.currentStage?.isIconified = true
         }
 

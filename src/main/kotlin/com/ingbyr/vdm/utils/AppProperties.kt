@@ -1,5 +1,6 @@
 package com.ingbyr.vdm.utils
 
+import java.nio.file.Path
 import java.nio.file.Paths
 
 object AppProperties {
@@ -17,8 +18,6 @@ object AppProperties {
     const val COOKIE = "COOKIE"
     const val DEBUG_MODE = "DEBUG_MODE"
     const val VDM_VERSION = "VDM_VERSION"
-    const val YOUTUBE_DL_VERSION = "YOUTUBE_DL_VERSION"
-    const val YOU_GET_VERSION = "YOU_GET_VERSION"
     const val THEME = "THEME"
     const val CHARSET = "CHARSET"
 
@@ -31,9 +30,14 @@ object AppProperties {
     const val DONATION_URL = "https://paypal.me/ingbyr"
 
     // path config
-    val APP_DIR = Paths.get(System.getProperty("user.dir")).toAbsolutePath()!!
-    val USER_DIR = Paths.get(System.getProperty("user.home"), ".vdm").toAbsolutePath()!!
+    val APP_DIR: Path = Paths.get(System.getProperty("user.dir")).toAbsolutePath()
+    val USER_DIR: Path = Paths.get(System.getProperty("user.home"), ".vdm").toAbsolutePath()
+    val PACKAGE_DIR: Path = Paths.get(System.getProperty("user.dir"), "package")
 
     // database
     val DATABASE_URL ="jdbc:h2:${Paths.get(System.getProperty("user.home"), ".vdm", "vdm").toAbsolutePath()}"
+
+    // engines name
+    const val YOUTUBE_DL = "youtube-dl"
+    const val ANNIE = "annie"
 }

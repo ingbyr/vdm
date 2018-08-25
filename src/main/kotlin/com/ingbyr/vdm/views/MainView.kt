@@ -6,7 +6,7 @@ import com.ingbyr.vdm.controllers.ThemeController
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.models.DownloadTaskStatus
 import com.ingbyr.vdm.utils.AppConfigUtils
-import com.ingbyr.vdm.utils.VDMOSUtils
+import com.ingbyr.vdm.utils.OSUtils
 import com.ingbyr.vdm.utils.AppProperties
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXProgressBar
@@ -141,10 +141,7 @@ class MainView : View() {
         val firstTimeUse = cu.safeLoad(AppProperties.FIRST_TIME_USE, "true").toBoolean()
         if (firstTimeUse) {
             // init config file
-            // TODO update version when released new one
             cu.update(AppProperties.VDM_VERSION, vdmVersion)
-            cu.update(AppProperties.YOUTUBE_DL_VERSION, "2018.06.19")
-            cu.update(AppProperties.YOU_GET_VERSION, AppProperties.UNKNOWN_VERSION)
 
             find(PreferencesView::class).openWindow()?.hide()
             cu.update(AppProperties.FIRST_TIME_USE, "false")
@@ -192,9 +189,9 @@ class MainView : View() {
         // open dir
         btnOpenFile.setOnMouseClicked {
             if (selectedTaskModel != null) {
-                VDMOSUtils.openDir(selectedTaskModel!!.taskConfig.storagePath)
+                OSUtils.openDir(selectedTaskModel!!.taskConfig.storagePath)
             } else {
-                VDMOSUtils.openDir(cu.load(AppProperties.STORAGE_PATH))
+                OSUtils.openDir(cu.load(AppProperties.STORAGE_PATH))
             }
         }
         // TODO search models
@@ -211,9 +208,9 @@ class MainView : View() {
         }
         menuOpenDir.action {
             if (selectedTaskModel != null) {
-                VDMOSUtils.openDir(selectedTaskModel!!.taskConfig.storagePath)
+                OSUtils.openDir(selectedTaskModel!!.taskConfig.storagePath)
             } else {
-                VDMOSUtils.openDir(cu.load(AppProperties.STORAGE_PATH))
+                OSUtils.openDir(cu.load(AppProperties.STORAGE_PATH))
             }
         }
         menuStartAllTask.action {

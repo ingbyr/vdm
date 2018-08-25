@@ -65,10 +65,15 @@ class NetUtils : Controller() {
                 downloadTaskModel.status = DownloadTaskStatus.COMPLETED
 
                 // add execution permission to the engines file
-                if (VDMOSUtils.currentOS == VDMOSType.LINUX || VDMOSUtils.currentOS == VDMOSType.MAC_OS) {
-                    Files.setPosixFilePermissions(storagePath,
-                            mutableSetOf(PosixFilePermission.OWNER_READ, PosixFilePermission.OWNER_WRITE, PosixFilePermission.OWNER_EXECUTE,
-                                    PosixFilePermission.GROUP_EXECUTE, PosixFilePermission.OTHERS_EXECUTE))
+                if (OSUtils.currentOS == OSType.LINUX || OSUtils.currentOS == OSType.MAC_OS) {
+                    Files.setPosixFilePermissions(
+                            storagePath,
+                            mutableSetOf(
+                                    PosixFilePermission.OWNER_READ,
+                                    PosixFilePermission.OWNER_WRITE,
+                                    PosixFilePermission.OWNER_EXECUTE,
+                                    PosixFilePermission.GROUP_EXECUTE,
+                                    PosixFilePermission.OTHERS_EXECUTE))
                 }
                 // update ui
                 fire(RefreshEngineVersion(downloadTaskModel.taskConfig.engineType, remoteVersion))

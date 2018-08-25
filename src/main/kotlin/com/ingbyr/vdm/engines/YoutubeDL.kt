@@ -11,10 +11,7 @@ import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.models.DownloadTaskStatus
 import com.ingbyr.vdm.models.MediaFormat
 import com.ingbyr.vdm.models.ProxyType
-import com.ingbyr.vdm.utils.NetUtils
-import com.ingbyr.vdm.utils.UpdateUtils
-import com.ingbyr.vdm.utils.VDMOSType
-import com.ingbyr.vdm.utils.VDMOSUtils
+import com.ingbyr.vdm.utils.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.BufferedReader
@@ -30,9 +27,10 @@ import java.util.regex.Pattern
  */
 class YoutubeDL : AbstractEngine() {
     override val logger: Logger = LoggerFactory.getLogger(this::class.java)
-    override val remoteVersionUrl: String = "https://raw.githubusercontent.com/rg3/youtube-dl/master/youtube_dl/version.py"
+    private val engineInfo = EnginesJsonUtils.engineInfo("youtube-dl")
+    override val remoteVersionUrl: String = engineInfo.remoteVersionUrl
     override val engineType = EngineType.YOUTUBE_DL
-    override val enginePath: String = initEnginePath()
+    override val enginePath: String = AppProperties.PACKAGE_DIR.resolve(engineInfo.path).normalize().toString()
     override var remoteVersion: String? = null
     private var speed = "0MiB/s"
     private var progress = 0.0
@@ -45,21 +43,7 @@ class YoutubeDL : AbstractEngine() {
     private val fileSizePattern = Pattern.compile("\\s\\d+\\W?\\d*\\w+B\\s")
     private val remoteVersionPattern = Pattern.compile("'\\d+.+'")
     private var taskModel: DownloadTaskModel? = null
-
-    init {
-        argsMap["engines"] = enginePath
-    }
-
-    private fun initEnginePath(): String {
-        return when (VDMOSUtils.currentOS) {
-            VDMOSType.WINDOWS -> {
-                Paths.get(System.getProperty("user.dir"), "package", "windows", "engines", "youtube-dl.exe").toAbsolutePath().toString()
-            }
-            VDMOSType.LINUX, VDMOSType.MAC_OS -> {
-                Paths.get(System.getProperty("user.dir"), "package", "unix", "engines", "youtube-dl").toAbsolutePath().toString()
-            }
-        }
-    }
+    override val argsMap: MutableMap<String, String> = mutableMapOf("engines" to enginePath)
 
     override fun parseFormatsJson(jsonString: String): List<MediaFormat> {
         val formats = mutableListOf<MediaFormat>()
@@ -258,11 +242,11 @@ class YoutubeDL : AbstractEngine() {
         return progress[0].trim() >= progress[1].trim()
     }
 
-    override fun updateUrl() = when (VDMOSUtils.currentOS) {
-        VDMOSType.WINDOWS -> {
+    override fun updateUrl() = when (OSUtils.currentOS) {
+        OSType.WINDOWS -> {
             "https://github.com/rg3/youtube-dl/releases/download/$remoteVersion/youtube-dl.exe"
         }
-        VDMOSType.LINUX, VDMOSType.MAC_OS -> {
+        OSType.LINUX, OSType.MAC_OS -> {
             "https://github.com/rg3/youtube-dl/releases/download/$remoteVersion/youtube-dl"
         }
     }

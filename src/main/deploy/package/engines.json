@@ -1,0 +1,44 @@
+{
+  "windows": [
+    {
+      "name": "youtube-dl",
+      "path": "windows\\engines\\youtube-dl.exe",
+      "version": "2018.08.22",
+      "remoteVersionUrl": "https://raw.githubusercontent.com/rg3/youtube-dl/master/youtube_dl/version.py"
+    },
+    {
+      "name": "annie",
+      "path": "windows\\engines\\annie.exe",
+      "version": "0.7.16",
+      "remoteVersionUrl": "https://raw.githubusercontent.com/rg3/youtube-dl/master/youtube_dl/version.py"
+    }
+  ],
+  "linux": [
+    {
+      "name": "youtube-dl",
+      "path": "windows\\engines\\youtube-dl.exe",
+      "version": "2018.08.04",
+      "remoteVersionUrl": "https://raw.githubusercontent.com/rg3/youtube-dl/master/youtube_dl/version.py"
+    },
+    {
+      "name": "annie",
+      "path": "windows\\engines\\annie.exe",
+      "version": "2018.08.04",
+      "remoteVersionUrl": "https://raw.githubusercontent.com/rg3/youtube-dl/master/youtube_dl/version.py"
+    }
+  ],
+  "macos": [
+    {
+      "name": "youtube-dl",
+      "path": "windows\\engines\\youtube-dl.exe",
+      "version": "2018.08.04",
+      "remoteVersionUrl": "https://raw.githubusercontent.com/rg3/youtube-dl/master/youtube_dl/version.py"
+    },
+    {
+      "name": "annie",
+      "path": "windows\\engines\\annie.exe",
+      "version": "2018.08.04",
+      "remoteVersionUrl": "https://raw.githubusercontent.com/rg3/youtube-dl/master/youtube_dl/version.py"
+    }
+  ]
+}
