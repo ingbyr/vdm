@@ -5,7 +5,6 @@ import tornadofx.*
 
 
 class DonationView : View() {
-    // TODO hidpi size
     override val root = hbox {
         spacing = 10.0
         imageview("/imgs/zhifubao-min.png")
