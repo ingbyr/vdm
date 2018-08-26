@@ -2,9 +2,7 @@ package com.ingbyr.vdm.controllers
 
 import com.ingbyr.vdm.engines.AbstractEngine
 import com.ingbyr.vdm.engines.utils.EngineFactory
-import com.ingbyr.vdm.engines.utils.EngineType
 import com.ingbyr.vdm.events.CreateDownloadTask
-import com.ingbyr.vdm.events.RefreshEngineVersion
 import com.ingbyr.vdm.events.UpdateEngineTask
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.models.DownloadTaskStatus
@@ -72,12 +70,12 @@ class MainController : Controller() {
             val engine = EngineFactory.create(downloadTask.taskConfig.engineType, charset)
             engineList[downloadTask.createdAt] = engine
             val taskConfig = downloadTask.taskConfig
-            engine.url(taskConfig.url)
-                    .addProxy(taskConfig.proxyType, taskConfig.proxyAddress, taskConfig.proxyPort)
+            engine.addProxy(taskConfig.proxyType, taskConfig.proxyAddress, taskConfig.proxyPort)
                     .format(taskConfig.formatId)
                     .output(taskConfig.storagePath)
                     .cookies(taskConfig.cookie)
                     .ffmpegPath(taskConfig.ffmpeg)
+                    .url(taskConfig.url)
                     .downloadMedia(downloadTask, messages)
         }
     }

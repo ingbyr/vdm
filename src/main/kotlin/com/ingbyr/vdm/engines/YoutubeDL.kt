@@ -230,13 +230,13 @@ class YoutubeDL : AbstractEngine() {
         }
     }
 
-    private fun String.toProgress(): Double {
-        /**
-         * Transfer "42.3%"(String) to 0.423(Double)
-         */
-        val s = this.replace("%", "")
-        return s.trim().toDouble() / 100
-    }
+//    private fun String.toProgress(): Double {
+//        /**
+//         * Transfer "42.3%"(String) to 0.423(Double)
+//         */
+//        val s = this.replace("%", "")
+//        return s.trim().toDouble() / 100
+//    }
 
     private fun String.playlistIsCompleted(): Boolean {
         /**

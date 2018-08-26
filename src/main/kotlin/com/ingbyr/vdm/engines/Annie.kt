@@ -32,6 +32,15 @@ class Annie : AbstractEngine() {
     override var taskModel: DownloadTaskModel? = null
 
     private val remoteVersionPattern: Pattern = Pattern.compile("\\d+.+")
+    // 13.58 MiB / 17.22 MiB   78.86% 140.18 KiB/s 00m26s
+    private var speed = "0MiB/s"
+    private var progress = 0.0
+    private var size = ""
+    private var title = ""
+    private val progressPattern = Pattern.compile("\\d+\\.\\d*%")
+    private val titlePattern = Pattern.compile("Title:\\s+\\w+\\s")
+    private val speedPattern = Pattern.compile("\\d+\\.\\d*\\s+\\w+/s")
+    private val sizePattern = Pattern.compile("Size:\\s+\\w+B\\s")
 
     override fun url(url: String): AbstractEngine {
         argsMap["url"] = url
@@ -72,12 +81,12 @@ class Annie : AbstractEngine() {
     }
 
     override fun format(formatID: String): AbstractEngine {
-        argsMap["-f"] = formatID
+        if (formatID.isNotEmpty()) argsMap["-f"] = formatID
         return this
     }
 
     override fun output(outputPath: String): AbstractEngine {
-        argsMap["-o"] = outputPath
+        if (outputPath.isNotEmpty()) argsMap["-o"] = outputPath
         return this
     }
 
@@ -86,16 +95,45 @@ class Annie : AbstractEngine() {
     }
 
     override fun cookies(cookies: String): AbstractEngine {
-        argsMap["-c"] = cookies
+        if(cookies.isNotEmpty()) {
+            argsMap["-c"] = cookies
+        }
         return this
     }
 
     override fun downloadMedia(downloadTaskModel: DownloadTaskModel, message: ResourceBundle) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        taskModel = downloadTaskModel
+        taskModel?.run {
+            execCommand(argsMap.build(), EngineDownloadType.SINGLE)
+        }
     }
 
     override fun parseDownloadOutput(line: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (title.isEmpty() && line.trim().startsWith("Title")) {
+            title = line.trim().removePrefix("Title:").trim()
+            if (title.isNotEmpty()) taskModel?.title = title
+        }
+        if (size.isEmpty() && line.trim().startsWith("Size")) {
+            size = line.trim().removePrefix("Size:").trim().split("(").firstOrNull()?.trim() ?: ""
+            if (size.isNotEmpty()) taskModel?.size = size.trim()
+        }
+
+        progress = progressPattern.matcher(line).takeIf { it.find() }?.group()?.toProgress() ?: progress
+        speed = speedPattern.matcher(line).takeIf { it.find() }?.group()?.toString() ?: speed
+        logger.debug("$line -> title=$title, progress=$progress, size=$size, speed=$speed")
+
+        taskModel?.run {
+            if (this@Annie.progress >= 1.0) {
+                this.progress = 1.0
+                if (line.trim().startsWith("[ffmpeg]"))
+                    this.status = DownloadTaskStatus.MERGING
+                else
+                    this.status = DownloadTaskStatus.COMPLETED
+            } else if (this@Annie.progress > 0) {
+                this.progress = this@Annie.progress
+                this.status = DownloadTaskStatus.DOWNLOADING
+            }
+        }
     }
 
     override fun execCommand(command: MutableList<String>, downloadType: EngineDownloadType): StringBuilder? {
