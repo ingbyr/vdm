@@ -1,6 +1,7 @@
 package com.ingbyr.vdm.engines.utils
 
 import com.ingbyr.vdm.engines.AbstractEngine
+import com.ingbyr.vdm.engines.Annie
 import com.ingbyr.vdm.engines.YoutubeDL
 
 object EngineFactory {
@@ -8,6 +9,12 @@ object EngineFactory {
         return when (engineType) {
             EngineType.YOUTUBE_DL -> {
                 val engine = YoutubeDL()
+                // set the charset
+                engine.charset = charset
+                engine
+            }
+            EngineType.ANNIE -> {
+                val engine = Annie()
                 engine.charset = charset
                 engine
             }

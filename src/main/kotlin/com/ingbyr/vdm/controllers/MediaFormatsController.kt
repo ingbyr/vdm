@@ -30,7 +30,7 @@ class MediaFormatsController : Controller() {
         val charset = cu.safeLoad(AppProperties.CHARSET, "UTF-8")
         engine = EngineFactory.create(config.engineType, charset)
         if (engine != null) {
-            engine!!.url(config.url).addProxy(config.proxyType, config.proxyAddress, config.proxyPort)
+            engine!!.simulateJson().addProxy(config.proxyType, config.proxyAddress, config.proxyPort).url(config.url)
             try {
                 val jsonData = engine!!.fetchMediaJson()
                 return engine!!.parseFormatsJson(jsonData)

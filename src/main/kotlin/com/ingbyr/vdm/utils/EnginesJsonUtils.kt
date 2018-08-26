@@ -3,6 +3,7 @@ package com.ingbyr.vdm.utils
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.ingbyr.vdm.engines.utils.EngineInfo
 import org.slf4j.LoggerFactory
 
 
@@ -39,13 +40,6 @@ data class EnginesJson(
         @JsonProperty("windows") val windows: List<EngineInfo>,
         @JsonProperty("linux") val linux: List<EngineInfo>,
         @JsonProperty("macos") val macos: List<EngineInfo>
-)
-
-data class EngineInfo(
-        @JsonProperty("name") val name: String,
-        @JsonProperty("path") val path: String,
-        @JsonProperty("version") var version: String,
-        @JsonProperty("remoteVersionUrl") val remoteVersionUrl: String
 )
 
 class EngineInfoException(override var message: String) : Exception(message)

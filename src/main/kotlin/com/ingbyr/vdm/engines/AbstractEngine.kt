@@ -1,6 +1,7 @@
 package com.ingbyr.vdm.engines
 
 import com.ingbyr.vdm.engines.utils.EngineDownloadType
+import com.ingbyr.vdm.engines.utils.EngineInfo
 import com.ingbyr.vdm.engines.utils.EngineType
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.models.MediaFormat
@@ -22,14 +23,16 @@ abstract class AbstractEngine {
 
     protected abstract val logger: Logger
     protected val running: AtomicBoolean = AtomicBoolean(false)
+    abstract val engineInfo: EngineInfo
+    abstract val enginePath: String
+    abstract val engineType: EngineType
     abstract val argsMap: MutableMap<String, String>
     abstract val remoteVersionUrl: String
     abstract var remoteVersion: String?
-
-    abstract val enginePath: String
-    abstract val engineType: EngineType
+    abstract var taskModel: DownloadTaskModel?
 
     abstract fun url(url: String): AbstractEngine
+    abstract fun simulateJson(): AbstractEngine
     abstract fun addProxy(type: ProxyType, address: String, port: String): AbstractEngine
     abstract fun fetchMediaJson(): String
     abstract fun format(formatID: String): AbstractEngine
@@ -40,7 +43,6 @@ abstract class AbstractEngine {
     abstract fun parseDownloadOutput(line: String)
     abstract fun execCommand(command: MutableList<String>, downloadType: EngineDownloadType): StringBuilder?
     abstract fun parseFormatsJson(jsonString: String): List<MediaFormat>
-
     abstract fun updateUrl(): String
     abstract fun existNewVersion(localVersion: String): Boolean
 
@@ -56,6 +58,7 @@ abstract class AbstractEngine {
          * Generate the command line from argsMap
          */
         val args = mutableListOf<String>()
+
         this.forEach {
             if (it.key.startsWith("-")) {
                 args.add(it.key)

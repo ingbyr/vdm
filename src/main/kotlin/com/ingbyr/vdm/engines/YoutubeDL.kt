@@ -27,11 +27,14 @@ import java.util.regex.Pattern
  */
 class YoutubeDL : AbstractEngine() {
     override val logger: Logger = LoggerFactory.getLogger(this::class.java)
-    private val engineInfo = EnginesJsonUtils.engineInfo("youtube-dl")
+    override val engineInfo = EnginesJsonUtils.engineInfo("youtube-dl")
     override val remoteVersionUrl: String = engineInfo.remoteVersionUrl
     override val engineType = EngineType.YOUTUBE_DL
     override val enginePath: String = AppProperties.PACKAGE_DIR.resolve(engineInfo.path).normalize().toString()
     override var remoteVersion: String? = null
+    override var taskModel: DownloadTaskModel? = null
+    override val argsMap: MutableMap<String, String> = mutableMapOf("engines" to enginePath)
+
     private var speed = "0MiB/s"
     private var progress = 0.0
     private var size = ""
@@ -42,8 +45,6 @@ class YoutubeDL : AbstractEngine() {
     private val titlePattern = Pattern.compile("[/\\\\][^/^\\\\]+\\.\\w+")
     private val fileSizePattern = Pattern.compile("\\s\\d+\\W?\\d*\\w+B\\s")
     private val remoteVersionPattern = Pattern.compile("'\\d+.+'")
-    private var taskModel: DownloadTaskModel? = null
-    override val argsMap: MutableMap<String, String> = mutableMapOf("engines" to enginePath)
 
     override fun parseFormatsJson(jsonString: String): List<MediaFormat> {
         val formats = mutableListOf<MediaFormat>()
@@ -63,6 +64,11 @@ class YoutubeDL : AbstractEngine() {
         return formats
     }
 
+    override fun simulateJson(): AbstractEngine{
+        argsMap["SimulateJson"] = "-j"
+        return this
+    }
+
     override fun url(url: String): AbstractEngine {
         argsMap["url"] = url
         return this
@@ -70,7 +76,6 @@ class YoutubeDL : AbstractEngine() {
 
     override fun addProxy(type: ProxyType, address: String, port: String): AbstractEngine {
         if (address.isEmpty() or port.isEmpty()) {
-            logger.debug("receive an empty proxy config to youtube-dl")
             return this
         }
         when (type) {
@@ -88,7 +93,6 @@ class YoutubeDL : AbstractEngine() {
     }
 
     override fun fetchMediaJson(): String {
-        argsMap["SimulateJson"] = "-j"
         val mediaData = execCommand(argsMap.build(), EngineDownloadType.JSON)
         if (mediaData != null) {
             return mediaData.toString()

@@ -11,8 +11,6 @@ import com.ingbyr.vdm.utils.AppProperties
 import com.ingbyr.vdm.utils.EnginesJsonUtils
 import com.jfoenix.controls.*
 import javafx.scene.control.Label
-import javafx.scene.layout.AnchorPane
-import javafx.scene.layout.VBox
 import javafx.stage.DirectoryChooser
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -44,9 +42,9 @@ class PreferencesView : View() {
     private val tbYoutubeDL: JFXToggleButton by fxid()
     private val btnUpdateYoutubeDL: JFXButton by fxid()
     private val labelYoutubeDLVersion: Label by fxid()
-    private val tbYouGet: JFXToggleButton by fxid()
-    private val btnUpdateYouGet: JFXButton by fxid()
-    private val labelYouGetVersion: Label by fxid()
+    private val tbAnnie: JFXToggleButton by fxid()
+    private val btnUpdateAnnie: JFXButton by fxid()
+    private val labelAnnieVersion: Label by fxid()
 
     private val tbSocks5: JFXToggleButton by fxid()
     private val tfSocks5Address: JFXTextField by fxid()
@@ -64,8 +62,8 @@ class PreferencesView : View() {
                     labelYoutubeDLVersion.text = it.newVersion
                     EnginesJsonUtils.engineInfo(AppProperties.YOUTUBE_DL).version = it.newVersion
                 }
-                EngineType.YOU_GET -> { // todo change to annie
-                    labelYouGetVersion.text = it.newVersion
+                EngineType.ANNIE -> {
+                    labelAnnieVersion.text = it.newVersion
                     EnginesJsonUtils.engineInfo(AppProperties.ANNIE).version = it.newVersion
                 }
                 else -> {
@@ -102,12 +100,11 @@ class PreferencesView : View() {
         val engineType = EngineType.valueOf(cu.safeLoad(AppProperties.ENGINE_TYPE, EngineType.YOUTUBE_DL))
         when (engineType) {
             EngineType.YOUTUBE_DL -> tbYoutubeDL.isSelected = true
-            EngineType.YOU_GET -> tbYouGet.isSelected = true
+            EngineType.ANNIE -> tbAnnie.isSelected = true
             else -> logger.error("no engines type of $engineType")
         }
         labelYoutubeDLVersion.text = EnginesJsonUtils.engineInfo(AppProperties.YOUTUBE_DL).version
-        // todo change to annie downloader
-        labelYouGetVersion.text = EnginesJsonUtils.engineInfo(AppProperties.ANNIE).version
+        labelAnnieVersion.text = EnginesJsonUtils.engineInfo(AppProperties.ANNIE).version
 
         // proxy settings area
         val proxyType = ProxyType.valueOf(cu.safeLoad(AppProperties.PROXY_TYPE, ProxyType.NONE))
@@ -162,15 +159,15 @@ class PreferencesView : View() {
         tbYoutubeDL.whenSelected {
             cu.update(AppProperties.ENGINE_TYPE, EngineType.YOUTUBE_DL)
         }
-        tbYouGet.whenSelected {
-            cu.update(AppProperties.ENGINE_TYPE, EngineType.YOU_GET)
+        tbAnnie.whenSelected {
+            cu.update(AppProperties.ENGINE_TYPE, EngineType.ANNIE)
         }
         btnUpdateYoutubeDL.setOnMouseClicked {
             controller.updateEngine(EngineType.YOUTUBE_DL, EnginesJsonUtils.engineInfo(AppProperties.YOUTUBE_DL).version)
             this.currentStage?.isIconified = true // todo not work perfectly
         }
-        btnUpdateYouGet.setOnMouseClicked {
-            controller.updateEngine(EngineType.YOU_GET, EnginesJsonUtils.engineInfo(AppProperties.ANNIE).version)
+        btnUpdateAnnie.setOnMouseClicked {
+            controller.updateEngine(EngineType.ANNIE, EnginesJsonUtils.engineInfo(AppProperties.ANNIE).version)
             this.currentStage?.isIconified = true
         }
 
