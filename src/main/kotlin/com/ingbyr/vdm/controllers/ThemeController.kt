@@ -33,7 +33,7 @@ open class ThemeController : Controller() {
     fun initTheme() {
         // load theme config
         activeTheme = cu.safeLoad(AppProperties.THEME, messages["theme.bluegrey"])
-        importStylesheet(themesNameAndUrl[activeTheme] ?: "blue".resourceUrl())
+        importStylesheet(themesNameAndUrl[activeTheme] ?: "BlueGrey".resourceUrl())
 
         // add listener to change theme
         activeThemeProperty.addListener { _, oldTheme, newTheme ->

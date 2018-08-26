@@ -1,5 +1,5 @@
 ﻿# Video Download Manager
-![](https://img.shields.io/badge/version-0.3.1-green.svg)
+![](https://img.shields.io/badge/version-0.4.0-green.svg)
 ![](https://img.shields.io/github/stars/ingbyr/VDM.svg)
 ![](https://img.shields.io/github/forks/ingbyr/VDM.svg)
 ![](https://img.shields.io/github/issues/ingbyr/VDM.svg)
@@ -8,10 +8,8 @@
 [中文说明](http://www.ingbyr.com/post/youget-zh/)
 
 # Download
-[Download Page](https://github.com/ingbyr/VDM/releases)
-
-- You can install VDM by downloading `VDM.exe` directly
-- If you know how to run the jar file,  just download the `VDM-NEEDJRE.zip` (Requires [JRE8 ](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html) or [JDK8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html))
+- Install the [JRE8](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html) first (If you have installed the JRE, skip this step).
+- Download the [VDM.zip](https://github.com/ingbyr/VDM/releases), unzip it and then click the `VDM.jar` file
 
 
 # Screenshots
