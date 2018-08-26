@@ -5,7 +5,6 @@ import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.models.DownloadTaskStatus
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.internal.Util
 import okio.BufferedSource
 import okio.Okio
 import org.slf4j.Logger
@@ -20,9 +19,6 @@ import java.text.DecimalFormat
 import java.util.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
-import okio.BufferedSink
-import okio.Sink
-import java.io.File
 
 
 class NetUtils : Controller() {
@@ -92,7 +88,7 @@ class NetUtils : Controller() {
                                downloadTaskModel: DownloadTaskModel, contentLength: Long) {
         logger.debug("saving data to $dest")
 
-        Okio.buffer(Okio.sink(dest)).use { sink->
+        Okio.buffer(Okio.sink(dest)).use { sink ->
             source.use { source ->
                 val sinkBuffer = sink.buffer()
                 var totalBytesRead: Long = 0

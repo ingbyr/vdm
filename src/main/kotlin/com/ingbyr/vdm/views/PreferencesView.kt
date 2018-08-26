@@ -5,6 +5,7 @@ import com.ingbyr.vdm.controllers.PreferencesController
 import com.ingbyr.vdm.controllers.ThemeController
 import com.ingbyr.vdm.engines.utils.EngineType
 import com.ingbyr.vdm.events.RefreshEngineVersion
+import com.ingbyr.vdm.events.RestorePreferencesViewEvent
 import com.ingbyr.vdm.models.ProxyType
 import com.ingbyr.vdm.utils.AppConfigUtils
 import com.ingbyr.vdm.utils.AppProperties
@@ -70,6 +71,11 @@ class PreferencesView : View() {
                 }
             }
             EnginesJsonUtils.save2JsonFile()
+        }
+
+        subscribe<RestorePreferencesViewEvent> {
+            logger.debug("restore preferences view")
+            this@PreferencesView.currentStage?.isIconified = false
         }
 
         loadVDMConfig()
@@ -164,7 +170,7 @@ class PreferencesView : View() {
         }
         btnUpdateYoutubeDL.setOnMouseClicked {
             controller.updateEngine(EngineType.YOUTUBE_DL, EnginesJsonUtils.engineInfo(AppProperties.YOUTUBE_DL).version)
-            this.currentStage?.isIconified = true // todo not work perfectly
+            this.currentStage?.isIconified = true
         }
         btnUpdateAnnie.setOnMouseClicked {
             controller.updateEngine(EngineType.ANNIE, EnginesJsonUtils.engineInfo(AppProperties.ANNIE).version)

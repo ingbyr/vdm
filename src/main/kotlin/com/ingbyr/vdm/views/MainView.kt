@@ -27,13 +27,10 @@ class MainView : View() {
         title = messages["ui.vdm"]
     }
 
-    private val vdmVersion = "0.3.1"
-
-    private val logger: Logger = LoggerFactory.getLogger(MainView::class.java)
+    private val vdmVersion = "0.4.0"
     override val root: VBox by fxml("/fxml/MainView.fxml")
     private val controller: MainController by inject()
     private val themeController: ThemeController by inject()
-
 
     private val btnNew: JFXButton by fxid()
     private val btnStart: JFXButton by fxid()

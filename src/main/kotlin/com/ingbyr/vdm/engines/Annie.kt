@@ -33,7 +33,6 @@ class Annie : AbstractEngine() {
     override var taskModel: DownloadTaskModel? = null
 
     private val remoteVersionPattern: Pattern = Pattern.compile("\\d+.+\\d+")
-    // 13.58 MiB / 17.22 MiB   78.86% 140.18 KiB/s 00m26s
     private var speed = "0MiB/s"
     private var progress = 0.0
     private var size = ""
@@ -174,7 +173,7 @@ class Annie : AbstractEngine() {
             p.waitFor(200, TimeUnit.MICROSECONDS)
         }
 
-        if (p.isAlive) {// TODO can not destroy process, change Process to JNA?
+        if (p.isAlive) {
             p.destroyForcibly()
         }
 

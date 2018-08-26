@@ -3,12 +3,14 @@ package com.ingbyr.vdm.controllers
 import com.ingbyr.vdm.engines.AbstractEngine
 import com.ingbyr.vdm.engines.utils.EngineFactory
 import com.ingbyr.vdm.events.CreateDownloadTask
+import com.ingbyr.vdm.events.RestorePreferencesViewEvent
 import com.ingbyr.vdm.events.UpdateEngineTask
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.models.DownloadTaskStatus
 import com.ingbyr.vdm.models.DownloadTaskType
 import com.ingbyr.vdm.models.TaskConfig
 import com.ingbyr.vdm.utils.*
+import com.ingbyr.vdm.views.PreferencesView
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tornadofx.*
@@ -57,6 +59,7 @@ class MainController : Controller() {
                 logger.error(e.toString())
                 downloadTask.status = DownloadTaskStatus.FAILED
             }
+            fire(RestorePreferencesViewEvent)
         }
     }
 

@@ -45,7 +45,7 @@ class YoutubeDL : AbstractEngine() {
     private val speedPattern = Pattern.compile("\\d+\\W?\\d*\\w+/s")
     private val titlePattern = Pattern.compile("[/\\\\][^/^\\\\]+\\.\\w+")
     private val fileSizePattern = Pattern.compile("\\s\\d+\\W?\\d*\\w+B\\s")
-    private val remoteVersionPattern = Pattern.compile("'\\d+.+'")
+    private val remoteVersionPattern = Pattern.compile("\\d+.+\\d+")
 
     override fun parseFormatsJson(jsonString: String): List<MediaFormat> {
         val formats = mutableListOf<MediaFormat>()
@@ -215,7 +215,7 @@ class YoutubeDL : AbstractEngine() {
             p.waitFor(200, TimeUnit.MICROSECONDS)
         }
 
-        if (p.isAlive) {// TODO can not destroy process, change Process to JNA?
+        if (p.isAlive) {
             p.destroyForcibly()
         }
 
@@ -230,14 +230,6 @@ class YoutubeDL : AbstractEngine() {
             null
         }
     }
-
-//    private fun String.toProgress(): Double {
-//        /**
-//         * Transfer "42.3%"(String) to 0.423(Double)
-//         */
-//        val s = this.replace("%", "")
-//        return s.trim().toDouble() / 100
-//    }
 
     private fun String.playlistIsCompleted(): Boolean {
         /**
@@ -259,7 +251,7 @@ class YoutubeDL : AbstractEngine() {
     override fun existNewVersion(localVersion: String): Boolean {
         val remoteVersionInfo = NetUtils().get(remoteVersionUrl)
         return if (remoteVersionInfo?.isNotEmpty() == true) {
-            remoteVersion = remoteVersionPattern.matcher(remoteVersionInfo).takeIf { it.find() }?.group()?.toString()?.replace("'", "")?.replace("\"", "")
+            remoteVersion = remoteVersionPattern.matcher(remoteVersionInfo).takeIf { it.find() }?.group()
             if (remoteVersion != null) {
                 logger.debug("[$engineType] local version $localVersion, remote version $remoteVersion")
                 UpdateUtils.check(localVersion, remoteVersion!!)
