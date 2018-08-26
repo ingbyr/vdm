@@ -1,31 +1,34 @@
-/* define color*/
+/*
+define color
+p:800 l:700 d:900 grey:50
+*/
 * {
-    -color-p: #546e7a;
-    -color-l: #819ca9;
-    -color-d: #29434e;
-    -color-gray: #efefef;
-    -color-light-gray: #fbfbfb;
+    -color-p: #424242;
+    -color-l: #616161;
+    -color-d: #212121;
+    -color-grey: #FAFAFA;
+    -color-light-gray: #FBFBFB;
 }
 
 /* text size */
 .text {
-    -fx-font-size: 1.8em;
+    -fx-font-size: 1.2em;
 }
 
 #small-text .text {
-    -fx-font-size: 1.5em;
+    -fx-font-size: 1.0em;
 }
 
 .tooltip {
-    -fx-font-size: 1.5em;
+    -fx-font-size: 1.0em;
 }
 
 .tab .text {
-    -fx-font-size: 1.5em;
+    -fx-font-size: 1.0em;
 }
 
 .jfx-text-field {
-    -fx-font-size: 1.5em;
+    -fx-font-size: 1.0em;
 }
 
 /* menu */
@@ -175,11 +178,12 @@
 /* table view*/
 .table-view {
     -fx-border-color: -color-p;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
 }
 
 .table-row-cell {
-    -fx-border-color: -color-gray;
-    -fx-table-cell-border-color: -color-gray;
+    -fx-border-color: -color-light-gray;
 }
 
 .table-row-cell:odd {
@@ -213,7 +217,7 @@
 /* combo box*/
 .jfx-combo-box {
     -jfx-focus-color: -color-l;
-    -jfx-unfocus-color: -color-gray;
+    -jfx-unfocus-color: -color-grey;
 }
 
 .combo-box-popup .list-view .list-cell:filled:selected, .combo-box-popup .list-view .list-cell:filled:selected:hover {

@@ -15,9 +15,14 @@ open class ThemeController : Controller() {
         messages = ResourceBundle.getBundle("i18n/PreferencesView")
     }
 
-    val themesNameAndUrl = mapOf(
-            messages["theme.default"] to "DefaultTheme".resourceUrl(),
-            messages["theme.defaultBigger"] to "DefaultThemeBigger".resourceUrl()
+    private val themesNameAndUrl = mapOf(
+            messages["theme.bluegrey"] to "BlueGrey".resourceUrl(),
+            messages["theme.green"] to "Green".resourceUrl(),
+            messages["theme.grey"] to "Grey".resourceUrl(),
+            messages["theme.indigo"] to "Indigo".resourceUrl(),
+            messages["theme.pink"] to "Pink".resourceUrl(),
+            messages["theme.purple"] to "Purple".resourceUrl()
+
     )
     val themes = SimpleListProperty<String>(themesNameAndUrl.keys.toList().observable())
     val activeThemeProperty = SimpleStringProperty()
@@ -27,8 +32,8 @@ open class ThemeController : Controller() {
 
     fun initTheme() {
         // load theme config
-        activeTheme = cu.safeLoad(AppProperties.THEME, messages["theme.default"])
-        importStylesheet(themesNameAndUrl[activeTheme] ?: "DefaultTheme".resourceUrl())
+        activeTheme = cu.safeLoad(AppProperties.THEME, messages["theme.bluegrey"])
+        importStylesheet(themesNameAndUrl[activeTheme] ?: "blue".resourceUrl())
 
         // add listener to change theme
         activeThemeProperty.addListener { _, oldTheme, newTheme ->
