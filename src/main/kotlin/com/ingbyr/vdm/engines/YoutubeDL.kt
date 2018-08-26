@@ -27,6 +27,7 @@ import java.util.regex.Pattern
  */
 class YoutubeDL : AbstractEngine() {
     override val logger: Logger = LoggerFactory.getLogger(this::class.java)
+    override val downloadNewEngineNeedUnzip: Boolean = false
     override val engineInfo = EnginesJsonUtils.engineInfo("youtube-dl")
     override val remoteVersionUrl: String = engineInfo.remoteVersionUrl
     override val engineType = EngineType.YOUTUBE_DL

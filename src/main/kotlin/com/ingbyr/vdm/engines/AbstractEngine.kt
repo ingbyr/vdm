@@ -23,6 +23,7 @@ abstract class AbstractEngine {
 
     protected abstract val logger: Logger
     protected val running: AtomicBoolean = AtomicBoolean(false)
+    abstract val downloadNewEngineNeedUnzip: Boolean
     abstract val engineInfo: EngineInfo
     abstract val enginePath: String
     abstract val engineType: EngineType

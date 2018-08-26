@@ -6,7 +6,6 @@ import com.ingbyr.vdm.models.DownloadTaskStatus
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.internal.Util
-import okio.BufferedSink
 import okio.BufferedSource
 import okio.Okio
 import org.slf4j.Logger
@@ -14,10 +13,16 @@ import org.slf4j.LoggerFactory
 import tornadofx.*
 import java.io.IOException
 import java.nio.file.Files
+import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.attribute.PosixFilePermission
 import java.text.DecimalFormat
 import java.util.*
+import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
+import okio.BufferedSink
+import okio.Sink
+import java.io.File
 
 
 class NetUtils : Controller() {
@@ -34,9 +39,9 @@ class NetUtils : Controller() {
         return response.body()?.string()
     }
 
-    fun downloadEngine(downloadTaskModel: DownloadTaskModel, remoteVersion: String) {
-        var sink: BufferedSink? = null
-        var source: BufferedSource? = null
+    fun downloadEngine(downloadTaskModel: DownloadTaskModel,
+                       remoteVersion: String,
+                       needUnzip: Boolean = false) {
         downloadTaskModel.status = DownloadTaskStatus.ANALYZING
         try {
             val request = Request.Builder().url(downloadTaskModel.taskConfig.url).build()
@@ -47,21 +52,18 @@ class NetUtils : Controller() {
                 val contentLength = body.contentLength()
                 val sizeFormat = DecimalFormat("#.##")
                 downloadTaskModel.size = "${sizeFormat.format(contentLength / 1000000.0)}MB"
-                source = body.source()
                 val storagePath = Paths.get(downloadTaskModel.taskConfig.storagePath)
-                sink = Okio.buffer(Okio.sink(storagePath))
-                val sinkBuffer = sink.buffer()
-                var totalBytesRead: Long = 0
-                val bufferSize: Long = 2 * 1024
-                var bytesRead: Long
-                while (true) {
-                    bytesRead = source.read(sinkBuffer, bufferSize)
-                    if (bytesRead == -1L) break
-                    sink.emit()
-                    totalBytesRead += bytesRead
-                    downloadTaskModel.progress = totalBytesRead.toDouble() / contentLength.toDouble()
+
+                if (needUnzip) {
+                    val tmpFile: Path = AppProperties.USER_DIR.resolve("tmp.zip")
+                    saveBufferData(body.source(), tmpFile, downloadTaskModel, contentLength)
+                    // unzip tmp file and clear it
+                    unzipFile(tmpFile, storagePath)
+                    Files.delete(tmpFile)
+                } else {
+                    saveBufferData(body.source(), storagePath, downloadTaskModel, contentLength)
                 }
-                sink.flush()
+
                 downloadTaskModel.status = DownloadTaskStatus.COMPLETED
 
                 // add execution permission to the engines file
@@ -83,9 +85,42 @@ class NetUtils : Controller() {
         } catch (e: IOException) {
             downloadTaskModel.status = DownloadTaskStatus.FAILED
             logger.error(e.toString())
-        } finally {
-            Util.closeQuietly(sink)
-            Util.closeQuietly(source)
+        }
+    }
+
+    private fun saveBufferData(source: BufferedSource, dest: Path,
+                               downloadTaskModel: DownloadTaskModel, contentLength: Long) {
+        logger.debug("saving data to $dest")
+
+        Okio.buffer(Okio.sink(dest)).use { sink->
+            source.use { source ->
+                val sinkBuffer = sink.buffer()
+                var totalBytesRead: Long = 0
+                val bufferSize: Long = 2 * 1024
+                var bytesRead: Long
+                while (true) {
+                    bytesRead = source.read(sinkBuffer, bufferSize)
+                    if (bytesRead == -1L) break
+                    sink.emit()
+                    totalBytesRead += bytesRead
+                    downloadTaskModel.progress = totalBytesRead.toDouble() / contentLength.toDouble()
+                }
+                sink.flush()
+            }
+        }
+    }
+
+    private fun unzipFile(source: Path, dest: Path) {
+        // unzip file
+        logger.debug("unzip $source to $dest")
+        ZipFile(source.toFile()).use { zipFile ->
+            val enu = zipFile.entries()
+            while (enu.hasMoreElements()) {
+                val zipEntry: ZipEntry = enu.nextElement()
+                zipFile.getInputStream(zipEntry).use {
+                    Files.write(dest, it.readBytes())
+                }
+            }
         }
     }
 }

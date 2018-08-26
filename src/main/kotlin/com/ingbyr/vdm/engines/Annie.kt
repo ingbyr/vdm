@@ -23,6 +23,7 @@ import java.util.regex.Pattern
 
 class Annie : AbstractEngine() {
     override val logger: Logger = LoggerFactory.getLogger(Annie::class.java)
+    override val downloadNewEngineNeedUnzip: Boolean = true
     override val engineInfo: EngineInfo = EnginesJsonUtils.engineInfo(AppProperties.ANNIE)
     override val enginePath: String = AppProperties.PACKAGE_DIR.resolve(engineInfo.path).normalize().toString()
     override val engineType: EngineType = EngineType.ANNIE
@@ -31,16 +32,14 @@ class Annie : AbstractEngine() {
     override var remoteVersion: String? = null
     override var taskModel: DownloadTaskModel? = null
 
-    private val remoteVersionPattern: Pattern = Pattern.compile("\\d+.+")
+    private val remoteVersionPattern: Pattern = Pattern.compile("\\d+.+\\d+")
     // 13.58 MiB / 17.22 MiB   78.86% 140.18 KiB/s 00m26s
     private var speed = "0MiB/s"
     private var progress = 0.0
     private var size = ""
     private var title = ""
     private val progressPattern = Pattern.compile("\\d+\\.\\d*%")
-    private val titlePattern = Pattern.compile("Title:\\s+\\w+\\s")
     private val speedPattern = Pattern.compile("\\d+\\.\\d*\\s+\\w+/s")
-    private val sizePattern = Pattern.compile("Size:\\s+\\w+B\\s")
 
     override fun url(url: String): AbstractEngine {
         argsMap["url"] = url

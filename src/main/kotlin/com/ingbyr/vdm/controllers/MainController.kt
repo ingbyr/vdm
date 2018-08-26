@@ -46,7 +46,7 @@ class MainController : Controller() {
                 if (engine.existNewVersion(it.localVersion)) {
                     downloadTask.taskConfig.url = engine.updateUrl()
                     logger.info("[${downloadTask.taskConfig.engineType}] update engine from ${downloadTask.taskConfig.url}")
-                    NetUtils().downloadEngine(downloadTask, engine.remoteVersion!!)
+                    NetUtils().downloadEngine(downloadTask, engine.remoteVersion!!, needUnzip = engine.downloadNewEngineNeedUnzip)
                 } else {
                     downloadTask.title += messages["ui.noAvailableUpdates"]
                     downloadTask.size = ""
@@ -113,7 +113,7 @@ class MainController : Controller() {
 
     private fun addToModelListAndStartTask(downloadTask: DownloadTaskModel) {
         downloadTaskModelList.add(downloadTask)
-        // startTask(downloadTask)  // TODO debug. uncomment this
+         startTask(downloadTask)
     }
 
     fun loadTaskFromDB() {
