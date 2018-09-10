@@ -6,15 +6,14 @@ import com.ingbyr.vdm.controllers.ThemeController
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.models.DownloadTaskStatus
 import com.ingbyr.vdm.utils.AppConfigUtils
-import com.ingbyr.vdm.utils.OSUtils
 import com.ingbyr.vdm.utils.AppProperties
+import com.ingbyr.vdm.utils.OSUtils
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXProgressBar
 import javafx.scene.control.*
 import javafx.scene.layout.ColumnConstraints
 import javafx.scene.layout.GridPane
 import javafx.scene.layout.VBox
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tornadofx.*
 import java.text.DecimalFormat
@@ -145,15 +144,6 @@ class MainView : View() {
         } else {
             cu.update(AppProperties.VDM_VERSION, vdmVersion)
         }
-
-        // debug mode
-        val rootLogger = LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME) as ch.qos.logback.classic.Logger
-        if (cu.load(AppProperties.DEBUG_MODE).toBoolean()) {
-            rootLogger.level = Level.DEBUG
-        } else {
-            rootLogger.level = Level.ERROR
-            cu.update(AppProperties.DEBUG_MODE, false)
-        }
     }
 
     private fun initListeners() {
@@ -164,7 +154,7 @@ class MainView : View() {
 
         // shortcut buttons
         // start models
-        btnStart.setOnMouseClicked {
+        btnStart.setOnMouseClicked { _ ->
             selectedTaskModel?.let { controller.startTask(it) }
         }
         // preferences view

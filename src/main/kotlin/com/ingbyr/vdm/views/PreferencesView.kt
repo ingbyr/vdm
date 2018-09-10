@@ -9,6 +9,7 @@ import com.ingbyr.vdm.events.RestorePreferencesViewEvent
 import com.ingbyr.vdm.models.ProxyType
 import com.ingbyr.vdm.utils.AppConfigUtils
 import com.ingbyr.vdm.utils.AppProperties
+import com.ingbyr.vdm.utils.DebugUtils
 import com.ingbyr.vdm.utils.EnginesJsonUtils
 import com.jfoenix.controls.*
 import javafx.scene.control.Label
@@ -37,8 +38,8 @@ class PreferencesView : View() {
     private val btnChangeFFMPEGPath: JFXButton by fxid()
     private val tbDownloadDefault: JFXToggleButton by fxid()
     private val tbEnableDebug: JFXToggleButton by fxid()
-    private val themeSelector : JFXComboBox<String> by fxid()
-    private val charsetSelector : JFXComboBox<String> by fxid()
+    private val themeSelector: JFXComboBox<String> by fxid()
+    private val charsetSelector: JFXComboBox<String> by fxid()
 
     private val tbYoutubeDL: JFXToggleButton by fxid()
     private val btnUpdateYoutubeDL: JFXButton by fxid()
@@ -155,6 +156,7 @@ class PreferencesView : View() {
             if (tbEnableDebug.isSelected) {
                 rootLogger.level = Level.DEBUG
                 cu.update(AppProperties.DEBUG_MODE, true)
+                DebugUtils.showOSInfo()
             } else {
                 rootLogger.level = Level.ERROR
                 cu.update(AppProperties.DEBUG_MODE, false)

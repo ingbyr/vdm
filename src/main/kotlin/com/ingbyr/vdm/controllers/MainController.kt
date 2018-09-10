@@ -1,5 +1,6 @@
 package com.ingbyr.vdm.controllers
 
+import ch.qos.logback.classic.Level
 import com.ingbyr.vdm.engines.AbstractEngine
 import com.ingbyr.vdm.engines.utils.EngineFactory
 import com.ingbyr.vdm.events.CreateDownloadTask
@@ -30,6 +31,17 @@ class MainController : Controller() {
     private val cu = AppConfigUtils(app.config)
 
     init {
+
+        // debug mode
+        val rootLogger = LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME) as ch.qos.logback.classic.Logger
+        if (cu.load(AppProperties.DEBUG_MODE).toBoolean()) {
+            rootLogger.level = Level.DEBUG
+            DebugUtils.showOSInfo()
+        } else {
+            rootLogger.level = Level.ERROR
+            cu.update(AppProperties.DEBUG_MODE, false)
+        }
+
         subscribe<CreateDownloadTask> {
             logger.debug("create models: ${it.downloadTask}")
             addToModelListAndStartTask(it.downloadTask)
