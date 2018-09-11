@@ -1,10 +1,33 @@
 package com.ingbyr.vdm.utils
 
+import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
 object AppProperties {
+
+
+
+    // path config
+    val APP_DIR: Path = Paths.get(System.getProperty("user.dir"))
+    val CONFIG_DIR : Path = APP_DIR.resolve("config")
+    val COOKIES_DIR: Path = APP_DIR.resolve("cookies")
+    val PACKAGE_DIR: Path = APP_DIR.resolve("package")
+    val DB_DIR: Path = APP_DIR.resolve("db")
+    val TMP_DIR = APP_DIR.resolve("tmp")
+
+    init {
+        Files.createDirectories(CONFIG_DIR)
+        Files.createDirectories(COOKIES_DIR)
+        Files.createDirectories(DB_DIR)
+        Files.createDirectories(TMP_DIR)
+    }
+
+    // database
+    val DATABASE_URL ="jdbc:h2:${DB_DIR.resolve("vdm")}"
+
     // config file
+    val configFilePath: Path = CONFIG_DIR.resolve("vdm.properties")
     const val FIRST_TIME_USE = "FIRST_TIME_USE"
     const val STORAGE_PATH = "STORAGE_PATH"
     const val FFMPEG_PATH = "FFMPEG_PATH"
@@ -15,7 +38,8 @@ object AppProperties {
     const val SOCKS5_PROXY_PORT = "SOCKS5_PROXY_PORT"
     const val HTTP_PROXY_ADDRESS = "HTTP_PROXY_ADDRESS"
     const val HTTP_PROXY_PORT = "HTTP_PROXY_PORT"
-    const val COOKIE = "COOKIE"
+    const val ENABLE_COOKIE = "ENABLE_COOKIE"
+    const val CURRENT_COOKIE = "CURRENT_COOKIE"
     const val DEBUG_MODE = "DEBUG_MODE"
     const val VDM_VERSION = "VDM_VERSION"
     const val THEME = "THEME"
@@ -28,14 +52,6 @@ object AppProperties {
     const val VDM_REPORT_BUGS = "https://github.com/ingbyr/VDM/issues"
     const val UNKNOWN_VERSION = "0.0.0"
     const val DONATION_URL = "https://paypal.me/ingbyr"
-
-    // path config
-    val APP_DIR: Path = Paths.get(System.getProperty("user.dir")).toAbsolutePath()
-    val USER_DIR: Path = Paths.get(System.getProperty("user.home"), ".vdm").toAbsolutePath()
-    val PACKAGE_DIR: Path = Paths.get(System.getProperty("user.dir"), "package")
-
-    // database
-    val DATABASE_URL ="jdbc:h2:${Paths.get(System.getProperty("user.home"), ".vdm", "vdm").toAbsolutePath()}"
 
     // engines name
     const val YOUTUBE_DL = "youtube-dl"

@@ -1,6 +1,5 @@
 package com.ingbyr.vdm.controllers
 
-import ch.qos.logback.classic.Level
 import com.ingbyr.vdm.engines.AbstractEngine
 import com.ingbyr.vdm.engines.utils.EngineFactory
 import com.ingbyr.vdm.events.CreateDownloadTask
@@ -11,7 +10,6 @@ import com.ingbyr.vdm.models.DownloadTaskStatus
 import com.ingbyr.vdm.models.DownloadTaskType
 import com.ingbyr.vdm.models.TaskConfig
 import com.ingbyr.vdm.utils.*
-import com.ingbyr.vdm.views.PreferencesView
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tornadofx.*
@@ -33,14 +31,7 @@ class MainController : Controller() {
     init {
 
         // debug mode
-        val rootLogger = LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME) as ch.qos.logback.classic.Logger
-        if (cu.load(AppProperties.DEBUG_MODE).toBoolean()) {
-            rootLogger.level = Level.DEBUG
-            DebugUtils.showOSInfo()
-        } else {
-            rootLogger.level = Level.ERROR
-            cu.update(AppProperties.DEBUG_MODE, false)
-        }
+        DebugUtils.changeDebugMode(cu.safeLoad(AppProperties.DEBUG_MODE, false).toBoolean())
 
         subscribe<CreateDownloadTask> {
             logger.debug("create models: ${it.downloadTask}")
@@ -128,7 +119,7 @@ class MainController : Controller() {
 
     private fun addToModelListAndStartTask(downloadTask: DownloadTaskModel) {
         downloadTaskModelList.add(downloadTask)
-         startTask(downloadTask)
+        startTask(downloadTask)
     }
 
     fun loadTaskFromDB() {

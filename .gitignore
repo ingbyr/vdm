@@ -1,11 +1,10 @@
 .gradle/
 .idea/
-build/
 out/
-conf/
-gradle/
-gradlew
-gradlew.bat
 log/
 /VDM.iml
-/package/
+/package
+/db
+/config
+/cookies
+/tmp

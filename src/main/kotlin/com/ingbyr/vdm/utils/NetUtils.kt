@@ -51,7 +51,7 @@ class NetUtils : Controller() {
                 val storagePath = Paths.get(downloadTaskModel.taskConfig.storagePath)
 
                 if (needUnzip) {
-                    val tmpFile: Path = AppProperties.USER_DIR.resolve("tmp.zip")
+                    val tmpFile: Path = AppProperties.TMP_DIR.resolve("tmp.zip")
                     saveBufferData(body.source(), tmpFile, downloadTaskModel, contentLength)
                     // unzip tmp file and clear it
                     unzipFile(tmpFile, storagePath)

@@ -4,12 +4,13 @@ import com.ingbyr.vdm.utils.AppConfigUtils
 import com.ingbyr.vdm.utils.AppProperties
 import javafx.beans.property.SimpleListProperty
 import javafx.beans.property.SimpleStringProperty
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tornadofx.*
 import java.util.*
 
 open class ThemeController : Controller() {
-    val logger = LoggerFactory.getLogger(ThemeController::class.java)
+    val logger: Logger = LoggerFactory.getLogger(ThemeController::class.java)
 
     init {
         messages = ResourceBundle.getBundle("i18n/PreferencesView")
@@ -26,7 +27,7 @@ open class ThemeController : Controller() {
     )
     val themes = SimpleListProperty<String>(themesNameAndUrl.keys.toList().observable())
     val activeThemeProperty = SimpleStringProperty()
-    var activeTheme by activeThemeProperty
+    private var activeTheme: String by activeThemeProperty
 
     private val cu = AppConfigUtils(app.config)
 

@@ -1,6 +1,5 @@
 package com.ingbyr.vdm.views
 
-import ch.qos.logback.classic.Level
 import com.ingbyr.vdm.controllers.MainController
 import com.ingbyr.vdm.controllers.ThemeController
 import com.ingbyr.vdm.models.DownloadTaskModel
@@ -14,7 +13,6 @@ import javafx.scene.control.*
 import javafx.scene.layout.ColumnConstraints
 import javafx.scene.layout.GridPane
 import javafx.scene.layout.VBox
-import org.slf4j.LoggerFactory
 import tornadofx.*
 import java.text.DecimalFormat
 import java.util.*

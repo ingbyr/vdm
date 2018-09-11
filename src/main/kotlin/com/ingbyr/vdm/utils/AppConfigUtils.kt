@@ -8,9 +8,9 @@ import tornadofx.*
  */
 class AppConfigUtils(private val config: ConfigProperties) {
 
-    companion object {
-        val configFilePath = AppProperties.USER_DIR.resolve("vdm.properties")!!
-    }
+//    companion object {
+//
+//    }
 
     fun load(key: String): String {
         return config.string(key)

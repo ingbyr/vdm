@@ -1,18 +1,19 @@
 package com.ingbyr.vdm.views
 
-import ch.qos.logback.classic.Level
 import com.ingbyr.vdm.controllers.PreferencesController
 import com.ingbyr.vdm.controllers.ThemeController
 import com.ingbyr.vdm.engines.utils.EngineType
+import com.ingbyr.vdm.events.RefreshCookieContent
 import com.ingbyr.vdm.events.RefreshEngineVersion
 import com.ingbyr.vdm.events.RestorePreferencesViewEvent
 import com.ingbyr.vdm.models.ProxyType
 import com.ingbyr.vdm.utils.AppConfigUtils
 import com.ingbyr.vdm.utils.AppProperties
-import com.ingbyr.vdm.utils.DebugUtils
 import com.ingbyr.vdm.utils.EnginesJsonUtils
+import com.ingbyr.vdm.utils.FileEditorOption
 import com.jfoenix.controls.*
 import javafx.scene.control.Label
+import javafx.scene.control.TextArea
 import javafx.stage.DirectoryChooser
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -55,9 +56,23 @@ class PreferencesView : View() {
     private val tfHTTPAddress: JFXTextField by fxid()
     private val tfHTTPPort: JFXTextField by fxid()
 
+    private val cookieToggleButton: JFXToggleButton by fxid()
+    private val newCookieButton: JFXButton by fxid()
+    private val editCookieButton: JFXButton by fxid()
+    private val deleteCookieButton: JFXButton by fxid()
+    private val cookieComboBox: JFXComboBox<String> by fxid()
+    private val cookieTextArea: TextArea by fxid()
+
+
     private val cu = AppConfigUtils(app.config)
 
     init {
+        subEvents()
+        loadVDMConfig()
+        initListeners()
+    }
+
+    private fun subEvents() {
         subscribe<RefreshEngineVersion> {
             when (it.engineType) {
                 EngineType.YOUTUBE_DL -> {
@@ -77,23 +92,6 @@ class PreferencesView : View() {
         subscribe<RestorePreferencesViewEvent> {
             logger.debug("restore preferences view")
             this@PreferencesView.currentStage?.isIconified = false
-        }
-
-        loadVDMConfig()
-        initListeners()
-        initSelectorContent()
-    }
-
-    private fun initSelectorContent() {
-        // init theme selector
-        themeSelector.items.addAll(themeController.themes)
-        themeSelector.bind(themeController.activeThemeProperty)
-
-        // init charset
-        charsetSelector.items.addAll(Charset.availableCharsets().keys.toList())
-        charsetSelector.selectionModel.select(cu.safeLoad(AppProperties.CHARSET, "UTF-8"))
-        charsetSelector.selectionModel.selectedItemProperty().addListener { _, _, newCharset ->
-            cu.update(AppProperties.CHARSET, newCharset)
         }
     }
 
@@ -121,13 +119,25 @@ class PreferencesView : View() {
             ProxyType.NONE -> {
             }
         }
+
         tfSocks5Address.text = cu.safeLoad(AppProperties.SOCKS5_PROXY_ADDRESS, "")
         tfSocks5Port.text = cu.safeLoad(AppProperties.SOCKS5_PROXY_PORT, "")
         tfHTTPAddress.text = cu.safeLoad(AppProperties.HTTP_PROXY_ADDRESS, "")
         tfHTTPPort.text = cu.safeLoad(AppProperties.HTTP_PROXY_PORT, "")
 
         // debug mode
-        tbEnableDebug.isSelected = cu.safeLoad(AppProperties.DEBUG_MODE, "false").toBoolean()
+        tbEnableDebug.selectedProperty().bindBidirectional(controller.debugModeProperty)
+
+        // cookie
+        cookieToggleButton.isSelected = cu.safeLoad(AppProperties.ENABLE_COOKIE, "false").toBoolean()
+
+        // init theme selector
+        themeSelector.items.addAll(themeController.themes)
+        themeSelector.bind(themeController.activeThemeProperty)
+
+        // init charset
+        charsetSelector.items.addAll(Charset.availableCharsets().keys.toList())
+        charsetSelector.selectionModel.select(cu.safeLoad(AppProperties.CHARSET, "UTF-8"))
     }
 
     private fun initListeners() {
@@ -150,17 +160,6 @@ class PreferencesView : View() {
         }
         tbDownloadDefault.action {
             cu.update(AppProperties.DOWNLOAD_DEFAULT_FORMAT, tbDownloadDefault.isSelected)
-        }
-        tbEnableDebug.action {
-            val rootLogger = LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME) as ch.qos.logback.classic.Logger
-            if (tbEnableDebug.isSelected) {
-                rootLogger.level = Level.DEBUG
-                cu.update(AppProperties.DEBUG_MODE, true)
-                DebugUtils.showOSInfo()
-            } else {
-                rootLogger.level = Level.ERROR
-                cu.update(AppProperties.DEBUG_MODE, false)
-            }
         }
 
         // engines settings area
@@ -194,13 +193,39 @@ class PreferencesView : View() {
                 cu.update(AppProperties.PROXY_TYPE, ProxyType.NONE)
             }
         }
-    }
 
-    private fun saveTextFieldContent() {
-        cu.update(AppProperties.SOCKS5_PROXY_ADDRESS, tfSocks5Address.text)
-        cu.update(AppProperties.SOCKS5_PROXY_PORT, tfSocks5Port.text)
-        cu.update(AppProperties.HTTP_PROXY_ADDRESS, tfHTTPAddress.text)
-        cu.update(AppProperties.HTTP_PROXY_PORT, tfHTTPPort.text)
+        // charset
+        charsetSelector.selectionModel.selectedItemProperty().addListener { _, _, newCharset ->
+            cu.update(AppProperties.CHARSET, newCharset)
+        }
+
+        // cookie
+        cookieTextArea.bind(controller.cookieProperty)
+        cookieToggleButton.action {
+            cu.update(AppProperties.ENABLE_COOKIE, cookieToggleButton.isSelected)
+        }
+        cookieComboBox.items = controller.cookieList
+        cookieComboBox.selectionModel.select(cu.safeLoad(AppProperties.CURRENT_COOKIE, ""))
+        cookieComboBox.selectionModel.selectedItemProperty().addListener { _, _, cookieName ->
+            cookieName?.let {
+                cu.update(AppProperties.CURRENT_COOKIE, it)
+                controller.readCookieContent()
+            }
+        }
+        newCookieButton.setOnMouseClicked {
+            find<FileEditorView>(mapOf(
+                    "fileEditorOption" to FileEditorOption(AppProperties.COOKIES_DIR, true, ".txt"))
+            ).openWindow()
+        }
+        editCookieButton.setOnMouseClicked {
+            find<FileEditorView>(mapOf(
+                    "fileEditorOption" to FileEditorOption(AppProperties.COOKIES_DIR.resolve(cu.load(AppProperties.CURRENT_COOKIE)), false, ".txt"))
+            ).openWindow()
+        }
+        subscribe<RefreshCookieContent> {
+            controller.freshCookieListAndContent()
+            cookieComboBox.selectionModel.select(cu.safeLoad(AppProperties.CURRENT_COOKIE, ""))
+        }
     }
 
     /**
@@ -208,6 +233,9 @@ class PreferencesView : View() {
      */
     override fun onUndock() {
         super.onUndock()
-        saveTextFieldContent()
+        cu.update(AppProperties.SOCKS5_PROXY_ADDRESS, tfSocks5Address.text)
+        cu.update(AppProperties.SOCKS5_PROXY_PORT, tfSocks5Port.text)
+        cu.update(AppProperties.HTTP_PROXY_ADDRESS, tfHTTPAddress.text)
+        cu.update(AppProperties.HTTP_PROXY_PORT, tfHTTPPort.text)
     }
 }
