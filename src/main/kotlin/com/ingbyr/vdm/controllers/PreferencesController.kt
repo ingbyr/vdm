@@ -39,14 +39,15 @@ class PreferencesController : Controller() {
     }
 
     fun readCookieContent() {
-        val cookieName = cu.safeLoad(AppProperties.CURRENT_COOKIE, "")
-        if (cookieName.isBlank()) cookie=  ""
-        val cookieFile = AppProperties.COOKIES_DIR.resolve(cookieName).toFile()
-        cookie = if (cookieFile.exists()) {
-            cookieFile.readText()
-        } else {
-            ""
-        }
+        // TODO save cookie to db
+//        val cookieName = cu.safeLoad(AppProperties.CURRENT_COOKIE, "")
+//        if (cookieName.isBlank()) cookie=  ""
+//        val cookieFile = AppProperties.COOKIES_DIR.resolve(cookieName).toFile()
+//        cookie = if (cookieFile.exists()) {
+//            cookieFile.readText()
+//        } else {
+//            ""
+//        }
     }
 
     fun updateEngine(engineType: EngineType, localVersion: String) {
