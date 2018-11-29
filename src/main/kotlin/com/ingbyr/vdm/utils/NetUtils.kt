@@ -17,8 +17,6 @@ import java.nio.file.Paths
 import java.nio.file.attribute.PosixFilePermission
 import java.text.DecimalFormat
 import java.util.*
-import java.util.zip.ZipEntry
-import java.util.zip.ZipFile
 
 
 class NetUtils : Controller() {
@@ -51,10 +49,11 @@ class NetUtils : Controller() {
                 val storagePath = Paths.get(downloadTaskModel.taskConfig.storagePath)
 
                 if (needUnzip) {
-                    val tmpFile: Path = AppProperties.TMP_DIR.resolve("tmp.zip")
+                    val tmpFileName = downloadTaskModel.taskConfig.url.split("/").last()
+                    val tmpFile: Path = AppProperties.TMP_DIR.resolve(tmpFileName)
                     saveBufferData(body.source(), tmpFile, downloadTaskModel, contentLength)
                     // unzip tmp file and clear it
-                    unzipFile(tmpFile, storagePath)
+                    FileCompressUtils.decompress(tmpFile.toFile(), storagePath.toFile())
                     Files.delete(tmpFile)
                 } else {
                     saveBufferData(body.source(), storagePath, downloadTaskModel, contentLength)
@@ -102,20 +101,6 @@ class NetUtils : Controller() {
                     downloadTaskModel.progress = totalBytesRead.toDouble() / contentLength.toDouble()
                 }
                 sink.flush()
-            }
-        }
-    }
-
-    private fun unzipFile(source: Path, dest: Path) {
-        // unzip file
-        logger.debug("unzip $source to $dest")
-        ZipFile(source.toFile()).use { zipFile ->
-            val enu = zipFile.entries()
-            while (enu.hasMoreElements()) {
-                val zipEntry: ZipEntry = enu.nextElement()
-                zipFile.getInputStream(zipEntry).use {
-                    Files.write(dest, it.readBytes())
-                }
             }
         }
     }

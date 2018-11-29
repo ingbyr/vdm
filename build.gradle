@@ -35,6 +35,8 @@ dependencies {
     implementation "com.h2database:h2:1.4.197"
     implementation "org.jetbrains.exposed:exposed:0.11.2"
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.4.1"
+    implementation "org.apache.commons:commons-compress:1.18"
+    implementation "commons-io:commons-io:2.6"
     testImplementation('org.junit.jupiter:junit-jupiter-api:5.2.0')
     testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine:5.2.0')
 
