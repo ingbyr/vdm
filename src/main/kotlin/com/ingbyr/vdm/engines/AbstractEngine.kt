@@ -1,7 +1,7 @@
 package com.ingbyr.vdm.engines
 
+import com.ingbyr.vdm.dao.EngineInfo
 import com.ingbyr.vdm.engines.utils.EngineDownloadType
-import com.ingbyr.vdm.engines.utils.EngineInfo
 import com.ingbyr.vdm.engines.utils.EngineType
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.models.MediaFormat

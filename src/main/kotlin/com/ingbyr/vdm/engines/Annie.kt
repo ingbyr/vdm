@@ -3,15 +3,20 @@ package com.ingbyr.vdm.engines
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.ingbyr.vdm.dao.EngineInfo
+import com.ingbyr.vdm.dao.EngineInfoTable
+import com.ingbyr.vdm.dao.searchEngineInfo
 import com.ingbyr.vdm.engines.utils.EngineDownloadType
 import com.ingbyr.vdm.engines.utils.EngineException
-import com.ingbyr.vdm.engines.utils.EngineInfo
 import com.ingbyr.vdm.engines.utils.EngineType
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.models.DownloadTaskStatus
 import com.ingbyr.vdm.models.MediaFormat
 import com.ingbyr.vdm.models.ProxyType
-import com.ingbyr.vdm.utils.*
+import com.ingbyr.vdm.utils.NetUtils
+import com.ingbyr.vdm.utils.OSType
+import com.ingbyr.vdm.utils.OSUtils
+import com.ingbyr.vdm.utils.UpdateUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.BufferedReader
@@ -22,10 +27,13 @@ import java.util.regex.Pattern
 
 
 class Annie : AbstractEngine() {
+    companion object {
+        val info = searchEngineInfo(EngineType.ANNIE)
+    }
     override val logger: Logger = LoggerFactory.getLogger(Annie::class.java)
     override val downloadNewEngineNeedUnzip: Boolean = true
-    override val engineInfo: EngineInfo = EnginesJsonUtils.engineInfo(AppProperties.ANNIE)
-    override val enginePath: String = AppProperties.PACKAGE_DIR.resolve(engineInfo.path).normalize().toString()
+    override val engineInfo: EngineInfo = EngineInfo.find { EngineInfoTable.name eq "annie" }.first()
+    override val enginePath: String = info.execPath
     override val engineType: EngineType = EngineType.ANNIE
     override val argsMap: MutableMap<String, String> = mutableMapOf("engine" to enginePath)
     override val remoteVersionUrl: String = engineInfo.remoteVersionUrl

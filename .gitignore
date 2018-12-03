@@ -8,4 +8,5 @@ log/
 /config
 /cookies
 /tmp
+/engines
 /.DS_Store

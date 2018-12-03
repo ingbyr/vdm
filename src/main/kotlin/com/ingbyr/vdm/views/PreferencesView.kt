@@ -9,7 +9,6 @@ import com.ingbyr.vdm.events.RestorePreferencesViewEvent
 import com.ingbyr.vdm.models.ProxyType
 import com.ingbyr.vdm.utils.AppConfigUtils
 import com.ingbyr.vdm.utils.AppProperties
-import com.ingbyr.vdm.utils.EnginesJsonUtils
 import com.ingbyr.vdm.utils.FileEditorOption
 import com.jfoenix.controls.*
 import javafx.scene.control.Label
@@ -73,20 +72,21 @@ class PreferencesView : View() {
     }
 
     private fun subEvents() {
+        // TODO update the version info
         subscribe<RefreshEngineVersion> {
             when (it.engineType) {
                 EngineType.YOUTUBE_DL -> {
                     labelYoutubeDLVersion.text = it.newVersion
-                    EnginesJsonUtils.engineInfo(AppProperties.YOUTUBE_DL).version = it.newVersion
+//                    EnginesJsonUtils.engineInfo(AppProperties.YOUTUBE_DL).version = it.newVersion
                 }
                 EngineType.ANNIE -> {
                     labelAnnieVersion.text = it.newVersion
-                    EnginesJsonUtils.engineInfo(AppProperties.ANNIE).version = it.newVersion
+//                    EnginesJsonUtils.engineInfo(AppProperties.ANNIE).version = it.newVersion
                 }
                 else -> {
                 }
             }
-            EnginesJsonUtils.save2JsonFile()
+//            EnginesJsonUtils.save2JsonFile()
         }
 
         subscribe<RestorePreferencesViewEvent> {
@@ -108,8 +108,10 @@ class PreferencesView : View() {
             EngineType.ANNIE -> tbAnnie.isSelected = true
             else -> logger.error("no engines type of $engineType")
         }
-        labelYoutubeDLVersion.text = EnginesJsonUtils.engineInfo(AppProperties.YOUTUBE_DL).version
-        labelAnnieVersion.text = EnginesJsonUtils.engineInfo(AppProperties.ANNIE).version
+
+        // TODO display the version
+        // labelYoutubeDLVersion.text = EnginesJsonUtils.engineInfo(AppProperties.YOUTUBE_DL).version
+        // labelAnnieVersion.text = EnginesJsonUtils.engineInfo(AppProperties.ANNIE).version
 
         // proxy settings area
         val proxyType = ProxyType.valueOf(cu.safeLoad(AppProperties.PROXY_TYPE, ProxyType.NONE))
@@ -131,9 +133,9 @@ class PreferencesView : View() {
         // cookie
         cookieToggleButton.isSelected = cu.safeLoad(AppProperties.ENABLE_COOKIE, "false").toBoolean()
 
-        // init theme selector
-        themeSelector.items.addAll(themeController.themes)
-        themeSelector.bind(themeController.activeThemeProperty)
+        // TODO init theme selector
+//        themeSelector.items.addAll(themeController.themes)
+//        themeSelector.bind(themeController.activeThemeProperty)
 
         // init charset
         charsetSelector.items.addAll(Charset.availableCharsets().keys.toList())
@@ -170,11 +172,13 @@ class PreferencesView : View() {
             cu.update(AppProperties.ENGINE_TYPE, EngineType.ANNIE)
         }
         btnUpdateYoutubeDL.setOnMouseClicked {
-            controller.updateEngine(EngineType.YOUTUBE_DL, EnginesJsonUtils.engineInfo(AppProperties.YOUTUBE_DL).version)
+            // TODO update engine with local version info
+            // controller.updateEngine(EngineType.YOUTUBE_DL, EnginesJsonUtils.engineInfo(AppProperties.YOUTUBE_DL).version)
             this.currentStage?.isIconified = true
         }
         btnUpdateAnnie.setOnMouseClicked {
-            controller.updateEngine(EngineType.ANNIE, EnginesJsonUtils.engineInfo(AppProperties.ANNIE).version)
+            // TODO update engine with local version info
+            // controller.updateEngine(EngineType.ANNIE, EnginesJsonUtils.engineInfo(AppProperties.ANNIE).version)
             this.currentStage?.isIconified = true
         }
 

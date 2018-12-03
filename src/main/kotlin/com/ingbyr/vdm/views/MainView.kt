@@ -2,6 +2,7 @@ package com.ingbyr.vdm.views
 
 import com.ingbyr.vdm.controllers.MainController
 import com.ingbyr.vdm.controllers.ThemeController
+import com.ingbyr.vdm.events.OpenWizardViewEvent
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.models.DownloadTaskStatus
 import com.ingbyr.vdm.utils.AppConfigUtils
@@ -137,8 +138,9 @@ class MainView : View() {
             // init config file
             cu.update(AppProperties.VDM_VERSION, vdmVersion)
 
-            find(PreferencesView::class).openWindow()?.hide()
-            cu.update(AppProperties.FIRST_TIME_USE, "false")
+            find(PreferencesView::class).openWindow()?.hide() // FIXME should be called in wizard view
+            find(WizardView::class).openWindow()?.isAlwaysOnTop = true  // make sure wizard is always on top
+            // cu.update(AppProperties.FIRST_TIME_USE, "false")     // TODO uncomment this
         } else {
             cu.update(AppProperties.VDM_VERSION, vdmVersion)
         }

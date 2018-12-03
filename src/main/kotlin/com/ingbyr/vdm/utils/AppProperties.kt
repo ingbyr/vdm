@@ -6,13 +6,12 @@ import java.nio.file.Paths
 
 object AppProperties {
 
-
-
     // path config
     val APP_DIR: Path = Paths.get(System.getProperty("user.dir"))
     val CONFIG_DIR : Path = APP_DIR.resolve("config")
     val COOKIES_DIR: Path = APP_DIR.resolve("cookies")
     val PACKAGE_DIR: Path = APP_DIR.resolve("package")
+    val ENGINES_DIR: Path = APP_DIR.resolve("engines")
     val DB_DIR: Path = APP_DIR.resolve("db")
     val TMP_DIR = APP_DIR.resolve("tmp")
 
