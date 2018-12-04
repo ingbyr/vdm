@@ -10,6 +10,7 @@ import com.ingbyr.vdm.models.DownloadTaskStatus
 import com.ingbyr.vdm.models.DownloadTaskType
 import com.ingbyr.vdm.models.TaskConfig
 import com.ingbyr.vdm.utils.*
+import com.ingbyr.vdm.utils.Attributes
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tornadofx.*
@@ -26,12 +27,11 @@ class MainController : Controller() {
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
     val downloadTaskModelList = mutableListOf<DownloadTaskModel>().observable()
     private val engineList = ConcurrentHashMap<String, AbstractEngine>() // FIXME auto clean the finished models engines
-    private val cu = AppConfigUtils(app.config)
 
     init {
 
         // debug mode
-        DebugUtils.changeDebugMode(cu.safeLoad(AppProperties.DEBUG_MODE, false).toBoolean())
+        DebugUtils.changeDebugMode(ConfigUtils.safeLoad(Attributes.DEBUG_MODE, false).toBoolean())
 
         subscribe<CreateDownloadTask> {
             logger.debug("create models: ${it.downloadTask}")
@@ -41,7 +41,7 @@ class MainController : Controller() {
 
         // background thread
         subscribe<UpdateEngineTask> {
-            val charset = cu.safeLoad(AppProperties.CHARSET, "UTF-8")
+            val charset = ConfigUtils.safeLoad(Attributes.CHARSET, "UTF-8")
             val engine = EngineFactory.create(it.engineType, charset)
             val taskConfig = TaskConfig("", it.engineType, DownloadTaskType.ENGINE, true, engine.enginePath)
             val downloadTask = DownloadTaskModel(taskConfig, DateTimeUtils.now(), title = "[${messages["ui.update"]} ${it.engineType.name}]")
@@ -70,7 +70,7 @@ class MainController : Controller() {
     fun startTask(downloadTask: DownloadTaskModel) {
         if (downloadTask.taskConfig.downloadType == DownloadTaskType.ENGINE) return
         downloadTask.status = DownloadTaskStatus.ANALYZING
-        val charset = cu.safeLoad(AppProperties.CHARSET, "UTF-8")
+        val charset = ConfigUtils.safeLoad(Attributes.CHARSET, "UTF-8")
         runAsync {
             // download
             val engine = EngineFactory.create(downloadTask.taskConfig.engineType, charset)

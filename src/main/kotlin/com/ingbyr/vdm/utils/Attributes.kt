@@ -4,7 +4,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
-object AppProperties {
+object Attributes {
 
     // path config
     val APP_DIR: Path = Paths.get(System.getProperty("user.dir"))
@@ -43,6 +43,7 @@ object AppProperties {
     const val VDM_VERSION = "VDM_VERSION"
     const val THEME = "THEME"
     const val CHARSET = "CHARSET"
+    const val THEME_COLOR = "THEME_COLOR"
 
     // app content
     const val VDM_UPDATE_URL = "https://github.com/ingbyr/VDM/releases/latest"

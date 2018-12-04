@@ -2,7 +2,8 @@ package com.ingbyr.vdm.views
 
 import com.ingbyr.vdm.controllers.ThemeController
 import com.ingbyr.vdm.controllers.WizardController
-import com.ingbyr.vdm.stylesheets.LightTheme
+import com.ingbyr.vdm.utils.ConfigUtils
+import com.ingbyr.vdm.utils.Attributes
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXCheckBox
 import com.jfoenix.controls.JFXColorPicker
@@ -20,6 +21,7 @@ class WizardView : View() {
 
     private val logger: Logger = LoggerFactory.getLogger(WizardView::class.java)
     private val controller: WizardController by inject()
+    private val themeController: ThemeController by inject()
 
     // bottom ui
     private val btnNext = JFXButton(messages["ui.next"])
@@ -42,8 +44,10 @@ class WizardView : View() {
 
     private val storageLocation = vbox {
         label("setting location")
+        colorPicker.value = c(ConfigUtils.load(Attributes.THEME_COLOR))
         colorPicker.setOnAction {
-            logger.debug("choose theme ${colorPicker.value}")
+            controller.updateThemeColor(colorPicker.value.toString())
+            themeController.reloadTheme()
         }
         this += colorPicker
     }

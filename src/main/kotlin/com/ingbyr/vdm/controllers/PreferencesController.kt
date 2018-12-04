@@ -2,8 +2,8 @@ package com.ingbyr.vdm.controllers
 
 import com.ingbyr.vdm.engines.utils.EngineType
 import com.ingbyr.vdm.events.UpdateEngineTask
-import com.ingbyr.vdm.utils.AppConfigUtils
-import com.ingbyr.vdm.utils.AppProperties
+import com.ingbyr.vdm.utils.ConfigUtils
+import com.ingbyr.vdm.utils.Attributes
 import com.ingbyr.vdm.utils.DebugUtils
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleStringProperty
@@ -17,32 +17,30 @@ class PreferencesController : Controller() {
     val cookieProperty = SimpleStringProperty()
     private var cookie by cookieProperty
 
-    private val cu = AppConfigUtils(app.config)
-
     init {
         initDebugMode()
         freshCookieListAndContent()
     }
 
     private fun initDebugMode() {
-        debugMode = cu.safeLoad(AppProperties.DEBUG_MODE, "false").toBoolean()
+        debugMode = ConfigUtils.safeLoad(Attributes.DEBUG_MODE, "false").toBoolean()
         debugModeProperty.addListener { _, _, mode ->
             DebugUtils.changeDebugMode(mode)
-            cu.update(AppProperties.DEBUG_MODE, mode)
+            ConfigUtils.update(Attributes.DEBUG_MODE, mode)
         }
     }
 
     fun freshCookieListAndContent() {
         cookieList.clear()
-        AppProperties.COOKIES_DIR.toFile().walkTopDown().filter { it.name.endsWith(".txt") }.forEach { cookieList.add(it.name) }
+        Attributes.COOKIES_DIR.toFile().walkTopDown().filter { it.name.endsWith(".txt") }.forEach { cookieList.add(it.name) }
         readCookieContent()
     }
 
     fun readCookieContent() {
         // TODO save cookie to db
-//        val cookieName = cu.safeLoad(AppProperties.CURRENT_COOKIE, "")
+//        val cookieName = ConfigUtils.safeLoad(Attributes.CURRENT_COOKIE, "")
 //        if (cookieName.isBlank()) cookie=  ""
-//        val cookieFile = AppProperties.COOKIES_DIR.resolve(cookieName).toFile()
+//        val cookieFile = Attributes.COOKIES_DIR.resolve(cookieName).toFile()
 //        cookie = if (cookieFile.exists()) {
 //            cookieFile.readText()
 //        } else {

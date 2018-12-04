@@ -27,7 +27,7 @@ object FileCompressUtils {
      * Decompress tar.gz file. tar.gz -> tar -> decompressed file
      */
     private fun decompressGz(sourceFile: File, destFile: File) {
-        val tmpTarFile = AppProperties.TMP_DIR.resolve("tmp.tar").toFile()
+        val tmpTarFile = Attributes.TMP_DIR.resolve("tmp.tar").toFile()
         GzipCompressorInputStream(sourceFile.inputStream().buffered()).use { gis ->
             IOUtils.copy(gis, tmpTarFile.outputStream())
         }

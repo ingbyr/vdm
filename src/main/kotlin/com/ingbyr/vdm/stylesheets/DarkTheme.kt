@@ -4,12 +4,10 @@ import tornadofx.*
 
 class DarkTheme : Stylesheet() {
     companion object {
-        val mainArea by cssid()
+        var primaryColor = c("#37474F")
     }
 
     init {
-        mainArea {
-            backgroundColor += c("#000000")
-        }
+
     }
 }

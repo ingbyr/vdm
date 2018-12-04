@@ -16,7 +16,7 @@ object DBUtils {
     private val log = LoggerFactory.getLogger(DBUtils::class.java)
 
     init {
-        Database.connect(AppProperties.DATABASE_URL, driver = "org.h2.Driver", user = "vdm", password = "vdm")
+        Database.connect(Attributes.DATABASE_URL, driver = "org.h2.Driver", user = "vdm", password = "vdm")
         transaction {
             addLogger(StdOutSqlLogger)
             SchemaUtils.create(TaskConfigTable, DownloadTaskTable)

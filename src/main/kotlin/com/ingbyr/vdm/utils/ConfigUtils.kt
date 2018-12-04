@@ -6,28 +6,26 @@ import tornadofx.*
 /**
  * Load and update the config file. It's necessary to invoke saveToConfigFile().
  */
-class AppConfigUtils(private val config: ConfigProperties) {
+object ConfigUtils : Controller(){
 
-//    companion object {
-//
-//    }
+    private val c = app.config
 
     fun load(key: String): String {
-        return config.string(key)
+        return c.string(key)
     }
 
     fun safeLoad(key: String, defaultValue: Any): String {
         return try {
-            config.string(key)
+            c.string(key)
         } catch (e: IllegalStateException) {
-            config[key] = defaultValue.toString()
-            config.save()
+            c[key] = defaultValue.toString()
+            c.save()
             defaultValue.toString()
         }
     }
 
     fun update(key: String, value: Any) {
-        config[key] = value.toString()
-        config.save()
+        c[key] = value.toString()
+        c.save()
     }
 }

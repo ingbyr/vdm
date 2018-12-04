@@ -33,7 +33,7 @@ class YoutubeDL : AbstractEngine() {
     override val engineInfo = EngineInfo.find { EngineInfoTable.name eq "youtube-dl" }.first()
     override val remoteVersionUrl: String = engineInfo.remoteVersionUrl
     override val engineType = EngineType.YOUTUBE_DL
-    override val enginePath: String = AppProperties.PACKAGE_DIR.resolve(engineInfo.execPath).normalize().toString()
+    override val enginePath: String = Attributes.PACKAGE_DIR.resolve(engineInfo.execPath).normalize().toString()
     override var remoteVersion: String? = null
     override var taskModel: DownloadTaskModel? = null
     override val argsMap: MutableMap<String, String> = mutableMapOf("engines" to enginePath)

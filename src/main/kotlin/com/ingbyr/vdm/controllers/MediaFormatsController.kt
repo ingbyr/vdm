@@ -5,8 +5,8 @@ import com.ingbyr.vdm.engines.utils.EngineFactory
 import com.ingbyr.vdm.events.StopBackgroundTask
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.models.MediaFormat
-import com.ingbyr.vdm.utils.AppConfigUtils
-import com.ingbyr.vdm.utils.AppProperties
+import com.ingbyr.vdm.utils.ConfigUtils
+import com.ingbyr.vdm.utils.Attributes
 import org.slf4j.LoggerFactory
 import tornadofx.*
 import java.util.*
@@ -15,7 +15,6 @@ class MediaFormatsController : Controller() {
 
     private val logger = LoggerFactory.getLogger(MediaFormatsController::class.java)
     var engine: AbstractEngine? = null
-    private val cu = AppConfigUtils(app.config)
 
     init {
         messages = ResourceBundle.getBundle("i18n/MediaFormatsView")
@@ -27,7 +26,7 @@ class MediaFormatsController : Controller() {
 
     fun requestMedia(downloadTaskModel: DownloadTaskModel): List<MediaFormat>? {
         val config = downloadTaskModel.taskConfig
-        val charset = cu.safeLoad(AppProperties.CHARSET, "UTF-8")
+        val charset = ConfigUtils.safeLoad(Attributes.CHARSET, "UTF-8")
         engine = EngineFactory.create(config.engineType, charset)
         if (engine != null) {
             engine!!.simulateJson().addProxy(config.proxyType, config.proxyAddress, config.proxyPort).url(config.url)

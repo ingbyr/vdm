@@ -1,6 +1,6 @@
 package com.ingbyr.vdm.dao
 
-import com.ingbyr.vdm.utils.AppProperties
+import com.ingbyr.vdm.utils.Attributes
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.StdOutSqlLogger
@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test
 class EngineInfoTableTests {
     @BeforeEach
     fun `setup database`() {
-        Database.connect(AppProperties.DATABASE_URL, driver = "org.h2.Driver")
+        Database.connect(Attributes.DATABASE_URL, driver = "org.h2.Driver")
         transaction {
             addLogger(StdOutSqlLogger)
             SchemaUtils.create(EngineInfoTable)

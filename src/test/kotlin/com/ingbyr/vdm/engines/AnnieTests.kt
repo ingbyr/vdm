@@ -3,7 +3,7 @@ package com.ingbyr.vdm.engines
 import com.ingbyr.vdm.dao.EngineInfoTable
 import com.ingbyr.vdm.engines.utils.EngineFactory
 import com.ingbyr.vdm.engines.utils.EngineType
-import com.ingbyr.vdm.utils.AppProperties
+import com.ingbyr.vdm.utils.Attributes
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.StdOutSqlLogger
@@ -17,7 +17,7 @@ class AnnieTests {
 
     @BeforeEach
     fun `setup database`() {
-        Database.connect(AppProperties.DATABASE_URL, driver = "org.h2.Driver")
+        Database.connect(Attributes.DATABASE_URL, driver = "org.h2.Driver")
         transaction {
             addLogger(StdOutSqlLogger)
             SchemaUtils.create(EngineInfoTable)
