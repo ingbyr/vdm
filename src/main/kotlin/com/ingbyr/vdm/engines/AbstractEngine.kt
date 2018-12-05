@@ -10,13 +10,6 @@ import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
 abstract class AbstractEngine {
-    /**
-     * Adapt to the different platform
-     * Build the args for the command line
-     * Exec the command line
-     * Parse the output and update the main UI thread
-     * Stop thread
-     */
     var charset = "UTF-8"
 
     protected abstract val logger: Logger

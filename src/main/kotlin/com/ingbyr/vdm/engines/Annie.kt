@@ -1,5 +1,6 @@
 package com.ingbyr.vdm.engines
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
@@ -249,7 +250,7 @@ class Annie : AbstractEngine() {
     }
 }
 
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class AnnieMediaJson(
     @JsonProperty("site")
     val site: String,
