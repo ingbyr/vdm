@@ -1,6 +1,5 @@
 package com.ingbyr.vdm
 
-import com.ingbyr.vdm.controllers.ThemeController
 import com.ingbyr.vdm.utils.Attributes
 import com.ingbyr.vdm.views.MainView
 import javafx.application.Application
@@ -13,10 +12,9 @@ import java.util.*
 class MainApp : App(MainView::class) {
     override val configPath: Path = Attributes.configFilePath
     private val availableLanguages = listOf("zh", "en", "hu")
-    private val themeController : ThemeController by inject()
 
     init {
-//         Locale.setDefault(Locale("en", ""))
+        Locale.setDefault(Locale("en", ""))
         val language = Locale.getDefault().language
         if (language !in availableLanguages) {
             Locale.setDefault(Locale("en", "US"))
@@ -25,7 +23,6 @@ class MainApp : App(MainView::class) {
 
     override fun start(stage: Stage) {
         super.start(stage)
-        themeController.initTheme()
         addStageIcon(Image("/imgs/logo.jpg"))
     }
 }

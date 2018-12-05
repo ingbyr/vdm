@@ -6,6 +6,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.ingbyr.vdm.dao.EngineInfo
 import com.ingbyr.vdm.dao.EngineInfoTable
+import com.ingbyr.vdm.dao.searchEngineInfo
 import com.ingbyr.vdm.engines.utils.EngineDownloadType
 import com.ingbyr.vdm.engines.utils.EngineException
 import com.ingbyr.vdm.engines.utils.EngineType
@@ -28,9 +29,11 @@ import java.util.regex.Pattern
  * TODO wrap download playlist
  */
 class YoutubeDL : AbstractEngine() {
+    companion object : EngineMeteData {
+        override val engineInfo = searchEngineInfo(EngineType.ANNIE)
+    }
     override val logger: Logger = LoggerFactory.getLogger(this::class.java)
     override val downloadNewEngineNeedUnzip: Boolean = false
-    override val engineInfo = EngineInfo.find { EngineInfoTable.name eq "youtube-dl" }.first()
     override val remoteVersionUrl: String = engineInfo.remoteVersionUrl
     override val engineType = EngineType.YOUTUBE_DL
     override val enginePath: String = Attributes.PACKAGE_DIR.resolve(engineInfo.execPath).normalize().toString()

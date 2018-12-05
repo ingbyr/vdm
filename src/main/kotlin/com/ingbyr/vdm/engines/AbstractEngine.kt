@@ -10,6 +10,9 @@ import org.slf4j.Logger
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
+interface EngineMeteData {
+    val engineInfo: EngineInfo
+}
 
 abstract class AbstractEngine {
     /**
@@ -24,7 +27,6 @@ abstract class AbstractEngine {
     protected abstract val logger: Logger
     protected val running: AtomicBoolean = AtomicBoolean(false)
     abstract val downloadNewEngineNeedUnzip: Boolean
-    abstract val engineInfo: EngineInfo
     abstract val enginePath: String
     abstract val engineType: EngineType
     abstract val argsMap: MutableMap<String, String>

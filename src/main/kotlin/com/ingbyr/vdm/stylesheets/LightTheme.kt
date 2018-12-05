@@ -1,28 +1,26 @@
 package com.ingbyr.vdm.stylesheets
 
-import com.ingbyr.vdm.utils.ConfigUtils
 import com.ingbyr.vdm.utils.Attributes
+import com.ingbyr.vdm.utils.ConfigUtils
 import javafx.scene.paint.Color
 import javafx.scene.text.FontWeight
 import tornadofx.*
 
 class LightTheme : Stylesheet() {
     // main color
-    val primaryColor = c(ConfigUtils.safeLoad(Attributes.THEME_COLOR, "#37474F"))
-    private val lighterColor = c("#455A64")
-    private val darkerColor = c("#263238")
-    private val greyColor = c("#ECEFF1")
-    private val lightGreyColor = c("#FBFBFB")
+    private val primaryColor = c(ConfigUtils.safeLoad(Attributes.THEME_PRIMARY_COLOR, "#263238"))
+    private val secondaryColor = c(ConfigUtils.safeLoad(Attributes.THEME_SECONDARY_COLOR, "#455A64"))
+
 
     companion object {
         // icon size
-        private val regionSize = 2.0.em
+        private val regionSize = 1.5.em
         private val regionColor = Color.WHITE
 
         // id properties
         private val smallText by cssid()
         private val shortcutIcons by cssid()
-        private val settingsBtn by cssid()
+        private val shortcutButton by cssid()
         private val buttonDownloadRegion by cssid()
         private val buttonPauseRegion by cssid()
         private val buttonPlayRegion by cssid()
@@ -38,6 +36,8 @@ class LightTheme : Stylesheet() {
         private val mainView by cssid()
         private val preferencesView by cssid()
         private val mediaFormatsView by cssid()
+        private val wizardView by cssid()
+        private val wizardStepView by cssid()
 
 
         // class properties
@@ -77,24 +77,21 @@ class LightTheme : Stylesheet() {
 
         tooltip {
             fontSize = 1.0.em
-        }
-
-        // TODO not confirmed
-        tab child text {
-            fontSize = 1.0.em
+            textFill = Color.WHITE
+            backgroundColor += primaryColor
         }
 
         jfxTextField {
             fontSize = 1.0.em
             jfxFocusColor.value = primaryColor
-            jfxUnfocusColor.value = lighterColor
+            jfxUnfocusColor.value = secondaryColor
         }
 
-        menu child separator child line {
+        menu contains separator contains line {
             borderColor += box(primaryColor)
         }
 
-        menuItem child label {
+        menuItem contains label {
             textFill = Color.WHITE
         }
 
@@ -103,29 +100,28 @@ class LightTheme : Stylesheet() {
         }
 
         contextMenu {
-            backgroundColor += darkerColor
+            backgroundColor += primaryColor
         }
 
         menuItem and focused {
             backgroundColor += primaryColor
         }
 
-        menuButton child arrowButton {
+        menuButton contains arrowButton {
             padding = box(0.0.em)
         }
 
-        menuButton child arrowButton child arrow {
+        menuButton contains arrowButton contains arrow {
             padding = box(0.0.em)
         }
 
         // icons
         shortcutIcons {
-            backgroundColor += darkerColor
+            backgroundColor += primaryColor
         }
 
-        settingsBtn {
+        shortcutButton {
             backgroundColor += primaryColor
-            textFill = Color.WHITE
         }
 
         buttonDownloadRegion {
@@ -208,8 +204,13 @@ class LightTheme : Stylesheet() {
                     "M192 32q0-13 9.5-22.5T224 0h768q13 0 22.5 9.5T1024 32q0 14-9.5 23T992 64H224q-13 0-22.5-9T192 32zM0 32Q0 18 9.5 9T32 0t22.5 9T64 32q0 13-9.5 22.5T32 64 9.5 54.5 0 32zm192 320q0-14 9.5-23t22.5-9h768q13 0 22.5 9t9.5 23q0 13-9.5 22.5T992 384H224q-13 0-22.5-9.5T192 352zM0 350q0-13 9.5-22.5T32 318t22.5 9.5T64 350q0 14-9.5 23T32 382t-22.5-9T0 350zm192 323q0-13 9.5-22.5T224 641h768q13 0 22.5 9.5t9.5 22.5-9.5 22.5T992 705H224q-13 0-22.5-9.5T192 673zM0 672q0-13 9.5-22.5T32 640t22.5 9.5T64 672t-9.5 22.5T32 704t-22.5-9.5T0 672z"
         }
 
-        jfxButton child jfxRippler {
-            jfxRipplerFill.value = lighterColor
+        jfxButton {
+            backgroundColor += secondaryColor
+            textFill = Color.WHITE
+        }
+
+        jfxButton contains jfxRippler {
+            jfxRipplerFill.value = primaryColor
         }
 
         jfxToggleButton {
@@ -226,12 +227,12 @@ class LightTheme : Stylesheet() {
             fxVerticalGap.value = 1.0.em
         }
 
-        jfxListView child listCell {
+        jfxListView contains listCell {
             textFill = Color.BLACK
         }
 
-        jfxListView child listCell and selected {
-            backgroundColor += lighterColor
+        jfxListView contains listCell and selected {
+            backgroundColor += secondaryColor
         }
 
         tableView {
@@ -241,107 +242,93 @@ class LightTheme : Stylesheet() {
         }
 
         tableRowCell {
-            borderColor += box(lightGreyColor)
+            borderColor += box(Color.LIGHTGREY)
         }
 
         tableRowCell and odd {
-            backgroundColor += lightGreyColor
+            backgroundColor += Color.LIGHTGREY
         }
 
         tableRowCell and selected {
-            backgroundColor += lighterColor
+            backgroundColor += secondaryColor
         }
 
-        tableView child columnHeader {
-            backgroundColor += primaryColor
+        tableView contains columnHeader {
+            backgroundColor += secondaryColor
         }
 
-        tableView child columnHeader child label {
+        tableView contains columnHeader contains label {
             textFill = Color.WHITE
             fontWeight = FontWeight.BOLD
         }
 
-        jfxProgressBar child bar {
+        jfxProgressBar contains bar {
             backgroundColor += primaryColor
         }
 
         jfxComboBox {
-            jfxFocusColor.value = lighterColor
-            jfxUnfocusColor.value = greyColor
+            jfxFocusColor.value = secondaryColor
+            jfxUnfocusColor.value = Color.GREY
         }
 
-        comboBoxPopup child listView child listCell and filled and selected {
-            backgroundColor += lighterColor
+        comboBoxPopup contains listView contains listCell and filled and selected {
+            backgroundColor += secondaryColor
         }
 
-        comboBoxPopup child listView child listCell and filled and selected and hover {
-            backgroundColor += lighterColor
+        comboBoxPopup contains listView contains listCell and filled and selected and hover {
+            backgroundColor += secondaryColor
         }
 
-        comboBoxPopup child listView child listCell and filled and hover {
-            backgroundColor += lighterColor
+        comboBoxPopup contains listView contains listCell and filled and hover {
+            backgroundColor += secondaryColor
         }
 
         labelOption {
             textFill = Color.WHITE
         }
 
-        tab child text {
-            fontWeight = FontWeight.NORMAL
-        }
-
-        jfxTabPane child tabHeaderArea child jfxRippler {
-            jfxRipplerFill.value = lighterColor
-        }
-
         tabHeaderBackground {
             backgroundColor += primaryColor
         }
 
-        jfxTabPane child tabSelectedLine {
-            backgroundColor += lighterColor
-            prefHeight = 0.3.em
+        tabLabel {
+            fontSize = 1.0.em
         }
 
-        splitPane and vertical child splitPaneDivider {
-            backgroundColor += lighterColor
-            padding = box(0.0.em, 0.02.em)
+        jfxTabPane contains headersRegion child tab contains jfxRippler {
+            jfxRipplerFill.value = secondaryColor
+        }
+
+        jfxTabPane contains headersRegion contains tabSelectedLine {
+            backgroundColor += secondaryColor
+        }
+
+        splitPane and vertical contains splitPaneDivider {
+            backgroundColor += secondaryColor
+            padding = box(0.0.em, 0.01.em)
         }
 
         formatsListViewTitle {
-            backgroundColor += darkerColor
+            backgroundColor += primaryColor
         }
 
-        formatsListViewTitle child label {
+        formatsListViewTitle contains label {
             textFill = Color.WHITE
         }
 
         createDownloadTaskView {
-            backgroundColor += darkerColor
             prefWidth = 600.px
-        }
-
-        createDownloadTaskView child label {
-            textFill = Color.WHITE
-        }
-
-        createDownloadTaskView child jfxTextField {
-            textFill = Color.WHITE
+            prefHeight = 200.px
         }
 
         aboutView {
-            backgroundColor += darkerColor
+            backgroundColor += primaryColor
             prefWidth = 400.px
             prefHeight = 300.px
         }
 
-        aboutView child label {
+        aboutView contains label {
             textFill = Color.WHITE
-        }
-
-        aboutView child jfxButton {
-            textFill = Color.WHITE
-            backgroundColor += primaryColor
         }
 
         mainView {
@@ -357,6 +344,11 @@ class LightTheme : Stylesheet() {
         mediaFormatsView {
             prefWidth = 500.px
             prefHeight = 500.px
+        }
+
+        wizardView {
+            prefWidth = 600.px
+            prefHeight = 400.px
         }
     }
 }

@@ -31,7 +31,7 @@ open class ThemeController : Controller() {
 
         // TODO load theme from config
         activeTheme = themes.first()
-
+        logger.debug("init theme ${activeTheme.simpleName}")
     }
 
     fun reloadTheme() {

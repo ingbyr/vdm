@@ -13,6 +13,7 @@ import javafx.scene.control.*
 import javafx.scene.layout.ColumnConstraints
 import javafx.scene.layout.GridPane
 import javafx.scene.layout.VBox
+import javafx.stage.StageStyle
 import tornadofx.*
 import java.text.DecimalFormat
 import java.util.*
@@ -52,18 +53,10 @@ class MainView : View() {
     private var downloadTaskTableView: TableView<DownloadTaskModel>
 
     init {
-        // init theme
         themeController.initTheme()
-
         downloadTaskTableView = tableview(controller.downloadTaskModelList) {
             fitToParentSize()
             columnResizePolicy = SmartResize.POLICY
-            // TODO multi options
-//                column("", DownloadTaskModel::checkedProperty).cellFormat {
-//                    val cb = JFXCheckBox("")
-//                    cb.isSelected = it
-//                    graphic = cb
-//                }
             column(messages["ui.title"], DownloadTaskModel::titleProperty).remainingWidth()
             column(messages["ui.size"], DownloadTaskModel::sizeProperty)
             column(messages["ui.status"], DownloadTaskModel::statusProperty).cellFormat {
@@ -135,7 +128,8 @@ class MainView : View() {
             // init config file
             ConfigUtils.update(Attributes.VDM_VERSION, vdmVersion)
 
-            find(PreferencesView::class).openWindow()?.hide() // FIXME should be called in wizard view
+            find(PreferencesView::class).openWindow()?.hide()
+//            find(WizardView::class).openWindow(stageStyle = StageStyle.UNDECORATED)?.isAlwaysOnTop = true  // todo use this
             find(WizardView::class).openWindow()?.isAlwaysOnTop = true  // make sure wizard is always on top
             // ConfigUtils.update(Attributes.FIRST_TIME_USE, "false")     // TODO uncomment this
         } else {

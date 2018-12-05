@@ -3,8 +3,6 @@ package com.ingbyr.vdm.engines
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.ingbyr.vdm.dao.EngineInfo
-import com.ingbyr.vdm.dao.EngineInfoTable
 import com.ingbyr.vdm.dao.searchEngineInfo
 import com.ingbyr.vdm.engines.utils.EngineDownloadType
 import com.ingbyr.vdm.engines.utils.EngineException
@@ -27,13 +25,13 @@ import java.util.regex.Pattern
 
 
 class Annie : AbstractEngine() {
-    companion object {
-        val info = searchEngineInfo(EngineType.ANNIE)
+    companion object : EngineMeteData {
+        override val engineInfo = searchEngineInfo(EngineType.ANNIE)
     }
+
     override val logger: Logger = LoggerFactory.getLogger(Annie::class.java)
     override val downloadNewEngineNeedUnzip: Boolean = true
-    override val engineInfo: EngineInfo = EngineInfo.find { EngineInfoTable.name eq "annie" }.first()
-    override val enginePath: String = info.execPath
+    override val enginePath: String = engineInfo.execPath
     override val engineType: EngineType = EngineType.ANNIE
     override val argsMap: MutableMap<String, String> = mutableMapOf("engine" to enginePath)
     override val remoteVersionUrl: String = engineInfo.remoteVersionUrl
@@ -101,7 +99,7 @@ class Annie : AbstractEngine() {
     }
 
     override fun cookies(cookies: String): AbstractEngine {
-        if(cookies.isNotEmpty()) {
+        if (cookies.isNotEmpty()) {
             argsMap["-c"] = cookies
         }
         return this
@@ -201,7 +199,8 @@ class Annie : AbstractEngine() {
         val formats = mutableListOf<MediaFormat>()
         val annieMediaJson = jacksonObjectMapper().readValue<AnnieMediaJson>(jsonString)
         annieMediaJson.formats.forEach { id, formatInfo ->
-            formats.add(MediaFormat(
+            formats.add(
+                MediaFormat(
                     title = annieMediaJson.title,
                     desc = "",
                     formatID = id,
@@ -209,7 +208,8 @@ class Annie : AbstractEngine() {
                     formatNote = "",
                     fileSize = formatInfo.size.toLong(),
                     ext = formatInfo.urls.first().ext
-            ))
+                )
+            )
         }
         return formats
     }
@@ -245,21 +245,21 @@ class Annie : AbstractEngine() {
 
 
 data class AnnieMediaJson(
-        @JsonProperty("Site") val site: String = "",
-        @JsonProperty("Title") val title: String = "",
-        @JsonProperty("Type") val type: String = "",
-        @JsonProperty("Formats") val formats: Map<String, Format>
+    @JsonProperty("Site") val site: String = "",
+    @JsonProperty("Title") val title: String = "",
+    @JsonProperty("Type") val type: String = "",
+    @JsonProperty("Formats") val formats: Map<String, Format>
 ) {
     data class Format(
-            @JsonProperty("URLs") val urls: List<URL> = listOf(),
-            @JsonProperty("Quality") val quality: String = "",
-            @JsonProperty("Size") val size: Int = 0
+        @JsonProperty("URLs") val urls: List<URL> = listOf(),
+        @JsonProperty("Quality") val quality: String = "",
+        @JsonProperty("Size") val size: Int = 0
     ) {
 
         data class URL(
-                @JsonProperty("URL") val uRL: String = "",
-                @JsonProperty("Size") val size: Int = 0,
-                @JsonProperty("Ext") val ext: String = ""
+            @JsonProperty("URL") val uRL: String = "",
+            @JsonProperty("Size") val size: Int = 0,
+            @JsonProperty("Ext") val ext: String = ""
         )
     }
 }

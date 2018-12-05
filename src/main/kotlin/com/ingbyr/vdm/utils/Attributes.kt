@@ -43,8 +43,8 @@ object Attributes {
     const val VDM_VERSION = "VDM_VERSION"
     const val THEME = "THEME"
     const val CHARSET = "CHARSET"
-    const val THEME_COLOR = "THEME_COLOR"
-
+    const val THEME_PRIMARY_COLOR = "THEME_PRIMARY_COLOR"
+    const val THEME_SECONDARY_COLOR = "THEME_SECONDARY_COLOR"
     // app content
     const val VDM_UPDATE_URL = "https://github.com/ingbyr/VDM/releases/latest"
     const val VDM_SOURCE_CODE = "https://github.com/ingbyr/VDM"
