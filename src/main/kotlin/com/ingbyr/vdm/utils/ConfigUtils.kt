@@ -1,31 +1,39 @@
 package com.ingbyr.vdm.utils
 
 import tornadofx.*
+import java.nio.file.Path
 
 
-/**
- * Load and update the config file. It's necessary to invoke saveToConfigFile().
- */
-object ConfigUtils : Controller(){
-
-    private val c = app.config
+abstract class BaseConfigUtil : Configurable {
+    override val configPath: Path = Attributes.configFilePath
+    override val config: ConfigProperties by lazy { loadConfig() }
 
     fun load(key: String): String {
-        return c.string(key)
+        return config.string(key)
     }
 
     fun safeLoad(key: String, defaultValue: Any): String {
         return try {
-            c.string(key)
+            config.string(key)
         } catch (e: IllegalStateException) {
-            c[key] = defaultValue.toString()
-            c.save()
+            config[key] = defaultValue.toString()
+            config.save()
             defaultValue.toString()
         }
     }
 
     fun update(key: String, value: Any) {
-        c[key] = value.toString()
-        c.save()
+        config[key] = value.toString()
+        config.save()
     }
+}
+
+/**
+ * Load and update the vdm.properties config file.
+ */
+object ConfigUtils : BaseConfigUtil()
+
+
+object EngineConfigUtils : BaseConfigUtil() {
+    override val configPath: Path = Attributes.engineConfigFilePath
 }

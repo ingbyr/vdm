@@ -18,7 +18,7 @@ object DBUtils {
     init {
         Database.connect(Attributes.DATABASE_URL, driver = "org.h2.Driver", user = "vdm", password = "vdm")
         transaction {
-            addLogger(StdOutSqlLogger)
+//            addLogger(StdOutSqlLogger) // TODO enable db logger
             SchemaUtils.create(TaskConfigTable, DownloadTaskTable)
         }
     }

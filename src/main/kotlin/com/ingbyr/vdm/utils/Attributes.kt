@@ -8,25 +8,24 @@ object Attributes {
 
     // path config
     val APP_DIR: Path = Paths.get(System.getProperty("user.dir"))
-    val CONFIG_DIR : Path = APP_DIR.resolve("config")
-    val COOKIES_DIR: Path = APP_DIR.resolve("cookies")
-    val PACKAGE_DIR: Path = APP_DIR.resolve("package")
     val ENGINES_DIR: Path = APP_DIR.resolve("engines")
+    val CONFIG_DIR: Path = APP_DIR.resolve("configs")
     val DB_DIR: Path = APP_DIR.resolve("db")
-    val TMP_DIR = APP_DIR.resolve("tmp")
+    val TMP_DIR: Path = APP_DIR.resolve("tmp")
+    val configFilePath: Path = CONFIG_DIR.resolve("vdm.properties")
+    val engineConfigFilePath: Path = CONFIG_DIR.resolve("engines.properties")
 
     init {
         Files.createDirectories(CONFIG_DIR)
-        Files.createDirectories(COOKIES_DIR)
+        Files.createDirectories(ENGINES_DIR)
         Files.createDirectories(DB_DIR)
         Files.createDirectories(TMP_DIR)
     }
 
     // database
-    val DATABASE_URL ="jdbc:h2:${DB_DIR.resolve("vdm")}"
+    val DATABASE_URL = "jdbc:h2:${DB_DIR.resolve("vdm")}"
 
-    // config file
-    val configFilePath: Path = CONFIG_DIR.resolve("vdm.properties")
+
     const val FIRST_TIME_USE = "FIRST_TIME_USE"
     const val STORAGE_PATH = "STORAGE_PATH"
     const val FFMPEG_PATH = "FFMPEG_PATH"
@@ -53,7 +52,9 @@ object Attributes {
     const val UNKNOWN_VERSION = "0.0.0"
     const val DONATION_URL = "https://paypal.me/ingbyr"
 
-    // engines name
-    const val YOUTUBE_DL = "youtube-dl"
-    const val ANNIE = "annie"
+    // youtube-dl
+    const val YOUTUBE_DL_VERSION = "YOUTUBE_DL_VERSION"
+
+    // annie
+    const val ANNIE_VERSION = "ANNIE_VERSION"
 }

@@ -23,7 +23,8 @@ class PreferencesController : Controller() {
     }
 
     private fun initDebugMode() {
-        debugMode = ConfigUtils.safeLoad(Attributes.DEBUG_MODE, "false").toBoolean()
+        // enable debug default
+        debugMode = ConfigUtils.safeLoad(Attributes.DEBUG_MODE, "true").toBoolean()
         debugModeProperty.addListener { _, _, mode ->
             DebugUtils.changeDebugMode(mode)
             ConfigUtils.update(Attributes.DEBUG_MODE, mode)
@@ -31,9 +32,7 @@ class PreferencesController : Controller() {
     }
 
     fun freshCookieListAndContent() {
-        cookieList.clear()
-        Attributes.COOKIES_DIR.toFile().walkTopDown().filter { it.name.endsWith(".txt") }.forEach { cookieList.add(it.name) }
-        readCookieContent()
+
     }
 
     fun readCookieContent() {

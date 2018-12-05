@@ -4,8 +4,8 @@ import com.ingbyr.vdm.controllers.MainController
 import com.ingbyr.vdm.controllers.ThemeController
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.models.DownloadTaskStatus
-import com.ingbyr.vdm.utils.ConfigUtils
 import com.ingbyr.vdm.utils.Attributes
+import com.ingbyr.vdm.utils.ConfigUtils
 import com.ingbyr.vdm.utils.OSUtils
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXProgressBar
@@ -13,7 +13,6 @@ import javafx.scene.control.*
 import javafx.scene.layout.ColumnConstraints
 import javafx.scene.layout.GridPane
 import javafx.scene.layout.VBox
-import javafx.stage.StageStyle
 import tornadofx.*
 import java.text.DecimalFormat
 import java.util.*
@@ -115,7 +114,18 @@ class MainView : View() {
         menuAbout = MenuItem(messages["ui.about"])
         menuQuit = MenuItem(messages["ui.quit"])
         menuDonate = MenuItem(messages["ui.donate"])
-        contextMenu.items.addAll(menuNew, menuOpenDir, menuStartAllTask, menuStopAllTask, SeparatorMenuItem(), menuPreferences, menuAbout, menuDonate, SeparatorMenuItem(), menuQuit)
+        contextMenu.items.addAll(
+            menuNew,
+            menuOpenDir,
+            menuStartAllTask,
+            menuStopAllTask,
+            SeparatorMenuItem(),
+            menuPreferences,
+            menuAbout,
+            menuDonate,
+            SeparatorMenuItem(),
+            menuQuit
+        )
         loadVDMConfig()
         initListeners()
         controller.loadTaskFromDB()
@@ -131,7 +141,7 @@ class MainView : View() {
             find(PreferencesView::class).openWindow()?.hide()
 //            find(WizardView::class).openWindow(stageStyle = StageStyle.UNDECORATED)?.isAlwaysOnTop = true  // todo use this
             find(WizardView::class).openWindow()?.isAlwaysOnTop = true  // make sure wizard is always on top
-            // ConfigUtils.update(Attributes.FIRST_TIME_USE, "false")     // TODO uncomment this
+//            ConfigUtils.update(Attributes.FIRST_TIME_USE, "false")     // TODO uncomment this
         } else {
             ConfigUtils.update(Attributes.VDM_VERSION, vdmVersion)
         }

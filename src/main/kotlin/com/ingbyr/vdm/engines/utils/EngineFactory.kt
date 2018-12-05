@@ -9,7 +9,6 @@ object EngineFactory {
         return when (engineType) {
             EngineType.YOUTUBE_DL -> {
                 val engine = YoutubeDL()
-                // set the charset
                 engine.charset = charset
                 engine
             }
@@ -18,7 +17,6 @@ object EngineFactory {
                 engine.charset = charset
                 engine
             }
-            else -> throw EngineException("bad engine type: $engineType")
         }
     }
 }

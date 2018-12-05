@@ -12,7 +12,10 @@ import javafx.scene.layout.VBox
 import javafx.stage.DirectoryChooser
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.w3c.dom.Attr
 import tornadofx.*
+import java.io.File
+import java.nio.file.Files
 import java.util.*
 
 class WizardView : View() {
@@ -163,7 +166,6 @@ class WizardView : View() {
 
         cb.text = messages["ui.${engineName}"]
         cb.selectedProperty().addListener { _, _, isChecked ->
-            logger.debug("${cb.text} change to $isChecked")
             if (isChecked) {
                 controller.addEngine(cb.text)
             } else {
@@ -214,4 +216,5 @@ class WizardView : View() {
     private fun VBox.toStepView(name: String) = StepView(messages["ui.${name}"], messages["ui.${name}Guide"], this)
 
     data class StepView(val name: String, val guide: String, val ui: VBox)
+
 }

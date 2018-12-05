@@ -2,7 +2,9 @@ package com.ingbyr.vdm.controllers
 
 import com.ingbyr.vdm.engines.AbstractEngine
 import com.ingbyr.vdm.engines.utils.EngineFactory
+import com.ingbyr.vdm.engines.utils.EngineType
 import com.ingbyr.vdm.events.CreateDownloadTask
+import com.ingbyr.vdm.events.RefreshEngineVersion
 import com.ingbyr.vdm.events.RestorePreferencesViewEvent
 import com.ingbyr.vdm.events.UpdateEngineTask
 import com.ingbyr.vdm.models.DownloadTaskModel
@@ -11,6 +13,7 @@ import com.ingbyr.vdm.models.DownloadTaskType
 import com.ingbyr.vdm.models.TaskConfig
 import com.ingbyr.vdm.utils.*
 import com.ingbyr.vdm.utils.Attributes
+import javafx.application.Platform
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tornadofx.*
@@ -31,7 +34,7 @@ class MainController : Controller() {
     init {
 
         // debug mode
-        DebugUtils.changeDebugMode(ConfigUtils.safeLoad(Attributes.DEBUG_MODE, false).toBoolean())
+        DebugUtils.changeDebugMode(ConfigUtils.safeLoad(Attributes.DEBUG_MODE, true).toBoolean())
 
         subscribe<CreateDownloadTask> {
             logger.debug("create models: ${it.downloadTask}")
@@ -45,8 +48,10 @@ class MainController : Controller() {
             val engine = EngineFactory.create(it.engineType, charset)
             val taskConfig = TaskConfig("", it.engineType, DownloadTaskType.ENGINE, true, engine.enginePath)
             val downloadTask = DownloadTaskModel(taskConfig, DateTimeUtils.now(), title = "[${messages["ui.update"]} ${it.engineType.name}]")
-            downloadTaskModelList.add(downloadTask)
-
+            // make sure thread safe
+            Platform.runLater {
+                downloadTaskModelList.add(downloadTask)
+            }
             try {
                 if (engine.existNewVersion(it.localVersion)) {
                     downloadTask.taskConfig.url = engine.updateUrl()
@@ -63,6 +68,17 @@ class MainController : Controller() {
                 downloadTask.status = DownloadTaskStatus.FAILED
             }
             fire(RestorePreferencesViewEvent)
+        }
+
+        subscribe<RefreshEngineVersion> {
+            when (it.engineType) {
+                EngineType.YOUTUBE_DL -> {
+                    EngineConfigUtils.update(Attributes.YOUTUBE_DL_VERSION, it.newVersion)
+                }
+                EngineType.ANNIE -> {
+                    EngineConfigUtils.update(Attributes.ANNIE_VERSION, it.newVersion)
+                }
+            }
         }
     }
 

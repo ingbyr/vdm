@@ -1,6 +1,5 @@
 package com.ingbyr.vdm.engines
 
-import com.ingbyr.vdm.dao.EngineInfo
 import com.ingbyr.vdm.engines.utils.EngineDownloadType
 import com.ingbyr.vdm.engines.utils.EngineType
 import com.ingbyr.vdm.models.DownloadTaskModel
@@ -9,10 +8,6 @@ import com.ingbyr.vdm.models.ProxyType
 import org.slf4j.Logger
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
-
-interface EngineMeteData {
-    val engineInfo: EngineInfo
-}
 
 abstract class AbstractEngine {
     /**
@@ -32,6 +27,7 @@ abstract class AbstractEngine {
     abstract val argsMap: MutableMap<String, String>
     abstract val remoteVersionUrl: String
     abstract var remoteVersion: String?
+    abstract var version: String
     abstract var taskModel: DownloadTaskModel?
 
     abstract fun url(url: String): AbstractEngine
@@ -46,6 +42,8 @@ abstract class AbstractEngine {
     abstract fun parseDownloadOutput(line: String)
     abstract fun execCommand(command: MutableList<String>, downloadType: EngineDownloadType): StringBuilder?
     abstract fun parseFormatsJson(jsonString: String): List<MediaFormat>
+
+    abstract fun engineExecPath(): String
     abstract fun updateUrl(): String
     abstract fun existNewVersion(localVersion: String): Boolean
 

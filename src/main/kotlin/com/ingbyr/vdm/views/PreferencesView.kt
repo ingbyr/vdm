@@ -7,8 +7,9 @@ import com.ingbyr.vdm.events.RefreshCookieContent
 import com.ingbyr.vdm.events.RefreshEngineVersion
 import com.ingbyr.vdm.events.RestorePreferencesViewEvent
 import com.ingbyr.vdm.models.ProxyType
-import com.ingbyr.vdm.utils.ConfigUtils
 import com.ingbyr.vdm.utils.Attributes
+import com.ingbyr.vdm.utils.ConfigUtils
+import com.ingbyr.vdm.utils.EngineConfigUtils
 import com.ingbyr.vdm.utils.FileEditorOption
 import com.jfoenix.controls.*
 import javafx.scene.control.Label
@@ -61,7 +62,7 @@ class PreferencesView : View() {
     private val deleteCookieButton: JFXButton by fxid()
     private val cookieComboBox: JFXComboBox<String> by fxid()
     private val cookieTextArea: TextArea by fxid()
-    
+
 
     init {
         subEvents()
@@ -70,21 +71,15 @@ class PreferencesView : View() {
     }
 
     private fun subEvents() {
-        // TODO update the version info
         subscribe<RefreshEngineVersion> {
             when (it.engineType) {
                 EngineType.YOUTUBE_DL -> {
                     labelYoutubeDLVersion.text = it.newVersion
-//                    EnginesJsonUtils.engineInfo(Attributes.YOUTUBE_DL).version = it.newVersion
                 }
                 EngineType.ANNIE -> {
                     labelAnnieVersion.text = it.newVersion
-//                    EnginesJsonUtils.engineInfo(Attributes.ANNIE).version = it.newVersion
-                }
-                else -> {
                 }
             }
-//            EnginesJsonUtils.save2JsonFile()
         }
 
         subscribe<RestorePreferencesViewEvent> {
@@ -104,13 +99,10 @@ class PreferencesView : View() {
         when (engineType) {
             EngineType.YOUTUBE_DL -> tbYoutubeDL.isSelected = true
             EngineType.ANNIE -> tbAnnie.isSelected = true
-            else -> logger.error("no engines type of $engineType")
         }
 
-        // TODO display the version
-        // labelYoutubeDLVersion.text = EnginesJsonUtils.engineInfo(Attributes.YOUTUBE_DL).version
-        // labelAnnieVersion.text = EnginesJsonUtils.engineInfo(Attributes.ANNIE).version
-
+        labelYoutubeDLVersion.text = EngineConfigUtils.safeLoad(Attributes.YOUTUBE_DL_VERSION, "0.0.0")
+        labelAnnieVersion.text = EngineConfigUtils.safeLoad(Attributes.ANNIE_VERSION, "0.0.0")
         // proxy settings area
         val proxyType = ProxyType.valueOf(ConfigUtils.safeLoad(Attributes.PROXY_TYPE, ProxyType.NONE))
         when (proxyType) {
@@ -170,13 +162,11 @@ class PreferencesView : View() {
             ConfigUtils.update(Attributes.ENGINE_TYPE, EngineType.ANNIE)
         }
         btnUpdateYoutubeDL.setOnMouseClicked {
-            // TODO update engine with local version info
-            // controller.updateEngine(EngineType.YOUTUBE_DL, EnginesJsonUtils.engineInfo(Attributes.YOUTUBE_DL).version)
+             controller.updateEngine(EngineType.YOUTUBE_DL, EngineConfigUtils.safeLoad(Attributes.YOUTUBE_DL_VERSION, "0.0.0"))
             this.currentStage?.isIconified = true
         }
         btnUpdateAnnie.setOnMouseClicked {
-            // TODO update engine with local version info
-            // controller.updateEngine(EngineType.ANNIE, EnginesJsonUtils.engineInfo(Attributes.ANNIE).version)
+            controller.updateEngine(EngineType.ANNIE, EngineConfigUtils.safeLoad(Attributes.ANNIE_VERSION, "0.0.0"))
             this.currentStage?.isIconified = true
         }
 
@@ -215,22 +205,22 @@ class PreferencesView : View() {
             }
         }
         newCookieButton.setOnMouseClicked {
-            find<TextEditorView>(
-                mapOf(
-                    "fileEditorOption" to FileEditorOption(Attributes.COOKIES_DIR, true, ".txt")
-                )
-            ).openWindow()
+//            find<TextEditorView>(
+//                mapOf(
+//                    "fileEditorOption" to FileEditorOption(Attributes.COOKIES_DIR, true, ".txt")
+//                )
+//            ).openWindow()
         }
         editCookieButton.setOnMouseClicked {
-            find<TextEditorView>(
-                mapOf(
-                    "fileEditorOption" to FileEditorOption(
-                        Attributes.COOKIES_DIR.resolve(ConfigUtils.load(Attributes.CURRENT_COOKIE)),
-                        false,
-                        ".txt"
-                    )
-                )
-            ).openWindow()
+//            find<TextEditorView>(
+//                mapOf(
+//                    "fileEditorOption" to FileEditorOption(
+//                        Attributes.COOKIES_DIR.resolve(ConfigUtils.load(Attributes.CURRENT_COOKIE)),
+//                        false,
+//                        ".txt"
+//                    )
+//                )
+//            ).openWindow()
         }
         subscribe<RefreshCookieContent> {
             controller.freshCookieListAndContent()
