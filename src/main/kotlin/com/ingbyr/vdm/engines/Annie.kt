@@ -264,6 +264,7 @@ data class AnnieMediaJson(
     val url: String
 )
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class Stream(
     @JsonProperty("quality")
     val quality: String,
@@ -273,6 +274,7 @@ data class Stream(
     val urls: List<Url>
 )
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class Url(
     @JsonProperty("ext")
     val ext: String,
