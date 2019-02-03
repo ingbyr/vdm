@@ -25,6 +25,6 @@ object DebugUtils {
         logger.debug("OS: ${prop["os.name"]?.toString()} Arch: ${prop["os.arch"]?.toString()} Version: ${prop["os.version"]?.toString()}")
         logger.debug("JAVA: ${prop["java.version"]?.toString()} Vendor: ${prop["java.vendor"]?.toString()}")
         logger.debug("Default Locale: ${FX.locale} Current Locale:${Locale.getDefault().language}_${Locale.getDefault().country}")
-        logger.debug("Save config file to ${Attributes.configFilePath}")
+        logger.debug("Save app file to ${Attributes.configFilePath}")
     }
 }

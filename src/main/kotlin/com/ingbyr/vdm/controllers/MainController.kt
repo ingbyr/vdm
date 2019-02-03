@@ -13,6 +13,7 @@ import com.ingbyr.vdm.models.DownloadTaskType
 import com.ingbyr.vdm.models.TaskConfig
 import com.ingbyr.vdm.utils.*
 import com.ingbyr.vdm.utils.Attributes
+import com.ingbyr.vdm.utils.config.update
 import javafx.application.Platform
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -34,7 +35,7 @@ class MainController : Controller() {
     init {
 
         // debug mode
-        DebugUtils.changeDebugMode(ConfigUtils.safeLoad(Attributes.DEBUG_MODE, true).toBoolean())
+        DebugUtils.changeDebugMode(app.config.boolean(Attributes.DEBUG_MODE, Attributes.Defaults.DEBUG_MODE))
 
         subscribe<CreateDownloadTask> {
             logger.debug("create models: ${it.downloadTask}")
@@ -44,7 +45,7 @@ class MainController : Controller() {
 
         // background thread
         subscribe<UpdateEngineTask> {
-            val charset = ConfigUtils.safeLoad(Attributes.CHARSET, "UTF-8")
+            val charset = app.config.string(Attributes.CHARSET, Attributes.Defaults.CHARSET)
             val engine = EngineFactory.create(it.engineType, charset)
             val taskConfig = TaskConfig("", it.engineType, DownloadTaskType.ENGINE, true, engine.enginePath)
             val downloadTask = DownloadTaskModel(taskConfig, DateTimeUtils.now(), title = "[${messages["ui.update"]} ${it.engineType.name}]")
@@ -73,10 +74,10 @@ class MainController : Controller() {
         subscribe<RefreshEngineVersion> {
             when (it.engineType) {
                 EngineType.YOUTUBE_DL -> {
-                    EngineConfigUtils.update(Attributes.YOUTUBE_DL_VERSION, it.newVersion)
+                    app.config.update(Attributes.YOUTUBE_DL_VERSION, it.newVersion)
                 }
                 EngineType.ANNIE -> {
-                    EngineConfigUtils.update(Attributes.ANNIE_VERSION, it.newVersion)
+                    app.config.update(Attributes.ANNIE_VERSION, it.newVersion)
                 }
             }
         }
@@ -86,7 +87,7 @@ class MainController : Controller() {
     fun startTask(downloadTask: DownloadTaskModel) {
         if (downloadTask.taskConfig.downloadType == DownloadTaskType.ENGINE) return
         downloadTask.status = DownloadTaskStatus.ANALYZING
-        val charset = ConfigUtils.safeLoad(Attributes.CHARSET, "UTF-8")
+        val charset = app.config.string(Attributes.CHARSET, Attributes.Defaults.CHARSET)
         runAsync {
             // download
             val engine = EngineFactory.create(downloadTask.taskConfig.engineType, charset)

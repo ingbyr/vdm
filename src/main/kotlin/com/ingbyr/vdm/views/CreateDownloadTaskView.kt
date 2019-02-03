@@ -2,9 +2,9 @@ package com.ingbyr.vdm.views
 
 import com.ingbyr.vdm.controllers.CreateDownloadTaskController
 import com.ingbyr.vdm.events.CreateDownloadTask
-import com.ingbyr.vdm.utils.ConfigUtils
 import com.ingbyr.vdm.utils.Attributes
 import com.ingbyr.vdm.utils.DateTimeUtils
+import com.ingbyr.vdm.utils.config.update
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXTextField
 import javafx.scene.control.Label
@@ -27,7 +27,7 @@ class CreateDownloadTaskView : View() {
     private val btnConfirm: JFXButton by fxid()
     private val labelStoragePath: Label by fxid()
     private val btnChangeStoragePath: JFXButton by fxid()
-    
+
     private val controller: CreateDownloadTaskController by inject()
 
     init {
@@ -37,7 +37,7 @@ class CreateDownloadTaskView : View() {
     }
 
     private fun loadVDMConfig() {
-        labelStoragePath.text = ConfigUtils.load(Attributes.STORAGE_PATH)
+        labelStoragePath.text = app.config.string(Attributes.STORAGE_PATH)
     }
 
     private fun initListeners() {
@@ -61,7 +61,7 @@ class CreateDownloadTaskView : View() {
             val file = DirectoryChooser().showDialog(primaryStage)
             file?.apply {
                 val newPath = this.absoluteFile.toString()
-                app.config[Attributes.STORAGE_PATH] = newPath
+                config.update(Attributes.STORAGE_PATH, newPath)
                 labelStoragePath.text = newPath
             }
         }

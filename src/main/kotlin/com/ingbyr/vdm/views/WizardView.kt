@@ -2,7 +2,7 @@ package com.ingbyr.vdm.views
 
 import com.ingbyr.vdm.controllers.WizardController
 import com.ingbyr.vdm.utils.Attributes
-import com.ingbyr.vdm.utils.ConfigUtils
+import com.ingbyr.vdm.utils.config.color
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXCheckBox
 import com.jfoenix.controls.JFXColorPicker
@@ -12,10 +12,7 @@ import javafx.scene.layout.VBox
 import javafx.stage.DirectoryChooser
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.w3c.dom.Attr
 import tornadofx.*
-import java.io.File
-import java.nio.file.Files
 import java.util.*
 
 class WizardView : View() {
@@ -37,7 +34,7 @@ class WizardView : View() {
     private val checkBoxAnnie = JFXCheckBox()
     private val labelAnnieVersion = Label()
 
-    private val mediaStoragePathProperty = SimpleStringProperty(ConfigUtils.load(Attributes.STORAGE_PATH))
+    private val mediaStoragePathProperty = SimpleStringProperty(app.config.string(Attributes.STORAGE_PATH))
     private val primaryColorPicker = JFXColorPicker()
     private val secondaryColorPicker = JFXColorPicker()
 
@@ -66,13 +63,13 @@ class WizardView : View() {
             label().bind(mediaStoragePathProperty)
         }
 
-        primaryColorPicker.value = c(ConfigUtils.load(Attributes.THEME_PRIMARY_COLOR))
+        primaryColorPicker.value = c(app.config.color(Attributes.THEME_PRIMARY_COLOR).toString())
         primaryColorPicker.setOnAction {
             controller.changePrimaryColor(primaryColorPicker.value.toString())
 
         }
 
-        secondaryColorPicker.value = c(ConfigUtils.load(Attributes.THEME_SECONDARY_COLOR))
+        secondaryColorPicker.value = c(app.config.color(Attributes.THEME_SECONDARY_COLOR).toString())
         secondaryColorPicker.setOnAction {
             controller.changeSecondaryColor(secondaryColorPicker.value.toString())
         }

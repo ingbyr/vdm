@@ -1,6 +1,5 @@
 package com.ingbyr.vdm.views
 
-import com.ingbyr.vdm.utils.ConfigUtils
 import com.ingbyr.vdm.utils.Attributes
 import com.jfoenix.controls.JFXButton
 import javafx.scene.control.Label
@@ -22,7 +21,7 @@ class AboutView : View() {
     private val btnReport: JFXButton by fxid()
 
     init {
-        labelVersion.text = ConfigUtils.load(Attributes.VDM_VERSION)
+        labelVersion.text = app.config.string(Attributes.VDM_VERSION)
         initListeners()
     }
 

@@ -12,6 +12,7 @@ import com.ingbyr.vdm.models.DownloadTaskStatus
 import com.ingbyr.vdm.models.MediaFormat
 import com.ingbyr.vdm.models.ProxyType
 import com.ingbyr.vdm.utils.*
+import com.ingbyr.vdm.utils.config.app
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.BufferedReader
@@ -27,9 +28,9 @@ class Annie : AbstractEngine() {
     override val enginePath: String = engineExecPath()
     override val engineType: EngineType = EngineType.ANNIE
     override val argsMap: MutableMap<String, String> = mutableMapOf("engine" to enginePath)
-    override val remoteVersionUrl: String = "https://raw.githubusercontent.com/iawia002/annie/master/config/version.go"
+    override val remoteVersionUrl: String = "https://raw.githubusercontent.com/iawia002/annie/master/app/version.go"
     override var remoteVersion: String? = null
-    override var version: String = EngineConfigUtils.safeLoad(Attributes.ANNIE_VERSION, "0.0.0")
+    override var version: String = app.config.string(Attributes.ANNIE_VERSION, Attributes.Defaults.ENGINE_VERSION)
     override var taskModel: DownloadTaskModel? = null
 
     private val remoteVersionPattern: Pattern = Pattern.compile("\\d+.+\\d+")
@@ -209,7 +210,7 @@ class Annie : AbstractEngine() {
         return formats
     }
 
-    override fun engineExecPath(): String =when (OSUtils.currentOS) {
+    override fun engineExecPath(): String = when (OSUtils.currentOS) {
         OSType.WINDOWS -> {
             Attributes.ENGINES_DIR.resolve("annie.exe").toAbsolutePath().toString()
         }

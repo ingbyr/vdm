@@ -5,8 +5,8 @@ import com.ingbyr.vdm.controllers.ThemeController
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.models.DownloadTaskStatus
 import com.ingbyr.vdm.utils.Attributes
-import com.ingbyr.vdm.utils.ConfigUtils
 import com.ingbyr.vdm.utils.OSUtils
+import com.ingbyr.vdm.utils.config.update
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXProgressBar
 import javafx.scene.control.*
@@ -132,18 +132,18 @@ class MainView : View() {
     }
 
     private fun loadVDMConfig() {
-        // create the config file when first time use VDM
-        val firstTimeUse = ConfigUtils.safeLoad(Attributes.FIRST_TIME_USE, "true").toBoolean()
+        // create the app.app file when first time use VDM
+        val firstTimeUse = app.config.boolean(Attributes.FIRST_TIME_USE, Attributes.Defaults.FIRST_TIME_USE)
         if (firstTimeUse) {
-            // init config file
-            ConfigUtils.update(Attributes.VDM_VERSION, vdmVersion)
+            // init app.app file
+            app.config.update(Attributes.VDM_VERSION, vdmVersion)
 
             find(PreferencesView::class).openWindow()?.hide()
 //            find(WizardView::class).openWindow(stageStyle = StageStyle.UNDECORATED)?.isAlwaysOnTop = true  // todo use this
             find(WizardView::class).openWindow()?.isAlwaysOnTop = true  // make sure wizard is always on top
 //            ConfigUtils.update(Attributes.FIRST_TIME_USE, "false")     // TODO uncomment this
         } else {
-            ConfigUtils.update(Attributes.VDM_VERSION, vdmVersion)
+            app.config.update(Attributes.VDM_VERSION, vdmVersion)
         }
     }
 
@@ -179,7 +179,7 @@ class MainView : View() {
             if (selectedTaskModel != null) {
                 OSUtils.openDir(selectedTaskModel!!.taskConfig.storagePath)
             } else {
-                OSUtils.openDir(ConfigUtils.load(Attributes.STORAGE_PATH))
+                OSUtils.openDir(app.config.string(Attributes.STORAGE_PATH, Attributes.Defaults.STORAGE_PATH))
             }
         }
         // TODO search models
@@ -198,7 +198,7 @@ class MainView : View() {
             if (selectedTaskModel != null) {
                 OSUtils.openDir(selectedTaskModel!!.taskConfig.storagePath)
             } else {
-                OSUtils.openDir(ConfigUtils.load(Attributes.STORAGE_PATH))
+                OSUtils.openDir(app.config.string(Attributes.STORAGE_PATH, Attributes.Defaults.STORAGE_PATH))
             }
         }
         menuStartAllTask.action {

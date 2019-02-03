@@ -2,9 +2,9 @@ package com.ingbyr.vdm.controllers
 
 import com.ingbyr.vdm.engines.utils.EngineType
 import com.ingbyr.vdm.events.UpdateEngineTask
-import com.ingbyr.vdm.utils.ConfigUtils
 import com.ingbyr.vdm.utils.Attributes
 import com.ingbyr.vdm.utils.DebugUtils
+import com.ingbyr.vdm.utils.config.update
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleStringProperty
 import tornadofx.*
@@ -24,10 +24,10 @@ class PreferencesController : Controller() {
 
     private fun initDebugMode() {
         // enable debug default
-        debugMode = ConfigUtils.safeLoad(Attributes.DEBUG_MODE, "true").toBoolean()
+        debugMode = app.config.boolean(Attributes.DEBUG_MODE, Attributes.Defaults.DEBUG_MODE)
         debugModeProperty.addListener { _, _, mode ->
             DebugUtils.changeDebugMode(mode)
-            ConfigUtils.update(Attributes.DEBUG_MODE, mode)
+            app.config.update(Attributes.DEBUG_MODE, mode)
         }
     }
 

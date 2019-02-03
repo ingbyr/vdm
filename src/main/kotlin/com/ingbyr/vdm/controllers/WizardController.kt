@@ -4,7 +4,7 @@ package com.ingbyr.vdm.controllers
 import com.ingbyr.vdm.engines.utils.EngineType
 import com.ingbyr.vdm.events.UpdateEngineTask
 import com.ingbyr.vdm.utils.Attributes
-import com.ingbyr.vdm.utils.ConfigUtils
+import com.ingbyr.vdm.utils.config.update
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tornadofx.*
@@ -31,19 +31,19 @@ class WizardController : Controller() {
     }
 
     fun changePrimaryColor(color: String) {
-        ConfigUtils.update(Attributes.THEME_PRIMARY_COLOR, color)
+        app.config.update(Attributes.THEME_PRIMARY_COLOR, color)
         themeController.reloadTheme()
         commonSettingChanges[messages["ui.primaryColor"]] = color
     }
 
     fun changeSecondaryColor(color: String) {
-        ConfigUtils.update(Attributes.THEME_SECONDARY_COLOR, color)
+        app.config.update(Attributes.THEME_SECONDARY_COLOR, color)
         themeController.reloadTheme()
         commonSettingChanges[messages["ui.secondaryColor"]] = color
     }
 
     fun changeStoragePath(storagePath: String) {
-        ConfigUtils.update(Attributes.STORAGE_PATH, storagePath)
+        app.config.update(Attributes.STORAGE_PATH, storagePath)
         commonSettingChanges[messages["ui.storagePath"]] = storagePath
     }
 

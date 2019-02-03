@@ -1,12 +1,15 @@
 package com.ingbyr.vdm.utils
 
+import com.ingbyr.vdm.engines.utils.EngineType
+import com.ingbyr.vdm.models.ProxyType
+import javafx.scene.paint.Color
+import tornadofx.*
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
 object Attributes {
-
-    // path config
+    // path app
     val APP_DIR: Path = Paths.get(System.getProperty("user.dir"))
     val ENGINES_DIR: Path = APP_DIR.resolve("engines")
     val CONFIG_DIR: Path = APP_DIR.resolve("configs")
@@ -57,4 +60,25 @@ object Attributes {
 
     // annie
     const val ANNIE_VERSION = "ANNIE_VERSION"
+
+    // Default value for above
+    object Defaults {
+        val STORAGE_PATH: String = Attributes.APP_DIR.toString()
+        val FFMPEG_PATH: String = "" // todo ffmpeg
+        const val DOWNLOAD_DEFAULT_FORMAT: Boolean = true
+        val ENGINE_TYPE: EngineType = EngineType.YOUTUBE_DL
+        const val ENGINE_VERSION: String = "0.0.0"
+        const val SOCKS5_PROXY_ADDRESS: String = ""
+        const val SOCKS5_PROXY_PORT: String = ""
+        const val HTTP_PROXY_ADDRESS: String = ""
+        const val HTTP_PROXY_PORT: String = ""
+        val PROXY_TYPE: ProxyType = ProxyType.NONE
+        const val ENABLE_COOKIE: Boolean = false
+        const val COOKIE: String = ""
+        val CHARSET: String = Charsets.UTF_8.name()
+        const val FIRST_TIME_USE: Boolean = false
+        val THEME_PRIMARY_COLOR: Color = c("#263238")
+        val THEME_SECONDARY_COLOR: Color = c("#455A64")
+        const val DEBUG_MODE: Boolean = false
+    }
 }

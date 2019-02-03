@@ -12,6 +12,7 @@ import com.ingbyr.vdm.models.DownloadTaskStatus
 import com.ingbyr.vdm.models.MediaFormat
 import com.ingbyr.vdm.models.ProxyType
 import com.ingbyr.vdm.utils.*
+import com.ingbyr.vdm.utils.config.app
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.BufferedReader
@@ -25,11 +26,12 @@ import java.util.regex.Pattern
 class YoutubeDL : AbstractEngine() {
     override val logger: Logger = LoggerFactory.getLogger(this::class.java)
     override val downloadNewEngineNeedUnzip: Boolean = false
-    override val remoteVersionUrl: String = "https://raw.githubusercontent.com/rg3/youtube-dl/master/youtube_dl/version.py"
+    override val remoteVersionUrl: String =
+        "https://raw.githubusercontent.com/rg3/youtube-dl/master/youtube_dl/version.py"
     override val engineType = EngineType.YOUTUBE_DL
     override val enginePath: String = engineExecPath()
     override var remoteVersion: String? = null
-    override var version: String = EngineConfigUtils.safeLoad(Attributes.ANNIE_VERSION, "0.0.0")
+    override var version: String = app.config.string(Attributes.YOUTUBE_DL_VERSION, Attributes.Defaults.ENGINE_VERSION)
     override var taskModel: DownloadTaskModel? = null
     override val argsMap: MutableMap<String, String> = mutableMapOf("engines" to enginePath)
 
@@ -230,7 +232,7 @@ class YoutubeDL : AbstractEngine() {
         }
     }
 
-    override fun engineExecPath(): String =when (OSUtils.currentOS) {
+    override fun engineExecPath(): String = when (OSUtils.currentOS) {
         OSType.WINDOWS -> {
             Attributes.ENGINES_DIR.resolve("youtube-dl.exe").toAbsolutePath().toString()
         }

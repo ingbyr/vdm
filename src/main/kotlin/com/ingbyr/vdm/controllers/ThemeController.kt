@@ -29,7 +29,7 @@ open class ThemeController : Controller() {
             newTheme?.let { importStylesheet(it) }
         }
 
-        // TODO load theme from config
+        // TODO load theme from app
         activeTheme = themes.first()
         logger.debug("init theme ${activeTheme.simpleName}")
     }

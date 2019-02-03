@@ -26,8 +26,8 @@ repositories {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation "no.tornado:tornadofx:1.7.17"
-    implementation "com.jfoenix:jfoenix:8.0.7"
+    implementation "no.tornado:tornadofx:1.7.18"
+    implementation "com.jfoenix:jfoenix:8.0.8"
     implementation "ch.qos.logback:logback-core:1.2.3"
     implementation "ch.qos.logback:logback-classic:1.2.3"
     implementation "com.squareup.okhttp3:okhttp:3.10.0"
