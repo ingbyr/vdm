@@ -23,8 +23,7 @@ func Init(ctx context.Context) {
 }
 
 var manager = &Manager{
-	EnabledDownloader:    make(map[string]BaseDownloader),
-	NotEnabledDownloader: make(map[string]BaseDownloader),
+	Downloaders: make(map[string]Downloader),
 }
 
 func GetManager() *Manager {
@@ -32,30 +31,26 @@ func GetManager() *Manager {
 }
 
 type Manager struct {
-	EnabledDownloader    map[string]BaseDownloader `json:"enabled_downloader,omitempty"`
-	NotEnabledDownloader map[string]BaseDownloader `json:"not_enabled_downloader,omitempty"`
+	Downloaders map[string]Downloader `json:"downloaders,omitempty"`
 }
 
-func (m *Manager) Register(downloader BaseDownloader) error {
-	if _, err := exec.LookPath(downloader.GetExecutorPath()); err != nil {
-		m.NotEnabledDownloader[downloader.GetName()] = downloader
-		delete(m.EnabledDownloader, downloader.GetName())
-		logging.Warn("can't register %s because '%s' not found", downloader.GetName(), downloader.GetExecutorPath())
-		return err
+func (m *Manager) Register(downloader Downloader) error {
+	var err error
+	if _, err = exec.LookPath(downloader.GetExecutorPath()); err != nil {
+		downloader.SetValid(false)
+		logging.Warn("downloader '%s' is not valid because '%s' not found", downloader.GetName(), downloader.GetExecutorPath())
 	}
-
-	m.EnabledDownloader[downloader.GetName()] = downloader
-	delete(m.NotEnabledDownloader, downloader.GetName())
-	return nil
+	m.Downloaders[downloader.GetName()] = downloader
+	return err
 }
 
-func (m *Manager) Enabled(downloader BaseDownloader) bool {
-	_, ok := m.EnabledDownloader[downloader.GetName()]
+func (m *Manager) Enabled(downloader Downloader) bool {
+	_, ok := m.Downloaders[downloader.GetName()]
 	return ok
 }
 
 func (m *Manager) Download(task *Task) error {
-	downloader, ok := m.EnabledDownloader[task.Downloader]
+	downloader, ok := m.Downloaders[task.Downloader]
 	if !ok {
 		return errors.New(fmt.Sprintf("Downloader '%s' not found or is disabled", task.Downloader))
 	}
@@ -64,7 +59,7 @@ func (m *Manager) Download(task *Task) error {
 }
 
 func (m *Manager) FetchMediaInfo(task *Task) (MediaInfo, error) {
-	downloader, ok := m.EnabledDownloader[task.Downloader]
+	downloader, ok := m.Downloaders[task.Downloader]
 	if !ok {
 		return nil, errors.New(fmt.Sprintf("Downloader '%s' not found or is disabled", task.Downloader))
 	}

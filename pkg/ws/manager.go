@@ -34,8 +34,8 @@ func startManager() {
 		case conn := <-Manager.unregister:
 			logging.Debug("Client %s left", conn.ID)
 			if _, ok := Manager.clients[conn.ID]; ok {
-				finMsg, _ := json.Marshal(&Message{Content: "A socket has disconnected"})
-				conn.Send <- finMsg
+				//finMsg, _ := json.Marshal(&Message{Content: "A socket has disconnected"})
+				//conn.Send <- finMsg
 				close(conn.Send)
 				delete(Manager.clients, conn.ID)
 			}

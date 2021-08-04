@@ -7,6 +7,7 @@ package downloader
 import (
 	"bufio"
 	"bytes"
+	"context"
 	"github.com/ingbyr/vdm/pkg/logging"
 	"os/exec"
 	"strings"
@@ -53,39 +54,46 @@ func (c *CmdArgs) toCmdStr() string {
 	return sb.String()
 }
 
-type BaseDownloader interface {
+type Downloader interface {
 	GetName() string
 	GetVersion() string
 	GetExecutorPath() string
 	Download(task *Task)
 	FetchMediaInfo(task *Task) (MediaInfo, error)
+	SetValid(valid bool)
 }
 
-type BaseInfo struct {
+type info struct {
 	Version      string `json:"version"`
 	Name         string `json:"name"`
 	ExecutorPath string `json:"executor_path"`
 }
 
-func (b *BaseInfo) GetName() string {
-	return b.Name
+func (i *info) GetName() string {
+	return i.Name
 }
 
-func (b *BaseInfo) GetVersion() string {
-	return b.Version
+func (i *info) GetVersion() string {
+	return i.Version
 }
 
-func (b *BaseInfo) GetExecutorPath() string {
-	return b.ExecutorPath
+func (i *info) GetExecutorPath() string {
+	return i.ExecutorPath
 }
 
-type baseDownloader struct {
-	*BaseInfo
+type downloader struct {
+	*info
 	CmdArgs
+	Valid bool `json:"valid"`
+	Enable bool `json:"enable"`
 }
 
-func (b *baseDownloader) Exec() ([]byte, error) {
-	command := exec.Command(b.ExecutorPath, b.toCmdStrSlice()...)
+func (d *downloader) SetValid(valid bool) {
+	d.Valid = valid
+}
+
+func (d *downloader) Exec() ([]byte, error) {
+	command := exec.Command(d.ExecutorPath, d.toCmdStrSlice()...)
 	logging.Debug("exec args: %v", command.Args)
 	var stderr bytes.Buffer
 	var stdout bytes.Buffer
@@ -100,29 +108,31 @@ func (b *baseDownloader) Exec() ([]byte, error) {
 	return stdout.Bytes(), nil
 }
 
-func (b *baseDownloader) ExecAsync(task *Task, updater func(task *Task, line string)) {
+func (d *downloader) ExecAsync(task *Task, updater func(task *Task, line string)) {
 	task.Status = TaskRunning
-	cmd := exec.Command(b.ExecutorPath, b.toCmdStrSlice()...)
+	cmd := exec.Command(d.ExecutorPath, d.toCmdStrSlice()...)
 	logging.Debug("exec args: %v\n", cmd.Args)
 	output := make(chan string)
-	TaskCache.collectTask(task)
-	go b.exec(cmd, output)
+	TaskSender.collect(task)
+	ctx, cancel := context.WithCancel(DCtx)
+	go d.exec(ctx, cmd, output)
 	go func() {
 		// parse download output and update task
 		for out := range output {
 			logging.Debug("output: %s", out)
 			updater(task, out)
 		}
+		cancel()
 		if strings.HasPrefix("100", task.Progress) {
 			task.Status = TaskFinished
 		} else {
 			task.Status = TaskPaused
 		}
-		TaskCache.clearTask(task.Id)
+		TaskSender.remove(task.Id)
 	}()
 }
 
-func (b *baseDownloader) exec(cmd *exec.Cmd, output chan<- string) {
+func (d *downloader) exec(ctx context.Context, cmd *exec.Cmd, output chan<- string) {
 	defer close(output)
 	pipe, err := cmd.StdoutPipe()
 	if err != nil {
@@ -136,7 +146,7 @@ func (b *baseDownloader) exec(cmd *exec.Cmd, output chan<- string) {
 	scanner := bufio.NewScanner(pipe)
 	for scanner.Scan() {
 		select {
-		case <-DCtx.Done():
+		case <-ctx.Done():
 			if err := cmd.Process.Kill(); err != nil {
 				logging.Error("failed to stop process: %v", err)
 			}

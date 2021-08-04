@@ -18,13 +18,15 @@ const (
 
 var (
 	youtubedl = &Youtubedl{
-		baseDownloader: &baseDownloader{
-			BaseInfo: &BaseInfo{
+		downloader: &downloader{
+			info: &info{
 				Version:      "local",
 				Name:         "youtube-dl",
 				ExecutorPath: GetYoutubedlExecutorPath(),
 			},
 			CmdArgs: NewCmdArgs(),
+			Valid: true,
+			Enable: true,
 		},
 		regSpeed:    regexp.MustCompile("\\d+\\.?\\d*\\w+/s"),
 		regProgress: regexp.MustCompile("\\d+\\.?\\d*%"),
@@ -49,7 +51,7 @@ func GetYoutubedlExecutorPath() string {
 }
 
 type Youtubedl struct {
-	*baseDownloader
+	*downloader
 	regSpeed    *regexp.Regexp
 	regProgress *regexp.Regexp
 }

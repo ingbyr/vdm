@@ -54,6 +54,7 @@ func (c *Client) Write() {
 		case msg, ok := <-c.Send:
 			if !ok {
 				c.Socket.WriteMessage(websocket.CloseMessage, []byte{})
+				Manager.unregister <- c
 				return
 			}
 			logging.Debug("Client %s send msg: %s", c.ID, string(msg))

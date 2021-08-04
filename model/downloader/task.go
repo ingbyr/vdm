@@ -18,10 +18,10 @@ const (
 )
 
 func init() {
-	TaskCache = &taskCache{
+	TaskSender = &taskCache{
 		Progress: make(map[int64]*TaskProgress),
 	}
-	ws.UpdateHeartbeatData("task", TaskCache)
+	ws.UpdateHeartbeatData("task", TaskSender)
 }
 
 type TaskConfig struct {
@@ -61,14 +61,14 @@ type taskCache struct {
 	Progress map[int64]*TaskProgress `json:"progress"`
 }
 
-var TaskCache = &taskCache{
+var TaskSender = &taskCache{
 	Progress: make(map[int64]*TaskProgress),
 }
 
-func (tm *taskCache) collectTask(task *Task) {
+func (tm *taskCache) collect(task *Task) {
 	tm.Progress[task.Id] = task.TaskProgress
 }
 
-func (tm *taskCache) clearTask(id int64) {
+func (tm *taskCache) remove(id int64) {
 	delete(tm.Progress, id)
 }
