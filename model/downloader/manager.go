@@ -58,7 +58,7 @@ func (m *Manager) Download(task *Task) error {
 	return nil
 }
 
-func (m *Manager) FetchMediaInfo(task *Task) (MediaInfo, error) {
+func (m *Manager) FetchMediaInfo(task *Task) (*MediaInfo, error) {
 	downloader, ok := m.Downloaders[task.Downloader]
 	if !ok {
 		return nil, errors.New(fmt.Sprintf("Downloader '%s' not found or is disabled", task.Downloader))

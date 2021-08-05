@@ -49,7 +49,7 @@ func initApiV1(r *gin.Engine) {
 	{
 		engineApi.GET("/manager", v1.GetDownloaderManager)
 		engineApi.POST("/media-info/fetch", v1.FetchMediaInfo)
-		engineApi.POST("/task", v1.AddDownloadTask)
+		engineApi.POST("/download", v1.AddDownloadTask)
 	}
 
 	// V1 websocket api group

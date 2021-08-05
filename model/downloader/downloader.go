@@ -59,30 +59,30 @@ type Downloader interface {
 	GetVersion() string
 	GetExecutorPath() string
 	Download(task *Task)
-	FetchMediaInfo(task *Task) (MediaInfo, error)
+	FetchMediaInfo(task *Task) (*MediaInfo, error)
 	SetValid(valid bool)
 }
 
-type info struct {
+type Info struct {
 	Version      string `json:"version"`
 	Name         string `json:"name"`
 	ExecutorPath string `json:"executor_path"`
 }
 
-func (i *info) GetName() string {
+func (i *Info) GetName() string {
 	return i.Name
 }
 
-func (i *info) GetVersion() string {
+func (i *Info) GetVersion() string {
 	return i.Version
 }
 
-func (i *info) GetExecutorPath() string {
+func (i *Info) GetExecutorPath() string {
 	return i.ExecutorPath
 }
 
 type downloader struct {
-	*info
+	*Info
 	CmdArgs
 	Valid bool `json:"valid"`
 	Enable bool `json:"enable"`

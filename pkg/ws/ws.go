@@ -1,6 +1,6 @@
 package ws
 
-func init() {
+func _init() {
 	go startManager()
 	go heartbeat()
 }

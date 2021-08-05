@@ -25,10 +25,11 @@ func init() {
 }
 
 type TaskConfig struct {
-	MediaUrl     string `json:"media_url"`
-	Downloader   string `json:"downloader"`
-	StoragePath  string `json:"storage_path,omitempty"`
-	FormatId     string `json:"format_id,omitempty"`
+	MediaUrl    string `json:"mediaUrl"`
+	Downloader  string `json:"downloader"`
+	StoragePath string `json:"storagePath,omitempty"`
+	FormatId    string `json:"formatId,omitempty"`
+	FormatUrl   string `json:"formatUrl,omitempty"`
 }
 
 type TaskProgress struct {

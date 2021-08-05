@@ -19,14 +19,14 @@ const (
 var (
 	youtubedl = &Youtubedl{
 		downloader: &downloader{
-			info: &info{
+			Info: &Info{
 				Version:      "local",
 				Name:         "youtube-dl",
 				ExecutorPath: GetYoutubedlExecutorPath(),
 			},
 			CmdArgs: NewCmdArgs(),
-			Valid: true,
-			Enable: true,
+			Valid:   true,
+			Enable:  true,
 		},
 		regSpeed:    regexp.MustCompile("\\d+\\.?\\d*\\w+/s"),
 		regProgress: regexp.MustCompile("\\d+\\.?\\d*%"),
@@ -56,7 +56,7 @@ type Youtubedl struct {
 	regProgress *regexp.Regexp
 }
 
-func (y *Youtubedl) FetchMediaInfo(task *Task) (MediaInfo, error) {
+func (y *Youtubedl) FetchMediaInfo(task *Task) (*MediaInfo, error) {
 	y.Reset()
 	y.CmdArgs.addFlag(task.MediaUrl)
 	y.CmdArgs.addFlag(FlagSimulateJson)
@@ -66,11 +66,10 @@ func (y *Youtubedl) FetchMediaInfo(task *Task) (MediaInfo, error) {
 	}
 	var mediaInfo YoutubedlMediaInfo
 	err = json.Unmarshal(jsonData, &mediaInfo)
-	mediaInfo.Url = task.MediaUrl
 	if err != nil {
 		return nil, err
 	}
-	return &mediaInfo, nil
+	return mediaInfo.toMediaInfo(), nil
 }
 
 func (y *Youtubedl) Download(task *Task) {
@@ -90,33 +89,36 @@ func (y *Youtubedl) Reset() {
 }
 
 type YoutubedlMediaInfo struct {
-	Url       string                     `json:"url,omitempty"`
-	Title     string                     `json:"title,omitempty"`
-	FullTitle string                     `json:"fulltitle,omitempty"`
-	Desc      string                     `json:"description,omitempty"`
-	Formats   []youtubedlMediaJsonFormat `json:"formats,omitempty"`
+	Title     string                  `json:"title,omitempty"`
+	FullTitle string                  `json:"fullTitle,omitempty"`
+	Desc      string                  `json:"description,omitempty"`
+	Formats   []*youtubedlMediaFormat `json:"formats,omitempty"`
 }
 
-func (y *YoutubedlMediaInfo) GetTitle() string {
-	return y.Title
+func (yMediaInfo *YoutubedlMediaInfo) toMediaInfo() *MediaInfo {
+	yFormats := yMediaInfo.Formats
+	formats := make([]*MediaFormat, 0, len(yFormats))
+	for _, yFormat := range yMediaInfo.Formats {
+		formats = append(formats, &MediaFormat{
+			Format:   yFormat.Format,
+			Id:       yFormat.FormatId,
+			Url:      yFormat.Url,
+			Ext:      yFormat.Ext,
+			FileSize: yFormat.FileSize,
+		})
+	}
+	return &MediaInfo{
+		Title:     yMediaInfo.Title,
+		FullTitle: yMediaInfo.FullTitle,
+		Desc:      yMediaInfo.Desc,
+		Formats:   formats,
+	}
 }
 
-func (y *YoutubedlMediaInfo) GetFullTitle() string {
-	return y.Title
-}
-
-func (y *YoutubedlMediaInfo) GetDesc() string {
-	return y.Desc
-}
-
-func (y *YoutubedlMediaInfo) GetFormats() interface{} {
-	return y.Formats
-}
-
-type youtubedlMediaJsonFormat struct {
+type youtubedlMediaFormat struct {
 	Format   string `json:"format,omitempty"`
 	FormatId string `json:"format_id,omitempty"`
 	Url      string `json:"url,omitempty"`
 	Ext      string `json:"ext,omitempty"`
-	FileSize int    `json:"filesize,omitempty"`
+	FileSize int    `json:"fileSize,omitempty"`
 }
