@@ -5,20 +5,16 @@
 ![](https://img.shields.io/github/issues/ingbyr/VDM.svg)
 ![](https://img.shields.io/badge/license-MIT-blue.svg)
 
-[中文说明](http://www.ingbyr.com/post/youget-zh/)
-
 # Download
-- Install the [JRE8](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html) first (If you have installed the JRE, skip this step).
-- Download the [VDM.zip](https://github.com/ingbyr/VDM/releases), unzip it and then click the `VDM.jar` file
+- Download the [VDM](https://github.com/ingbyr/VDM/releases)
 
 
 # Screenshots
-![](screenshots/MainView.png)
-
+TODO
 
 # Feedback Bugs
 If something is broken and `VDM` can't get you things you want, don't panic.
-Open a new issue on [GitHub](https://github.com/ingbyr/VDM/issues), with detailed `%HOMEPATH%\.vdm\log\debug.log` output attached.
+Open a new issue on [GitHub](https://github.com/ingbyr/VDM/issues), with detailed `debug.log` output attached.
 
 
 # Legal Issues
