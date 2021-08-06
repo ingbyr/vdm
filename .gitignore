@@ -11,3 +11,4 @@ log/
 /engines
 /.DS_Store
 /runtime
+tmp*

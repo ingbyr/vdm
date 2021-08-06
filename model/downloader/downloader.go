@@ -18,7 +18,6 @@ var ctx context.Context
 func Setup(_ctx context.Context) {
 	ctx = _ctx
 	setupTaskSender()
-
 }
 
 type CmdArgs struct {

@@ -19,6 +19,7 @@ type Server struct {
 
 type App struct {
 	HeartbeatInterval time.Duration
+	DatabasePath string
 }
 
 type Log struct {
