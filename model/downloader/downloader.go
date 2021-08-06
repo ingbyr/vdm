@@ -13,6 +13,14 @@ import (
 	"strings"
 )
 
+var ctx context.Context
+
+func Setup(_ctx context.Context) {
+	ctx = _ctx
+	setupTaskSender()
+
+}
+
 type CmdArgs struct {
 	args  map[string]string
 	flags []string
@@ -84,7 +92,7 @@ func (i *Info) GetExecutorPath() string {
 type downloader struct {
 	*Info
 	CmdArgs
-	Valid bool `json:"valid"`
+	Valid  bool `json:"valid"`
 	Enable bool `json:"enable"`
 }
 
@@ -114,7 +122,7 @@ func (d *downloader) ExecAsync(task *Task, updater func(task *Task, line string)
 	logging.Debug("exec args: %v", cmd.Args)
 	output := make(chan string)
 	TaskSender.collect(task)
-	ctx, cancel := context.WithCancel(DCtx)
+	ctx, cancel := context.WithCancel(ctx)
 	go d.exec(ctx, cmd, output)
 	go func() {
 		defer cancel()

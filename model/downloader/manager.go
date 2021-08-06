@@ -5,22 +5,11 @@
 package downloader
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"github.com/ingbyr/vdm/pkg/logging"
 	"os/exec"
-	"sync"
 )
-
-var once sync.Once
-var DCtx context.Context
-
-func Init(ctx context.Context) {
-	once.Do(func() {
-		DCtx = ctx
-	})
-}
 
 var manager = &Manager{
 	Downloaders: make(map[string]Downloader),

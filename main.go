@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/ingbyr/vdm/model/downloader"
 	"github.com/ingbyr/vdm/pkg/logging"
 	"github.com/ingbyr/vdm/pkg/setting"
 	"github.com/ingbyr/vdm/pkg/ws"
@@ -20,16 +21,18 @@ import (
 	"time"
 )
 
-func setup() {
+func setup() context.CancelFunc {
+	ctx, cancel := context.WithCancel(context.Background())
 	setting.Setup()
 	ws.Setup()
+	downloader.Setup(ctx)
+	return cancel
 }
 
 func run() {
-	setup()
+	cancel := setup()
 	gin.SetMode(setting.ServerSetting.RunMode)
-	ctx, cancel := context.WithCancel(context.Background())
-	handler := router.Setup(ctx)
+	handler := router.Init()
 	readTimeout := setting.ServerSetting.ReadTimeout
 	writeTimeout := setting.ServerSetting.WriteTimeout
 	endPoint := fmt.Sprintf(":%d", setting.ServerSetting.HttpPort)

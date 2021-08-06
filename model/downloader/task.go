@@ -17,7 +17,7 @@ const (
 	TaskFinished
 )
 
-func init() {
+func setupTaskSender() {
 	TaskSender = &taskSender{
 		Progress: make(map[int64]*TaskProgress),
 	}
