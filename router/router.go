@@ -17,18 +17,19 @@ import (
 	"time"
 )
 
-func Init(ctx context.Context) *gin.Engine {
-	initCtx(ctx)
-	r := initGin()
-	initApiV1(r)
+func Setup(ctx context.Context) *gin.Engine {
+	setupCtx(ctx)
+	r := setupGin()
+	setupWs(r)
+	setupApiV1(r)
 	return r
 }
 
-func initCtx(ctx context.Context) {
+func setupCtx(ctx context.Context) {
 	downloader.Init(ctx)
 }
 
-func initGin() *gin.Engine {
+func setupGin() *gin.Engine {
 	r := gin.New()
 	r.Use(ginzap.Ginzap(logging.GinLogger, time.RFC3339, true))
 	r.Use(ginzap.RecoveryWithZap(logging.GinLogger, true))
@@ -37,7 +38,13 @@ func initGin() *gin.Engine {
 	return r
 }
 
-func initApiV1(r *gin.Engine) {
+func setupWs(r *gin.Engine) {
+	wsGroup := r.Group("/ws")
+	wsGroup.GET("/connect", WsConnect)
+	wsGroup.GET("/send", WsSendMsg)
+}
+
+func setupApiV1(r *gin.Engine) {
 	// Api group
 	apiGroup := r.Group("/api")
 
@@ -50,12 +57,5 @@ func initApiV1(r *gin.Engine) {
 		engineApi.GET("/manager", v1.GetDownloaderManager)
 		engineApi.POST("/media-info/fetch", v1.FetchMediaInfo)
 		engineApi.POST("/download", v1.AddDownloadTask)
-	}
-
-	// V1 websocket api group
-	wsApi := apiV1.Group("/ws")
-	{
-		wsApi.GET("/connect", v1.WsConnect)
-		wsApi.GET("/send", v1.WsSendMsg)
 	}
 }

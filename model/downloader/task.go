@@ -18,7 +18,7 @@ const (
 )
 
 func init() {
-	TaskSender = &taskCache{
+	TaskSender = &taskSender{
 		Progress: make(map[int64]*TaskProgress),
 	}
 	ws.UpdateHeartbeatData("task", TaskSender)
@@ -33,16 +33,16 @@ type TaskConfig struct {
 }
 
 type TaskProgress struct {
-	DownloadedSize string `json:"downloaded_size,omitempty"`
+	DownloadedSize string `json:"downloadedSize,omitempty"`
 	Progress       string `json:"progress,omitempty"`
 	Speed          string `json:"speed,omitempty"`
 }
 
 type Task struct {
-	Id        int64
-	CreatedAt time.Time
-	Title     string
+	Id        int64 	`json:"id"`
+	CreatedAt time.Time `json:"createdAt"`
 	Status    int
+	*MediaBaseInfo
 	*TaskConfig
 	*TaskProgress
 }
@@ -57,19 +57,19 @@ func NewTask(taskConfig *TaskConfig) *Task {
 	}
 }
 
-type taskCache struct {
+type taskSender struct {
 	// Key is task id
 	Progress map[int64]*TaskProgress `json:"progress"`
 }
 
-var TaskSender = &taskCache{
+var TaskSender = &taskSender{
 	Progress: make(map[int64]*TaskProgress),
 }
 
-func (tm *taskCache) collect(task *Task) {
+func (tm *taskSender) collect(task *Task) {
 	tm.Progress[task.Id] = task.TaskProgress
 }
 
-func (tm *taskCache) remove(id int64) {
+func (tm *taskSender) remove(id int64) {
 	delete(tm.Progress, id)
 }

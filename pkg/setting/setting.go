@@ -33,7 +33,7 @@ var (
 
 var cfg *ini.File
 
-func init() {
+func Setup() {
 	var err error
 	cfg, err = ini.Load("conf/app.ini")
 	if err != nil {

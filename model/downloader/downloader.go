@@ -93,13 +93,13 @@ func (d *downloader) SetValid(valid bool) {
 }
 
 func (d *downloader) Exec() ([]byte, error) {
-	command := exec.Command(d.ExecutorPath, d.toCmdStrSlice()...)
-	logging.Debug("exec args: %v", command.Args)
+	cmd := exec.Command(d.ExecutorPath, d.toCmdStrSlice()...)
+	logging.Debug("exec args: %v", cmd.Args)
 	var stderr bytes.Buffer
 	var stdout bytes.Buffer
-	command.Stderr = &stderr
-	command.Stdout = &stdout
-	err := command.Run()
+	cmd.Stderr = &stderr
+	cmd.Stdout = &stdout
+	err := cmd.Run()
 	if err != nil {
 		logging.Error("exec error %v", stderr)
 		return stderr.Bytes(), err
@@ -111,18 +111,18 @@ func (d *downloader) Exec() ([]byte, error) {
 func (d *downloader) ExecAsync(task *Task, updater func(task *Task, line string)) {
 	task.Status = TaskRunning
 	cmd := exec.Command(d.ExecutorPath, d.toCmdStrSlice()...)
-	logging.Debug("exec args: %v\n", cmd.Args)
+	logging.Debug("exec args: %v", cmd.Args)
 	output := make(chan string)
 	TaskSender.collect(task)
 	ctx, cancel := context.WithCancel(DCtx)
 	go d.exec(ctx, cmd, output)
 	go func() {
+		defer cancel()
 		// parse download output and update task
 		for out := range output {
 			logging.Debug("output: %s", out)
 			updater(task, out)
 		}
-		cancel()
 		if strings.HasPrefix("100", task.Progress) {
 			task.Status = TaskFinished
 		} else {

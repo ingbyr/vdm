@@ -5,9 +5,7 @@
 package downloader
 
 type MediaInfo struct {
-	Title     string         `json:"title,omitempty"`
-	FullTitle string         `json:"fullTitle,omitempty"`
-	Desc      string         `json:"description,omitempty"`
+	*MediaBaseInfo
 	Formats   []*MediaFormat `json:"formats,omitempty"`
 }
 
@@ -17,4 +15,9 @@ type MediaFormat struct {
 	Url      string `json:"url,omitempty"`
 	Ext      string `json:"ext,omitempty"`
 	FileSize int    `json:"fileSize,omitempty"`
+}
+
+type MediaBaseInfo struct {
+	Title     string         `json:"title,omitempty"`
+	Desc      string         `json:"description,omitempty"`
 }

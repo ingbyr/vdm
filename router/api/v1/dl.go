@@ -34,7 +34,7 @@ func FetchMediaInfo(c *gin.Context) {
 func AddDownloadTask(c *gin.Context) {
 	var taskConfig downloader.TaskConfig
 	if err := c.BindJSON(&taskConfig); err != nil {
-		r.Failed(c, e.InvalidParams, nil)
+		r.Failed(c, e.InvalidParams, err)
 		return
 	}
 	task := downloader.NewTask(&taskConfig)

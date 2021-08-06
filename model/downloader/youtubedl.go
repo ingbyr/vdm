@@ -7,13 +7,16 @@ package downloader
 import (
 	"encoding/json"
 	"github.com/ingbyr/vdm/model/goos"
+	"os"
 	"regexp"
 	"runtime"
+	"strings"
 )
 
 const (
-	FlagSimulateJson  = "-j"
+	FlagDumpJson      = "--dump-json"
 	FlagNewLineOutput = "--newline"
+	FlagOutput        = "--output"
 )
 
 var (
@@ -28,8 +31,9 @@ var (
 			Valid:   true,
 			Enable:  true,
 		},
-		regSpeed:    regexp.MustCompile("\\d+\\.?\\d*\\w+/s"),
-		regProgress: regexp.MustCompile("\\d+\\.?\\d*%"),
+		mediaNameTemplate: "%(title)s.%(ext)s",
+		regSpeed:          regexp.MustCompile("\\d+\\.?\\d*\\w+/s"),
+		regProgress:       regexp.MustCompile("\\d+\\.?\\d*%"),
 	}
 )
 
@@ -52,31 +56,43 @@ func GetYoutubedlExecutorPath() string {
 
 type Youtubedl struct {
 	*downloader
-	regSpeed    *regexp.Regexp
-	regProgress *regexp.Regexp
+	mediaNameTemplate string
+	regSpeed          *regexp.Regexp
+	regProgress       *regexp.Regexp
 }
 
 func (y *Youtubedl) FetchMediaInfo(task *Task) (*MediaInfo, error) {
 	y.Reset()
 	y.CmdArgs.addFlag(task.MediaUrl)
-	y.CmdArgs.addFlag(FlagSimulateJson)
-	jsonData, err := y.Exec()
+	y.CmdArgs.addFlag(FlagDumpJson)
+	yMediaInfoData, err := y.Exec()
 	if err != nil {
 		return nil, err
 	}
-	var mediaInfo YoutubedlMediaInfo
-	err = json.Unmarshal(jsonData, &mediaInfo)
+	var yMediaInfo YoutubedlMediaInfo
+	err = json.Unmarshal(yMediaInfoData, &yMediaInfo)
 	if err != nil {
 		return nil, err
 	}
-	return mediaInfo.toMediaInfo(), nil
+	mediaInfo := yMediaInfo.toMediaInfo()
+	task.MediaBaseInfo = mediaInfo.MediaBaseInfo
+	return mediaInfo, nil
 }
 
 func (y *Youtubedl) Download(task *Task) {
 	y.Reset()
 	y.CmdArgs.addFlag(task.MediaUrl)
 	y.CmdArgs.addFlag(FlagNewLineOutput)
+	y.CmdArgs.addFlagValue(FlagOutput, y.GenerateStoragePath(task.StoragePath))
 	y.ExecAsync(task, y.UpdateTask)
+}
+
+func (y *Youtubedl) GenerateStoragePath(storagePath string) string {
+	pathSeparator := string(os.PathSeparator)
+	if strings.HasSuffix(storagePath, pathSeparator) {
+		return storagePath + y.mediaNameTemplate
+	}
+	return storagePath + pathSeparator + y.mediaNameTemplate
 }
 
 func (y *Youtubedl) UpdateTask(task *Task, line string) {
@@ -108,10 +124,11 @@ func (yMediaInfo *YoutubedlMediaInfo) toMediaInfo() *MediaInfo {
 		})
 	}
 	return &MediaInfo{
-		Title:     yMediaInfo.Title,
-		FullTitle: yMediaInfo.FullTitle,
-		Desc:      yMediaInfo.Desc,
-		Formats:   formats,
+		MediaBaseInfo: &MediaBaseInfo{
+			Title: yMediaInfo.Title,
+			Desc:  yMediaInfo.Desc,
+		},
+		Formats: formats,
 	}
 }
 

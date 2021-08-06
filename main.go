@@ -11,6 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/ingbyr/vdm/pkg/logging"
 	"github.com/ingbyr/vdm/pkg/setting"
+	"github.com/ingbyr/vdm/pkg/ws"
 	"github.com/ingbyr/vdm/router"
 	"net/http"
 	"os"
@@ -19,14 +20,16 @@ import (
 	"time"
 )
 
-func init() {
-
+func setup() {
+	setting.Setup()
+	ws.Setup()
 }
 
 func run() {
+	setup()
 	gin.SetMode(setting.ServerSetting.RunMode)
 	ctx, cancel := context.WithCancel(context.Background())
-	handler := router.Init(ctx)
+	handler := router.Setup(ctx)
 	readTimeout := setting.ServerSetting.ReadTimeout
 	writeTimeout := setting.ServerSetting.WriteTimeout
 	endPoint := fmt.Sprintf(":%d", setting.ServerSetting.HttpPort)

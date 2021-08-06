@@ -39,3 +39,7 @@ func TestYoutubedl_ParseDownloadOutput(t *testing.T) {
 			youtubedl.regSpeed.FindString(o))
 	}
 }
+
+func TestYoutubedl_GenerateStoragePath(t *testing.T) {
+	fmt.Println(youtubedl.GenerateStoragePath("./runtime"))
+}

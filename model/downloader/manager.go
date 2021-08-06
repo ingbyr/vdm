@@ -52,7 +52,7 @@ func (m *Manager) Enabled(downloader Downloader) bool {
 func (m *Manager) Download(task *Task) error {
 	downloader, ok := m.Downloaders[task.Downloader]
 	if !ok {
-		return errors.New(fmt.Sprintf("Downloader '%s' not found or is disabled", task.Downloader))
+		return errors.New(fmt.Sprintf("downloader '%s' not found or is disabled", task.Downloader))
 	}
 	downloader.Download(task)
 	return nil
@@ -61,7 +61,7 @@ func (m *Manager) Download(task *Task) error {
 func (m *Manager) FetchMediaInfo(task *Task) (*MediaInfo, error) {
 	downloader, ok := m.Downloaders[task.Downloader]
 	if !ok {
-		return nil, errors.New(fmt.Sprintf("Downloader '%s' not found or is disabled", task.Downloader))
+		return nil, errors.New(fmt.Sprintf("downloader '%s' not found or is disabled", task.Downloader))
 	}
 	return downloader.FetchMediaInfo(task)
 }
