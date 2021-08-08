@@ -36,4 +36,5 @@ require (
 	gopkg.in/ini.v1 v1.62.0 // indirect
 	gorm.io/driver/sqlite v1.1.4 // indirect
 	gorm.io/gorm v1.21.12 // indirect
+	moul.io/zapgorm2 v1.1.0 // indirect
 )

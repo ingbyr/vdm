@@ -13,6 +13,10 @@ import (
 	"strings"
 )
 
+const (
+	ProgressCompleted = "100"
+)
+
 var ctx context.Context
 
 func SetupDownloader(_ctx context.Context) {
@@ -116,7 +120,7 @@ func (d *downloader) Exec() ([]byte, error) {
 }
 
 func (d *downloader) ExecAsync(task *DownloaderTask, updater func(task *DownloaderTask, line string)) {
-	task.Status = TaskRunning
+	task.Status = TaskStatusRunning
 	cmd := exec.Command(d.ExecutorPath, d.toCmdStrSlice()...)
 	logging.Debug("exec args: %v", cmd.Args)
 	DownloaderManager.UpdateTaskProgress(task)
@@ -130,10 +134,8 @@ func (d *downloader) ExecAsync(task *DownloaderTask, updater func(task *Download
 			logging.Debug("output: %s", out)
 			updater(task, out)
 		}
-		if strings.HasPrefix("100", task.Progress) {
-			task.Status = TaskFinished
-		} else {
-			task.Status = TaskPaused
+		if task.Status != TaskStatusCompleted {
+			task.Status = TaskStatusPaused
 		}
 		DownloaderManager.RemoveTaskProgress(task)
 	}()

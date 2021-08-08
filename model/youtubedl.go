@@ -96,7 +96,16 @@ func (y *Youtubedl) GenerateStoragePath(storagePath string) string {
 }
 
 func (y *Youtubedl) UpdateTask(task *DownloaderTask, line string) {
-	task.Progress = y.regProgress.FindString(line)
+	// update progress
+	progressStr := y.regProgress.FindString(line)
+	if progressStr != "" {
+		task.Progress = progressStr[:len(progressStr)-1]
+		// update status
+		if strings.HasPrefix(task.Progress, ProgressCompleted) {
+			task.Status = TaskStatusCompleted
+		}
+	}
+	// update speed
 	task.Speed = y.regSpeed.FindString(line)
 }
 

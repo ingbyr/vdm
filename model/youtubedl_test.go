@@ -33,10 +33,10 @@ func TestYoutubedl_ParseDownloadOutput(t *testing.T) {
 		"[download]   33.33% of 41.53MiB at 11.79MB/s ETA 00:41",
 		"[download] 100% of 41.53MiB in 00:48",
 	}
+	task := NewDownloaderTask(&DownloaderTaskConfig{})
 	for i, o := range output {
-		fmt.Printf("%v) progress %v, speed %v \n", i,
-			youtubedl.regProgress.FindString(o),
-			youtubedl.regSpeed.FindString(o))
+		youtubedl.UpdateTask(task, o)
+		fmt.Printf("%d %+v\n", i, task.DownloaderTaskProgress)
 	}
 }
 

@@ -7,11 +7,13 @@ package logging
 import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"moul.io/zapgorm2"
 	"os"
 )
 
-var logger *zap.SugaredLogger
+var _logger *zap.SugaredLogger
 var GinLogger *zap.Logger
+var DBLogger zapgorm2.Logger
 var LoggerLevel zap.AtomicLevel
 
 func init() {
@@ -23,25 +25,26 @@ func init() {
 		LoggerLevel,
 	))
 	LoggerLevel.SetLevel(zapcore.DebugLevel)
-	logger = GinLogger.Sugar()
+	_logger = GinLogger.Sugar()
+	DBLogger = zapgorm2.New(GinLogger)
 }
 
 func Debug(format string, v ...interface{}) {
-	logger.Debugf(format, v...)
+	_logger.Debugf(format, v...)
 }
 
 func Info(format string, v ...interface{}) {
-	logger.Infof(format, v...)
+	_logger.Infof(format, v...)
 }
 
 func Warn(format string, v ...interface{}) {
-	logger.Warnf(format, v...)
+	_logger.Warnf(format, v...)
 }
 
 func Error(format string, v ...interface{}) {
-	logger.Errorf(format, v...)
+	_logger.Errorf(format, v...)
 }
 
 func Panic(format string, v ...interface{}) {
-	logger.Panicf(format, v...)
+	_logger.Panicf(format, v...)
 }

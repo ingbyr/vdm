@@ -18,7 +18,6 @@ func TestDb_Init(t *testing.T) {
 	task := &model.DownloaderTask{
 		ID:        id,
 		CreatedAt: time.Now(),
-		Status:    2,
 		MediaBaseInfo: &model.MediaBaseInfo{
 			Title: "title",
 			Desc:  "desc",
@@ -31,6 +30,7 @@ func TestDb_Init(t *testing.T) {
 			FormatUrl:   "format url",
 		},
 		DownloaderTaskProgress: &model.DownloaderTaskProgress{
+			Status:         model.TaskStatusRunning,
 			DownloadedSize: "4242",
 			Progress:       "42",
 			Speed:          "42Mb/s",
