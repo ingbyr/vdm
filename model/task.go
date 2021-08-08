@@ -17,11 +17,10 @@ const (
 )
 
 type DownloaderTaskConfig struct {
-	TaskId      int64  `json:"taskId" gorm:"primaryKey"`
 	MediaUrl    string `json:"mediaUrl"`
 	Downloader  string `json:"downloader"`
-	StoragePath string `json:"storagePath,omitempty"`
-	FormatId    string `json:"formatId,omitempty"`
+	StoragePath string `json:"storagePath"`
+	FormatId    string `json:"formatId"`
 	FormatUrl   string `json:"formatUrl,omitempty"`
 }
 
@@ -36,8 +35,8 @@ type DownloaderTask struct {
 	CreatedAt      time.Time `json:"createdAt"`
 	Status         int       `json:"status"`
 	*MediaBaseInfo `gorm:"embedded"`
-	*DownloaderTaskConfig
-	*DownloaderTaskProgress
+	*DownloaderTaskConfig `gorm:"embedded"`
+	*DownloaderTaskProgress `gorm:"embedded"`
 }
 
 func NewDownloaderTask(taskConfig *DownloaderTaskConfig) *DownloaderTask {

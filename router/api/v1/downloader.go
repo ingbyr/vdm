@@ -45,3 +45,7 @@ func AddDownloadTask(c *gin.Context) {
 	}
 	resp.OK(c, res)
 }
+
+func GetDownloaderTask(c *gin.Context) {
+	resp.OK(c, service.GetTaskPage(c))
+}

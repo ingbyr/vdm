@@ -5,6 +5,7 @@
 package db
 
 import (
+	"fmt"
 	"github.com/ingbyr/vdm/model"
 	"github.com/ingbyr/vdm/pkg/uuid"
 	"testing"
@@ -23,7 +24,6 @@ func TestDb_Init(t *testing.T) {
 			Desc:  "desc",
 		},
 		DownloaderTaskConfig: &model.DownloaderTaskConfig{
-			TaskId:      id,
 			MediaUrl:    "media url",
 			Downloader:  "downloader",
 			StoragePath: "storage path",
@@ -36,6 +36,15 @@ func TestDb_Init(t *testing.T) {
 			Speed:          "42Mb/s",
 		},
 	}
-	Db.Create(task)
-	Db.Create(task.DownloaderTaskConfig)
+	DB.Create(task)
+	DB.Create(task.DownloaderTaskConfig)
+}
+
+func TestPage(t *testing.T) {
+	Setup()
+	tasks := make([]model.DownloaderTask, 0)
+	DB.Find(&tasks)
+	for _, task := range tasks {
+		fmt.Printf("%v\n", task)
+	}
 }

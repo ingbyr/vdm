@@ -12,7 +12,7 @@ func AddDownloaderTask(taskConfig *model.DownloaderTaskConfig) (*model.Downloade
 		return nil, err
 	}
 	// save to database
-	db.Db.Create(task)
-	db.Db.Create(task.DownloaderTaskConfig)
+	db.DB.Create(task)
+	db.DB.Create(task.DownloaderTaskConfig)
 	return task, nil
 }

@@ -45,5 +45,6 @@ func initApiV1(r *gin.Engine) {
 		engineApi.GET("/info", v1.GetDownloaderInfo)
 		engineApi.POST("/media/info", v1.FetchMediaInfo)
 		engineApi.POST("/download", v1.AddDownloadTask)
+		engineApi.GET("/task/page", v1.GetDownloaderTask)
 	}
 }
