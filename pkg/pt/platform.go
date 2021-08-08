@@ -1,4 +1,4 @@
-package goos
+package pt
 
 const (
 	Windows = "windows"

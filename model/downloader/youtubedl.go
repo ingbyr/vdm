@@ -6,7 +6,7 @@ package downloader
 
 import (
 	"encoding/json"
-	"github.com/ingbyr/vdm/model/goos"
+	"github.com/ingbyr/vdm/pkg/pt"
 	"os"
 	"regexp"
 	"runtime"
@@ -43,14 +43,14 @@ func init() {
 
 func GetYoutubedlExecutorPath() string {
 	switch runtime.GOOS {
-	case goos.Windows:
+	case pt.Windows:
 		return ".\\runtime\\engine\\youtube-dl.exe"
-	case goos.Linux:
+	case pt.Linux:
 		return "./runtime/engine/youtube-dl"
-	case goos.MacOS:
+	case pt.MacOS:
 		return "./runtime/engine/youtube-dl"
 	default:
-		return "not support os " + runtime.GOOS
+		return "not support pt " + runtime.GOOS
 	}
 }
 

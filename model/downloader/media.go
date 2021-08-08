@@ -18,6 +18,6 @@ type MediaFormat struct {
 }
 
 type MediaBaseInfo struct {
-	Title     string         `json:"title,omitempty"`
-	Desc      string         `json:"description,omitempty"`
+	Title     string         `json:"title,omitempty" db:"title"`
+	Desc      string         `json:"description,omitempty" db:"desc"`
 }

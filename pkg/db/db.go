@@ -5,24 +5,27 @@
 package db
 
 import (
+	"fmt"
+	"github.com/ingbyr/vdm/model/downloader"
 	"github.com/ingbyr/vdm/pkg/logging"
-	"github.com/jmoiron/sqlx"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
-const (
-	dbType = "sqlite3"
-)
-
-var DB *sqlx.DB
+var Db *gorm.DB
 
 func Setup(dbPath string) {
 	logging.Debug("connecting db '%s' ...", dbPath)
-	conn, err := sqlx.Connect(dbType, dbPath)
+	db, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
 	if err != nil {
 		logging.Panic("failed to connect database")
 	}
-	DB = conn
+	Db = db
 	logging.Debug("connected")
+
+	logging.Debug("migrating the schema ...")
+	Db.AutoMigrate(&downloader.Task{})
+	Db.AutoMigrate(&downloader.TaskConfig{})
 }
 
 func InitSchemes() {
@@ -49,8 +52,5 @@ func InitSchemes() {
 			format_url   text
 		)`,
 	}
-
-	for _, scheme := range schemes {
-		DB.MustExec(scheme)
-	}
+	fmt.Println(schemes)
 }

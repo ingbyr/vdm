@@ -67,9 +67,9 @@ func (m *manager) FetchMediaInfo(task *Task) (*MediaInfo, error) {
 }
 
 func (m *manager) UpdateTaskProgress(task *Task) {
-	m.TaskProgress[task.Id] = task.TaskProgress
+	m.TaskProgress[task.ID] = task.TaskProgress
 }
 
 func (m *manager) RemoveTaskProgress(task *Task) {
-	delete(m.TaskProgress, task.Id)
+	delete(m.TaskProgress, task.ID)
 }
