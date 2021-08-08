@@ -70,26 +70,26 @@ type Downloader interface {
 	SetValid(valid bool)
 }
 
-type Info struct {
+type DownloaderInfo struct {
 	Version      string `json:"version"`
 	Name         string `json:"name"`
 	ExecutorPath string `json:"executor_path"`
 }
 
-func (i *Info) GetName() string {
-	return i.Name
+func (di *DownloaderInfo) GetName() string {
+	return di.Name
 }
 
-func (i *Info) GetVersion() string {
-	return i.Version
+func (di *DownloaderInfo) GetVersion() string {
+	return di.Version
 }
 
-func (i *Info) GetExecutorPath() string {
-	return i.ExecutorPath
+func (di *DownloaderInfo) GetExecutorPath() string {
+	return di.ExecutorPath
 }
 
 type downloader struct {
-	*Info
+	*DownloaderInfo
 	CmdArgs
 	Valid  bool `json:"valid"`
 	Enable bool `json:"enable"`

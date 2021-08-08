@@ -22,7 +22,7 @@ const (
 var (
 	youtubedl = &Youtubedl{
 		downloader: &downloader{
-			Info: &Info{
+			DownloaderInfo: &DownloaderInfo{
 				Version:      "local",
 				Name:         "youtube-dl",
 				ExecutorPath: GetYoutubedlExecutorPath(),
@@ -50,7 +50,7 @@ func GetYoutubedlExecutorPath() string {
 	case pt.MacOS:
 		return "./runtime/engine/youtube-dl"
 	default:
-		return "not support pt " + runtime.GOOS
+		return "not support platform " + runtime.GOOS
 	}
 }
 

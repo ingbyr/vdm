@@ -21,13 +21,13 @@ type DownloaderTaskConfig struct {
 	Downloader  string `json:"downloader"`
 	StoragePath string `json:"storagePath"`
 	FormatId    string `json:"formatId"`
-	FormatUrl   string `json:"formatUrl,omitempty"`
+	FormatUrl   string `json:"formatUrl"`
 }
 
 type DownloaderTaskProgress struct {
-	DownloadedSize string `json:"downloadedSize,omitempty" db:"download_size"`
-	Progress       string `json:"progress,omitempty" db:"progress"`
-	Speed          string `json:"speed,omitempty" db:"speed"`
+	DownloadedSize string `json:"downloadedSize" db:"download_size"`
+	Progress       string `json:"progress" db:"progress"`
+	Speed          string `json:"speed" db:"speed"`
 }
 
 type DownloaderTask struct {
