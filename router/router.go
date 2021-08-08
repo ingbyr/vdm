@@ -42,8 +42,8 @@ func initApiV1(r *gin.Engine) {
 	// V1 engine api group
 	engineApi := apiV1.Group("/downloader")
 	{
-		engineApi.GET("/manager", v1.GetDownloaderManager)
-		engineApi.POST("/media-info/fetch", v1.FetchMediaInfo)
+		engineApi.GET("/info", v1.GetDownloaderInfo)
+		engineApi.POST("/media/info", v1.FetchMediaInfo)
 		engineApi.POST("/download", v1.AddDownloadTask)
 	}
 }

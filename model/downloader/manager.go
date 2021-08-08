@@ -8,22 +8,33 @@ import (
 	"errors"
 	"fmt"
 	"github.com/ingbyr/vdm/pkg/logging"
+	"github.com/ingbyr/vdm/pkg/ws"
 	"os/exec"
 )
 
-var manager = &Manager{
-	Downloaders: make(map[string]Downloader),
+var Manager = &manager{
+	Downloaders:   make(map[string]Downloader),
+	TaskProgress:  make(map[int64]*TaskProgress),
+	ManagerConfig: &ManagerConfig{EnableWsSender: false},
 }
 
-func GetManager() *Manager {
-	return manager
+type manager struct {
+	Downloaders  map[string]Downloader   `json:"downloaders,omitempty"`
+	TaskProgress map[int64]*TaskProgress `json:"progress,omitempty"`
+	*ManagerConfig
 }
 
-type Manager struct {
-	Downloaders map[string]Downloader `json:"downloaders,omitempty"`
+type ManagerConfig struct {
+	EnableWsSender bool
 }
 
-func (m *Manager) Register(downloader Downloader) error {
+func (m *manager) setup(mc *ManagerConfig) {
+	if mc.EnableWsSender {
+		ws.UpdateHeartbeatData("taskProgress", m.TaskProgress)
+	}
+}
+
+func (m *manager) Register(downloader Downloader) error {
 	var err error
 	if _, err = exec.LookPath(downloader.GetExecutorPath()); err != nil {
 		downloader.SetValid(false)
@@ -33,12 +44,12 @@ func (m *Manager) Register(downloader Downloader) error {
 	return err
 }
 
-func (m *Manager) Enabled(downloader Downloader) bool {
+func (m *manager) Enabled(downloader Downloader) bool {
 	_, ok := m.Downloaders[downloader.GetName()]
 	return ok
 }
 
-func (m *Manager) Download(task *Task) error {
+func (m *manager) Download(task *Task) error {
 	downloader, ok := m.Downloaders[task.Downloader]
 	if !ok {
 		return errors.New(fmt.Sprintf("downloader '%s' not found or is disabled", task.Downloader))
@@ -47,10 +58,18 @@ func (m *Manager) Download(task *Task) error {
 	return nil
 }
 
-func (m *Manager) FetchMediaInfo(task *Task) (*MediaInfo, error) {
+func (m *manager) FetchMediaInfo(task *Task) (*MediaInfo, error) {
 	downloader, ok := m.Downloaders[task.Downloader]
 	if !ok {
 		return nil, errors.New(fmt.Sprintf("downloader '%s' not found or is disabled", task.Downloader))
 	}
 	return downloader.FetchMediaInfo(task)
+}
+
+func (m *manager) UpdateTaskProgress(task *Task) {
+	m.TaskProgress[task.Id] = task.TaskProgress
+}
+
+func (m *manager) RemoveTaskProgress(task *Task) {
+	delete(m.TaskProgress, task.Id)
 }

@@ -17,7 +17,7 @@ var ctx context.Context
 
 func Setup(_ctx context.Context) {
 	ctx = _ctx
-	setupTaskSender()
+	Manager.setup(&ManagerConfig{EnableWsSender: true})
 }
 
 type CmdArgs struct {
@@ -119,8 +119,8 @@ func (d *downloader) ExecAsync(task *Task, updater func(task *Task, line string)
 	task.Status = TaskRunning
 	cmd := exec.Command(d.ExecutorPath, d.toCmdStrSlice()...)
 	logging.Debug("exec args: %v", cmd.Args)
+	Manager.UpdateTaskProgress(task)
 	output := make(chan string)
-	TaskSender.collect(task)
 	ctx, cancel := context.WithCancel(ctx)
 	go d.exec(ctx, cmd, output)
 	go func() {
@@ -135,7 +135,7 @@ func (d *downloader) ExecAsync(task *Task, updater func(task *Task, line string)
 		} else {
 			task.Status = TaskPaused
 		}
-		TaskSender.remove(task.Id)
+		Manager.RemoveTaskProgress(task)
 	}()
 }
 

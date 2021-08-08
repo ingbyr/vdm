@@ -38,7 +38,7 @@ var (
 )
 
 func init() {
-	_ = GetManager().Register(youtubedl)
+	_ = Manager.Register(youtubedl)
 }
 
 func GetYoutubedlExecutorPath() string {

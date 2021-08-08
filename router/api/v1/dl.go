@@ -12,8 +12,8 @@ import (
 	"github.com/ingbyr/vdm/pkg/r"
 )
 
-func GetDownloaderManager(c *gin.Context) {
-	r.OK(c, downloader.GetManager())
+func GetDownloaderInfo(c *gin.Context) {
+	r.OK(c, downloader.Manager.Downloaders)
 }
 
 func FetchMediaInfo(c *gin.Context) {
@@ -23,7 +23,7 @@ func FetchMediaInfo(c *gin.Context) {
 		return
 	}
 	task := downloader.NewTask(&taskConfig)
-	formats, err := downloader.GetManager().FetchMediaInfo(task)
+	formats, err := downloader.Manager.FetchMediaInfo(task)
 	if err != nil {
 		r.Failed(c, e.Error, err)
 		return
@@ -38,7 +38,7 @@ func AddDownloadTask(c *gin.Context) {
 		return
 	}
 	task := downloader.NewTask(&taskConfig)
-	err := downloader.GetManager().Download(task)
+	err := downloader.Manager.Download(task)
 	if err != nil {
 		r.Failed(c, e.Error, err.Error())
 		return

@@ -6,7 +6,6 @@ package downloader
 
 import (
 	"github.com/ingbyr/vdm/pkg/uuid"
-	"github.com/ingbyr/vdm/pkg/ws"
 	"time"
 )
 
@@ -16,13 +15,6 @@ const (
 	TaskPaused
 	TaskFinished
 )
-
-func setupTaskSender() {
-	TaskSender = &taskSender{
-		Progress: make(map[int64]*TaskProgress),
-	}
-	ws.UpdateHeartbeatData("task", TaskSender)
-}
 
 type TaskConfig struct {
 	MediaUrl    string `json:"mediaUrl"`
@@ -55,21 +47,4 @@ func NewTask(taskConfig *TaskConfig) *Task {
 		TaskConfig:   taskConfig,
 		TaskProgress: &TaskProgress{},
 	}
-}
-
-type taskSender struct {
-	// Key is task id
-	Progress map[int64]*TaskProgress `json:"progress"`
-}
-
-var TaskSender = &taskSender{
-	Progress: make(map[int64]*TaskProgress),
-}
-
-func (tm *taskSender) collect(task *Task) {
-	tm.Progress[task.Id] = task.TaskProgress
-}
-
-func (tm *taskSender) remove(id int64) {
-	delete(tm.Progress, id)
 }
