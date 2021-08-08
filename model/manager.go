@@ -2,7 +2,7 @@
  @Author: ingbyr
 */
 
-package downloader
+package model
 
 import (
 	"errors"
@@ -12,15 +12,15 @@ import (
 	"os/exec"
 )
 
-var Manager = &manager{
+var DownloaderManager = &manager{
 	Downloaders:   make(map[string]Downloader),
-	TaskProgress:  make(map[int64]*TaskProgress),
+	TaskProgress:  make(map[int64]*DownloaderTaskProgress),
 	ManagerConfig: &ManagerConfig{EnableWsSender: false},
 }
 
 type manager struct {
-	Downloaders  map[string]Downloader   `json:"downloaders,omitempty"`
-	TaskProgress map[int64]*TaskProgress `json:"progress,omitempty"`
+	Downloaders  map[string]Downloader             `json:"downloaders,omitempty"`
+	TaskProgress map[int64]*DownloaderTaskProgress `json:"progress,omitempty"`
 	*ManagerConfig
 }
 
@@ -49,7 +49,7 @@ func (m *manager) Enabled(downloader Downloader) bool {
 	return ok
 }
 
-func (m *manager) Download(task *Task) error {
+func (m *manager) Download(task *DownloaderTask) error {
 	downloader, ok := m.Downloaders[task.Downloader]
 	if !ok {
 		return errors.New(fmt.Sprintf("downloader '%s' not found or is disabled", task.Downloader))
@@ -58,7 +58,7 @@ func (m *manager) Download(task *Task) error {
 	return nil
 }
 
-func (m *manager) FetchMediaInfo(task *Task) (*MediaInfo, error) {
+func (m *manager) FetchMediaInfo(task *DownloaderTask) (*MediaInfo, error) {
 	downloader, ok := m.Downloaders[task.Downloader]
 	if !ok {
 		return nil, errors.New(fmt.Sprintf("downloader '%s' not found or is disabled", task.Downloader))
@@ -66,10 +66,10 @@ func (m *manager) FetchMediaInfo(task *Task) (*MediaInfo, error) {
 	return downloader.FetchMediaInfo(task)
 }
 
-func (m *manager) UpdateTaskProgress(task *Task) {
-	m.TaskProgress[task.ID] = task.TaskProgress
+func (m *manager) UpdateTaskProgress(task *DownloaderTask) {
+	m.TaskProgress[task.ID] = task.DownloaderTaskProgress
 }
 
-func (m *manager) RemoveTaskProgress(task *Task) {
+func (m *manager) RemoveTaskProgress(task *DownloaderTask) {
 	delete(m.TaskProgress, task.ID)
 }

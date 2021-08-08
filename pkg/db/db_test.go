@@ -5,24 +5,24 @@
 package db
 
 import (
-	"github.com/ingbyr/vdm/model/downloader"
+	"github.com/ingbyr/vdm/model"
 	"github.com/ingbyr/vdm/pkg/uuid"
 	"testing"
 	"time"
 )
 
 func TestDb_Init(t *testing.T) {
-	Setup("tmp.db")
+	Setup()
 	id := uuid.Instance.Generate().Int64()
-	task := &downloader.Task{
+	task := &model.DownloaderTask{
 		ID:        id,
 		CreatedAt: time.Now(),
 		Status:    2,
-		MediaBaseInfo: &downloader.MediaBaseInfo{
+		MediaBaseInfo: &model.MediaBaseInfo{
 			Title: "title",
 			Desc:  "desc",
 		},
-		TaskConfig: &downloader.TaskConfig{
+		DownloaderTaskConfig: &model.DownloaderTaskConfig{
 			TaskId:      id,
 			MediaUrl:    "media url",
 			Downloader:  "downloader",
@@ -30,12 +30,12 @@ func TestDb_Init(t *testing.T) {
 			FormatId:    "42",
 			FormatUrl:   "format url",
 		},
-		TaskProgress: &downloader.TaskProgress{
+		DownloaderTaskProgress: &model.DownloaderTaskProgress{
 			DownloadedSize: "4242",
 			Progress:       "42",
 			Speed:          "42Mb/s",
 		},
 	}
 	Db.Create(task)
-	Db.Create(task.TaskConfig)
+	Db.Create(task.DownloaderTaskConfig)
 }

@@ -7,41 +7,41 @@ package v1
 import "C"
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/ingbyr/vdm/model/downloader"
+	"github.com/ingbyr/vdm/model"
 	"github.com/ingbyr/vdm/pkg/e"
-	"github.com/ingbyr/vdm/pkg/r"
+	"github.com/ingbyr/vdm/pkg/resp"
+	"github.com/ingbyr/vdm/service"
 )
 
 func GetDownloaderInfo(c *gin.Context) {
-	r.OK(c, downloader.Manager.Downloaders)
+	resp.OK(c, model.DownloaderManager.Downloaders)
 }
 
 func FetchMediaInfo(c *gin.Context) {
-	var taskConfig downloader.TaskConfig
+	var taskConfig model.DownloaderTaskConfig
 	if err := c.BindJSON(&taskConfig); err != nil {
-		r.Failed(c, e.InvalidParams, nil)
+		resp.Failed(c, e.InvalidParams, nil)
 		return
 	}
-	task := downloader.NewTask(&taskConfig)
-	formats, err := downloader.Manager.FetchMediaInfo(task)
+	task := model.NewDownloaderTask(&taskConfig)
+	formats, err := model.DownloaderManager.FetchMediaInfo(task)
 	if err != nil {
-		r.Failed(c, e.Error, err)
+		resp.Failed(c, e.Error, err)
 		return
 	}
-	r.OK(c, formats)
+	resp.OK(c, formats)
 }
 
 func AddDownloadTask(c *gin.Context) {
-	var taskConfig downloader.TaskConfig
+	var taskConfig model.DownloaderTaskConfig
 	if err := c.BindJSON(&taskConfig); err != nil {
-		r.Failed(c, e.InvalidParams, err)
+		resp.Failed(c, e.InvalidParams, err)
 		return
 	}
-	task := downloader.NewTask(&taskConfig)
-	err := downloader.Manager.Download(task)
+	res, err := service.AddDownloaderTask(&taskConfig)
 	if err != nil {
-		r.Failed(c, e.Error, err.Error())
+		resp.Failed(c, e.Error, err.Error())
 		return
 	}
-	r.OK(c, task)
+	resp.OK(c, res)
 }

@@ -2,7 +2,7 @@
  @Author: ingbyr
 */
 
-package downloader
+package model
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ import (
 const mediaUrl = "https://www.bilibili.com/video/BV1q64y147nh"
 
 func TestYoutubedl_FetchMediaSimulateJson(t *testing.T) {
-	task := NewTask(&TaskConfig{MediaUrl: mediaUrl})
+	task := NewDownloaderTask(&DownloaderTaskConfig{MediaUrl: mediaUrl})
 	data, err := youtubedl.FetchMediaInfo(task)
 	if err != nil {
 		fmt.Printf("Error %v\n", err)
@@ -21,7 +21,7 @@ func TestYoutubedl_FetchMediaSimulateJson(t *testing.T) {
 }
 
 func TestYoutubedl_Download(t *testing.T) {
-	task := NewTask(&TaskConfig{MediaUrl: mediaUrl})
+	task := NewDownloaderTask(&DownloaderTaskConfig{MediaUrl: mediaUrl})
 	youtubedl.Download(task)
 }
 

@@ -2,7 +2,7 @@
  @Author: ingbyr
 */
 
-package downloader
+package model
 
 type MediaInfo struct {
 	*MediaBaseInfo

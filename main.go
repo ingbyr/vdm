@@ -9,7 +9,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/ingbyr/vdm/model/downloader"
+	"github.com/ingbyr/vdm/model"
+	"github.com/ingbyr/vdm/pkg/db"
 	"github.com/ingbyr/vdm/pkg/logging"
 	"github.com/ingbyr/vdm/pkg/setting"
 	"github.com/ingbyr/vdm/pkg/ws"
@@ -25,7 +26,8 @@ func setup() context.CancelFunc {
 	ctx, cancel := context.WithCancel(context.Background())
 	setting.Setup()
 	ws.Setup()
-	downloader.Setup(ctx)
+	db.Setup()
+	model.SetupDownloader(ctx)
 	return cancel
 }
 

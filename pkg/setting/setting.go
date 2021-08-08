@@ -19,7 +19,7 @@ type Server struct {
 
 type App struct {
 	HeartbeatInterval time.Duration
-	DatabasePath string
+	DatabasePath      string
 }
 
 type Log struct {
@@ -28,8 +28,8 @@ type Log struct {
 
 var (
 	ServerSetting = &Server{}
-	AppSetting = &App{}
-	LogSetting = &Log{}
+	AppSetting    = &App{}
+	LogSetting    = &Log{}
 )
 
 var cfg *ini.File

@@ -2,7 +2,7 @@
  @Author: ingbyr
 */
 
-package downloader
+package model
 
 import (
 	"github.com/ingbyr/vdm/pkg/uuid"
@@ -16,7 +16,7 @@ const (
 	TaskFinished
 )
 
-type TaskConfig struct {
+type DownloaderTaskConfig struct {
 	TaskId      int64  `json:"taskId" gorm:"primaryKey"`
 	MediaUrl    string `json:"mediaUrl"`
 	Downloader  string `json:"downloader"`
@@ -25,27 +25,27 @@ type TaskConfig struct {
 	FormatUrl   string `json:"formatUrl,omitempty"`
 }
 
-type TaskProgress struct {
+type DownloaderTaskProgress struct {
 	DownloadedSize string `json:"downloadedSize,omitempty" db:"download_size"`
 	Progress       string `json:"progress,omitempty" db:"progress"`
 	Speed          string `json:"speed,omitempty" db:"speed"`
 }
 
-type Task struct {
+type DownloaderTask struct {
 	ID             int64     `json:"id"`
 	CreatedAt      time.Time `json:"createdAt"`
 	Status         int       `json:"status"`
 	*MediaBaseInfo `gorm:"embedded"`
-	*TaskConfig
-	*TaskProgress
+	*DownloaderTaskConfig
+	*DownloaderTaskProgress
 }
 
-func NewTask(taskConfig *TaskConfig) *Task {
-	return &Task{
-		ID:           uuid.Instance.Generate().Int64(),
-		CreatedAt:    time.Now(),
-		Status:       TaskCreated,
-		TaskConfig:   taskConfig,
-		TaskProgress: &TaskProgress{},
+func NewDownloaderTask(taskConfig *DownloaderTaskConfig) *DownloaderTask {
+	return &DownloaderTask{
+		ID:                     uuid.Instance.Generate().Int64(),
+		CreatedAt:              time.Now(),
+		Status:                 TaskCreated,
+		DownloaderTaskConfig:   taskConfig,
+		DownloaderTaskProgress: &DownloaderTaskProgress{},
 	}
 }

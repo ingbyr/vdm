@@ -2,7 +2,7 @@
  @Author: ingbyr
 */
 
-package downloader
+package model
 
 import (
 	"encoding/json"
@@ -38,7 +38,7 @@ var (
 )
 
 func init() {
-	_ = Manager.Register(youtubedl)
+	_ = DownloaderManager.Register(youtubedl)
 }
 
 func GetYoutubedlExecutorPath() string {
@@ -61,7 +61,7 @@ type Youtubedl struct {
 	regProgress       *regexp.Regexp
 }
 
-func (y *Youtubedl) FetchMediaInfo(task *Task) (*MediaInfo, error) {
+func (y *Youtubedl) FetchMediaInfo(task *DownloaderTask) (*MediaInfo, error) {
 	y.Reset()
 	y.CmdArgs.addFlag(task.MediaUrl)
 	y.CmdArgs.addFlag(FlagDumpJson)
@@ -79,7 +79,7 @@ func (y *Youtubedl) FetchMediaInfo(task *Task) (*MediaInfo, error) {
 	return mediaInfo, nil
 }
 
-func (y *Youtubedl) Download(task *Task) {
+func (y *Youtubedl) Download(task *DownloaderTask) {
 	y.Reset()
 	y.CmdArgs.addFlag(task.MediaUrl)
 	y.CmdArgs.addFlag(FlagNewLineOutput)
@@ -95,7 +95,7 @@ func (y *Youtubedl) GenerateStoragePath(storagePath string) string {
 	return storagePath + pathSeparator + y.mediaNameTemplate
 }
 
-func (y *Youtubedl) UpdateTask(task *Task, line string) {
+func (y *Youtubedl) UpdateTask(task *DownloaderTask, line string) {
 	task.Progress = y.regProgress.FindString(line)
 	task.Speed = y.regSpeed.FindString(line)
 }

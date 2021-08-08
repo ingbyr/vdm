@@ -2,7 +2,7 @@
  @Author: ingbyr
 */
 
-package downloader
+package model
 
 import (
 	"bufio"
@@ -15,9 +15,9 @@ import (
 
 var ctx context.Context
 
-func Setup(_ctx context.Context) {
+func SetupDownloader(_ctx context.Context) {
 	ctx = _ctx
-	Manager.setup(&ManagerConfig{EnableWsSender: true})
+	DownloaderManager.setup(&ManagerConfig{EnableWsSender: true})
 }
 
 type CmdArgs struct {
@@ -65,8 +65,8 @@ type Downloader interface {
 	GetName() string
 	GetVersion() string
 	GetExecutorPath() string
-	Download(task *Task)
-	FetchMediaInfo(task *Task) (*MediaInfo, error)
+	Download(task *DownloaderTask)
+	FetchMediaInfo(task *DownloaderTask) (*MediaInfo, error)
 	SetValid(valid bool)
 }
 
@@ -115,11 +115,11 @@ func (d *downloader) Exec() ([]byte, error) {
 	return stdout.Bytes(), nil
 }
 
-func (d *downloader) ExecAsync(task *Task, updater func(task *Task, line string)) {
+func (d *downloader) ExecAsync(task *DownloaderTask, updater func(task *DownloaderTask, line string)) {
 	task.Status = TaskRunning
 	cmd := exec.Command(d.ExecutorPath, d.toCmdStrSlice()...)
 	logging.Debug("exec args: %v", cmd.Args)
-	Manager.UpdateTaskProgress(task)
+	DownloaderManager.UpdateTaskProgress(task)
 	output := make(chan string)
 	ctx, cancel := context.WithCancel(ctx)
 	go d.exec(ctx, cmd, output)
@@ -135,7 +135,7 @@ func (d *downloader) ExecAsync(task *Task, updater func(task *Task, line string)
 		} else {
 			task.Status = TaskPaused
 		}
-		Manager.RemoveTaskProgress(task)
+		DownloaderManager.RemoveTaskProgress(task)
 	}()
 }
 
