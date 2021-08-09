@@ -7,6 +7,7 @@ package model
 const (
 	TaskStatusCreated = iota
 	TaskStatusCompleted
+	TaskStatusError
 	TaskStatusPaused
 	TaskStatusRunning
 )

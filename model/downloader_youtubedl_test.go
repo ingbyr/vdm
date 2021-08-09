@@ -36,7 +36,7 @@ func TestYoutubedl_ParseDownloadOutput(t *testing.T) {
 	}
 	task := NewDownloaderTask(&DownloaderTaskConfig{})
 	for i, o := range output {
-		youtubedl.UpdateDownloaderTask(task, o)
+		youtubedl.downloaderTaskUpdateHandler(task, o)
 		fmt.Printf("%d %+v\n", i, task.DownloaderTaskProgress)
 	}
 }

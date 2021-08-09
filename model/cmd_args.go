@@ -18,12 +18,12 @@ func NewCmdArgs() CmdArgs {
 	}
 }
 
-func (c *CmdArgs) addFlag(flag string) {
+func (c *CmdArgs) addCmdFlag(flag string) {
 	c.flags = append(c.flags, flag)
 }
 
-func (c *CmdArgs) addFlagValue(flag string, value string) {
-	c.addFlag(flag)
+func (c *CmdArgs) addCmdFlagValue(flag string, value string) {
+	c.addCmdFlag(flag)
 	c.args[flag] = value
 }
 

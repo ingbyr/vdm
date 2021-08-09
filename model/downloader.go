@@ -9,18 +9,20 @@ import (
 	"bytes"
 	"context"
 	"github.com/ingbyr/vdm/pkg/logging"
+	"io"
 	"os/exec"
+	"sync"
 )
 
 const (
 	HeartbeatDataTaskProgressGroup = "taskProgress"
-	ProgressCompleted = "100"
+	ProgressCompleted              = "100"
 )
 
-var ctx context.Context
+var cmdCtx context.Context
 
-func SetupDownloader(_ctx context.Context) {
-	ctx = _ctx
+func SetupDownloader(ctx context.Context) {
+	cmdCtx = ctx
 }
 
 type Downloader interface {
@@ -69,7 +71,7 @@ func (d *downloader) SetValid(valid bool) {
 	d.Valid = valid
 }
 
-func (d *downloader) execCmd() ([]byte, error) {
+func (d *downloader) ExecCmd() ([]byte, error) {
 	cmd := exec.Command(d.ExecutorPath, d.toCmdStrSlice()...)
 	logging.Debug("exec args: %v", cmd.Args)
 	var stderr bytes.Buffer
@@ -85,45 +87,88 @@ func (d *downloader) execCmd() ([]byte, error) {
 	return stdout.Bytes(), nil
 }
 
-func (d *downloader) execCmdAsync(data interface{}, stepUpdater func(data interface{}, line string), finishedCallback func(data interface{})) {
+func (d *downloader) ExecCmdLong(
+	data interface{},
+	stepHandler func(data interface{}, line string),
+	finalHandler func(data interface{}),
+	errorHandler func(data interface{}, err string)) {
+
 	cmd := exec.Command(d.ExecutorPath, d.toCmdStrSlice()...)
-	logging.Debug("exec cmd args: %v", cmd.Args)
-	output := make(chan string)
-	_ctx, cancel := context.WithCancel(ctx)
-	go d._execCmdAsync(_ctx, cmd, output)
+	logging.Debug("exec cmd args: %s", cmd.Args)
+	stdOutput := make(chan string)
+	errOutput := make(chan string)
+	cmdSubCtx, cancel := context.WithCancel(cmdCtx)
+
+	// read output
 	go func() {
-		defer cancel()
-		for out := range output {
-			logging.Debug("output: %s", out)
-			stepUpdater(data, out)
+		defer finalHandler(data)
+		for {
+			select {
+			case out, ok := <-stdOutput:
+				if !ok {
+					stdOutput = nil
+				}
+				logging.Debug("stdout: %s", out)
+				stepHandler(data, out)
+			case err, ok := <-errOutput:
+				if !ok {
+					errOutput = nil
+				}
+				logging.Error("stderr: %s", err)
+				errorHandler(data, err)
+			case <-cmdSubCtx.Done():
+				logging.Debug("finished to exec cmd")
+				return
+			}
 		}
-		finishedCallback(data)
 	}()
+
+	// exec cmd
+	go execCmdLong(cmdSubCtx, cmd, stdOutput, errOutput, cancel)
 }
 
-func (d *downloader) _execCmdAsync(_ctx context.Context, cmd *exec.Cmd, output chan<- string) {
-	defer close(output)
-	pipe, err := cmd.StdoutPipe()
+func execCmdLong(ctx context.Context, cmd *exec.Cmd, stdoutC chan<- string, stderrC chan<- string, cancel context.CancelFunc) {
+	defer cancel()
+	// prepare cmd pipe
+	stdoutPipe, err := cmd.StdoutPipe()
 	if err != nil {
-		output <- err.Error()
-		panic(err)
-	}
-	if err := cmd.Start(); err != nil {
-		output <- err.Error()
+		stderrC <- err.Error()
 		return
 	}
+	stderrPipe, err := cmd.StderrPipe()
+	if err != nil {
+		stderrC <- err.Error()
+		return
+	}
+	// exec cmd
+	if err := cmd.Start(); err != nil {
+		stderrC <- err.Error()
+		return
+	}
+
+	// read stdout and stderr output
+	var wg sync.WaitGroup
+	wg.Add(2)
+	go readCmdPipe(&wg, ctx, cmd, stdoutPipe, stdoutC, "stdout")
+	go readCmdPipe(&wg, ctx, cmd, stderrPipe, stderrC, "stderr")
+	wg.Wait()
+}
+
+func readCmdPipe(wg *sync.WaitGroup, ctx context.Context, cmd *exec.Cmd, pipe io.Reader, output chan<- string, pipeType string) {
+	defer close(output)
+	defer wg.Done()
 	scanner := bufio.NewScanner(pipe)
 	for scanner.Scan() {
+		logging.Debug("read from pipe: %s", pipeType)
 		select {
-		case <-_ctx.Done():
+		case <-ctx.Done():
 			if err := cmd.Process.Kill(); err != nil {
 				logging.Error("failed to stop process: %v", err)
 			}
 			logging.Debug("stop process: %v", cmd.Process.Pid)
 			break
 		default:
-			m := scanner.Text()
-			output <- m
+			output <- scanner.Text()
 		}
 	}
 }

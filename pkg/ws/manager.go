@@ -39,7 +39,7 @@ func startManager() {
 			}
 		case msg := <-Manager.broadcast:
 			if len(Manager.clients) == 0 {
-				logging.Debug("no client to receive msg")
+				//logging.Debug("no client to receive msg")
 				continue
 			}
 			for _, c := range Manager.clients {
@@ -61,7 +61,7 @@ func Register(client *Client) {
 }
 
 func SendBroadcast(msg []byte) {
-	logging.Debug("send broadcast msg: %s", string(msg))
+	//logging.Debug("send broadcast msg: %s", string(msg))
 	Manager.broadcast <- msg
 }
 

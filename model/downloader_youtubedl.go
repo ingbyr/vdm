@@ -15,9 +15,11 @@ import (
 )
 
 const (
+	FlagNoColor       = "--no-color"
 	FlagDumpJson      = "--dump-json"
 	FlagNewLineOutput = "--newline"
 	FlagOutput        = "--output"
+	FlagFormat        = "--format"
 )
 
 var (
@@ -64,9 +66,9 @@ type Youtubedl struct {
 
 func (y *Youtubedl) FetchMediaInfo(task *DownloaderTask) (*MediaInfo, error) {
 	y.reset()
-	y.CmdArgs.addFlag(task.MediaUrl)
-	y.CmdArgs.addFlag(FlagDumpJson)
-	yMediaInfoData, err := y.execCmd()
+	y.CmdArgs.addCmdFlag(task.MediaUrl)
+	y.CmdArgs.addCmdFlag(FlagDumpJson)
+	yMediaInfoData, err := y.ExecCmd()
 	if err != nil {
 		return nil, err
 	}
@@ -82,14 +84,21 @@ func (y *Youtubedl) FetchMediaInfo(task *DownloaderTask) (*MediaInfo, error) {
 
 func (y *Youtubedl) Download(task *DownloaderTask) {
 	y.reset()
-	y.CmdArgs.addFlag(task.MediaUrl)
-	y.CmdArgs.addFlag(FlagNewLineOutput)
-	y.CmdArgs.addFlagValue(FlagOutput, y.getStoragePath(task.StoragePath))
+	y.addCmdFlag(task.MediaUrl)
+	y.addCmdFlag(FlagNewLineOutput)
+	y.addCmdFlag(FlagNoColor)
+	y.addCmdFlagValue(FlagOutput, y.getStoragePath(task.StoragePath))
+	if task.FormatId != "" {
+		y.addCmdFlagValue(FlagFormat, task.FormatId)
+	}
 	ws.AppendHeartbeatData(HeartbeatDataTaskProgressGroup, task.ID, task.DownloaderTaskProgress)
-	y.execCmdAsync(task, y.UpdateDownloaderTask, y.FinishDownloadTask)
+	y.ExecCmdLong(task,
+		y.downloaderTaskUpdateHandler,
+		y.downloadTaskFinalHandler,
+		y.downloadTaskErrorHandler)
 }
 
-func (y *Youtubedl) UpdateDownloaderTask(_task interface{}, line string) {
+func (y *Youtubedl) downloaderTaskUpdateHandler(_task interface{}, line string) {
 	task := _task.(*DownloaderTask)
 	// update progress
 	progressStr := y.regProgress.FindString(line)
@@ -107,13 +116,18 @@ func (y *Youtubedl) UpdateDownloaderTask(_task interface{}, line string) {
 	task.Speed = y.regSpeed.FindString(line)
 }
 
-func (y *Youtubedl) FinishDownloadTask(_task interface{}) {
+func (y *Youtubedl) downloadTaskFinalHandler(_task interface{}) {
 	task := _task.(*DownloaderTask)
-	if task.Status != TaskStatusCompleted {
+	if task.Status == TaskStatusRunning {
 		task.Status = TaskStatusPaused
 	}
 	ws.InvokeHeartbeat()
 	ws.RemoveHeartbeatData(HeartbeatDataTaskProgressGroup, task.ID)
+}
+
+func (y *Youtubedl) downloadTaskErrorHandler(_task interface{}, err string) {
+	task := _task.(*DownloaderTask)
+	task.Status = TaskStatusError
 }
 
 func (y *Youtubedl) getStoragePath(storagePath string) string {
