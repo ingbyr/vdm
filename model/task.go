@@ -26,7 +26,6 @@ type DownloaderTaskConfig struct {
 
 type DownloaderTaskProgress struct {
 	Status         int    `json:"status"`
-	DownloadedSize string `json:"downloadedSize" db:"download_size"`
 	Progress       string `json:"progress" db:"progress"`
 	Speed          string `json:"speed" db:"speed"`
 }

@@ -9,6 +9,7 @@ import (
 	"bytes"
 	"context"
 	"github.com/ingbyr/vdm/pkg/logging"
+	"github.com/ingbyr/vdm/pkg/ws"
 	"os/exec"
 )
 
@@ -71,14 +72,14 @@ func (d *downloader) SetValid(valid bool) {
 
 func (d *downloader) exec() ([]byte, error) {
 	cmd := exec.Command(d.ExecutorPath, d.toCmdStrSlice()...)
-	logging.Debug("doExec args: %v", cmd.Args)
+	logging.Debug("_exec args: %v", cmd.Args)
 	var stderr bytes.Buffer
 	var stdout bytes.Buffer
 	cmd.Stderr = &stderr
 	cmd.Stdout = &stdout
 	err := cmd.Run()
 	if err != nil {
-		logging.Error("doExec error %v", stderr)
+		logging.Error("_exec error %v", stderr)
 		return stderr.Bytes(), err
 	}
 	logging.Debug("output: %s", stdout.String())
@@ -88,11 +89,11 @@ func (d *downloader) exec() ([]byte, error) {
 func (d *downloader) execAsync(task *DownloaderTask, updater func(task *DownloaderTask, line string)) {
 	task.Status = TaskStatusRunning
 	cmd := exec.Command(d.ExecutorPath, d.toCmdStrSlice()...)
-	logging.Debug("doExec args: %v", cmd.Args)
+	logging.Debug("exec args: %v", cmd.Args)
 	DownloaderManager.UpdateTaskProgress(task)
 	output := make(chan string)
-	ctx, cancel := context.WithCancel(ctx)
-	go d.doExec(ctx, cmd, output)
+	_ctx, cancel := context.WithCancel(ctx)
+	go d._exec(_ctx, cmd, output)
 	go func() {
 		defer cancel()
 		// parse download output and update task
@@ -103,11 +104,13 @@ func (d *downloader) execAsync(task *DownloaderTask, updater func(task *Download
 		if task.Status != TaskStatusCompleted {
 			task.Status = TaskStatusPaused
 		}
+		// avoid to miss status notification
+		ws.InvokeHeartbeat()
 		DownloaderManager.RemoveTaskProgress(task)
 	}()
 }
 
-func (d *downloader) doExec(ctx context.Context, cmd *exec.Cmd, output chan<- string) {
+func (d *downloader) _exec(_ctx context.Context, cmd *exec.Cmd, output chan<- string) {
 	defer close(output)
 	pipe, err := cmd.StdoutPipe()
 	if err != nil {
@@ -121,7 +124,7 @@ func (d *downloader) doExec(ctx context.Context, cmd *exec.Cmd, output chan<- st
 	scanner := bufio.NewScanner(pipe)
 	for scanner.Scan() {
 		select {
-		case <-ctx.Done():
+		case <-_ctx.Done():
 			if err := cmd.Process.Kill(); err != nil {
 				logging.Error("failed to stop process: %v", err)
 			}

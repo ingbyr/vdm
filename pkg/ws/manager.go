@@ -27,17 +27,21 @@ func startManager() {
 	for {
 		select {
 		case conn := <-Manager.register:
-			logging.Debug("Client %s joined", conn.ID)
+			logging.Debug("client %s joined", conn.ID)
 			Manager.clients[conn.ID] = conn
-			synMsg, _ := json.Marshal(&Message{Content: "Successful connection to VDM"})
+			synMsg, _ := json.Marshal(&Message{Content: "successful connection to vdm"})
 			conn.Send <- synMsg
 		case conn := <-Manager.unregister:
-			logging.Debug("Client %s left", conn.ID)
+			logging.Debug("client %s left", conn.ID)
 			if _, ok := Manager.clients[conn.ID]; ok {
 				close(conn.Send)
 				delete(Manager.clients, conn.ID)
 			}
 		case msg := <-Manager.broadcast:
+			if len(Manager.clients) == 0 {
+				logging.Debug("no client to receive msg")
+				continue
+			}
 			for _, c := range Manager.clients {
 				select {
 				case c.Send <- msg:
@@ -57,21 +61,21 @@ func Register(client *Client) {
 }
 
 func SendBroadcast(msg []byte) {
-	if len(Manager.clients) == 0 {
-		logging.Debug("no client to receive msg")
-		return
-	}
 	logging.Debug("send broadcast msg: %s", string(msg))
 	Manager.broadcast <- msg
 }
 
-func heartbeat() {
+func Heartbeat() {
 	ticker := time.NewTicker(setting.AppSetting.HeartbeatInterval * time.Second)
 	defer ticker.Stop()
 	for range ticker.C {
-		data, _ := json.Marshal(Manager.heartbeatData)
-		SendBroadcast(data)
+		InvokeHeartbeat()
 	}
+}
+
+func InvokeHeartbeat() {
+	data, _ := json.Marshal(Manager.heartbeatData)
+	SendBroadcast(data)
 }
 
 func UpdateHeartbeatData(id string, data interface{}) {
