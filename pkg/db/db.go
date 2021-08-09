@@ -5,7 +5,6 @@
 package db
 
 import (
-	"github.com/ingbyr/vdm/model"
 	"github.com/ingbyr/vdm/pkg/logging"
 	"github.com/ingbyr/vdm/pkg/setting"
 	"gorm.io/driver/sqlite"
@@ -15,6 +14,9 @@ import (
 var DB *gorm.DB
 
 func Setup() {
+	if DB != nil {
+		return
+	}
 	var err error
 	var dbPath string
 	if setting.AppSetting == nil || setting.AppSetting.DatabasePath == "" {
@@ -32,5 +34,4 @@ func Setup() {
 	logging.Debug("connected")
 
 	logging.Debug("migrating the schema ...")
-	DB.AutoMigrate(&model.DownloaderTask{})
 }

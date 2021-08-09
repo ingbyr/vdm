@@ -12,11 +12,11 @@ import (
 )
 
 var DownloaderManager = &downloaderManager{
-	Downloaders:  make(map[string]Downloader),
+	Downloaders: make(map[string]Downloader),
 }
 
 type downloaderManager struct {
-	Downloaders  map[string]Downloader             `json:"downloaders,omitempty"`
+	Downloaders map[string]Downloader `json:"downloaders,omitempty"`
 }
 
 func (m *downloaderManager) Register(downloader Downloader) {

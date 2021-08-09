@@ -85,7 +85,7 @@ func (y *Youtubedl) Download(task *DownloaderTask) {
 	y.CmdArgs.addFlag(task.MediaUrl)
 	y.CmdArgs.addFlag(FlagNewLineOutput)
 	y.CmdArgs.addFlagValue(FlagOutput, y.getStoragePath(task.StoragePath))
-	ws.AppendHeartbeatData(HeartbeatDataTaskProgressGroup, task.getStrID(), task.DownloaderTaskProgress)
+	ws.AppendHeartbeatData(HeartbeatDataTaskProgressGroup, task.ID, task.DownloaderTaskProgress)
 	y.execCmdAsync(task, y.UpdateDownloaderTask, y.FinishDownloadTask)
 }
 
@@ -113,7 +113,7 @@ func (y *Youtubedl) FinishDownloadTask(_task interface{}) {
 		task.Status = TaskStatusPaused
 	}
 	ws.InvokeHeartbeat()
-	ws.RemoveHeartbeatData(HeartbeatDataTaskProgressGroup, task.getStrID())
+	ws.RemoveHeartbeatData(HeartbeatDataTaskProgressGroup, task.ID)
 }
 
 func (y *Youtubedl) getStoragePath(storagePath string) string {

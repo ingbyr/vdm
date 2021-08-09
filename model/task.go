@@ -4,12 +4,6 @@
 
 package model
 
-import (
-	"github.com/ingbyr/vdm/pkg/uuid"
-	"strconv"
-	"time"
-)
-
 const (
 	TaskStatusCreated = iota
 	TaskStatusCompleted
@@ -26,31 +20,23 @@ type DownloaderTaskConfig struct {
 }
 
 type DownloaderTaskProgress struct {
-	Status         int    `json:"status"`
-	Progress       string `json:"progress" db:"progress"`
-	Speed          string `json:"speed" db:"speed"`
+	Progress string `json:"progress" db:"progress"`
+	Speed    string `json:"speed" db:"speed"`
 }
 
 type DownloaderTask struct {
-	ID        int64     `json:"id"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time
+	Model
+	Status int `json:"status"`
 	*MediaBaseInfo
 	*DownloaderTaskConfig
-	*DownloaderTaskProgress
+	*DownloaderTaskProgress `gorm:"-"`
 }
 
 func NewDownloaderTask(taskConfig *DownloaderTaskConfig) *DownloaderTask {
 	return &DownloaderTask{
-		ID:                   uuid.Instance.Generate().Int64(),
-		CreatedAt:            time.Now(),
-		DownloaderTaskConfig: taskConfig,
-		DownloaderTaskProgress: &DownloaderTaskProgress{
-			Status: TaskStatusCreated,
-		},
+		Model:                  NewModel(),
+		Status:                 TaskStatusCreated,
+		DownloaderTaskConfig:   taskConfig,
+		DownloaderTaskProgress: &DownloaderTaskProgress{},
 	}
-}
-
-func (d *DownloaderTask) getStrID() string {
-	return strconv.FormatInt(d.ID, 10)
 }

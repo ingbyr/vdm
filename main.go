@@ -28,6 +28,7 @@ func setup() context.CancelFunc {
 	ws.Setup()
 	db.Setup()
 	model.SetupDownloader(ctx)
+	model.SetupSchema()
 	return cancel
 }
 

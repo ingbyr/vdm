@@ -6,7 +6,7 @@ package model
 
 type MediaInfo struct {
 	*MediaBaseInfo
-	Formats   []*MediaFormat `json:"formats,omitempty"`
+	Formats []*MediaFormat `json:"formats,omitempty"`
 }
 
 type MediaFormat struct {
@@ -18,6 +18,6 @@ type MediaFormat struct {
 }
 
 type MediaBaseInfo struct {
-	Title     string         `json:"title,omitempty" db:"title"`
-	Desc      string         `json:"description,omitempty" db:"desc"`
+	Title string `json:"title" db:"title"`
+	Desc  string `json:"description" db:"desc"`
 }
