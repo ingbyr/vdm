@@ -6,14 +6,15 @@ package model
 
 import (
 	"github.com/ingbyr/vdm/pkg/uuid"
+	"strconv"
 	"time"
 )
 
 const (
 	TaskStatusCreated = iota
-	TaskStatusRunning
-	TaskStatusPaused
 	TaskStatusCompleted
+	TaskStatusPaused
+	TaskStatusRunning
 )
 
 type DownloaderTaskConfig struct {
@@ -48,4 +49,8 @@ func NewDownloaderTask(taskConfig *DownloaderTaskConfig) *DownloaderTask {
 			Status: TaskStatusCreated,
 		},
 	}
+}
+
+func (d *DownloaderTask) getStrID() string {
+	return strconv.FormatInt(d.ID, 10)
 }

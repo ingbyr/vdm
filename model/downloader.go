@@ -9,11 +9,11 @@ import (
 	"bytes"
 	"context"
 	"github.com/ingbyr/vdm/pkg/logging"
-	"github.com/ingbyr/vdm/pkg/ws"
 	"os/exec"
 )
 
 const (
+	HeartbeatDataTaskProgressGroup = "taskProgress"
 	ProgressCompleted = "100"
 )
 
@@ -21,7 +21,6 @@ var ctx context.Context
 
 func SetupDownloader(_ctx context.Context) {
 	ctx = _ctx
-	DownloaderManager.setup(&ManagerConfig{EnableWsSender: true})
 }
 
 type Downloader interface {
@@ -70,47 +69,39 @@ func (d *downloader) SetValid(valid bool) {
 	d.Valid = valid
 }
 
-func (d *downloader) exec() ([]byte, error) {
+func (d *downloader) execCmd() ([]byte, error) {
 	cmd := exec.Command(d.ExecutorPath, d.toCmdStrSlice()...)
-	logging.Debug("_exec args: %v", cmd.Args)
+	logging.Debug("exec args: %v", cmd.Args)
 	var stderr bytes.Buffer
 	var stdout bytes.Buffer
 	cmd.Stderr = &stderr
 	cmd.Stdout = &stdout
 	err := cmd.Run()
 	if err != nil {
-		logging.Error("_exec error %v", stderr)
+		logging.Error("exec error %v", stderr)
 		return stderr.Bytes(), err
 	}
 	logging.Debug("output: %s", stdout.String())
 	return stdout.Bytes(), nil
 }
 
-func (d *downloader) execAsync(task *DownloaderTask, updater func(task *DownloaderTask, line string)) {
-	task.Status = TaskStatusRunning
+func (d *downloader) execCmdAsync(data interface{}, stepUpdater func(data interface{}, line string), finishedCallback func(data interface{})) {
 	cmd := exec.Command(d.ExecutorPath, d.toCmdStrSlice()...)
-	logging.Debug("exec args: %v", cmd.Args)
-	DownloaderManager.UpdateTaskProgress(task)
+	logging.Debug("exec cmd args: %v", cmd.Args)
 	output := make(chan string)
 	_ctx, cancel := context.WithCancel(ctx)
-	go d._exec(_ctx, cmd, output)
+	go d._execCmdAsync(_ctx, cmd, output)
 	go func() {
 		defer cancel()
-		// parse download output and update task
 		for out := range output {
 			logging.Debug("output: %s", out)
-			updater(task, out)
+			stepUpdater(data, out)
 		}
-		if task.Status != TaskStatusCompleted {
-			task.Status = TaskStatusPaused
-		}
-		// avoid to miss status notification
-		ws.InvokeHeartbeat()
-		DownloaderManager.RemoveTaskProgress(task)
+		finishedCallback(data)
 	}()
 }
 
-func (d *downloader) _exec(_ctx context.Context, cmd *exec.Cmd, output chan<- string) {
+func (d *downloader) _execCmdAsync(_ctx context.Context, cmd *exec.Cmd, output chan<- string) {
 	defer close(output)
 	pipe, err := cmd.StdoutPipe()
 	if err != nil {

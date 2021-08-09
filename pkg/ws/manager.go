@@ -12,7 +12,7 @@ type manager struct {
 	register      chan *Client
 	unregister    chan *Client
 	broadcast     chan []byte
-	heartbeatData map[string]interface{}
+	heartbeatData map[string]map[string]interface{}
 }
 
 var Manager = manager{
@@ -20,7 +20,7 @@ var Manager = manager{
 	register:      make(chan *Client),
 	unregister:    make(chan *Client),
 	broadcast:     make(chan []byte),
-	heartbeatData: make(map[string]interface{}),
+	heartbeatData: make(map[string]map[string]interface{}),
 }
 
 func startManager() {
@@ -78,6 +78,17 @@ func InvokeHeartbeat() {
 	SendBroadcast(data)
 }
 
-func UpdateHeartbeatData(id string, data interface{}) {
-	Manager.heartbeatData[id] = data
+func AppendHeartbeatData(group string, id string, data interface{}) {
+	if _, ok := Manager.heartbeatData[group]; !ok {
+		logging.Debug("create heartbeat group: %s", group)
+		Manager.heartbeatData[group] = make(map[string]interface{})
+	}
+	Manager.heartbeatData[group][id] = data
+}
+
+func RemoveHeartbeatData(group string, id string) {
+	if _, ok := Manager.heartbeatData[group]; !ok {
+		return
+	}
+	delete(Manager.heartbeatData[group], id)
 }

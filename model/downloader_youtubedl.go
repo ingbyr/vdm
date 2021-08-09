@@ -7,6 +7,7 @@ package model
 import (
 	"encoding/json"
 	"github.com/ingbyr/vdm/pkg/pt"
+	"github.com/ingbyr/vdm/pkg/ws"
 	"os"
 	"regexp"
 	"runtime"
@@ -62,10 +63,10 @@ type Youtubedl struct {
 }
 
 func (y *Youtubedl) FetchMediaInfo(task *DownloaderTask) (*MediaInfo, error) {
-	y.Reset()
+	y.reset()
 	y.CmdArgs.addFlag(task.MediaUrl)
 	y.CmdArgs.addFlag(FlagDumpJson)
-	yMediaInfoData, err := y.exec()
+	yMediaInfoData, err := y.execCmd()
 	if err != nil {
 		return nil, err
 	}
@@ -80,14 +81,42 @@ func (y *Youtubedl) FetchMediaInfo(task *DownloaderTask) (*MediaInfo, error) {
 }
 
 func (y *Youtubedl) Download(task *DownloaderTask) {
-	y.Reset()
+	y.reset()
 	y.CmdArgs.addFlag(task.MediaUrl)
 	y.CmdArgs.addFlag(FlagNewLineOutput)
-	y.CmdArgs.addFlagValue(FlagOutput, y.GenerateStoragePath(task.StoragePath))
-	y.execAsync(task, y.UpdateTask)
+	y.CmdArgs.addFlagValue(FlagOutput, y.getStoragePath(task.StoragePath))
+	ws.AppendHeartbeatData(HeartbeatDataTaskProgressGroup, task.getStrID(), task.DownloaderTaskProgress)
+	y.execCmdAsync(task, y.UpdateDownloaderTask, y.FinishDownloadTask)
 }
 
-func (y *Youtubedl) GenerateStoragePath(storagePath string) string {
+func (y *Youtubedl) UpdateDownloaderTask(_task interface{}, line string) {
+	task := _task.(*DownloaderTask)
+	// update progress
+	progressStr := y.regProgress.FindString(line)
+	if progressStr != "" {
+		task.Progress = progressStr[:len(progressStr)-1]
+	}
+
+	// update status
+	task.Status = TaskStatusRunning
+	if strings.HasPrefix(task.Progress, ProgressCompleted) || strings.Contains(line, "has already been downloaded") {
+		task.Status = TaskStatusCompleted
+	}
+
+	// update speed
+	task.Speed = y.regSpeed.FindString(line)
+}
+
+func (y *Youtubedl) FinishDownloadTask(_task interface{}) {
+	task := _task.(*DownloaderTask)
+	if task.Status != TaskStatusCompleted {
+		task.Status = TaskStatusPaused
+	}
+	ws.InvokeHeartbeat()
+	ws.RemoveHeartbeatData(HeartbeatDataTaskProgressGroup, task.getStrID())
+}
+
+func (y *Youtubedl) getStoragePath(storagePath string) string {
 	pathSeparator := string(os.PathSeparator)
 	if strings.HasSuffix(storagePath, pathSeparator) {
 		return storagePath + y.mediaNameTemplate
@@ -95,21 +124,7 @@ func (y *Youtubedl) GenerateStoragePath(storagePath string) string {
 	return storagePath + pathSeparator + y.mediaNameTemplate
 }
 
-func (y *Youtubedl) UpdateTask(task *DownloaderTask, line string) {
-	// update progress
-	progressStr := y.regProgress.FindString(line)
-	if progressStr != "" {
-		task.Progress = progressStr[:len(progressStr)-1]
-		// update status
-		if strings.HasPrefix(task.Progress, ProgressCompleted) {
-			task.Status = TaskStatusCompleted
-		}
-	}
-	// update speed
-	task.Speed = y.regSpeed.FindString(line)
-}
-
-func (y *Youtubedl) Reset() {
+func (y *Youtubedl) reset() {
 	y.CmdArgs = NewCmdArgs()
 }
 
