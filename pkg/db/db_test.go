@@ -37,7 +37,6 @@ func TestDb_Init(t *testing.T) {
 		},
 	}
 	DB.Create(task)
-	DB.Create(task.DownloaderTaskConfig)
 }
 
 func TestPage(t *testing.T) {

@@ -7,6 +7,7 @@ package logging
 import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"gorm.io/gorm/logger"
 	"moul.io/zapgorm2"
 	"os"
 )
@@ -27,6 +28,7 @@ func init() {
 	LoggerLevel.SetLevel(zapcore.DebugLevel)
 	_logger = GinLogger.Sugar()
 	DBLogger = zapgorm2.New(GinLogger)
+	DBLogger.LogLevel = logger.Info
 }
 
 func Debug(format string, v ...interface{}) {

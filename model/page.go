@@ -15,6 +15,7 @@ type Page struct {
 
 func PageQuery(c *gin.Context, tx *gorm.DB, target interface{}) *Page {
 	page := &Page{}
+	page.Data = target
 	if err := c.ShouldBindQuery(page); err != nil {
 		logging.Panic("failed to parse page query args: %v", err)
 	}
@@ -26,7 +27,7 @@ func PageQuery(c *gin.Context, tx *gorm.DB, target interface{}) *Page {
 	if err := tx.Count(&page.Total).Error; err != nil {
 		logging.Panic("failed to count data: %v", err)
 	}
-	if err := tx.Find(target).Error; err != nil {
+	if err := tx.Find(page.Data).Error; err != nil {
 		logging.Panic("failed to query page: %v", err)
 	}
 	return page
