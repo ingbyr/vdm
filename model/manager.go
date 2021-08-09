@@ -34,14 +34,12 @@ func (m *manager) setup(mc *ManagerConfig) {
 	}
 }
 
-func (m *manager) Register(downloader Downloader) error {
-	var err error
-	if _, err = exec.LookPath(downloader.GetExecutorPath()); err != nil {
+func (m *manager) Register(downloader Downloader) {
+	if _, err := exec.LookPath(downloader.GetExecutorPath()); err != nil {
 		downloader.SetValid(false)
 		logging.Warn("downloader '%s' is not valid because '%s' not found", downloader.GetName(), downloader.GetExecutorPath())
 	}
 	m.Downloaders[downloader.GetName()] = downloader
-	return err
 }
 
 func (m *manager) Enabled(downloader Downloader) bool {

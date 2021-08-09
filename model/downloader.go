@@ -10,7 +10,6 @@ import (
 	"context"
 	"github.com/ingbyr/vdm/pkg/logging"
 	"os/exec"
-	"strings"
 )
 
 const (
@@ -22,47 +21,6 @@ var ctx context.Context
 func SetupDownloader(_ctx context.Context) {
 	ctx = _ctx
 	DownloaderManager.setup(&ManagerConfig{EnableWsSender: true})
-}
-
-type CmdArgs struct {
-	args  map[string]string
-	flags []string
-}
-
-func NewCmdArgs() CmdArgs {
-	return CmdArgs{
-		args:  make(map[string]string),
-		flags: make([]string, 0),
-	}
-}
-
-func (c *CmdArgs) addFlag(flag string) {
-	c.flags = append(c.flags, flag)
-}
-
-func (c *CmdArgs) addFlagValue(flag string, value string) {
-	c.addFlag(flag)
-	c.args[flag] = value
-}
-
-func (c *CmdArgs) toCmdStrSlice() []string {
-	return strings.Split(c.toCmdStr(), " ")
-}
-
-func (c *CmdArgs) toCmdStr() string {
-	sp := " "
-	var sb strings.Builder
-	for _, f := range c.flags {
-		if sb.Len() != 0 {
-			sb.WriteString(sp)
-		}
-		sb.WriteString(f)
-		if v, ok := c.args[f]; ok {
-			sb.WriteString(sp)
-			sb.WriteString(v)
-		}
-	}
-	return sb.String()
 }
 
 type Downloader interface {
@@ -77,7 +35,7 @@ type Downloader interface {
 type DownloaderInfo struct {
 	Version      string `json:"version"`
 	Name         string `json:"name"`
-	ExecutorPath string `json:"executor_path"`
+	ExecutorPath string `json:"executorPath"`
 }
 
 func (di *DownloaderInfo) GetName() string {
@@ -99,34 +57,42 @@ type downloader struct {
 	Enable bool `json:"enable"`
 }
 
+func (d *downloader) Download(task *DownloaderTask) {
+	panic("can't use base downloader")
+}
+
+func (d *downloader) FetchMediaInfo(task *DownloaderTask) (*MediaInfo, error) {
+	panic("can't use base downloader")
+}
+
 func (d *downloader) SetValid(valid bool) {
 	d.Valid = valid
 }
 
-func (d *downloader) Exec() ([]byte, error) {
+func (d *downloader) exec() ([]byte, error) {
 	cmd := exec.Command(d.ExecutorPath, d.toCmdStrSlice()...)
-	logging.Debug("exec args: %v", cmd.Args)
+	logging.Debug("doExec args: %v", cmd.Args)
 	var stderr bytes.Buffer
 	var stdout bytes.Buffer
 	cmd.Stderr = &stderr
 	cmd.Stdout = &stdout
 	err := cmd.Run()
 	if err != nil {
-		logging.Error("exec error %v", stderr)
+		logging.Error("doExec error %v", stderr)
 		return stderr.Bytes(), err
 	}
 	logging.Debug("output: %s", stdout.String())
 	return stdout.Bytes(), nil
 }
 
-func (d *downloader) ExecAsync(task *DownloaderTask, updater func(task *DownloaderTask, line string)) {
+func (d *downloader) execAsync(task *DownloaderTask, updater func(task *DownloaderTask, line string)) {
 	task.Status = TaskStatusRunning
 	cmd := exec.Command(d.ExecutorPath, d.toCmdStrSlice()...)
-	logging.Debug("exec args: %v", cmd.Args)
+	logging.Debug("doExec args: %v", cmd.Args)
 	DownloaderManager.UpdateTaskProgress(task)
 	output := make(chan string)
 	ctx, cancel := context.WithCancel(ctx)
-	go d.exec(ctx, cmd, output)
+	go d.doExec(ctx, cmd, output)
 	go func() {
 		defer cancel()
 		// parse download output and update task
@@ -141,7 +107,7 @@ func (d *downloader) ExecAsync(task *DownloaderTask, updater func(task *Download
 	}()
 }
 
-func (d *downloader) exec(ctx context.Context, cmd *exec.Cmd, output chan<- string) {
+func (d *downloader) doExec(ctx context.Context, cmd *exec.Cmd, output chan<- string) {
 	defer close(output)
 	pipe, err := cmd.StdoutPipe()
 	if err != nil {

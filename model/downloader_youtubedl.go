@@ -38,7 +38,7 @@ var (
 )
 
 func init() {
-	_ = DownloaderManager.Register(youtubedl)
+	DownloaderManager.Register(youtubedl)
 }
 
 func GetYoutubedlExecutorPath() string {
@@ -65,7 +65,7 @@ func (y *Youtubedl) FetchMediaInfo(task *DownloaderTask) (*MediaInfo, error) {
 	y.Reset()
 	y.CmdArgs.addFlag(task.MediaUrl)
 	y.CmdArgs.addFlag(FlagDumpJson)
-	yMediaInfoData, err := y.Exec()
+	yMediaInfoData, err := y.exec()
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +84,7 @@ func (y *Youtubedl) Download(task *DownloaderTask) {
 	y.CmdArgs.addFlag(task.MediaUrl)
 	y.CmdArgs.addFlag(FlagNewLineOutput)
 	y.CmdArgs.addFlagValue(FlagOutput, y.GenerateStoragePath(task.StoragePath))
-	y.ExecAsync(task, y.UpdateTask)
+	y.execAsync(task, y.UpdateTask)
 }
 
 func (y *Youtubedl) GenerateStoragePath(storagePath string) string {
