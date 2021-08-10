@@ -12,6 +12,6 @@ func GetTaskPage(c *gin.Context) *model.Page {
 	if err := c.ShouldBindQuery(task); err != nil {
 		logging.Panic("get task page failed: %v", err)
 	}
-	tx := db.DB.Model(task)
+	tx := db.DB.Model(task).Where(task).Order("status desc")
 	return model.PageQuery(c, tx, &[]model.DownloaderTask{})
 }

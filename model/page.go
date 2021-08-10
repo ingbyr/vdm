@@ -22,11 +22,13 @@ func PageQuery(c *gin.Context, tx *gorm.DB, target interface{}) *Page {
 	if page.Size > 100 {
 		page.Size = 100
 	}
-	offset := (page.Page - 1) * page.Size
-	tx.Offset(offset).Limit(page.Size)
+	// total query
 	if err := tx.Count(&page.Total).Error; err != nil {
 		logging.Panic("failed to count data: %v", err)
 	}
+	// page query
+	offset := (page.Page - 1) * page.Size
+	tx.Offset(offset).Limit(page.Size)
 	if err := tx.Find(page.Data).Error; err != nil {
 		logging.Panic("failed to query page: %v", err)
 	}

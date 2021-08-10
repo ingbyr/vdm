@@ -2,6 +2,7 @@ package ws
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/ingbyr/vdm/pkg/logging"
 	"github.com/ingbyr/vdm/pkg/setting"
 	"time"
@@ -39,9 +40,9 @@ func startManager() {
 			}
 		case msg := <-Manager.broadcast:
 			if len(Manager.clients) == 0 {
-				//logging.Debug("no client to receive msg")
 				continue
 			}
+			logging.Debug("broadcast msg: %v", msg)
 			for _, c := range Manager.clients {
 				select {
 				case c.Send <- msg:
@@ -61,7 +62,6 @@ func Register(client *Client) {
 }
 
 func SendBroadcast(msg []byte) {
-	//logging.Debug("send broadcast msg: %s", string(msg))
 	Manager.broadcast <- msg
 }
 
@@ -78,17 +78,17 @@ func InvokeHeartbeat() {
 	SendBroadcast(data)
 }
 
-func AppendHeartbeatData(group string, id string, data interface{}) {
+func AppendHeartbeatData(group string, id interface{}, data interface{}) {
 	if _, ok := Manager.heartbeatData[group]; !ok {
 		logging.Debug("create heartbeat group: %s", group)
 		Manager.heartbeatData[group] = make(map[string]interface{})
 	}
-	Manager.heartbeatData[group][id] = data
+	Manager.heartbeatData[group][fmt.Sprintf("%v", id)] = data
 }
 
-func RemoveHeartbeatData(group string, id string) {
+func RemoveHeartbeatData(group string, id interface{}) {
 	if _, ok := Manager.heartbeatData[group]; !ok {
 		return
 	}
-	delete(Manager.heartbeatData[group], id)
+	delete(Manager.heartbeatData[group], fmt.Sprintf("%v", id))
 }

@@ -27,7 +27,7 @@ type DownloaderTaskProgress struct {
 
 type DownloaderTask struct {
 	Model
-	Status int `json:"status"`
+	Status int `json:"status" form:"status"`
 	*MediaBaseInfo
 	*DownloaderTaskConfig
 	*DownloaderTaskProgress `gorm:"-"`

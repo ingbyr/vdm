@@ -7,6 +7,7 @@ package model
 import (
 	"database/sql/driver"
 	"fmt"
+	"github.com/bwmarrin/snowflake"
 	"github.com/ingbyr/vdm/pkg/uuid"
 	"time"
 )
@@ -16,14 +17,14 @@ const (
 )
 
 type Model struct {
-	ID        string   `json:"id" gorm:"primaryKey"`
-	CreatedAt JsonTime `json:"createTime" gorm:"column:created_at"`
-	UpdatedAt JsonTime `json:"updateTime" gorm:"column:updated_at"`
+	ID        snowflake.ID `json:"id" gorm:"primaryKey"`
+	CreatedAt JsonTime     `json:"createTime" gorm:"column:created_at"`
+	UpdatedAt JsonTime     `json:"updateTime" gorm:"column:updated_at"`
 }
 
 func NewModel() Model {
 	return Model{
-		ID:        uuid.Instance.Generate().String(),
+		ID:        uuid.Instance.Generate(),
 		CreatedAt: JsonTime{time.Now()},
 		UpdatedAt: JsonTime{time.Now()},
 	}
