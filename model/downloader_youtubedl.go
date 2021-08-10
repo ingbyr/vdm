@@ -33,7 +33,6 @@ var (
 			},
 			CmdArgs: NewCmdArgs(),
 			Valid:   true,
-			Enable:  true,
 		},
 		mediaNameTemplate: "%(title)s.%(ext)s",
 		regSpeed:          regexp.MustCompile("\\d+\\.?\\d*\\w+/s"),

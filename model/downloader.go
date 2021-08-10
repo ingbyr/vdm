@@ -31,6 +31,7 @@ type Downloader interface {
 	GetExecutorPath() string
 	Download(task *DownloaderTask)
 	FetchMediaInfo(task *DownloaderTask) (*MediaInfo, uint)
+	IsValid() bool
 	SetValid(valid bool)
 }
 
@@ -55,8 +56,7 @@ func (di *DownloaderInfo) GetExecutorPath() string {
 type downloader struct {
 	*DownloaderInfo
 	CmdArgs
-	Valid  bool `json:"valid"`
-	Enable bool `json:"enable"`
+	Valid bool `json:"valid"`
 }
 
 func (d *downloader) Download(task *DownloaderTask) {
@@ -65,6 +65,10 @@ func (d *downloader) Download(task *DownloaderTask) {
 
 func (d *downloader) FetchMediaInfo(task *DownloaderTask) (*MediaInfo, uint) {
 	panic("can't use base downloader")
+}
+
+func (d *downloader) IsValid() bool {
+	return d.Valid
 }
 
 func (d *downloader) SetValid(valid bool) {

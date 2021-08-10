@@ -5,7 +5,7 @@
 package model
 
 var (
-	downloaderAnnie = &DownloaderAnnie{
+	downloaderAnnie = &Annie{
 		downloader: &downloader{
 			DownloaderInfo: &DownloaderInfo{
 				Version:      "not exist",
@@ -14,7 +14,6 @@ var (
 			},
 			CmdArgs: NewCmdArgs(),
 			Valid:   true,
-			Enable:  true,
 		},
 	}
 )
@@ -23,6 +22,6 @@ func init() {
 	DownloaderManager.Register(downloaderAnnie)
 }
 
-type DownloaderAnnie struct {
+type Annie struct {
 	*downloader
 }
