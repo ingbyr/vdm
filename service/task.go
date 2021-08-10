@@ -12,6 +12,15 @@ func GetTaskPage(c *gin.Context) *model.Page {
 	if err := c.ShouldBindQuery(task); err != nil {
 		logging.Panic("get task page failed: %v", err)
 	}
-	tx := db.DB.Model(task).Where(task).Order("status desc")
+	tx := db.DB.Model(task)
+	if task.Title != "" {
+		tx.Where("title LIKE ?", "%"+task.Title+"%")
+		task.Title = ""
+	}
+	if task.Desc != "" {
+		tx.Where("desc LIKE ?", "%"+task.Desc+"%")
+		task.Desc = ""
+	}
+	tx.Where(task).Order("status DESC")
 	return model.PageQuery(c, tx, &[]model.DownloaderTask{})
 }

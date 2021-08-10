@@ -57,7 +57,7 @@ func (c *Client) Write() {
 				Manager.unregister <- c
 				return
 			}
-			logging.Debug("Client %s send msg: %s", c.ID, string(msg))
+			logging.Debug("client %s send msg: %s", c.ID, string(msg))
 			c.Socket.WriteMessage(websocket.TextMessage, msg)
 		}
 	}

@@ -17,9 +17,9 @@ const (
 )
 
 type Model struct {
-	ID        snowflake.ID `json:"id" gorm:"primaryKey"`
-	CreatedAt JsonTime     `json:"createTime" gorm:"column:created_at"`
-	UpdatedAt JsonTime     `json:"updateTime" gorm:"column:updated_at"`
+	ID        snowflake.ID `json:"id" gorm:"primaryKey" form:"id"`
+	CreatedAt JsonTime     `json:"createTime" gorm:"column:created_at" form:"created_at"`
+	UpdatedAt JsonTime     `json:"updateTime" gorm:"column:updated_at" form:"updated_at"`
 }
 
 func NewModel() Model {

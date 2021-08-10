@@ -30,7 +30,7 @@ type Downloader interface {
 	GetVersion() string
 	GetExecutorPath() string
 	Download(task *DownloaderTask)
-	FetchMediaInfo(task *DownloaderTask) (*MediaInfo, error)
+	FetchMediaInfo(task *DownloaderTask) (*MediaInfo, uint)
 	SetValid(valid bool)
 }
 
@@ -63,7 +63,7 @@ func (d *downloader) Download(task *DownloaderTask) {
 	panic("can't use base downloader")
 }
 
-func (d *downloader) FetchMediaInfo(task *DownloaderTask) (*MediaInfo, error) {
+func (d *downloader) FetchMediaInfo(task *DownloaderTask) (*MediaInfo, uint) {
 	panic("can't use base downloader")
 }
 
@@ -80,7 +80,7 @@ func (d *downloader) ExecCmd() ([]byte, error) {
 	cmd.Stdout = &stdout
 	err := cmd.Run()
 	if err != nil {
-		logging.Error("exec error %v", stderr)
+		logging.Error("exec error %v", err)
 		return stderr.Bytes(), err
 	}
 	logging.Debug("output: %s", stdout.String())

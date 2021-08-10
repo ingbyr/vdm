@@ -14,8 +14,8 @@ const (
 
 type DownloaderTaskConfig struct {
 	MediaUrl    string `json:"mediaUrl"`
-	Downloader  string `json:"downloader"`
-	StoragePath string `json:"storagePath"`
+	Downloader  string `json:"downloader" form:"downloader"`
+	StoragePath string `json:"storagePath" form:"storagePath"`
 	FormatId    string `json:"formatId"`
 	FormatUrl   string `json:"formatUrl"`
 }

@@ -42,7 +42,7 @@ func startManager() {
 			if len(Manager.clients) == 0 {
 				continue
 			}
-			logging.Debug("broadcast msg: %v", msg)
+			logging.Debug("broadcast msg size: %d", len(msg))
 			for _, c := range Manager.clients {
 				select {
 				case c.Send <- msg:

@@ -7,6 +7,7 @@ package model
 import (
 	"errors"
 	"fmt"
+	"github.com/ingbyr/vdm/pkg/e"
 	"github.com/ingbyr/vdm/pkg/logging"
 	"os/exec"
 )
@@ -41,10 +42,10 @@ func (m *downloaderManager) Download(task *DownloaderTask) error {
 	return nil
 }
 
-func (m *downloaderManager) FetchMediaInfo(task *DownloaderTask) (*MediaInfo, error) {
+func (m *downloaderManager) FetchMediaInfo(task *DownloaderTask) (*MediaInfo, uint) {
 	downloader, ok := m.Downloaders[task.Downloader]
 	if !ok {
-		return nil, errors.New(fmt.Sprintf("downloader '%s' not found or is disabled", task.Downloader))
+		return nil, e.DownloaderUnavailable
 	}
 	return downloader.FetchMediaInfo(task)
 }
