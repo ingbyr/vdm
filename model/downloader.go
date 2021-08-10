@@ -104,16 +104,10 @@ func (d *downloader) ExecCmdLong(
 		defer finalHandler(data)
 		for {
 			select {
-			case out, ok := <-stdOutput:
-				if !ok {
-					stdOutput = nil
-				}
+			case out := <-stdOutput:
 				logging.Debug("stdout: %s", out)
 				stepHandler(data, out)
-			case err, ok := <-errOutput:
-				if !ok {
-					errOutput = nil
-				}
+			case err := <-errOutput:
 				logging.Error("stderr: %s", err)
 				errorHandler(data, err)
 			case <-cmdSubCtx.Done():
@@ -124,10 +118,12 @@ func (d *downloader) ExecCmdLong(
 	}()
 
 	// exec cmd
-	go execCmdLong(cmdSubCtx, cmd, stdOutput, errOutput, cancel)
+	go execCmdLong(cmdSubCtx, cancel, cmd, stdOutput, errOutput)
 }
 
-func execCmdLong(ctx context.Context, cmd *exec.Cmd, stdoutC chan<- string, stderrC chan<- string, cancel context.CancelFunc) {
+func execCmdLong(ctx context.Context, cancel context.CancelFunc, cmd *exec.Cmd, stdoutC chan<- string, stderrC chan<- string) {
+	defer close(stdoutC)
+	defer close(stderrC)
 	defer cancel()
 	// prepare cmd pipe
 	stdoutPipe, err := cmd.StdoutPipe()
@@ -145,21 +141,18 @@ func execCmdLong(ctx context.Context, cmd *exec.Cmd, stdoutC chan<- string, stde
 		stderrC <- err.Error()
 		return
 	}
-
 	// read stdout and stderr output
 	var wg sync.WaitGroup
 	wg.Add(2)
-	go readCmdPipe(&wg, ctx, cmd, stdoutPipe, stdoutC, "stdout")
-	go readCmdPipe(&wg, ctx, cmd, stderrPipe, stderrC, "stderr")
+	go readCmdPipe(&wg, ctx, cmd, stdoutPipe, stdoutC)
+	go readCmdPipe(&wg, ctx, cmd, stderrPipe, stderrC)
 	wg.Wait()
 }
 
-func readCmdPipe(wg *sync.WaitGroup, ctx context.Context, cmd *exec.Cmd, pipe io.Reader, output chan<- string, pipeType string) {
-	defer close(output)
+func readCmdPipe(wg *sync.WaitGroup, ctx context.Context, cmd *exec.Cmd, pipe io.Reader, output chan<- string) {
 	defer wg.Done()
 	scanner := bufio.NewScanner(pipe)
 	for scanner.Scan() {
-		logging.Debug("read from pipe: %s", pipeType)
 		select {
 		case <-ctx.Done():
 			if err := cmd.Process.Kill(); err != nil {
