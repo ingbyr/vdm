@@ -78,12 +78,12 @@ func InvokeHeartbeat() {
 	SendBroadcast(data)
 }
 
-func AppendHeartbeatData(group string, id interface{}, data interface{}) {
+func AppendHeartbeatData(group string, id string, data interface{}) {
 	if _, ok := Manager.heartbeatData[group]; !ok {
 		logging.Debug("create heartbeat group: %s", group)
 		Manager.heartbeatData[group] = make(map[string]interface{})
 	}
-	Manager.heartbeatData[group][fmt.Sprintf("%v", id)] = data
+	Manager.heartbeatData[group][id] = data
 }
 
 func RemoveHeartbeatData(group string, id interface{}) {

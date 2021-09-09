@@ -6,12 +6,11 @@ package model
 
 import (
 	"encoding/json"
+	"github.com/ingbyr/vdm/model/platform"
 	"github.com/ingbyr/vdm/pkg/e"
-	"github.com/ingbyr/vdm/pkg/pt"
 	"github.com/ingbyr/vdm/pkg/ws"
 	"os"
 	"regexp"
-	"runtime"
 	"strings"
 )
 
@@ -29,7 +28,7 @@ var (
 			DownloaderInfo: &DownloaderInfo{
 				Version:      "local",
 				Name:         "youtube-dl",
-				ExecutorPath: GetYoutubedlExecutorPath(),
+				ExecutorPath: platform.DownloaderYoutubedlExecutorPath,
 			},
 			CmdArgs: NewCmdArgs(),
 			Valid:   true,
@@ -42,19 +41,6 @@ var (
 
 func init() {
 	DownloaderManager.Register(youtubedl)
-}
-
-func GetYoutubedlExecutorPath() string {
-	switch runtime.GOOS {
-	case pt.Windows:
-		return ".\\runtime\\engine\\youtube-dl.exe"
-	case pt.Linux:
-		return "./runtime/engine/youtube-dl"
-	case pt.MacOS:
-		return "./runtime/engine/youtube-dl"
-	default:
-		return "not support platform " + runtime.GOOS
-	}
 }
 
 type Youtubedl struct {
@@ -91,7 +77,7 @@ func (y *Youtubedl) Download(task *DownloaderTask) {
 	if task.FormatId != "" {
 		y.addCmdFlagValue(FlagFormat, task.FormatId)
 	}
-	ws.AppendHeartbeatData(HeartbeatDataTaskProgressGroup, task.ID, task.DownloaderTaskProgress)
+	ws.AppendHeartbeatData(HeartbeatDataTaskProgressGroup, task.ID.String(), task.DownloaderTaskProgress)
 	y.ExecCmdLong(task,
 		y.downloaderTaskUpdateHandler,
 		y.downloadTaskFinalHandler,

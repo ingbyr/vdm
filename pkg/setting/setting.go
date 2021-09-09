@@ -32,6 +32,10 @@ var (
 	LogSetting    = &Log{}
 )
 
+const (
+	DirRuntime = "runtime"
+)
+
 var cfg *ini.File
 
 func Setup() {

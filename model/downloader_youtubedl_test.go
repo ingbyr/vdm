@@ -14,10 +14,7 @@ const mediaUrl = "https://www.bilibili.com/video/BV1q64y147nh"
 func TestYoutubedl_FetchMediaSimulateJson(t *testing.T) {
 	task := NewDownloaderTask(&DownloaderTaskConfig{MediaUrl: mediaUrl})
 	data, err := youtubedl.FetchMediaInfo(task)
-	if err != nil {
-		fmt.Printf("Error %v\n", err)
-	}
-	fmt.Printf("%+v\n", data)
+	fmt.Printf("err: %v, data: %+v\n", err, data)
 }
 
 func TestYoutubedl_Download(t *testing.T) {
