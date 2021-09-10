@@ -16,6 +16,7 @@ const (
 	TimeFormat = "2006-01-02 15:04:05"
 )
 
+// Model is a base model for db model
 type Model struct {
 	ID        snowflake.ID `json:"id" gorm:"primaryKey" form:"id"`
 	CreatedAt JsonTime     `json:"createTime" gorm:"column:created_at" form:"created_at"`
@@ -30,6 +31,7 @@ func NewModel() Model {
 	}
 }
 
+// JsonTime provide a time which can be formatted in json
 type JsonTime struct {
 	time.Time
 }
@@ -46,7 +48,7 @@ func (t *JsonTime) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (t JsonTime) Value() (driver.Value, error) {
+func (t *JsonTime) Value() (driver.Value, error) {
 	var zeroTime time.Time
 	if t.Time.UnixNano() == zeroTime.UnixNano() {
 		return nil, nil

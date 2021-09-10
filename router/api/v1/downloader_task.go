@@ -45,6 +45,6 @@ func GetDownloaderTask(c *gin.Context) {
 		task.Desc = ""
 	}
 	tx.Where(task).Order("status DESC")
-	pageData := model.PageQuery(c, tx, &[]model.DownloaderTask{})
-	r.OK(c, pageData)
+	page := model.PageQuery(c, tx, &[]model.DownloaderTask{})
+	r.OK(c, page)
 }

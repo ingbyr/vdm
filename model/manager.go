@@ -5,6 +5,7 @@
 package model
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/ingbyr/vdm/pkg/e"
@@ -47,5 +48,17 @@ func (m *downloaderManager) FetchMediaInfo(task *DownloaderTask) (*MediaInfo, ui
 	if !ok {
 		return nil, e.DownloaderUnavailable
 	}
-	return downloader.FetchMediaInfo(task)
+	res, err := downloader.FetchMediaInfo(task)
+	if err != nil {
+		logging.Error(err.Error())
+		switch err.(type) {
+		case *exec.ExitError:
+			return nil, e.DownloaderUnknown
+		case *json.UnmarshalTypeError, *json.InvalidUnmarshalError,
+			*json.UnsupportedTypeError, *json.UnsupportedValueError,
+			*json.SyntaxError:
+			return nil, e.JsonNonDeserializable
+		}
+	}
+	return res, e.Ok
 }

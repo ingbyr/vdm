@@ -7,7 +7,6 @@ package model
 import (
 	"encoding/json"
 	"github.com/ingbyr/vdm/model/platform"
-	"github.com/ingbyr/vdm/pkg/e"
 	"github.com/ingbyr/vdm/pkg/ws"
 	"os"
 	"regexp"
@@ -50,22 +49,22 @@ type Youtubedl struct {
 	regProgress       *regexp.Regexp
 }
 
-func (y *Youtubedl) FetchMediaInfo(task *DownloaderTask) (*MediaInfo, uint) {
+func (y *Youtubedl) FetchMediaInfo(task *DownloaderTask) (*MediaInfo, error) {
 	y.reset()
 	y.CmdArgs.addCmdFlag(task.MediaUrl)
 	y.CmdArgs.addCmdFlag(FlagDumpJson)
 	output, err := y.ExecCmd()
 	if err != nil {
-		return nil, e.DownloaderNotValidUrl
+		return nil, err
 	}
 	var yMediaInfo YoutubedlMediaInfo
 	err = json.Unmarshal(output, &yMediaInfo)
 	if err != nil {
-		return nil, e.JsonNonDeserializable
+		return nil, err
 	}
 	mediaInfo := yMediaInfo.toMediaInfo()
 	task.MediaBaseInfo = mediaInfo.MediaBaseInfo
-	return mediaInfo, e.Ok
+	return mediaInfo, nil
 }
 
 func (y *Youtubedl) Download(task *DownloaderTask) {

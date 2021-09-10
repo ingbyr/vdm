@@ -8,6 +8,6 @@ import (
 )
 
 var (
-	DownloaderYoutubedlExecutorPath = filepath.Join(setting.DirRuntime, "youtube-dl")
+	DownloaderYoutubedlExecutorPath = filepath.Join(setting.DirRuntime, "engine","youtube-dl")
 )
 

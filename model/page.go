@@ -19,6 +19,7 @@ func PageQuery(c *gin.Context, tx *gorm.DB, target interface{}) *Page {
 	if err := c.ShouldBindQuery(page); err != nil {
 		logging.Panic("failed to parse page query args: %v", err)
 	}
+	// max 100 item
 	if page.Size > 100 {
 		page.Size = 100
 	}
