@@ -12,7 +12,7 @@ import (
 )
 
 type Response struct {
-	Code uint        `json:"code"`
+	Code e.Code      `json:"code"`
 	Msg  string      `json:"msg"`
 	Data interface{} `json:"data"`
 }
@@ -21,18 +21,18 @@ func OK(c *gin.Context, data interface{}) {
 	R(c, http.StatusOK, e.Ok, data)
 }
 
-func F(c *gin.Context, errCode uint) {
+func F(c *gin.Context, errCode e.Code) {
 	R(c, http.StatusOK, errCode, "")
 }
 
-func FE(c *gin.Context, errCode uint, err error) {
+func FE(c *gin.Context, errCode e.Code, err error) {
 	R(c, http.StatusOK, errCode, err.Error())
 }
 
-func R(c *gin.Context, httpCode int, code uint, data interface{}) {
+func R(c *gin.Context, httpCode int, code e.Code, data interface{}) {
 	c.JSON(httpCode, Response{
 		Code: code,
-		Msg:  e.ToMsg(code),
+		Msg:  code.String(),
 		Data: data,
 	})
 }

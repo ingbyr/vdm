@@ -4,6 +4,7 @@
 
 package v1
 
+import "C"
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/ingbyr/vdm/model/engine"
@@ -11,13 +12,28 @@ import (
 	"github.com/ingbyr/vdm/model/task"
 	"github.com/ingbyr/vdm/pkg/db"
 	"github.com/ingbyr/vdm/pkg/e"
-	"github.com/ingbyr/vdm/pkg/logging"
 	"github.com/ingbyr/vdm/pkg/r"
 )
 
-var log = logging.New("v1")
+func GetEngineInfo(c *gin.Context) {
+	r.OK(c, engine.Manager.Engines)
+}
 
-func AddDownloadTask(c *gin.Context) {
+func FetchMediaInfo(c *gin.Context) {
+	mtask := new(task.MTask)
+	if err := c.BindJSON(mtask); err != nil {
+		r.F(c, e.InvalidParams)
+		return
+	}
+	res, err := engine.Manager.FetchMediaInfo(mtask)
+	if err != nil {
+		r.FE(c, e.FetchMediaInfoError, err)
+		return
+	}
+	r.OK(c, res)
+}
+
+func DownloadMedia(c *gin.Context) {
 	var taskConfig task.Config
 	if err := c.BindJSON(&taskConfig); err != nil {
 		r.F(c, e.InvalidParams)
@@ -26,7 +42,7 @@ func AddDownloadTask(c *gin.Context) {
 	t := task.NewDTask(taskConfig)
 	err := engine.Manager.Download(t)
 	if err != nil {
-		r.F(c, e.Error)
+		r.F(c, e.DownloadMediaError)
 		return
 	}
 	// save to database
@@ -34,10 +50,11 @@ func AddDownloadTask(c *gin.Context) {
 	r.OK(c, t)
 }
 
-func GetDownloaderTask(c *gin.Context) {
+func GetDownloadTasks(c *gin.Context) {
 	t := &task.DTask{}
 	if err := c.ShouldBindQuery(t); err != nil {
 		log.Panic("get page failed: %v", err)
+		r.FE(c, e.InvalidParams, err)
 	}
 	tx := db.DB.Model(t)
 	if t.Title != "" {

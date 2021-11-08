@@ -31,18 +31,11 @@ func initWsRouter(r *gin.Engine) {
 }
 
 func initApiV1(r *gin.Engine) {
-	// Api group
 	apiGroup := r.Group("/api")
-
-	// V1 api group
 	apiV1 := apiGroup.Group("/v1")
 
-	// V1 engine api group
-	engineApi := apiV1.Group("/downloader")
-	{
-		engineApi.GET("/info", v1.GetDownloaderInfo)
-		engineApi.POST("/media/info", v1.FetchMediaInfo)
-		engineApi.POST("/download", v1.AddDownloadTask)
-		engineApi.GET("/task", v1.GetDownloaderTask)
-	}
+	apiV1.GET("/engine", v1.GetEngineInfo)
+	apiV1.POST("/media/info/fetch", v1.FetchMediaInfo)
+	apiV1.POST("/media/download", v1.DownloadMedia)
+	apiV1.GET("/task", v1.GetDownloadTasks)
 }
