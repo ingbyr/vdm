@@ -22,6 +22,8 @@ import (
 	"time"
 )
 
+var log = logging.New("server")
+
 func setup() context.CancelFunc {
 	ctx, cancel := context.WithCancel(context.Background())
 	setting.Setup()
@@ -51,9 +53,11 @@ func run() {
 
 	// start vdm server
 	go func() {
-		logging.Info("start vdm listening %s", endPoint)
-		if err := srv.ListenAndServe(); err != nil && errors.Is(err, http.ErrServerClosed) {
-			logging.Info("listen: %s\n", err)
+		log.Infow("start server", "port", endPoint)
+		if err := srv.ListenAndServe(); err != nil {
+			if !errors.Is(err, http.ErrServerClosed) {
+				log.Panic("server error", err)
+			}
 		}
 	}()
 
@@ -61,7 +65,7 @@ func run() {
 	quit := make(chan os.Signal)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
-	logging.Info("shutting down vdm...")
+	log.Info("shutdown vdm")
 
 	// stop running goroutines
 	cancel()
@@ -71,10 +75,10 @@ func run() {
 	defer cancelWait()
 
 	if err := srv.Shutdown(ctxWait); err != nil {
-		logging.Panic("vdm forced to shutdown:", err)
+		log.Panic("vdm forced to shutdown:", err)
 	}
 
-	logging.Info("vdm exited")
+	log.Info("exit")
 }
 
 func main() {
