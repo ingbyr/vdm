@@ -28,7 +28,7 @@ var log = logging.New("server")
 func setup() (context.Context, context.CancelFunc) {
 	ctx, cancel := context.WithCancel(context.Background())
 	setting.Setup()
-	ws.Setup()
+	ws.Setup(ctx)
 	db.Setup()
 	engine.Setup(ctx, cancel)
 	schema.Setup()
@@ -66,7 +66,7 @@ func run() {
 	quit := make(chan os.Signal)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
-	log.Info("shutdown vdm")
+	log.Info("shutting down vdm...")
 
 	// stop running goroutines
 	cancel()

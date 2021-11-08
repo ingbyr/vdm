@@ -1,6 +1,7 @@
 package ws
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/ingbyr/vdm/pkg/setting"
@@ -23,7 +24,7 @@ var Manager = manager{
 	heartbeatData: make(map[string]map[string]interface{}),
 }
 
-func startManager() {
+func startManager(ctx context.Context) {
 	for {
 		select {
 		case conn := <-Manager.register:
@@ -50,6 +51,8 @@ func startManager() {
 					delete(Manager.clients, c.ID)
 				}
 			}
+		case <-ctx.Done():
+			return
 		}
 	}
 }
@@ -64,11 +67,16 @@ func SendBroadcast(msg []byte) {
 	Manager.broadcast <- msg
 }
 
-func Heartbeat() {
+func Heartbeat(ctx context.Context) {
 	ticker := time.NewTicker(setting.AppSetting.HeartbeatInterval * time.Second)
 	defer ticker.Stop()
-	for range ticker.C {
-		InvokeHeartbeat()
+	for {
+		select {
+		case <-ticker.C:
+			InvokeHeartbeat()
+		case <-ctx.Done():
+			return
+		}
 	}
 }
 
