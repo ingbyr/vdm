@@ -2,12 +2,14 @@
  @Author: ingbyr
 */
 
-package model
+package manager
 
 import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/ingbyr/vdm/model/engine"
+	"github.com/ingbyr/vdm/model/media"
 	"github.com/ingbyr/vdm/pkg/e"
 	"github.com/ingbyr/vdm/pkg/logging"
 	"os/exec"
@@ -16,28 +18,28 @@ import (
 var (
 	log = logging.New("model")
 	DecManager = &decManager{
-		Downloaders: make(map[string]Dec),
+		Downloaders: make(map[string]engine.Dec),
 	}
 )
 
 type decManager struct {
-	Downloaders map[string]Dec `json:"downloaders,omitempty"`
+	Downloaders map[string]engine.Dec `json:"downloaders,omitempty"`
 }
 
-func (m *decManager) Register(downloader Dec) {
+func Register(downloader engine.Dec) {
 	if _, err := exec.LookPath(downloader.GetExecutorPath()); err != nil {
 		downloader.SetValid(false)
 		log.Warnf("engine '%s' is not valid because '%s' not found", downloader.GetName(), downloader.GetExecutorPath())
 	}
-	m.Downloaders[downloader.GetName()] = downloader
+	DecManager.Downloaders[downloader.GetName()] = downloader
 }
 
-func (m *decManager) Enabled(downloader Dec) bool {
+func (m *decManager) Enabled(downloader engine.Dec) bool {
 	_, ok := m.Downloaders[downloader.GetName()]
 	return ok
 }
 
-func (m *decManager) Download(task *DTask) error {
+func (m *decManager) Download(task *engine.DTask) error {
 	downloader, ok := m.Downloaders[task.Downloader]
 	if !ok {
 		return errors.New(fmt.Sprintf("decBase '%s' not found or is disabled", task.Downloader))
@@ -46,7 +48,7 @@ func (m *decManager) Download(task *DTask) error {
 	return nil
 }
 
-func (m *decManager) FetchMediaInfo(task *DTask) (*MediaInfo, uint) {
+func (m *decManager) FetchMediaInfo(task *engine.DTask) (*media.Info, uint) {
 	downloader, ok := m.Downloaders[task.Downloader]
 	if !ok {
 		return nil, e.DownloaderUnavailable

@@ -2,7 +2,7 @@
  @Author: ingbyr
 */
 
-package model
+package engine
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 )
 
 func TestCmdArgs(t *testing.T) {
-	cmdArgs := NewCmdArgs()
+	cmdArgs := EmptyOpts()
 	cmdArgs.addCmdFlag("-j")
 	cmdArgs.addCmdFlag("https://demo-url")
 	cmdArgs.addCmdFlagValue("--proxy", "socks5://$address:$port")

@@ -2,10 +2,11 @@
  @Author: ingbyr
 */
 
-package model
+package engine
 
 import (
 	"encoding/json"
+	"github.com/ingbyr/vdm/model/media"
 	"github.com/ingbyr/vdm/model/platform"
 	"github.com/ingbyr/vdm/pkg/ws"
 	"os"
@@ -24,13 +25,13 @@ const (
 var (
 	decYdl = &DecYdl{
 		decBase: &decBase{
-			DecInfo: &DecInfo{
+			engine: &engine{
 				Version:      "local",
 				Name:         "youtube-dl",
 				ExecutorPath: platform.DownloaderYoutubedlExecutorPath,
 			},
-			CmdArgs: NewCmdArgs(),
-			Valid:   true,
+			opts:  EmptyOpts(),
+			Valid: true,
 		},
 		mediaNameTemplate: "%(title)s.%(ext)s",
 		regSpeed:          regexp.MustCompile("\\d+\\.?\\d*\\w+/s"),
@@ -39,7 +40,7 @@ var (
 )
 
 func init() {
-	DecManager.Register(decYdl)
+	register(decYdl)
 }
 
 // DecYdl downloader engine core 'youtube-dl'
@@ -50,10 +51,10 @@ type DecYdl struct {
 	regProgress       *regexp.Regexp
 }
 
-func (ydl *DecYdl) FetchMediaInfo(task *DTask) (*MediaInfo, error) {
+func (ydl *DecYdl) FetchMediaInfo(task *DTask) (*media.Info, error) {
 	ydl.reset()
-	ydl.CmdArgs.addCmdFlag(task.MediaUrl)
-	ydl.CmdArgs.addCmdFlag(FlagDumpJson)
+	ydl.opts.addCmdFlag(task.MediaUrl)
+	ydl.opts.addCmdFlag(FlagDumpJson)
 	output, err := ydl.ExecCmd()
 	if err != nil {
 		return nil, err
@@ -64,7 +65,7 @@ func (ydl *DecYdl) FetchMediaInfo(task *DTask) (*MediaInfo, error) {
 		return nil, err
 	}
 	mediaInfo := yMediaInfo.toMediaInfo()
-	task.MediaBaseInfo = mediaInfo.MediaBaseInfo
+	task.Base = mediaInfo.Base
 	return mediaInfo, nil
 }
 
@@ -125,7 +126,7 @@ func (ydl *DecYdl) getStoragePath(storagePath string) string {
 }
 
 func (ydl *DecYdl) reset() {
-	ydl.CmdArgs = NewCmdArgs()
+	ydl.opts = EmptyOpts()
 }
 
 type YdlMediaInfo struct {
@@ -135,11 +136,11 @@ type YdlMediaInfo struct {
 	Formats   []*ydlMediaFormat `json:"formats,omitempty"`
 }
 
-func (yi *YdlMediaInfo) toMediaInfo() *MediaInfo {
+func (yi *YdlMediaInfo) toMediaInfo() *media.Info {
 	yFormats := yi.Formats
-	formats := make([]*MediaFormat, 0, len(yFormats))
+	formats := make([]*media.Format, 0, len(yFormats))
 	for _, yFormat := range yi.Formats {
-		formats = append(formats, &MediaFormat{
+		formats = append(formats, &media.Format{
 			Format:   yFormat.Format,
 			Id:       yFormat.FormatId,
 			Url:      yFormat.Url,
@@ -147,8 +148,8 @@ func (yi *YdlMediaInfo) toMediaInfo() *MediaInfo {
 			FileSize: yFormat.FileSize,
 		})
 	}
-	return &MediaInfo{
-		MediaBaseInfo: &MediaBaseInfo{
+	return &media.Info{
+		Base: &media.Base{
 			Title: yi.Title,
 			Desc:  yi.Desc,
 		},
