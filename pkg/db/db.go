@@ -26,14 +26,12 @@ func Setup() {
 	} else {
 		dbPath = setting.AppSetting.DatabasePath
 	}
-	log.Debug("connecting db '%s' ...", dbPath)
+	log.Debugw("loading db", "dbPath", dbPath)
 	DB, err = gorm.Open(sqlite.Open(dbPath), &gorm.Config{
 		Logger: logging.Gorm(),
 	})
 	if err != nil {
 		log.Panic("failed to connect database")
 	}
-	log.Debug("connected")
-
-	log.Debug("migrating the schema ...")
+	log.Debug("loaded db")
 }
