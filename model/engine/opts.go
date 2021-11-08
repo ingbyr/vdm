@@ -2,36 +2,36 @@
  @Author: ingbyr
 */
 
-package model
+package engine
 
 import "strings"
 
-type CmdArgs struct {
+type opts struct {
 	args  map[string]string
 	flags []string
 }
 
-func NewCmdArgs() CmdArgs {
-	return CmdArgs{
+func EmptyOpts() *opts {
+	return &opts{
 		args:  make(map[string]string),
 		flags: make([]string, 0),
 	}
 }
 
-func (c *CmdArgs) addCmdFlag(flag string) {
+func (c *opts) addCmdFlag(flag string) {
 	c.flags = append(c.flags, flag)
 }
 
-func (c *CmdArgs) addCmdFlagValue(flag string, value string) {
+func (c *opts) addCmdFlagValue(flag string, value string) {
 	c.addCmdFlag(flag)
 	c.args[flag] = value
 }
 
-func (c *CmdArgs) toCmdStrSlice() []string {
+func (c *opts) toCmdStrSlice() []string {
 	return strings.Split(c.toCmdStr(), " ")
 }
 
-func (c *CmdArgs) toCmdStr() string {
+func (c *opts) toCmdStr() string {
 	sp := " "
 	var sb strings.Builder
 	for _, f := range c.flags {

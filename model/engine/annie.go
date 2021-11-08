@@ -5,24 +5,22 @@
 package engine
 
 var (
-	downloaderAnnie = &DecAnnie{
-		decBase: &engine{
-
+	annie = &Annie{
+		engine{
 			Version:      "not exist",
 			Name:         "annie",
 			ExecutorPath: "not exist",
-
-			opts:  NewCmdArgs(),
-			Valid: true,
+			Valid:        true,
+			opts:         EmptyOpts(),
 		},
 	}
 )
 
 func init() {
-	register(downloaderAnnie)
+	register(annie)
 }
 
-// DecAnnie downloader engine core 'annie'
-type DecAnnie struct {
-	*decBase
+// Annie downloader engine core 'annie'
+type Annie struct {
+	engine
 }

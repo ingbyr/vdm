@@ -6,7 +6,9 @@ package logging
 
 import (
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	"moul.io/zapgorm2"
+	"os"
 )
 
 var LoggerLevel zap.AtomicLevel
@@ -15,11 +17,17 @@ var baseLog *zap.Logger
 var sugaredLog *zap.SugaredLogger
 
 func init() {
-	var err error
-	baseLog, err = zap.NewProduction(zap.AddCaller())
-	if err != nil {
-		panic(err)
-	}
+	logLevel := zap.NewAtomicLevel()
+	// TODO set from config file
+	logLevel.SetLevel(zap.DebugLevel)
+	encoderCfg := zap.NewProductionEncoderConfig()
+	baseLog = zap.New(
+		zapcore.NewCore(
+			zapcore.NewJSONEncoder(encoderCfg),
+			zapcore.Lock(os.Stdout),
+			logLevel),
+		zap.AddCaller(),
+	)
 	defer baseLog.Sync()
 	sugaredLog = baseLog.Sugar()
 }

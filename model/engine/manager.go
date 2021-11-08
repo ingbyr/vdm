@@ -2,68 +2,52 @@
  @Author: ingbyr
 */
 
-package manager
+package engine
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/ingbyr/vdm/model/engine"
 	"github.com/ingbyr/vdm/model/media"
-	"github.com/ingbyr/vdm/pkg/e"
-	"github.com/ingbyr/vdm/pkg/logging"
+	"github.com/ingbyr/vdm/model/task"
 	"os/exec"
 )
 
 var (
-	log = logging.New("model")
-	DecManager = &decManager{
-		Downloaders: make(map[string]engine.Dec),
+	Manager = &manager{
+		Engines: make(map[string]Engine),
 	}
 )
 
-type decManager struct {
-	Downloaders map[string]engine.Dec `json:"downloaders,omitempty"`
+type manager struct {
+	Engines map[string]Engine `json:"engines,omitempty"`
 }
 
-func Register(downloader engine.Dec) {
-	if _, err := exec.LookPath(downloader.GetExecutorPath()); err != nil {
-		downloader.SetValid(false)
-		log.Warnf("engine '%s' is not valid because '%s' not found", downloader.GetName(), downloader.GetExecutorPath())
+func register(engine Engine) {
+	if _, err := exec.LookPath(engine.GetExecutorPath()); err != nil {
+		engine.SetValid(false)
+		log.Warnf("engine '%s' is not valid because '%s' not found", engine.GetName(), engine.GetExecutorPath())
 	}
-	DecManager.Downloaders[downloader.GetName()] = downloader
+	Manager.Engines[engine.GetName()] = engine
 }
 
-func (m *decManager) Enabled(downloader engine.Dec) bool {
-	_, ok := m.Downloaders[downloader.GetName()]
+func (m *manager) Enabled(engine Engine) bool {
+	_, ok := m.Engines[engine.GetName()]
 	return ok
 }
 
-func (m *decManager) Download(task *engine.DTask) error {
-	downloader, ok := m.Downloaders[task.Downloader]
+func (m *manager) Download(task *task.DTask) error {
+	engine, ok := m.Engines[task.Downloader]
 	if !ok {
 		return errors.New(fmt.Sprintf("decBase '%s' not found or is disabled", task.Downloader))
 	}
-	downloader.Download(task)
+	engine.Download(task)
 	return nil
 }
 
-func (m *decManager) FetchMediaInfo(task *engine.DTask) (*media.Info, uint) {
-	downloader, ok := m.Downloaders[task.Downloader]
+func (m *manager) FetchMediaInfo(task *task.MTask) (*media.Info, error) {
+	engine, ok := m.Engines[task.Engine]
 	if !ok {
-		return nil, e.DownloaderUnavailable
+		return nil, errors.New("not found engine")
 	}
-	res, err := downloader.FetchMediaInfo(task)
-	if err != nil {
-		log.Error(err.Error())
-		switch err.(type) {
-		case *exec.ExitError:
-			return nil, e.DownloaderUnknown
-		case *json.UnmarshalTypeError, *json.InvalidUnmarshalError,
-			*json.UnsupportedTypeError, *json.UnsupportedValueError,
-			*json.SyntaxError:
-			return nil, e.JsonNonDeserializable
-		}
-	}
-	return res, e.Ok
+	return engine.FetchMediaInfo(task)
 }

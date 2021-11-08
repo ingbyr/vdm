@@ -6,20 +6,17 @@ package router
 
 import (
 	"github.com/gin-contrib/cors"
-	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
-	"github.com/ingbyr/vdm/pkg/logging"
 	v1 "github.com/ingbyr/vdm/router/api/v1"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"time"
 )
 
 func Init() *gin.Engine {
-	logger := logging.Gin()
 	r := gin.New()
-	r.Use(ginzap.Ginzap(logger, time.RFC3339, true))
-	r.Use(ginzap.RecoveryWithZap(logger, true))
+	//logger := logging.Gin()
+	//r.Use(ginzap.Ginzap(logger, time.RFC3339, true))
+	//r.Use(ginzap.RecoveryWithZap(logger, true))
 	r.Use(cors.Default())
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	initWsRouter(r)

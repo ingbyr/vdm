@@ -2,7 +2,7 @@
  @Author: ingbyr
 */
 
-package db
+package schema
 
 import (
 	"github.com/ingbyr/vdm/model/task"
@@ -12,8 +12,8 @@ import (
 
 var log = logging.New("db")
 
-func SetupSchema() {
-	err := db.DB.AutoMigrate(task.Task{})
+func Setup() {
+	err := db.DB.AutoMigrate(task.DTask{})
 	if err != nil {
 		log.Panic("can not create database, %v", err)
 	}

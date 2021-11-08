@@ -21,8 +21,12 @@ func OK(c *gin.Context, data interface{}) {
 	R(c, http.StatusOK, e.Ok, data)
 }
 
-func Failed(c *gin.Context, errorCode uint) {
-	R(c, http.StatusOK, errorCode, "")
+func F(c *gin.Context, errCode uint) {
+	R(c, http.StatusOK, errCode, "")
+}
+
+func FE(c *gin.Context, errCode uint, err error) {
+	R(c, http.StatusOK, errCode, err.Error())
 }
 
 func R(c *gin.Context, httpCode int, code uint, data interface{}) {

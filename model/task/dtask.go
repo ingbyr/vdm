@@ -17,7 +17,25 @@ const (
 	StatusRunning
 )
 
-// Config download task config
+// DTask is a media downloading task
+type DTask struct {
+	model.Model
+	Status int `json:"status" form:"status"`
+	media.Base
+	Config
+	*Progress `gorm:"-"`
+}
+
+func NewDTask(taskConfig Config) *DTask {
+	return &DTask{
+		Model:    model.NewModel(),
+		Status:   StatusCreated,
+		Config:   taskConfig,
+		Progress: &Progress{},
+	}
+}
+
+// Config for dtask
 type Config struct {
 	MediaUrl    string `json:"mediaUrl"`
 	Downloader  string `json:"downloader" form:"downloader"`
@@ -26,26 +44,10 @@ type Config struct {
 	FormatUrl   string `json:"formatUrl"`
 }
 
-// Progress downloader task progress
+// Progress for dtask
 type Progress struct {
 	Percent string `json:"progress" db:"progress"`
 	Speed   string `json:"speed" db:"speed"`
 }
 
-// Task downloader task
-type Task struct {
-	model.Model
-	Status int `json:"status" form:"status"`
-	media.Base
-	Config
-	*Progress `gorm:"-"`
-}
 
-func NewTask(taskConfig Config) *Task {
-	return &Task{
-		Model:    model.NewModel(),
-		Status:   StatusCreated,
-		Config:   taskConfig,
-		Progress: &Progress{},
-	}
-}

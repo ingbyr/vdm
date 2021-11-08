@@ -9,7 +9,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/ingbyr/vdm/model"
+	"github.com/ingbyr/vdm/model/engine"
+	"github.com/ingbyr/vdm/model/schema"
 	"github.com/ingbyr/vdm/pkg/db"
 	"github.com/ingbyr/vdm/pkg/logging"
 	"github.com/ingbyr/vdm/pkg/setting"
@@ -24,18 +25,18 @@ import (
 
 var log = logging.New("server")
 
-func setup() context.CancelFunc {
+func setup() (context.Context, context.CancelFunc) {
 	ctx, cancel := context.WithCancel(context.Background())
 	setting.Setup()
 	ws.Setup()
 	db.Setup()
-	model.SetupDownloader(ctx)
-	model.SetupSchema()
-	return cancel
+	engine.Setup(ctx, cancel)
+	schema.Setup()
+	return ctx, cancel
 }
 
 func run() {
-	cancel := setup()
+	_, cancel := setup()
 	gin.SetMode(setting.ServerSetting.RunMode)
 	handler := router.Init()
 	readTimeout := setting.ServerSetting.ReadTimeout

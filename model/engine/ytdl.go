@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"github.com/ingbyr/vdm/model/media"
 	"github.com/ingbyr/vdm/model/platform"
+	"github.com/ingbyr/vdm/model/task"
 	"github.com/ingbyr/vdm/pkg/ws"
 	"os"
 	"regexp"
@@ -15,23 +16,20 @@ import (
 )
 
 const (
-	FlagNoColor       = "--no-color"
-	FlagDumpJson      = "--dump-json"
-	FlagNewLineOutput = "--newline"
-	FlagOutput        = "--output"
-	FlagFormat        = "--format"
+	OptNoColor       = "--no-color"
+	OptDumpJson      = "--dump-json"
+	OptNewLineOutput = "--newline"
+	OptOutput        = "--output"
+	OptFormat        = "--format"
 )
 
 var (
-	decYdl = &DecYdl{
-		decBase: &decBase{
-			engine: &engine{
-				Version:      "local",
-				Name:         "youtube-dl",
-				ExecutorPath: platform.DownloaderYoutubedlExecutorPath,
-			},
-			opts:  EmptyOpts(),
-			Valid: true,
+	_ytdl = &ytdl{
+		engine: engine{
+			Version:      "local",
+			Name:         "youtube-dl",
+			ExecutorPath: platform.EngineYtdlExecutorPath,
+			Valid:        true,
 		},
 		mediaNameTemplate: "%(title)s.%(ext)s",
 		regSpeed:          regexp.MustCompile("\\d+\\.?\\d*\\w+/s"),
@@ -40,106 +38,114 @@ var (
 )
 
 func init() {
-	register(decYdl)
+	register(_ytdl)
 }
 
-// DecYdl downloader engine core 'youtube-dl'
-type DecYdl struct {
-	*decBase
+// ytdl downloader engine core 'youtube-dl'
+type ytdl struct {
+	engine
 	mediaNameTemplate string
 	regSpeed          *regexp.Regexp
 	regProgress       *regexp.Regexp
 }
 
-func (ydl *DecYdl) FetchMediaInfo(task *DTask) (*media.Info, error) {
-	ydl.reset()
-	ydl.opts.addCmdFlag(task.MediaUrl)
-	ydl.opts.addCmdFlag(FlagDumpJson)
-	output, err := ydl.ExecCmd()
+func (y *ytdl) FetchMediaInfo(task *task.MTask) (*media.Info, error) {
+	y.reset()
+	y.addCmdFlag(task.MediaUrl)
+	y.addCmdFlag(OptDumpJson)
+	output, err := y.ExecCmd()
 	if err != nil {
 		return nil, err
 	}
-	var yMediaInfo YdlMediaInfo
-	err = json.Unmarshal(output, &yMediaInfo)
+	ytdlMediaInfo := new(YtdlMediaInfo)
+	err = json.Unmarshal(output, ytdlMediaInfo)
 	if err != nil {
 		return nil, err
 	}
-	mediaInfo := yMediaInfo.toMediaInfo()
-	task.Base = mediaInfo.Base
+	// TODO use interface
+	mediaInfo := ytdlMediaInfo.toMediaInfo()
 	return mediaInfo, nil
 }
 
-func (ydl *DecYdl) Download(task *DTask) {
-	ydl.reset()
-	ydl.addCmdFlag(task.MediaUrl)
-	ydl.addCmdFlag(FlagNewLineOutput)
-	ydl.addCmdFlag(FlagNoColor)
-	ydl.addCmdFlagValue(FlagOutput, ydl.getStoragePath(task.StoragePath))
+func (y *ytdl) Download(task *task.DTask) {
+	y.reset()
+	y.addCmdFlag(task.MediaUrl)
+	y.addCmdFlag(OptNewLineOutput)
+	y.addCmdFlag(OptNoColor)
+	y.addCmdFlagValue(OptOutput, y.getStoragePath(task.StoragePath))
 	if task.FormatId != "" {
-		ydl.addCmdFlagValue(FlagFormat, task.FormatId)
+		y.addCmdFlagValue(OptFormat, task.FormatId)
 	}
-	ws.AppendHeartbeatData(HeartbeatDataTaskProgressGroup, task.ID.String(), task.DTaskProgress)
-	ydl.ExecCmdLong(task,
-		ydl.downloaderTaskUpdateHandler,
-		ydl.downloadTaskFinalHandler,
-		ydl.downloadTaskErrorHandler)
+	ws.AppendHeartbeatData(HeartbeatDataTaskProgressGroup, task.ID.String(), task.Progress)
+	y.ExecCmdLong(task,
+		y.downloaderTaskUpdateHandler,
+		y.downloadTaskFinalHandler,
+		y.downloadTaskErrorHandler)
 }
 
-func (ydl *DecYdl) downloaderTaskUpdateHandler(_task interface{}, line string) {
-	task := _task.(*DTask)
+func (y *ytdl) downloaderTaskUpdateHandler(_task interface{}, line string) {
+	t := _task.(*task.DTask)
 	// update progress
-	progressStr := ydl.regProgress.FindString(line)
+	progressStr := y.regProgress.FindString(line)
 	if progressStr != "" {
-		task.Progress = progressStr[:len(progressStr)-1]
+		t.Percent = progressStr[:len(progressStr)-1]
 	}
 
 	// update status
-	task.Status = TaskStatusRunning
-	if strings.HasPrefix(task.Progress, ProgressCompleted) || strings.Contains(line, "has already been downloaded") {
-		task.Status = TaskStatusCompleted
+	t.Status = task.StatusRunning
+	if strings.HasPrefix(t.Percent, ProgressCompleted) || strings.Contains(line, "has already been downloaded") {
+		t.Status = task.StatusCompleted
 	}
 
 	// update speed
-	task.Speed = ydl.regSpeed.FindString(line)
+	t.Speed = y.regSpeed.FindString(line)
 }
 
-func (ydl *DecYdl) downloadTaskFinalHandler(_task interface{}) {
-	task := _task.(*DTask)
-	if task.Status == TaskStatusRunning {
-		task.Status = TaskStatusPaused
+func (y *ytdl) downloadTaskFinalHandler(_task interface{}) {
+	t := _task.(*task.DTask)
+	if t.Status == task.StatusRunning {
+		t.Status = task.StatusPaused
 	}
 	ws.InvokeHeartbeat()
-	ws.RemoveHeartbeatData(HeartbeatDataTaskProgressGroup, task.ID)
+	ws.RemoveHeartbeatData(HeartbeatDataTaskProgressGroup, t.ID)
 }
 
-func (ydl *DecYdl) downloadTaskErrorHandler(_task interface{}, err string) {
-	task := _task.(*DTask)
-	task.Status = TaskStatusError
+func (y *ytdl) downloadTaskErrorHandler(_task interface{}, err string) {
+	t := _task.(*task.DTask)
+	t.Status = task.StatusError
 }
 
-func (ydl *DecYdl) getStoragePath(storagePath string) string {
+func (y *ytdl) getStoragePath(storagePath string) string {
 	pathSeparator := string(os.PathSeparator)
 	if strings.HasSuffix(storagePath, pathSeparator) {
-		return storagePath + ydl.mediaNameTemplate
+		return storagePath + y.mediaNameTemplate
 	}
-	return storagePath + pathSeparator + ydl.mediaNameTemplate
+	return storagePath + pathSeparator + y.mediaNameTemplate
 }
 
-func (ydl *DecYdl) reset() {
-	ydl.opts = EmptyOpts()
+func (y *ytdl) reset() {
+	y.opts = EmptyOpts()
 }
 
-type YdlMediaInfo struct {
-	Title     string                  `json:"title,omitempty"`
-	FullTitle string                  `json:"fullTitle,omitempty"`
-	Desc      string            `json:"description,omitempty"`
-	Formats   []*ydlMediaFormat `json:"formats,omitempty"`
+type YtdlMediaInfo struct {
+	Title     string             `json:"title,omitempty"`
+	FullTitle string             `json:"fullTitle,omitempty"`
+	Desc      string             `json:"description,omitempty"`
+	Formats   []*ytdlMediaFormat `json:"formats,omitempty"`
 }
 
-func (yi *YdlMediaInfo) toMediaInfo() *media.Info {
-	yFormats := yi.Formats
+type ytdlMediaFormat struct {
+	Format   string `json:"format,omitempty"`
+	FormatId string `json:"format_id,omitempty"`
+	Url      string `json:"url,omitempty"`
+	Ext      string `json:"ext,omitempty"`
+	FileSize int    `json:"fileSize,omitempty"`
+}
+
+func (m *YtdlMediaInfo) toMediaInfo() *media.Info {
+	yFormats := m.Formats
 	formats := make([]*media.Format, 0, len(yFormats))
-	for _, yFormat := range yi.Formats {
+	for _, yFormat := range m.Formats {
 		formats = append(formats, &media.Format{
 			Format:   yFormat.Format,
 			Id:       yFormat.FormatId,
@@ -149,18 +155,10 @@ func (yi *YdlMediaInfo) toMediaInfo() *media.Info {
 		})
 	}
 	return &media.Info{
-		Base: &media.Base{
-			Title: yi.Title,
-			Desc:  yi.Desc,
+		Base: media.Base{
+			Title: m.Title,
+			Desc:  m.Desc,
 		},
 		Formats: formats,
 	}
-}
-
-type ydlMediaFormat struct {
-	Format   string `json:"format,omitempty"`
-	FormatId string `json:"format_id,omitempty"`
-	Url      string `json:"url,omitempty"`
-	Ext      string `json:"ext,omitempty"`
-	FileSize int    `json:"fileSize,omitempty"`
 }

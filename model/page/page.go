@@ -1,9 +1,12 @@
-package model
+package page
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/ingbyr/vdm/pkg/logging"
 	"gorm.io/gorm"
 )
+
+var log = logging.New("page")
 
 type Page struct {
 	Size  int         `form:"size" json:"size"`
@@ -12,7 +15,7 @@ type Page struct {
 	Data  interface{} `json:"data"`
 }
 
-func PageQuery(c *gin.Context, tx *gorm.DB, target interface{}) *Page {
+func Query(c *gin.Context, tx *gorm.DB, target interface{}) *Page {
 	page := &Page{}
 	page.Data = target
 	if err := c.ShouldBindQuery(page); err != nil {
