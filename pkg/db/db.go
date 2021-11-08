@@ -13,6 +13,8 @@ import (
 
 var DB *gorm.DB
 
+var log = logging.New("db")
+
 func Setup() {
 	if DB != nil {
 		return
@@ -24,14 +26,14 @@ func Setup() {
 	} else {
 		dbPath = setting.AppSetting.DatabasePath
 	}
-	logging.Debug("connecting db '%s' ...", dbPath)
+	log.Debug("connecting db '%s' ...", dbPath)
 	DB, err = gorm.Open(sqlite.Open(dbPath), &gorm.Config{
-		Logger: logging.DBLogger,
+		Logger: logging.Gorm(),
 	})
 	if err != nil {
-		logging.Panic("failed to connect database")
+		log.Panic("failed to connect database")
 	}
-	logging.Debug("connected")
+	log.Debug("connected")
 
-	logging.Debug("migrating the schema ...")
+	log.Debug("migrating the schema ...")
 }

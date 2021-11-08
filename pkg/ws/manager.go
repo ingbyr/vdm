@@ -3,7 +3,6 @@ package ws
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/ingbyr/vdm/pkg/logging"
 	"github.com/ingbyr/vdm/pkg/setting"
 	"time"
 )
@@ -28,12 +27,12 @@ func startManager() {
 	for {
 		select {
 		case conn := <-Manager.register:
-			logging.Debug("client %s joined", conn.ID)
+			log.Debug("client %s joined", conn.ID)
 			Manager.clients[conn.ID] = conn
 			synMsg, _ := json.Marshal(&Message{Content: "successful connection to vdm"})
 			conn.Send <- synMsg
 		case conn := <-Manager.unregister:
-			logging.Debug("client %s left", conn.ID)
+			log.Debug("client %s left", conn.ID)
 			if _, ok := Manager.clients[conn.ID]; ok {
 				close(conn.Send)
 				delete(Manager.clients, conn.ID)
@@ -42,7 +41,7 @@ func startManager() {
 			if len(Manager.clients) == 0 {
 				continue
 			}
-			logging.Debug("broadcast msg size: %d", len(msg))
+			log.Debug("broadcast msg size: %d", len(msg))
 			for _, c := range Manager.clients {
 				select {
 				case c.Send <- msg:
@@ -80,7 +79,7 @@ func InvokeHeartbeat() {
 
 func AppendHeartbeatData(group string, id string, data interface{}) {
 	if _, ok := Manager.heartbeatData[group]; !ok {
-		logging.Debug("create heartbeat group: %s", group)
+		log.Debug("create heartbeat group: %s", group)
 		Manager.heartbeatData[group] = make(map[string]interface{})
 	}
 	Manager.heartbeatData[group][id] = data

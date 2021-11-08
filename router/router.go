@@ -16,9 +16,10 @@ import (
 )
 
 func Init() *gin.Engine {
+	logger := logging.Gin()
 	r := gin.New()
-	r.Use(ginzap.Ginzap(logging.GinLogger, time.RFC3339, true))
-	r.Use(ginzap.RecoveryWithZap(logging.GinLogger, true))
+	r.Use(ginzap.Ginzap(logger, time.RFC3339, true))
+	r.Use(ginzap.RecoveryWithZap(logger, true))
 	r.Use(cors.Default())
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	initWsRouter(r)

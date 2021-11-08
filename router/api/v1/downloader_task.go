@@ -13,14 +13,16 @@ import (
 	"github.com/ingbyr/vdm/pkg/r"
 )
 
+var log = logging.New("v1")
+
 func AddDownloadTask(c *gin.Context) {
-	var taskConfig model.DownloaderTaskConfig
+	var taskConfig model.DTaskConfig
 	if err := c.BindJSON(&taskConfig); err != nil {
 		r.Failed(c, e.InvalidParams)
 		return
 	}
-	task := model.NewDownloaderTask(&taskConfig)
-	err := model.DownloaderManager.Download(task)
+	task := model.NewDTask(&taskConfig)
+	err := model.DecManager.Download(task)
 	if err != nil {
 		r.Failed(c, e.Error)
 		return
@@ -31,9 +33,9 @@ func AddDownloadTask(c *gin.Context) {
 }
 
 func GetDownloaderTask(c *gin.Context) {
-	task := &model.DownloaderTask{}
+	task := &model.DTask{}
 	if err := c.ShouldBindQuery(task); err != nil {
-		logging.Panic("get task page failed: %v", err)
+		log.Panic("get task page failed: %v", err)
 	}
 	tx := db.DB.Model(task)
 	if task.Title != "" {
@@ -45,6 +47,6 @@ func GetDownloaderTask(c *gin.Context) {
 		task.Desc = ""
 	}
 	tx.Where(task).Order("status DESC")
-	page := model.PageQuery(c, tx, &[]model.DownloaderTask{})
+	page := model.PageQuery(c, tx, &[]model.DTask{})
 	r.OK(c, page)
 }

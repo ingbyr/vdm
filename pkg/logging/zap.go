@@ -7,46 +7,55 @@ package logging
 import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"gorm.io/gorm/logger"
 	"moul.io/zapgorm2"
 	"os"
 )
 
-var _logger *zap.SugaredLogger
-var GinLogger *zap.Logger
-var DBLogger zapgorm2.Logger
 var LoggerLevel zap.AtomicLevel
+
+var baseLog *zap.Logger
+var sugaredLog *zap.SugaredLogger
 
 func init() {
 	LoggerLevel = zap.NewAtomicLevel()
+	LoggerLevel.SetLevel(zapcore.DebugLevel)
 	config := zap.NewProductionEncoderConfig()
-	GinLogger = zap.New(zapcore.NewCore(
+	baseLog = zap.New(zapcore.NewCore(
 		zapcore.NewJSONEncoder(config),
 		zapcore.Lock(os.Stdout),
 		LoggerLevel,
 	))
-	LoggerLevel.SetLevel(zapcore.DebugLevel)
-	_logger = GinLogger.Sugar()
-	DBLogger = zapgorm2.New(GinLogger)
-	DBLogger.LogLevel = logger.Info
+	sugaredLog = baseLog.Sugar()
 }
 
-func Debug(format string, v ...interface{}) {
-	_logger.Debugf(format, v...)
+func Gin() *zap.Logger {
+	return baseLog.Named("gin")
 }
 
-func Info(format string, v ...interface{}) {
-	_logger.Infof(format, v...)
+func Gorm() zapgorm2.Logger {
+	return zapgorm2.New(baseLog.Named("db"))
 }
 
-func Warn(format string, v ...interface{}) {
-	_logger.Warnf(format, v...)
+func New(name string) *zap.SugaredLogger {
+	return sugaredLog.Named(name)
 }
 
-func Error(format string, v ...interface{}) {
-	_logger.Errorf(format, v...)
-}
-
-func Panic(format string, v ...interface{}) {
-	_logger.Panicf(format, v...)
-}
+//func Debug(format string, v ...interface{}) {
+//	_logger.Debugf(format, v...)
+//}
+//
+//func Info(format string, v ...interface{}) {
+//	_logger.Infof(format, v...)
+//}
+//
+//func Warn(format string, v ...interface{}) {
+//	_logger.Warnf(format, v...)
+//}
+//
+//func Error(format string, v ...interface{}) {
+//	_logger.Errorf(format, v...)
+//}
+//
+//func Panic(format string, v ...interface{}) {
+//	_logger.Panicf(format, v...)
+//}

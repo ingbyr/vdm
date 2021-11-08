@@ -5,9 +5,9 @@
 package model
 
 var (
-	downloaderAnnie = &Annie{
-		downloader: &downloader{
-			DownloaderInfo: &DownloaderInfo{
+	downloaderAnnie = &DecAnnie{
+		decBase: &decBase{
+			DecInfo: &DecInfo{
 				Version:      "not exist",
 				Name:         "annie",
 				ExecutorPath: "not exist",
@@ -19,9 +19,10 @@ var (
 )
 
 func init() {
-	DownloaderManager.Register(downloaderAnnie)
+	DecManager.Register(downloaderAnnie)
 }
 
-type Annie struct {
-	*downloader
+// DecAnnie downloader engine core 'annie'
+type DecAnnie struct {
+	*decBase
 }

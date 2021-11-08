@@ -12,32 +12,35 @@ const (
 	TaskStatusRunning
 )
 
-type DownloaderTaskConfig struct {
+// DTaskConfig download task config
+type DTaskConfig struct {
 	MediaUrl    string `json:"mediaUrl"`
-	Downloader  string `json:"downloader" form:"downloader"`
+	Downloader  string `json:"decBase" form:"decBase"`
 	StoragePath string `json:"storagePath" form:"storagePath"`
 	FormatId    string `json:"formatId"`
 	FormatUrl   string `json:"formatUrl"`
 }
 
-type DownloaderTaskProgress struct {
+// DTaskProgress downloader task progress
+type DTaskProgress struct {
 	Progress string `json:"progress" db:"progress"`
 	Speed    string `json:"speed" db:"speed"`
 }
 
-type DownloaderTask struct {
+// DTask downloader task
+type DTask struct {
 	Model
 	Status int `json:"status" form:"status"`
 	*MediaBaseInfo
-	*DownloaderTaskConfig
-	*DownloaderTaskProgress `gorm:"-"`
+	*DTaskConfig
+	*DTaskProgress `gorm:"-"`
 }
 
-func NewDownloaderTask(taskConfig *DownloaderTaskConfig) *DownloaderTask {
-	return &DownloaderTask{
-		Model:                  NewModel(),
-		Status:                 TaskStatusCreated,
-		DownloaderTaskConfig:   taskConfig,
-		DownloaderTaskProgress: &DownloaderTaskProgress{},
+func NewDTask(taskConfig *DTaskConfig) *DTask {
+	return &DTask{
+		Model:         NewModel(),
+		Status:        TaskStatusCreated,
+		DTaskConfig:   taskConfig,
+		DTaskProgress: &DTaskProgress{},
 	}
 }

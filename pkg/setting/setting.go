@@ -36,13 +36,17 @@ const (
 	DirRuntime = "runtime"
 )
 
-var cfg *ini.File
+var (
+	cfg *ini.File
+
+	log = logging.New("setting")
+)
 
 func Setup() {
 	var err error
 	cfg, err = ini.Load("conf/app.ini")
 	if err != nil {
-		logging.Panic("fail to parse 'conf/app.ini': %v", err)
+		log.Panic("fail to parse 'conf/app.ini': %v", err)
 	}
 
 	loadSection("app", AppSetting)
@@ -56,6 +60,6 @@ func Setup() {
 func loadSection(section string, v interface{}) {
 	err := cfg.Section(section).MapTo(v)
 	if err != nil {
-		logging.Panic("load config section '%s' failed: %v", section, err)
+		log.Panic("load config section '%s' failed: %v", section, err)
 	}
 }

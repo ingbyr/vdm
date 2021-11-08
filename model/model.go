@@ -16,7 +16,7 @@ const (
 	TimeFormat = "2006-01-02 15:04:05"
 )
 
-// Model is a base model for db model
+// Model is a base database model
 type Model struct {
 	ID        snowflake.ID `json:"id" gorm:"primaryKey" form:"id"`
 	CreatedAt JsonTime     `json:"createTime" gorm:"column:created_at" form:"created_at"`
@@ -37,7 +37,7 @@ type JsonTime struct {
 }
 
 func (t *JsonTime) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf(`"%s"`, t.Format(TimeFormat))), nil
+	return []byte( t.Format(TimeFormat)), nil
 }
 
 func (t *JsonTime) UnmarshalJSON(data []byte) error {

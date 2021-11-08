@@ -13,17 +13,17 @@ import (
 )
 
 func GetDownloaderInfo(c *gin.Context) {
-	r.OK(c, model.DownloaderManager.Downloaders)
+	r.OK(c, model.DecManager.Downloaders)
 }
 
 func FetchMediaInfo(c *gin.Context) {
-	var taskConfig model.DownloaderTaskConfig
+	var taskConfig model.DTaskConfig
 	if err := c.BindJSON(&taskConfig); err != nil {
 		r.Failed(c, e.InvalidParams)
 		return
 	}
-	task := model.NewDownloaderTask(&taskConfig)
-	formats, errC := model.DownloaderManager.FetchMediaInfo(task)
+	task := model.NewDTask(&taskConfig)
+	formats, errC := model.DecManager.FetchMediaInfo(task)
 	if errC != e.Ok {
 		r.Failed(c, errC)
 		return

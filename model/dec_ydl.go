@@ -22,9 +22,9 @@ const (
 )
 
 var (
-	youtubedl = &Youtubedl{
-		downloader: &downloader{
-			DownloaderInfo: &DownloaderInfo{
+	decYdl = &DecYdl{
+		decBase: &decBase{
+			DecInfo: &DecInfo{
 				Version:      "local",
 				Name:         "youtube-dl",
 				ExecutorPath: platform.DownloaderYoutubedlExecutorPath,
@@ -39,25 +39,26 @@ var (
 )
 
 func init() {
-	DownloaderManager.Register(youtubedl)
+	DecManager.Register(decYdl)
 }
 
-type Youtubedl struct {
-	*downloader
+// DecYdl downloader engine core 'youtube-dl'
+type DecYdl struct {
+	*decBase
 	mediaNameTemplate string
 	regSpeed          *regexp.Regexp
 	regProgress       *regexp.Regexp
 }
 
-func (y *Youtubedl) FetchMediaInfo(task *DownloaderTask) (*MediaInfo, error) {
-	y.reset()
-	y.CmdArgs.addCmdFlag(task.MediaUrl)
-	y.CmdArgs.addCmdFlag(FlagDumpJson)
-	output, err := y.ExecCmd()
+func (ydl *DecYdl) FetchMediaInfo(task *DTask) (*MediaInfo, error) {
+	ydl.reset()
+	ydl.CmdArgs.addCmdFlag(task.MediaUrl)
+	ydl.CmdArgs.addCmdFlag(FlagDumpJson)
+	output, err := ydl.ExecCmd()
 	if err != nil {
 		return nil, err
 	}
-	var yMediaInfo YoutubedlMediaInfo
+	var yMediaInfo YdlMediaInfo
 	err = json.Unmarshal(output, &yMediaInfo)
 	if err != nil {
 		return nil, err
@@ -67,26 +68,26 @@ func (y *Youtubedl) FetchMediaInfo(task *DownloaderTask) (*MediaInfo, error) {
 	return mediaInfo, nil
 }
 
-func (y *Youtubedl) Download(task *DownloaderTask) {
-	y.reset()
-	y.addCmdFlag(task.MediaUrl)
-	y.addCmdFlag(FlagNewLineOutput)
-	y.addCmdFlag(FlagNoColor)
-	y.addCmdFlagValue(FlagOutput, y.getStoragePath(task.StoragePath))
+func (ydl *DecYdl) Download(task *DTask) {
+	ydl.reset()
+	ydl.addCmdFlag(task.MediaUrl)
+	ydl.addCmdFlag(FlagNewLineOutput)
+	ydl.addCmdFlag(FlagNoColor)
+	ydl.addCmdFlagValue(FlagOutput, ydl.getStoragePath(task.StoragePath))
 	if task.FormatId != "" {
-		y.addCmdFlagValue(FlagFormat, task.FormatId)
+		ydl.addCmdFlagValue(FlagFormat, task.FormatId)
 	}
-	ws.AppendHeartbeatData(HeartbeatDataTaskProgressGroup, task.ID.String(), task.DownloaderTaskProgress)
-	y.ExecCmdLong(task,
-		y.downloaderTaskUpdateHandler,
-		y.downloadTaskFinalHandler,
-		y.downloadTaskErrorHandler)
+	ws.AppendHeartbeatData(HeartbeatDataTaskProgressGroup, task.ID.String(), task.DTaskProgress)
+	ydl.ExecCmdLong(task,
+		ydl.downloaderTaskUpdateHandler,
+		ydl.downloadTaskFinalHandler,
+		ydl.downloadTaskErrorHandler)
 }
 
-func (y *Youtubedl) downloaderTaskUpdateHandler(_task interface{}, line string) {
-	task := _task.(*DownloaderTask)
+func (ydl *DecYdl) downloaderTaskUpdateHandler(_task interface{}, line string) {
+	task := _task.(*DTask)
 	// update progress
-	progressStr := y.regProgress.FindString(line)
+	progressStr := ydl.regProgress.FindString(line)
 	if progressStr != "" {
 		task.Progress = progressStr[:len(progressStr)-1]
 	}
@@ -98,11 +99,11 @@ func (y *Youtubedl) downloaderTaskUpdateHandler(_task interface{}, line string) 
 	}
 
 	// update speed
-	task.Speed = y.regSpeed.FindString(line)
+	task.Speed = ydl.regSpeed.FindString(line)
 }
 
-func (y *Youtubedl) downloadTaskFinalHandler(_task interface{}) {
-	task := _task.(*DownloaderTask)
+func (ydl *DecYdl) downloadTaskFinalHandler(_task interface{}) {
+	task := _task.(*DTask)
 	if task.Status == TaskStatusRunning {
 		task.Status = TaskStatusPaused
 	}
@@ -110,34 +111,34 @@ func (y *Youtubedl) downloadTaskFinalHandler(_task interface{}) {
 	ws.RemoveHeartbeatData(HeartbeatDataTaskProgressGroup, task.ID)
 }
 
-func (y *Youtubedl) downloadTaskErrorHandler(_task interface{}, err string) {
-	task := _task.(*DownloaderTask)
+func (ydl *DecYdl) downloadTaskErrorHandler(_task interface{}, err string) {
+	task := _task.(*DTask)
 	task.Status = TaskStatusError
 }
 
-func (y *Youtubedl) getStoragePath(storagePath string) string {
+func (ydl *DecYdl) getStoragePath(storagePath string) string {
 	pathSeparator := string(os.PathSeparator)
 	if strings.HasSuffix(storagePath, pathSeparator) {
-		return storagePath + y.mediaNameTemplate
+		return storagePath + ydl.mediaNameTemplate
 	}
-	return storagePath + pathSeparator + y.mediaNameTemplate
+	return storagePath + pathSeparator + ydl.mediaNameTemplate
 }
 
-func (y *Youtubedl) reset() {
-	y.CmdArgs = NewCmdArgs()
+func (ydl *DecYdl) reset() {
+	ydl.CmdArgs = NewCmdArgs()
 }
 
-type YoutubedlMediaInfo struct {
+type YdlMediaInfo struct {
 	Title     string                  `json:"title,omitempty"`
 	FullTitle string                  `json:"fullTitle,omitempty"`
-	Desc      string                  `json:"description,omitempty"`
-	Formats   []*youtubedlMediaFormat `json:"formats,omitempty"`
+	Desc      string            `json:"description,omitempty"`
+	Formats   []*ydlMediaFormat `json:"formats,omitempty"`
 }
 
-func (yMediaInfo *YoutubedlMediaInfo) toMediaInfo() *MediaInfo {
-	yFormats := yMediaInfo.Formats
+func (yi *YdlMediaInfo) toMediaInfo() *MediaInfo {
+	yFormats := yi.Formats
 	formats := make([]*MediaFormat, 0, len(yFormats))
-	for _, yFormat := range yMediaInfo.Formats {
+	for _, yFormat := range yi.Formats {
 		formats = append(formats, &MediaFormat{
 			Format:   yFormat.Format,
 			Id:       yFormat.FormatId,
@@ -148,14 +149,14 @@ func (yMediaInfo *YoutubedlMediaInfo) toMediaInfo() *MediaInfo {
 	}
 	return &MediaInfo{
 		MediaBaseInfo: &MediaBaseInfo{
-			Title: yMediaInfo.Title,
-			Desc:  yMediaInfo.Desc,
+			Title: yi.Title,
+			Desc:  yi.Desc,
 		},
 		Formats: formats,
 	}
 }
 
-type youtubedlMediaFormat struct {
+type ydlMediaFormat struct {
 	Format   string `json:"format,omitempty"`
 	FormatId string `json:"format_id,omitempty"`
 	Url      string `json:"url,omitempty"`

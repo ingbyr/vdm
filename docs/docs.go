@@ -52,7 +52,7 @@ type swaggerInfo struct {
 	Description string
 }
 
-// SwaggerInfo holds exported Swagger DownloaderInfo so clients can modify it
+// SwaggerInfo holds exported Swagger DecInfo so clients can modify it
 var SwaggerInfo = swaggerInfo{
 	Version:     "",
 	Host:        "",

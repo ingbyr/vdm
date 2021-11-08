@@ -8,7 +8,6 @@ import (
 	"bufio"
 	"bytes"
 	"context"
-	"github.com/ingbyr/vdm/pkg/logging"
 	"io"
 	"os/exec"
 	"sync"
@@ -25,80 +24,81 @@ func SetupDownloader(ctx context.Context) {
 	cmdCtx = ctx
 }
 
-type Downloader interface {
+// Dec downloader engine core
+type Dec interface {
 	GetName() string
 	GetVersion() string
 	GetExecutorPath() string
-	Download(task *DownloaderTask)
-	FetchMediaInfo(task *DownloaderTask) (*MediaInfo, error)
+	Download(task *DTask)
+	FetchMediaInfo(task *DTask) (*MediaInfo, error)
 	IsValid() bool
 	SetValid(valid bool)
 }
 
-type DownloaderInfo struct {
+type DecInfo struct {
 	Version      string `json:"version"`
 	Name         string `json:"name"`
 	ExecutorPath string `json:"executorPath"`
 }
 
-func (di *DownloaderInfo) GetName() string {
+func (di *DecInfo) GetName() string {
 	return di.Name
 }
 
-func (di *DownloaderInfo) GetVersion() string {
+func (di *DecInfo) GetVersion() string {
 	return di.Version
 }
 
-func (di *DownloaderInfo) GetExecutorPath() string {
+func (di *DecInfo) GetExecutorPath() string {
 	return di.ExecutorPath
 }
 
-type downloader struct {
-	*DownloaderInfo
+type decBase struct {
+	*DecInfo
 	CmdArgs
 	Valid bool `json:"valid"`
 }
 
-func (d *downloader) Download(task *DownloaderTask) {
-	panic("can't use base downloader")
+func (d *decBase) Download(task *DTask) {
+	panic("can't use base decBase")
 }
 
-func (d *downloader) FetchMediaInfo(task *DownloaderTask) (*MediaInfo, error) {
-	panic("can't use base downloader")
+func (d *decBase) FetchMediaInfo(task *DTask) (*MediaInfo, error) {
+	panic("can't use base decBase")
 }
 
-func (d *downloader) IsValid() bool {
+func (d *decBase) IsValid() bool {
 	return d.Valid
 }
 
-func (d *downloader) SetValid(valid bool) {
+func (d *decBase) SetValid(valid bool) {
 	d.Valid = valid
 }
 
-func (d *downloader) ExecCmd() ([]byte, error) {
+func (d *decBase) ExecCmd() ([]byte, error) {
 	cmd := exec.Command(d.ExecutorPath, d.toCmdStrSlice()...)
-	logging.Debug("exec args: %v", cmd.Args)
+	log.Debug("exec args: %v", cmd.Args)
 	var stderr bytes.Buffer
 	var stdout bytes.Buffer
 	cmd.Stderr = &stderr
 	cmd.Stdout = &stdout
 	err := cmd.Run()
 	if err != nil {
-		logging.Error("exec error: %v", err)
+		log.Error("exec error: %v", err)
 		return stderr.Bytes(), err
 	}
-	logging.Debug("output: %s", stdout.String())
+	log.Debug("output: %s", stdout.String())
 	return stdout.Bytes(), nil
 }
 
-func (d *downloader) ExecCmdLong(
+func (d *decBase) ExecCmdLong(
 	data interface{},
 	stepHandler func(data interface{}, line string),
 	finalHandler func(data interface{}),
 	errorHandler func(data interface{}, err string)) {
 
 	cmd := exec.Command(d.ExecutorPath, d.toCmdStrSlice()...)
-	logging.Debug("exec cmd args: %s", cmd.Args)
+	log.Debug("exec cmd args: %s", cmd.Args)
 	stdOutput := make(chan string)
 	errOutput := make(chan string)
 	cmdSubCtx, cancel := context.WithCancel(cmdCtx)
@@ -109,13 +109,13 @@ func (d *downloader) ExecCmdLong(
 		for {
 			select {
 			case out := <-stdOutput:
-				logging.Debug("stdout: %s", out)
+				log.Debug("stdout: %s", out)
 				stepHandler(data, out)
 			case err := <-errOutput:
-				logging.Error("stderr: %s", err)
+				log.Error("stderr: %s", err)
 				errorHandler(data, err)
 			case <-cmdSubCtx.Done():
-				logging.Debug("finished to exec cmd")
+				log.Debug("finished execution")
 				return
 			}
 		}
@@ -160,9 +160,9 @@ func readCmdPipe(wg *sync.WaitGroup, ctx context.Context, cmd *exec.Cmd, pipe io
 		select {
 		case <-ctx.Done():
 			if err := cmd.Process.Kill(); err != nil {
-				logging.Error("failed to stop process: %v", err)
+				log.Error("failed to stop process: %v", err)
 			}
-			logging.Debug("stop process: %v", cmd.Process.Pid)
+			log.Debug("stop process: %v", cmd.Process.Pid)
 			break
 		default:
 			output <- scanner.Text()

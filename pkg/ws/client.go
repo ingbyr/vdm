@@ -7,6 +7,8 @@ import (
 	"net/http"
 )
 
+var log = logging.New("ws")
+
 type Client struct {
 	ID     string
 	Socket *websocket.Conn
@@ -40,7 +42,7 @@ func (c *Client) Read() {
 			c.Socket.Close()
 			break
 		}
-		logging.Debug("Recv msg from Client %s: %s", c.ID, string(msg))
+		log.Debug("Recv msg from Client %s: %s", c.ID, string(msg))
 	}
 }
 
@@ -57,7 +59,7 @@ func (c *Client) Write() {
 				Manager.unregister <- c
 				return
 			}
-			logging.Debug("client %s send msg: %s", c.ID, string(msg))
+			log.Debug("client %s send msg: %s", c.ID, string(msg))
 			c.Socket.WriteMessage(websocket.TextMessage, msg)
 		}
 	}

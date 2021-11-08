@@ -5,21 +5,25 @@
 package model
 
 import (
+	"context"
 	"fmt"
 	"testing"
 )
 
 const mediaUrl = "https://www.bilibili.com/video/BV1q64y147nh"
 
+
+
 func TestYoutubedl_FetchMediaSimulateJson(t *testing.T) {
-	task := NewDownloaderTask(&DownloaderTaskConfig{MediaUrl: mediaUrl})
-	data, err := youtubedl.FetchMediaInfo(task)
+	task := NewDTask(&DTaskConfig{MediaUrl: mediaUrl})
+	data, err := decYdl.FetchMediaInfo(task)
 	fmt.Printf("err: %v, data: %+v\n", err, data)
 }
 
 func TestYoutubedl_Download(t *testing.T) {
-	task := NewDownloaderTask(&DownloaderTaskConfig{MediaUrl: mediaUrl})
-	youtubedl.Download(task)
+	SetupDownloader(context.Background())
+	task := NewDTask(&DTaskConfig{MediaUrl: mediaUrl})
+	decYdl.Download(task)
 }
 
 func TestYoutubedl_ParseDownloadOutput(t *testing.T) {
@@ -31,13 +35,13 @@ func TestYoutubedl_ParseDownloadOutput(t *testing.T) {
 		"[execAsync] 100% of 41.53MiB in 00:48",
 		"[execAsync] ./runtime/demo.mp4 has already been downloaded and merged",
 	}
-	task := NewDownloaderTask(&DownloaderTaskConfig{})
+	task := NewDTask(&DTaskConfig{})
 	for i, o := range output {
-		youtubedl.downloaderTaskUpdateHandler(task, o)
-		fmt.Printf("%d %+v\n", i, task.DownloaderTaskProgress)
+		decYdl.downloaderTaskUpdateHandler(task, o)
+		fmt.Printf("%d %+v\n", i, task.DTaskProgress)
 	}
 }
 
 func TestYoutubedl_GenerateStoragePath(t *testing.T) {
-	fmt.Println(youtubedl.getStoragePath("./runtime"))
+	fmt.Println(decYdl.getStoragePath("./runtime"))
 }
