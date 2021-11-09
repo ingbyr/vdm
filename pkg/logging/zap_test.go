@@ -10,8 +10,8 @@ import (
 )
 
 func TestZap(t *testing.T) {
-	LoggerLevel.SetLevel(zapcore.DebugLevel)
+	atom.SetLevel(zapcore.DebugLevel)
 	Debug("debug msg %v", 123)
-	LoggerLevel.SetLevel(zapcore.InfoLevel)
-	Debug("debug msg with info level")
+	atom.SetLevel(zapcore.InfoLevel)
+	Debug("debug msg with info atom")
 }

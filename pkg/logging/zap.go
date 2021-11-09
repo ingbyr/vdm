@@ -11,35 +11,42 @@ import (
 	"os"
 )
 
-var LoggerLevel zap.AtomicLevel
+var atom zap.AtomicLevel
 
-var baseLog *zap.Logger
-var sugaredLog *zap.SugaredLogger
+var base *zap.Logger
+var sugared *zap.SugaredLogger
 
 func init() {
-	logLevel := zap.NewAtomicLevel()
-	// TODO set from config file
-	logLevel.SetLevel(zap.DebugLevel)
+	atom = zap.NewAtomicLevel()
 	encoderCfg := zap.NewProductionEncoderConfig()
-	baseLog = zap.New(
+	base = zap.New(
 		zapcore.NewCore(
 			zapcore.NewJSONEncoder(encoderCfg),
 			zapcore.Lock(os.Stdout),
-			logLevel),
+			atom),
 		zap.AddCaller(),
 	)
-	defer baseLog.Sync()
-	sugaredLog = baseLog.Sugar()
+	defer base.Sync()
+	sugared = base.Sugar()
+}
+
+func SetLevel(level string) {
+	var newLevel zapcore.Level
+	err := newLevel.Set(level)
+	if err != nil {
+		panic("unavailable log atom: " + level)
+	}
+	atom.SetLevel(newLevel)
 }
 
 func Gin() *zap.Logger {
-	return baseLog.Named("gin")
+	return base.Named("gin")
 }
 
 func Gorm() zapgorm2.Logger {
-	return zapgorm2.New(baseLog.Named("db"))
+	return zapgorm2.New(base.Named("db"))
 }
 
 func New(name string) *zap.SugaredLogger {
-	return sugaredLog.Named(name)
+	return sugared.Named(name)
 }

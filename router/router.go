@@ -29,10 +29,10 @@ func initWsRouter(r *gin.Engine) {
 
 func initApiV1(r *gin.Engine) {
 	apiGroup := r.Group("/api")
-	apiv1 := apiGroup.Group("/apiv1")
+	apiv1 := apiGroup.Group("/v1")
 
-	apiv1.GET("/engine", v1.GetEngineInfo)
+	apiv1.GET("/engines", v1.GetEngines)
 	apiv1.POST("/media/info/fetch", v1.FetchMediaInfo)
 	apiv1.POST("/media/download", v1.DownloadMedia)
-	apiv1.GET("/task", v1.GetDownloadTasks)
+	apiv1.GET("/tasks", v1.GetDownloadTasks)
 }

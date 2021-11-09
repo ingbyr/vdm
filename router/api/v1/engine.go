@@ -15,7 +15,7 @@ import (
 	"github.com/ingbyr/vdm/pkg/r"
 )
 
-func GetEngineInfo(c *gin.Context) {
+func GetEngines(c *gin.Context) {
 	r.OK(c, engine.Manager.Engines)
 }
 

@@ -27,17 +27,21 @@ var log = logging.New("server")
 
 func setup() (context.Context, context.CancelFunc) {
 	ctx, cancel := context.WithCancel(context.Background())
+
 	setting.Setup()
 	ws.Setup(ctx)
 	db.Setup()
 	engine.Setup(ctx, cancel)
 	schema.Setup()
+
+	gin.SetMode(setting.ServerSetting.RunMode)
+	logging.SetLevel(setting.LogSetting.Level)
+
 	return ctx, cancel
 }
 
 func run() {
 	_, cancel := setup()
-	gin.SetMode(setting.ServerSetting.RunMode)
 	handler := router.Init()
 	readTimeout := setting.ServerSetting.ReadTimeout
 	writeTimeout := setting.ServerSetting.WriteTimeout
@@ -66,7 +70,7 @@ func run() {
 	quit := make(chan os.Signal)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
-	log.Info("shutting down vdm...")
+	log.Info("shutting down vdm")
 
 	// stop running goroutines
 	cancel()
