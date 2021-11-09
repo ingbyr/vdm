@@ -8,6 +8,7 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"github.com/ingbyr/vdm/model/media"
 	"github.com/ingbyr/vdm/model/task"
@@ -23,7 +24,7 @@ const (
 )
 
 var (
-	log    = logging.New("engine")
+	log    = logging.New("config")
 	ctx    context.Context
 	cancel context.CancelFunc
 )
@@ -35,53 +36,41 @@ func Setup(globalCtx context.Context, globalCancel context.CancelFunc) {
 
 // Engine is media downloader
 type Engine interface {
-	GetName() string
-	GetVersion() string
-	GetExecutorPath() string
-	Download(task *task.DTask)
+	Config() *config
 	FetchMediaInfo(task *task.MTask) (*media.Info, error)
-	IsValid() bool
-	SetValid(valid bool)
+	DownloadMedia(task *task.DTask)
 }
 
 type engine struct {
-	Version      string `json:"version"`
-	Name         string `json:"name"`
-	ExecutorPath string `json:"executorPath"`
-	Valid        bool   `json:"valid"`
+	config
 	*opts
 }
 
-func (e *engine) GetName() string {
-	return e.Name
-}
-
-func (e *engine) GetVersion() string {
-	return e.Version
-}
-
-func (e *engine) GetExecutorPath() string {
-	return e.ExecutorPath
-}
-
-func (e *engine) Download(task *task.DTask) {
-	panic("can't use base decBase")
+func (e *engine) Config() *config {
+	return &e.config
 }
 
 func (e *engine) FetchMediaInfo(task *task.MTask) (*media.Info, error) {
 	panic("can't use base decBase")
 }
 
-func (e *engine) IsValid() bool {
-	return e.Valid
+func (e *engine) DownloadMedia(task *task.DTask) {
+	panic("can't use base decBase")
 }
 
-func (e *engine) SetValid(valid bool) {
-	e.Valid = valid
+func (e *engine) ExecCmd(res interface{}) error {
+	output, err := ExecCmd(e.Config().ExecutorPath, e.CmdArgs()...)
+	if err != nil {
+		return err
+	}
+	if err = json.Unmarshal(output, res); err != nil {
+		return err
+	}
+	return nil
 }
 
-func (e *engine) ExecCmd() ([]byte, error) {
-	cmd := exec.Command(e.ExecutorPath, e.toCmdStrSlice()...)
+func ExecCmd(cmdName string, cmdArgs ...string) ([]byte, error) {
+	cmd := exec.Command(cmdName, cmdArgs...)
 	log.Debugw("exec cmd", "cmd", cmd.Args)
 	var stderr bytes.Buffer
 	var stdout bytes.Buffer
@@ -97,27 +86,29 @@ func (e *engine) ExecCmd() ([]byte, error) {
 	return stdout.Bytes(), nil
 }
 
-type StepHandler = func(data interface{}, line string)
-type FinalHandler = func(data interface{})
-type ErrorHandler = func(data interface{}, err string)
+type CmdCallback struct {
+	OnNewLine func(line string)
+	OnError   func(err string)
+	OnExit    func()
+}
 
-func (e *engine) ExecCmdLong(data interface{}, stepHandler StepHandler, finalHandler FinalHandler, errorHandler ErrorHandler) {
-	cmd := exec.Command(e.ExecutorPath, e.toCmdStrSlice()...)
+func (c *config) ExecCmdLong(callback CmdCallback, cmdName string, cmdArgs ...string) {
+	cmd := exec.Command(cmdName, cmdArgs...)
 	log.Debug("exec cmd args: %s", cmd.Args)
 	stdOutput := make(chan string)
 	errOutput := make(chan string)
 
 	// read output
 	go func() {
-		defer finalHandler(data)
+		defer callback.OnExit()
 		for {
 			select {
 			case out := <-stdOutput:
 				log.Debug("stdout: %s", out)
-				stepHandler(data, out)
+				callback.OnNewLine(out)
 			case err := <-errOutput:
 				log.Error("stderr: %s", err)
-				errorHandler(data, err)
+				callback.OnError(err)
 			case <-ctx.Done():
 				log.Debug("finished execution")
 				return
@@ -129,7 +120,9 @@ func (e *engine) ExecCmdLong(data interface{}, stepHandler StepHandler, finalHan
 	go execCmdLong(ctx, cancel, cmd, stdOutput, errOutput)
 }
 
-func execCmdLong(ctx context.Context, cancel context.CancelFunc, cmd *exec.Cmd, stdoutC chan<- string, stderrC chan<- string) {
+func execCmdLong(ctx context.Context, cancel context.CancelFunc, cmd *exec.Cmd,
+	stdoutC chan<- string, stderrC chan<- string) {
+
 	defer close(stdoutC)
 	defer close(stderrC)
 	defer cancel()

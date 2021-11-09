@@ -1,3 +1,4 @@
+//go:build linux || darwin
 // +build linux darwin
 
 package platform
@@ -8,6 +9,5 @@ import (
 )
 
 var (
-	EngineYtdlExecutorPath = filepath.Join(setting.DirRuntime, "engine","youtube-dl")
+	EngineYtdlExecutorPath = filepath.Join(setting.DirRuntime, setting.DirEngine, "yt-dlp_macos")
 )
-

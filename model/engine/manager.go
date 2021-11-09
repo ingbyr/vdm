@@ -23,15 +23,15 @@ type manager struct {
 }
 
 func register(engine Engine) {
-	if _, err := exec.LookPath(engine.GetExecutorPath()); err != nil {
-		engine.SetValid(false)
-		log.Warnf("engine '%s' is not valid because '%s' not found", engine.GetName(), engine.GetExecutorPath())
+	if _, err := exec.LookPath(engine.Config().ExecutorPath); err != nil {
+		engine.Config().Valid = false
+		log.Warnf("config '%s' is not Valid because '%s' not found", engine.Config().Name, engine.Config().ExecutorPath)
 	}
-	Manager.Engines[engine.GetName()] = engine
+	Manager.Engines[engine.Config().Name] = engine
 }
 
 func (m *manager) Enabled(engine Engine) bool {
-	_, ok := m.Engines[engine.GetName()]
+	_, ok := m.Engines[engine.Config().Name]
 	return ok
 }
 
@@ -40,14 +40,14 @@ func (m *manager) Download(task *task.DTask) error {
 	if !ok {
 		return errors.New(fmt.Sprintf("decBase '%s' not found or is disabled", task.Downloader))
 	}
-	engine.Download(task)
+	engine.DownloadMedia(task)
 	return nil
 }
 
 func (m *manager) FetchMediaInfo(task *task.MTask) (*media.Info, error) {
 	engine, ok := m.Engines[task.Engine]
 	if !ok {
-		return nil, errors.New("not found engine")
+		return nil, errors.New("not found config")
 	}
 	return engine.FetchMediaInfo(task)
 }

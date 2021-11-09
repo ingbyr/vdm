@@ -5,7 +5,6 @@
 package engine
 
 import (
-	"encoding/json"
 	"github.com/ingbyr/vdm/model/media"
 	"github.com/ingbyr/vdm/model/platform"
 	"github.com/ingbyr/vdm/model/task"
@@ -26,10 +25,13 @@ const (
 var (
 	_ytdl = &ytdl{
 		engine: engine{
-			Version:      "local",
-			Name:         "youtube-dl",
-			ExecutorPath: platform.EngineYtdlExecutorPath,
-			Valid:        true,
+			config: config{
+				Version:      "local",
+				Name:         "youtube-dl",
+				ExecutorPath: platform.EngineYtdlExecutorPath,
+				Valid:        true,
+			},
+			opts: nil,
 		},
 		mediaNameTemplate: "%(title)s.%(ext)s",
 		regSpeed:          regexp.MustCompile("\\d+\\.?\\d*\\w+/s"),
@@ -41,7 +43,7 @@ func init() {
 	register(_ytdl)
 }
 
-// ytdl downloader engine core 'youtube-dl'
+// ytdl downloader config core 'youtube-dl'
 type ytdl struct {
 	engine
 	mediaNameTemplate string
@@ -53,21 +55,15 @@ func (y *ytdl) FetchMediaInfo(task *task.MTask) (*media.Info, error) {
 	y.reset()
 	y.addCmdFlag(task.MediaUrl)
 	y.addCmdFlag(OptDumpJson)
-	output, err := y.ExecCmd()
-	if err != nil {
-		return nil, err
-	}
-	ytdlMediaInfo := new(YtdlMediaInfo)
-	err = json.Unmarshal(output, ytdlMediaInfo)
-	if err != nil {
+	mediaInfo := new(YtdlMediaInfo)
+	if err := y.ExecCmd(mediaInfo); err != nil {
 		return nil, err
 	}
 	// TODO use interface
-	mediaInfo := ytdlMediaInfo.toMediaInfo()
-	return mediaInfo, nil
+	return mediaInfo.toMediaInfo(), nil
 }
 
-func (y *ytdl) Download(task *task.DTask) {
+func (y *ytdl) DownloadMedia(task *task.DTask) {
 	y.reset()
 	y.addCmdFlag(task.MediaUrl)
 	y.addCmdFlag(OptNewLineOutput)
@@ -77,10 +73,11 @@ func (y *ytdl) Download(task *task.DTask) {
 		y.addCmdFlagValue(OptFormat, task.FormatId)
 	}
 	ws.AppendHeartbeatData(HeartbeatDataTaskProgressGroup, task.ID.String(), task.Progress)
-	y.ExecCmdLong(task,
-		y.downloaderTaskUpdateHandler,
-		y.downloadTaskFinalHandler,
-		y.downloadTaskErrorHandler)
+	// TODO
+	//y.ExecCmdLong(task,
+	//	y.downloaderTaskUpdateHandler,
+	//	y.downloadTaskFinalHandler,
+	//	y.downloadTaskErrorHandler)
 }
 
 func (y *ytdl) downloaderTaskUpdateHandler(_task interface{}, line string) {

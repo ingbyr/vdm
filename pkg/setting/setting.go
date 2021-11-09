@@ -34,6 +34,7 @@ var (
 
 const (
 	DirRuntime = "runtime"
+	DirEngine  = "engine"
 )
 
 var (
@@ -51,7 +52,7 @@ func Setup() {
 
 	loadSection("app", AppSetting)
 	loadSection("server", ServerSetting)
-	loadSection("log", &LogSetting)
+	loadSection("log", LogSetting)
 
 	ServerSetting.ReadTimeout = ServerSetting.ReadTimeout * time.Second
 	ServerSetting.WriteTimeout = ServerSetting.WriteTimeout * time.Second

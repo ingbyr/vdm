@@ -6,21 +6,24 @@ package engine
 
 import (
 	"fmt"
-	task2 "github.com/ingbyr/vdm/model/task"
+	"github.com/ingbyr/vdm/model/task"
 	"testing"
 )
 
 const mediaUrl = "https://www.bilibili.com/video/BV1q64y147nh"
 
 func TestYoutubedl_FetchMediaSimulateJson(t *testing.T) {
-	task := task2.NewDTask(task2.Config{MediaUrl: mediaUrl})
-	data, err := _ytdl.FetchMediaInfo(task)
+	ts := &task.MTask{
+		Engine:   "youtube-dl",
+		MediaUrl: mediaUrl,
+	}
+	_ytdl.ExecutorPath = "../../" + _ytdl.ExecutorPath
+	data, err := _ytdl.FetchMediaInfo(ts)
 	fmt.Printf("err: %v, data: %+v\n", err, data)
 }
 
 func TestYoutubedl_Download(t *testing.T) {
-	task := task2.NewDTask(task2.Config{MediaUrl: mediaUrl})
-	_ytdl.Download(task)
+
 }
 
 func TestYoutubedl_ParseDownloadOutput(t *testing.T) {
@@ -32,10 +35,10 @@ func TestYoutubedl_ParseDownloadOutput(t *testing.T) {
 		"[execAsync] 100% of 41.53MiB in 00:48",
 		"[execAsync] ./runtime/demo.mp4 has already been downloaded and merged",
 	}
-	task := task2.NewDTask(task2.Config{})
+	_task := task.NewDTask(task.Config{})
 	for i, o := range output {
-		_ytdl.downloaderTaskUpdateHandler(task, o)
-		fmt.Printf("%d %+v\n", i, task.Progress)
+		_ytdl.downloaderTaskUpdateHandler(_task, o)
+		fmt.Printf("%d %+v\n", i, _task.Progress)
 	}
 }
 

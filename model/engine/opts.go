@@ -27,7 +27,7 @@ func (c *opts) addCmdFlagValue(flag string, value string) {
 	c.args[flag] = value
 }
 
-func (c *opts) toCmdStrSlice() []string {
+func (c *opts) CmdArgs() []string {
 	return strings.Split(c.toCmdStr(), " ")
 }
 

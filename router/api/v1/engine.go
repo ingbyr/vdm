@@ -25,6 +25,7 @@ func FetchMediaInfo(c *gin.Context) {
 		r.F(c, e.InvalidParams)
 		return
 	}
+	// TODO set timeout
 	res, err := engine.Manager.FetchMediaInfo(mtask)
 	if err != nil {
 		r.FE(c, e.FetchMediaInfoError, err)

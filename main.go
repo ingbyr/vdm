@@ -42,23 +42,18 @@ func setup() (context.Context, context.CancelFunc) {
 
 func run() {
 	_, cancel := setup()
-	handler := router.Init()
-	readTimeout := setting.ServerSetting.ReadTimeout
-	writeTimeout := setting.ServerSetting.WriteTimeout
-	endPoint := fmt.Sprintf(":%d", setting.ServerSetting.HttpPort)
-	maxHeaderBytes := 1 << 20
 
 	srv := &http.Server{
-		Addr:           endPoint,
-		Handler:        handler,
-		ReadTimeout:    readTimeout,
-		WriteTimeout:   writeTimeout,
-		MaxHeaderBytes: maxHeaderBytes,
+		Addr:           fmt.Sprintf(":%d", setting.ServerSetting.HttpPort),
+		Handler:        router.Init(),
+		ReadTimeout:    setting.ServerSetting.ReadTimeout,
+		WriteTimeout:   setting.ServerSetting.WriteTimeout,
+		MaxHeaderBytes: 1 << 20,
 	}
 
 	// start vdm server
 	go func() {
-		log.Infow("start server", "port", endPoint)
+		log.Infow("start server", "port", srv.Addr)
 		if err := srv.ListenAndServe(); err != nil {
 			if !errors.Is(err, http.ErrServerClosed) {
 				log.Panic("server error", err)
@@ -70,7 +65,7 @@ func run() {
 	quit := make(chan os.Signal)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
-	log.Info("shutting down vdm")
+	log.Info("shutting down")
 
 	// stop running goroutines
 	cancel()
@@ -80,7 +75,7 @@ func run() {
 	defer cancelWait()
 
 	if err := srv.Shutdown(ctxWait); err != nil {
-		log.Panic("vdm forced to shutdown:", err)
+		log.Panic("forced to shutdown:", err)
 	}
 
 	log.Info("exit")
