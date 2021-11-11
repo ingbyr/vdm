@@ -5,23 +5,25 @@
 package ytdl
 
 import (
+	"encoding/json"
 	"github.com/ingbyr/vdm/app/engine"
+	"github.com/ingbyr/vdm/app/exec"
 	"github.com/ingbyr/vdm/app/media"
 	"github.com/ingbyr/vdm/app/task"
 	"github.com/ingbyr/vdm/pkg/logging"
 	"github.com/ingbyr/vdm/pkg/ws"
-	"os"
+	"path"
 	"regexp"
 	"strings"
 )
 
 const (
-	EngineName  = "youtube-dl"
-	cmdNoColor  = "--no-color"
-	cmdDumpJson = "--dump-json"
-	cmdNewLine  = "--newline"
-	cmdOutput   = "--output"
-	cmdFormat   = "--format"
+	name        = "youtube-dl"
+	argNoColor  = "--no-color"
+	argDumpJson = "--dump-json"
+	argNewLine  = "--newline"
+	argOutput   = "--output"
+	argFormat   = "--format"
 )
 
 var (
@@ -29,7 +31,7 @@ var (
 	_ytdl = &ytdl{
 		Base: engine.Base{
 			Version:      "local",
-			Name:         EngineName,
+			Name:         name,
 			ExecutorPath: executorPath,
 			Valid:        true,
 		},
@@ -40,7 +42,7 @@ var (
 )
 
 func init() {
-	log.Infow("register engine", "engine", EngineName)
+	log.Infow("register engine", "engine", name)
 	engine.Register(_ytdl)
 }
 
@@ -52,74 +54,76 @@ type ytdl struct {
 	regProgress       *regexp.Regexp
 }
 
-func (y *ytdl) Copy() *ytdl {
-	return nil
-}
-
 func (y *ytdl) FetchMediaInfo(task *task.MTask) (*media.Media, error) {
-	cmdArgs := y.NewCmdArgs()
-	cmdArgs.Add(task.MediaUrl)
-	cmdArgs.Add(cmdDumpJson)
+	execArgs := exec.NewArgs()
+	execArgs.Add(task.MediaUrl)
+	execArgs.Add(argDumpJson)
 	mediaInfo := new(MediaInfo)
-	if err := y.ExecCmd(mediaInfo, cmdArgs); err != nil {
+	output, err := exec.Cmd(y.ExecutorPath, execArgs.Args()...)
+	if err != nil {
+		return nil, err
+	}
+	if err = json.Unmarshal(output, mediaInfo); err != nil {
 		return nil, err
 	}
 	return mediaInfo.standardize(), nil
 }
 
-func (y *ytdl) DownloadMedia(task *task.DTask) {
-	cmdArgs := y.NewCmdArgs()
-	cmdArgs.Add(task.MediaUrl)
-	cmdArgs.Add(cmdNewLine)
-	cmdArgs.Add(cmdNoColor)
-	cmdArgs.AddV(cmdOutput, y.getStoragePath(task.StoragePath))
-	if task.FormatId != "" {
-		cmdArgs.AddV(cmdFormat, task.FormatId)
+func (y *ytdl) DownloadMedia(dTask *task.DTask) {
+	execArgs := exec.NewArgs()
+	execArgs.Add(dTask.MediaUrl)
+	execArgs.Add(argNewLine)
+	execArgs.Add(argNoColor)
+	execArgs.AddV(argOutput, y.getStoragePath(dTask.StoragePath))
+	if dTask.FormatId != "" {
+		execArgs.AddV(argFormat, dTask.FormatId)
 	}
-	ws.AppendHeartbeatData(engine.HeartbeatDataTaskProgressGroup, task.ID.String(), task.Progress)
-	// TODO
-	//y.ExecCmdLong(task,
-	//	y.downloaderTaskUpdateHandler,
-	//	y.downloadTaskFinalHandler,
-	//	y.downloadTaskErrorHandler)
+	ws.AppendHeartbeatData(engine.HeartbeatDataTaskProgressGroup, dTask.ID.String(), dTask.Progress)
+	taskCtx := exec.Context{
+		Context:   engine.Ctx,
+		Cancel:    engine.Cancel,
+		OnNewLine: y.taskUpdateHandler(dTask),
+		OnError:   y.taskErrorHandler(dTask),
+		OnExit:    y.taskExitHandler(dTask),
+	}
+	exec.CmdAsnyc(taskCtx, y.ExecutorPath, execArgs.Args()...)
 }
 
-func (y *ytdl) downloaderTaskUpdateHandler(_task interface{}, line string) {
-	t := _task.(*task.DTask)
-	// update progress
-	progressStr := y.regProgress.FindString(line)
-	if progressStr != "" {
-		t.Percent = progressStr[:len(progressStr)-1]
+func (y *ytdl) taskUpdateHandler(dTask *task.DTask) func(line string) {
+	return func(line string) {
+		// update progress
+		progressStr := y.regProgress.FindString(line)
+		if progressStr != "" {
+			dTask.Percent = progressStr[:len(progressStr)-1]
+		}
+		// update status
+		dTask.Status = task.Downloading
+		if strings.HasPrefix(dTask.Percent, engine.ProgressCompleted) || strings.Contains(line, "has already been downloaded") {
+			dTask.Status = task.Completed
+		}
+		// update speed
+		dTask.Speed = y.regSpeed.FindString(line)
+		log.Debugw("update download task", "task", dTask)
 	}
-
-	// update status
-	t.Status = task.Downloading
-	if strings.HasPrefix(t.Percent, engine.ProgressCompleted) || strings.Contains(line, "has already been downloaded") {
-		t.Status = task.Completed
-	}
-
-	// update speed
-	t.Speed = y.regSpeed.FindString(line)
 }
 
-func (y *ytdl) downloadTaskFinalHandler(_task interface{}) {
-	t := _task.(*task.DTask)
-	if t.Status == task.Downloading {
-		t.Status = task.Paused
+func (y *ytdl) taskErrorHandler(dTask *task.DTask) func(errMsg string) {
+	return func(errMsg string) {
+		dTask.Status = task.Failed
+		dTask.StatusMsg = errMsg
 	}
-	ws.InvokeHeartbeat()
-	ws.RemoveHeartbeatData(engine.HeartbeatDataTaskProgressGroup, t.ID)
 }
 
-func (y *ytdl) downloadTaskErrorHandler(_task interface{}, err string) {
-	t := _task.(*task.DTask)
-	t.Status = task.Failed
+func (y *ytdl) taskExitHandler(dTask *task.DTask) func() {
+	return func() {
+		if dTask.Status == task.Downloading {
+			dTask.Status = task.Paused
+		}
+		ws.InvokeHeartbeat()
+		ws.RemoveHeartbeatData(engine.HeartbeatDataTaskProgressGroup, dTask.ID)
+	}
 }
 
 func (y *ytdl) getStoragePath(storagePath string) string {
-	pathSeparator := string(os.PathSeparator)
-	if strings.HasSuffix(storagePath, pathSeparator) {
-		return storagePath + y.mediaNameTemplate
-	}
-	return storagePath + pathSeparator + y.mediaNameTemplate
+	return path.Join(storagePath, y.mediaNameTemplate)
 }

@@ -5,8 +5,6 @@
 package engine
 
 import (
-	"encoding/json"
-	"github.com/ingbyr/vdm/app/exec"
 	"github.com/ingbyr/vdm/app/media"
 	"github.com/ingbyr/vdm/app/task"
 )
@@ -30,19 +28,4 @@ func (b *Base) FetchMediaInfo(task *task.MTask) (*media.Media, error) {
 
 func (b *Base) DownloadMedia(task *task.DTask) {
 	panic("implement me")
-}
-
-func (b *Base) NewCmdArgs() *exec.Args {
-	return exec.NewArgs()
-}
-
-func (b *Base) ExecCmd(res interface{}, cmd *exec.Args) error {
-	output, err := exec.Cmd(b.ExecutorPath, cmd.Args()...)
-	if err != nil {
-		return err
-	}
-	if err = json.Unmarshal(output, res); err != nil {
-		return err
-	}
-	return nil
 }

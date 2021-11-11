@@ -5,6 +5,7 @@
 package task
 
 import (
+	"github.com/ingbyr/vdm/app/media"
 	"github.com/ingbyr/vdm/pkg/db"
 )
 
@@ -24,10 +25,7 @@ type DTask struct {
 	db.Model
 	*DTaskOpt
 	*Progress
-	Title   string `json:"title" db:"title" form:"title"`
-	Desc    string `json:"description" db:"desc" form:"desc"`
-	Percent string `json:"progress" db:"progress"`
-	Speed   string `json:"speed" db:"speed"`
+	*media.Media
 }
 
 type DTaskOpt struct {
@@ -38,15 +36,18 @@ type DTaskOpt struct {
 }
 
 type Progress struct {
-	Percent string `json:"progress" db:"percent"`
-	Speed   string `json:"speed" db:"speed"`
-	Status  status `json:"status" db:"status"`
+	Percent   string `json:"progress" db:"percent"`
+	Speed     string `json:"speed" db:"speed"`
+	Status    status `json:"status" db:"status"`
+	StatusMsg string `json:"status_msg" db:"status_msg"`
 }
 
 func NewDTask(taskOpt *DTaskOpt) *DTask {
 	return &DTask{
 		Model:    db.NewModel(),
 		DTaskOpt: taskOpt,
-		Progress: &Progress{Status: Created},
+		Progress: &Progress{
+			Status: Created,
+		},
 	}
 }

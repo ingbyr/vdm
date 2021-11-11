@@ -18,18 +18,22 @@ const (
 
 var (
 	log    = logging.New("Base")
-	ctx    context.Context
-	cancel context.CancelFunc
+	Ctx    context.Context
+	Cancel context.CancelFunc
 )
 
 func Setup(globalCtx context.Context, globalCancel context.CancelFunc) {
-	ctx = globalCtx
-	cancel = globalCancel
+	Ctx = globalCtx
+	Cancel = globalCancel
 }
 
 // Engine is media downloader
 type Engine interface {
 	GetBase() *Base
+
+	// FetchMediaInfo TODO context
 	FetchMediaInfo(task *task.MTask) (*media.Media, error)
+
+	// DownloadMedia TODO context
 	DownloadMedia(task *task.DTask)
 }

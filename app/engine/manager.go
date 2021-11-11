@@ -25,7 +25,7 @@ type manager struct {
 func Register(engine Engine) {
 	if _, err := exec.LookPath(engine.GetBase().ExecutorPath); err != nil {
 		engine.GetBase().Valid = false
-		log.Warnf("Base '%s' is not Valid because '%s' not found", engine.GetBase().Name, engine.GetBase().ExecutorPath)
+		log.Warnf("engine '%s' is not valid because '%s' not found", engine.GetBase().Name, engine.GetBase().ExecutorPath)
 	}
 	Manager.Engines[engine.GetBase().Name] = engine
 }

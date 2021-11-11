@@ -48,7 +48,7 @@ func CmdAsnyc(ctx Context, cmdName string, cmdArgs ...string) {
 	stdOutput := make(chan string)
 	errOutput := make(chan string)
 
-	// read output
+	// callback loop
 	go func() {
 		defer ctx.OnExit()
 		for {
