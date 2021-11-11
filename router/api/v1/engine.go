@@ -4,12 +4,11 @@
 
 package v1
 
-import "C"
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/ingbyr/vdm/model/engine"
-	"github.com/ingbyr/vdm/model/page"
-	"github.com/ingbyr/vdm/model/task"
+	"github.com/ingbyr/vdm/app/engine"
+	"github.com/ingbyr/vdm/app/page"
+	"github.com/ingbyr/vdm/app/task"
 	"github.com/ingbyr/vdm/pkg/db"
 	"github.com/ingbyr/vdm/pkg/e"
 	"github.com/ingbyr/vdm/pkg/r"
@@ -35,12 +34,12 @@ func FetchMediaInfo(c *gin.Context) {
 }
 
 func DownloadMedia(c *gin.Context) {
-	var taskConfig task.Config
-	if err := c.BindJSON(&taskConfig); err != nil {
+	taskOpt := new(task.DTaskOpt)
+	if err := c.BindJSON(taskOpt); err != nil {
 		r.F(c, e.InvalidParams)
 		return
 	}
-	t := task.NewDTask(taskConfig)
+	t := task.NewDTask(taskOpt)
 	err := engine.Manager.Download(t)
 	if err != nil {
 		r.F(c, e.DownloadMediaError)

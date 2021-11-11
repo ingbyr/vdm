@@ -1,7 +1,7 @@
 //go:build linux || darwin
 // +build linux darwin
 
-package platform
+package ytdl
 
 import (
 	"github.com/ingbyr/vdm/pkg/setting"
@@ -9,5 +9,5 @@ import (
 )
 
 var (
-	EngineYtdlExecutorPath = filepath.Join(setting.DirRuntime, setting.DirEngine, "yt-dlp_macos")
+	executorPath = filepath.Join(setting.DirRuntime, setting.DirEngine, "yt-dlp_macos")
 )

@@ -9,8 +9,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/ingbyr/vdm/model/engine"
-	"github.com/ingbyr/vdm/model/schema"
+	"github.com/ingbyr/vdm/app/engine"
+	"github.com/ingbyr/vdm/app/engines"
+	"github.com/ingbyr/vdm/app/schema"
 	"github.com/ingbyr/vdm/pkg/db"
 	"github.com/ingbyr/vdm/pkg/logging"
 	"github.com/ingbyr/vdm/pkg/setting"
@@ -32,6 +33,7 @@ func setup() (context.Context, context.CancelFunc) {
 	ws.Setup(ctx)
 	db.Setup()
 	engine.Setup(ctx, cancel)
+	engines.Setup()
 	schema.Setup()
 
 	gin.SetMode(setting.ServerSetting.RunMode)
