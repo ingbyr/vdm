@@ -39,7 +39,7 @@ func setup() (context.Context, context.CancelFunc) {
 }
 
 func run() {
-	_, cancel := setup()
+	ctx, cancel := setup()
 
 	srv := &http.Server{
 		Addr:           fmt.Sprintf(":%d", setting.ServerSetting.HttpPort),
@@ -67,6 +67,7 @@ func run() {
 
 	// stop running goroutines
 	cancel()
+	<-ctx.Done()
 
 	// stop in 1 second
 	ctxWait, cancelWait := context.WithTimeout(context.Background(), time.Second)

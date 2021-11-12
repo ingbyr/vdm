@@ -7,7 +7,7 @@ package media
 type Media struct {
 	Title   string   `json:"title"  form:"title"`
 	Desc    string   `json:"description" form:"desc"`
-	Formats []Format `json:"formats,omitempty" gorm:"-"`
+	Formats []Format `json:"formats,omitempty" form:"formats" gorm:"-"`
 }
 
 type Format struct {

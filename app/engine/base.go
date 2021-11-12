@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"github.com/ingbyr/vdm/app/media"
 	"github.com/ingbyr/vdm/app/task"
+	"github.com/ingbyr/vdm/pkg/db"
 	"github.com/ingbyr/vdm/pkg/ws"
 )
 
@@ -28,11 +29,15 @@ func (b *Base) FetchMediaInfo(mTask *task.MTask) (*media.Media, error) {
 	panic("implement me")
 }
 
-func (b *Base) DownloadMedia(dTask *task.DTask) {
+func (b *Base) DownloadMedia(dTask *task.DTask) error {
 	panic("implement me")
 }
 
 func (b *Base) Broadcast(dTask *task.DTask) {
 	jsonData, _ := json.Marshal(dTask)
+	if db.DB == nil {
+		panic("db not loaded")
+	}
+	db.DB.Save(dTask)
 	ws.Broadcast(jsonData)
 }

@@ -7,7 +7,9 @@ package ytdl
 import (
 	"context"
 	"fmt"
+	"github.com/ingbyr/vdm/app/media"
 	"github.com/ingbyr/vdm/app/task"
+	"github.com/ingbyr/vdm/pkg/db"
 	"github.com/ingbyr/vdm/pkg/setting"
 	"path"
 	"testing"
@@ -21,6 +23,8 @@ const (
 
 func init() {
 	_ytdl.ExecutorPath = path.Join(baseDir, _ytdl.ExecutorPath)
+	db.Setup()
+	db.DB.AutoMigrate(task.DTask{})
 }
 
 func TestYoutubedl_FetchMediaInfo(t *testing.T) {
@@ -32,19 +36,25 @@ func TestYoutubedl_FetchMediaInfo(t *testing.T) {
 		Cancel:   cancel,
 	}
 	data, err := _ytdl.FetchMediaInfo(mTask)
-	fmt.Printf("err: %v, data: %+v\n", err, data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	fmt.Printf("%+v\n", data)
 }
 
 func TestYoutubedl_FetchMediaInfo_Timeout(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.TODO(), 10*time.Millisecond)
-	mTask := &task.MTask{
+	mtask := &task.MTask{
 		Engine:   name,
 		MediaUrl: mediaUrl,
 		Ctx:      ctx,
 		Cancel:   cancel,
 	}
-	data, err := _ytdl.FetchMediaInfo(mTask)
-	fmt.Printf("err: %v, data: %+v\n", err, data)
+	data, err := _ytdl.FetchMediaInfo(mtask)
+	if err != nil {
+		t.Fatal(err)
+	}
+	fmt.Printf("%+v\n", data)
 }
 
 func TestYoutubedl_ParseDownloadOutput(t *testing.T) {
@@ -56,11 +66,11 @@ func TestYoutubedl_ParseDownloadOutput(t *testing.T) {
 		"[exec] 100% of 41.53MiB in 00:48",
 		"[exec] ./runtime/demo.mp4 has already been downloaded and merged",
 	}
-	dTask := task.NewDTask(nil)
-	handler := _ytdl.taskUpdateHandler(dTask)
+	dtask := &task.DTask{}
+	handler := _ytdl.taskUpdateHandler(dtask)
 	for i, o := range output {
 		handler(o)
-		fmt.Printf("%d %+v\n", i, dTask.Progress)
+		fmt.Printf("%d %+v\n", i, dtask.Progress)
 	}
 }
 
@@ -69,15 +79,22 @@ func TestYoutubedl_GenerateStoragePath(t *testing.T) {
 	fmt.Println(_ytdl.getStoragePath("./runtime/"))
 }
 
-func TestYoutubedl_Download(t *testing.T) {
-	dTask := task.NewDTask(&task.DTaskOpt{
+func TestYoutubedl_DownloadMedia(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.TODO())
+	dtask := &task.DTask{
+		Model:       db.NewModel(),
+		Status:      task.Created,
 		MediaUrl:    mediaUrl,
 		Engine:      _ytdl.Name,
 		StoragePath: path.Join(baseDir, setting.DirRuntime),
 		FormatId:    "",
-	})
-	dTask.Ctx, dTask.Cancel = context.WithCancel(context.TODO())
-	fmt.Printf("task config: %+v\n", dTask)
-	_ytdl.DownloadMedia(dTask)
-	<-dTask.Ctx.Done()
+		Progress:    &task.Progress{},
+		Media:       &media.Media{},
+		Ctx:         ctx,
+		Cancel:      cancel,
+	}
+	if err := _ytdl.DownloadMedia(dtask); err != nil {
+		t.Fatal(err)
+	}
+	<-dtask.Ctx.Done()
 }

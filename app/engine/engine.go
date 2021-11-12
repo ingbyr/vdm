@@ -11,11 +11,6 @@ import (
 	"github.com/ingbyr/vdm/pkg/logging"
 )
 
-const (
-	TaskProgressGroup = "taskProgress"
-	ProgressCompleted = "100"
-)
-
 var (
 	log = logging.New("Base")
 	ctx context.Context
@@ -30,11 +25,11 @@ type Engine interface {
 	GetBase() *Base
 
 	// FetchMediaInfo TODO context
-	FetchMediaInfo(task *task.MTask) (*media.Media, error)
+	FetchMediaInfo(mtask *task.MTask) (*media.Media, error)
 
 	// DownloadMedia TODO context
-	DownloadMedia(task *task.DTask)
+	DownloadMedia(dtask *task.DTask) error
 
 	// Broadcast the current download task data
-	Broadcast(task *task.DTask)
+	Broadcast(dtask *task.DTask)
 }

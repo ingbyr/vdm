@@ -23,7 +23,7 @@ var Manager = manager{
 
 }
 
-func startManager(ctx context.Context) {
+func startWebsocket(ctx context.Context) {
 	for {
 		select {
 		case conn := <-Manager.register:
@@ -63,6 +63,9 @@ func Register(client *Client) {
 }
 
 func Broadcast(msg []byte) {
+	if len(Manager.clients) == 0 {
+		return
+	}
 	Manager.broadcast <- msg
 }
 

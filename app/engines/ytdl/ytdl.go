@@ -37,6 +37,7 @@ var (
 		mediaNameTemplate: "%(title)s.%(ext)s",
 		regSpeed:          regexp.MustCompile("\\d+\\.?\\d*\\w+/s"),
 		regProgress:       regexp.MustCompile("\\d+\\.?\\d*%"),
+		progressCompleted: "100",
 	}
 )
 
@@ -45,20 +46,21 @@ func init() {
 	engine.Register(_ytdl)
 }
 
-// ytdl downloader config core 'youtube-dl'
+// ytdl is youtube-dl download engine
 type ytdl struct {
 	engine.Base
 	mediaNameTemplate string
 	regSpeed          *regexp.Regexp
 	regProgress       *regexp.Regexp
+	progressCompleted string
 }
 
-func (y *ytdl) FetchMediaInfo(mTask *task.MTask) (*media.Media, error) {
+func (y *ytdl) FetchMediaInfo(mtask *task.MTask) (*media.Media, error) {
 	execArgs := exec.NewArgs(y.ExecutorPath)
-	execArgs.Add(mTask.MediaUrl)
+	execArgs.Add(mtask.MediaUrl)
 	execArgs.Add(argDumpJson)
 	mediaInfo := new(MediaInfo)
-	output, err := exec.Cmd(mTask.Ctx, execArgs)
+	output, err := exec.Cmd(mtask.Ctx, execArgs)
 	if err != nil {
 		return nil, err
 	}
@@ -68,56 +70,57 @@ func (y *ytdl) FetchMediaInfo(mTask *task.MTask) (*media.Media, error) {
 	return mediaInfo.standardize(), nil
 }
 
-func (y *ytdl) DownloadMedia(dTask *task.DTask) {
+func (y *ytdl) DownloadMedia(dtask *task.DTask) error {
 	execArgs := exec.NewArgs(y.ExecutorPath)
-	execArgs.Add(dTask.MediaUrl)
+	execArgs.Add(dtask.MediaUrl)
 	execArgs.Add(argNewLine)
 	execArgs.Add(argNoColor)
-	execArgs.AddV(argOutput, y.getStoragePath(dTask.StoragePath))
-	if dTask.FormatId != "" {
-		execArgs.AddV(argFormat, dTask.FormatId)
+	execArgs.AddV(argOutput, y.getStoragePath(dtask.StoragePath))
+	if dtask.FormatId != "" {
+		execArgs.AddV(argFormat, dtask.FormatId)
 	}
 	callback := exec.Callback{
-		OnNewLine: y.taskUpdateHandler(dTask),
-		OnError:   y.taskErrorHandler(dTask),
-		OnExit:    y.taskExitHandler(dTask),
+		OnNewLine: y.taskUpdateHandler(dtask),
+		OnError:   y.taskErrorHandler(dtask),
+		OnExit:    y.taskExitHandler(dtask),
 	}
-	exec.CmdAsnyc(dTask.Ctx, dTask.Cancel, callback, execArgs)
+	exec.CmdAsnyc(dtask.Ctx, dtask.Cancel, callback, execArgs)
+	return nil
 }
 
-func (y *ytdl) taskUpdateHandler(dTask *task.DTask) func(line string) {
+func (y *ytdl) taskUpdateHandler(dtask *task.DTask) func(line string) {
 	return func(line string) {
 		// update progress
 		progressStr := y.regProgress.FindString(line)
 		if progressStr != "" {
-			dTask.Percent = progressStr[:len(progressStr)-1]
+			dtask.Progress.Percent = progressStr[:len(progressStr)-1]
 		}
 		// update status
-		dTask.Status = task.Downloading
-		if strings.HasPrefix(dTask.Percent, engine.ProgressCompleted) || strings.Contains(line, "has already been downloaded") {
-			dTask.Status = task.Completed
+		dtask.Status = task.Downloading
+		if strings.HasPrefix(dtask.Progress.Percent, y.progressCompleted) || strings.Contains(line, "has already been downloaded") {
+			dtask.Status = task.Completed
 		}
 		// update speed
-		dTask.Speed = y.regSpeed.FindString(line)
-		log.Debugw("update download task", "task", dTask)
-		y.Broadcast(dTask)
+		dtask.Progress.Speed = y.regSpeed.FindString(line)
+		log.Debugw("update download task", "task", dtask)
+		y.Broadcast(dtask)
 	}
 }
 
-func (y *ytdl) taskErrorHandler(dTask *task.DTask) func(errMsg string) {
+func (y *ytdl) taskErrorHandler(dtask *task.DTask) func(errMsg string) {
 	return func(errMsg string) {
-		dTask.Status = task.Failed
-		dTask.StatusMsg = errMsg
-		y.Broadcast(dTask)
+		dtask.Status = task.Failed
+		dtask.Progress.StatusMsg = errMsg
+		y.Broadcast(dtask)
 	}
 }
 
-func (y *ytdl) taskExitHandler(dTask *task.DTask) func() {
+func (y *ytdl) taskExitHandler(dtask *task.DTask) func() {
 	return func() {
-		if dTask.Status == task.Downloading {
-			dTask.Status = task.Paused
+		if dtask.Status == task.Downloading {
+			dtask.Status = task.Paused
 		}
-		y.Broadcast(dTask)
+		y.Broadcast(dtask)
 	}
 }
 
