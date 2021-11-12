@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/ingbyr/vdm/app/engine"
-	"github.com/ingbyr/vdm/app/engines"
+	_ "github.com/ingbyr/vdm/app/engines"
 	"github.com/ingbyr/vdm/app/schema"
 	"github.com/ingbyr/vdm/pkg/db"
 	"github.com/ingbyr/vdm/pkg/logging"
@@ -28,17 +28,13 @@ var log = logging.New("server")
 
 func setup() (context.Context, context.CancelFunc) {
 	ctx, cancel := context.WithCancel(context.Background())
-
 	setting.Setup()
 	ws.Setup(ctx)
 	db.Setup()
-	engine.Setup(ctx, cancel)
-	engines.Setup()
+	engine.Setup(ctx)
 	schema.Setup()
-
 	gin.SetMode(setting.ServerSetting.RunMode)
 	logging.SetLevel(setting.LogSetting.Level)
-
 	return ctx, cancel
 }
 

@@ -12,22 +12,21 @@ import (
 )
 
 const (
+	// HeartbeatDataTaskProgressGroup TODO rename this
 	HeartbeatDataTaskProgressGroup = "taskProgress"
 	ProgressCompleted              = "100"
 )
 
 var (
-	log    = logging.New("Base")
-	Ctx    context.Context
-	Cancel context.CancelFunc
+	log = logging.New("Base")
+	ctx context.Context
 )
 
-func Setup(globalCtx context.Context, globalCancel context.CancelFunc) {
-	Ctx = globalCtx
-	Cancel = globalCancel
+func Setup(globalCtx context.Context) {
+	ctx = globalCtx
 }
 
-// Engine is media downloader
+// Engine is a common download engine
 type Engine interface {
 	GetBase() *Base
 

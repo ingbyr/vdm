@@ -5,6 +5,7 @@
 package task
 
 import (
+	"context"
 	"github.com/ingbyr/vdm/app/media"
 	"github.com/ingbyr/vdm/pkg/db"
 )
@@ -26,6 +27,8 @@ type DTask struct {
 	*DTaskOpt
 	*Progress
 	*media.Media
+	Ctx    context.Context    `gorm:"-"`
+	Cancel context.CancelFunc `gorm:"-"`
 }
 
 type DTaskOpt struct {

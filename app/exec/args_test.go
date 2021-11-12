@@ -10,8 +10,9 @@ import (
 )
 
 func TestCmdArgs(t *testing.T) {
-	cmdArgs := NewArgs()
+	cmdArgs := NewArgs("test")
 	cmdArgs.Add("-j")
+	cmdArgs.AddV("--resume", "true")
 	cmdArgs.Add("https://demo-url")
 	cmdArgs.AddV("--proxy", "socks5://$address:$port")
 	fmt.Println(cmdArgs.String())

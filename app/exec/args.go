@@ -7,12 +7,14 @@ package exec
 import "strings"
 
 type Args struct {
-	args  map[string]string
+	executor string
+	args     map[string]string
 	flags []string
 }
 
-func NewArgs() *Args {
+func NewArgs(executor string) *Args {
 	return &Args{
+		executor: executor,
 		args:  make(map[string]string),
 		flags: make([]string, 0),
 	}

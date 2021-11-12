@@ -18,6 +18,7 @@ var sugared *zap.SugaredLogger
 
 func init() {
 	atom = zap.NewAtomicLevel()
+	atom.SetLevel(zap.DebugLevel)
 	encoderCfg := zap.NewProductionEncoderConfig()
 	base = zap.New(
 		zapcore.NewCore(

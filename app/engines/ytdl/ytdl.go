@@ -54,12 +54,12 @@ type ytdl struct {
 	regProgress       *regexp.Regexp
 }
 
-func (y *ytdl) FetchMediaInfo(task *task.MTask) (*media.Media, error) {
-	execArgs := exec.NewArgs()
-	execArgs.Add(task.MediaUrl)
+func (y *ytdl) FetchMediaInfo(mTask *task.MTask) (*media.Media, error) {
+	execArgs := exec.NewArgs(y.ExecutorPath)
+	execArgs.Add(mTask.MediaUrl)
 	execArgs.Add(argDumpJson)
 	mediaInfo := new(MediaInfo)
-	output, err := exec.Cmd(y.ExecutorPath, execArgs.Args()...)
+	output, err := exec.Cmd(mTask.Ctx, execArgs)
 	if err != nil {
 		return nil, err
 	}
@@ -70,7 +70,7 @@ func (y *ytdl) FetchMediaInfo(task *task.MTask) (*media.Media, error) {
 }
 
 func (y *ytdl) DownloadMedia(dTask *task.DTask) {
-	execArgs := exec.NewArgs()
+	execArgs := exec.NewArgs(y.ExecutorPath)
 	execArgs.Add(dTask.MediaUrl)
 	execArgs.Add(argNewLine)
 	execArgs.Add(argNoColor)
@@ -79,14 +79,12 @@ func (y *ytdl) DownloadMedia(dTask *task.DTask) {
 		execArgs.AddV(argFormat, dTask.FormatId)
 	}
 	ws.AppendHeartbeatData(engine.HeartbeatDataTaskProgressGroup, dTask.ID.String(), dTask.Progress)
-	taskCtx := exec.Context{
-		Context:   engine.Ctx,
-		Cancel:    engine.Cancel,
+	callback := exec.Callback{
 		OnNewLine: y.taskUpdateHandler(dTask),
 		OnError:   y.taskErrorHandler(dTask),
 		OnExit:    y.taskExitHandler(dTask),
 	}
-	exec.CmdAsnyc(taskCtx, y.ExecutorPath, execArgs.Args()...)
+	exec.CmdAsnyc(dTask.Ctx, dTask.Cancel, callback, execArgs)
 }
 
 func (y *ytdl) taskUpdateHandler(dTask *task.DTask) func(line string) {

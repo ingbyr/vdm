@@ -24,7 +24,6 @@ func FetchMediaInfo(c *gin.Context) {
 		r.F(c, e.InvalidParams)
 		return
 	}
-	// TODO set timeout
 	res, err := engine.Manager.FetchMediaInfo(mtask)
 	if err != nil {
 		r.FE(c, e.FetchMediaInfoError, err)
@@ -40,7 +39,7 @@ func DownloadMedia(c *gin.Context) {
 		return
 	}
 	t := task.NewDTask(taskOpt)
-	err := engine.Manager.Download(t)
+	err := engine.Manager.DownloadMedia(t)
 	if err != nil {
 		r.F(c, e.DownloadMediaError)
 		return

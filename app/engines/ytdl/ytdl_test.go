@@ -5,15 +5,17 @@
 package ytdl
 
 import (
+	"context"
 	"fmt"
 	"github.com/ingbyr/vdm/app/task"
 	"github.com/ingbyr/vdm/pkg/setting"
 	"path"
 	"testing"
+	"time"
 )
 
 const (
-	mediaUrl = "https://www.bilibili.com/video/BV1q64y147nh"
+	mediaUrl = "https://www.bilibili.com/video/BV12L4y1q7iL"
 	baseDir  = "../../../"
 )
 
@@ -21,10 +23,25 @@ func init() {
 	_ytdl.ExecutorPath = path.Join(baseDir, _ytdl.ExecutorPath)
 }
 
-func TestYoutubedl_FetchMediaSimulateJson(t *testing.T) {
+func TestYoutubedl_FetchMediaInfo(t *testing.T) {
+	ctx, cancel := context.WithTimeout(context.TODO(), 10*time.Second)
 	mTask := &task.MTask{
 		Engine:   name,
 		MediaUrl: mediaUrl,
+		Ctx:      ctx,
+		Cancel:   cancel,
+	}
+	data, err := _ytdl.FetchMediaInfo(mTask)
+	fmt.Printf("err: %v, data: %+v\n", err, data)
+}
+
+func TestYoutubedl_FetchMediaInfo_Timeout(t *testing.T) {
+	ctx, cancel := context.WithTimeout(context.TODO(), 10*time.Millisecond)
+	mTask := &task.MTask{
+		Engine:   name,
+		MediaUrl: mediaUrl,
+		Ctx:      ctx,
+		Cancel:   cancel,
 	}
 	data, err := _ytdl.FetchMediaInfo(mTask)
 	fmt.Printf("err: %v, data: %+v\n", err, data)

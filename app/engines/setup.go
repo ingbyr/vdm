@@ -9,6 +9,3 @@ import (
 	_ "github.com/ingbyr/vdm/app/engines/ytdl"
 )
 
-func Setup() {
-
-}
