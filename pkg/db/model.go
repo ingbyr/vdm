@@ -37,7 +37,7 @@ type JsonTime struct {
 }
 
 func (t *JsonTime) MarshalJSON() ([]byte, error) {
-	return []byte(t.Format(TimeFormat)), nil
+	return []byte("\"" + t.Format(TimeFormat) + "\""), nil
 }
 
 func (t *JsonTime) UnmarshalJSON(data []byte) error {

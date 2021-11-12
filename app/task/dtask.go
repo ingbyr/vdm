@@ -27,22 +27,22 @@ type DTask struct {
 	*DTaskOpt
 	*Progress
 	*media.Media
-	Ctx    context.Context    `gorm:"-"`
-	Cancel context.CancelFunc `gorm:"-"`
+	Ctx    context.Context    `json:"-" gorm:"-"`
+	Cancel context.CancelFunc `json:"-" gorm:"-"`
 }
 
 type DTaskOpt struct {
-	MediaUrl    string `json:"mediaUrl" db:"mediaUrl" form:"mediaUrl"`
-	Engine      string `json:"engine" db:"engine" form:"engine"`
-	StoragePath string `json:"storagePath" db:"storagePath" form:"storagePath"`
-	FormatId    string `json:"formatId" db:"formatId" form:"formatId"`
+	MediaUrl    string `json:"mediaUrl" gorm:"mediaUrl" form:"mediaUrl"`
+	Engine      string `json:"engine" gorm:"engine" form:"engine"`
+	StoragePath string `json:"storagePath" gorm:"storagePath" form:"storagePath"`
+	FormatId    string `json:"formatId" gorm:"formatId" form:"formatId"`
 }
 
 type Progress struct {
-	Percent   string `json:"progress" db:"percent"`
-	Speed     string `json:"speed" db:"speed"`
-	Status    status `json:"status" db:"status"`
-	StatusMsg string `json:"status_msg" db:"status_msg"`
+	Percent   string `json:"progress" gorm:"percent"`
+	Speed     string `json:"speed" gorm:"speed"`
+	Status    status `json:"status" gorm:"status"`
+	StatusMsg string `json:"status_msg" gorm:"status_msg"`
 }
 
 func NewDTask(taskOpt *DTaskOpt) *DTask {

@@ -78,7 +78,7 @@ func (y *ytdl) DownloadMedia(dTask *task.DTask) {
 	if dTask.FormatId != "" {
 		execArgs.AddV(argFormat, dTask.FormatId)
 	}
-	ws.AppendHeartbeatData(engine.HeartbeatDataTaskProgressGroup, dTask.ID.String(), dTask.Progress)
+	ws.AppendHeartbeatData(engine.TaskProgressGroup, dTask.ID.String(), dTask.Progress)
 	callback := exec.Callback{
 		OnNewLine: y.taskUpdateHandler(dTask),
 		OnError:   y.taskErrorHandler(dTask),
@@ -117,8 +117,7 @@ func (y *ytdl) taskExitHandler(dTask *task.DTask) func() {
 		if dTask.Status == task.Downloading {
 			dTask.Status = task.Paused
 		}
-		ws.InvokeHeartbeat()
-		ws.RemoveHeartbeatData(engine.HeartbeatDataTaskProgressGroup, dTask.ID)
+		ws.RemoveHeartbeatData(engine.TaskProgressGroup, dTask.ID)
 	}
 }
 

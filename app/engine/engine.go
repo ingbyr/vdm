@@ -12,9 +12,8 @@ import (
 )
 
 const (
-	// HeartbeatDataTaskProgressGroup TODO rename this
-	HeartbeatDataTaskProgressGroup = "taskProgress"
-	ProgressCompleted              = "100"
+	TaskProgressGroup = "taskProgress"
+	ProgressCompleted = "100"
 )
 
 var (

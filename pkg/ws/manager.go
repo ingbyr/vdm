@@ -21,6 +21,7 @@ var Manager = manager{
 	register:      make(chan *Client),
 	unregister:    make(chan *Client),
 	broadcast:     make(chan []byte),
+	// FIXME map causes memory leaking
 	heartbeatData: make(map[string]map[string]interface{}),
 }
 
@@ -97,5 +98,7 @@ func RemoveHeartbeatData(group string, id interface{}) {
 	if _, ok := Manager.heartbeatData[group]; !ok {
 		return
 	}
+	// must send once before removing
+	InvokeHeartbeat()
 	delete(Manager.heartbeatData[group], fmt.Sprintf("%v", id))
 }

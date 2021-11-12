@@ -68,7 +68,7 @@ func run() {
 	// stop running goroutines
 	cancel()
 
-	// stop after 1 second
+	// stop in 1 second
 	ctxWait, cancelWait := context.WithTimeout(context.Background(), time.Second)
 	defer cancelWait()
 

@@ -76,6 +76,8 @@ func TestYoutubedl_Download(t *testing.T) {
 		StoragePath: path.Join(baseDir, setting.DirRuntime),
 		FormatId:    "",
 	})
-	fmt.Printf("%+v\n", dTask.DTaskOpt)
+	dTask.Ctx, dTask.Cancel = context.WithCancel(context.TODO())
+	fmt.Printf("task config: %+v\n", dTask)
 	_ytdl.DownloadMedia(dTask)
+	<-dTask.Ctx.Done()
 }
