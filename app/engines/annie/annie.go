@@ -8,11 +8,12 @@ import "github.com/ingbyr/vdm/app/engine"
 
 var (
 	annie = &Annie{
-		Base: engine.Base{
-			Version:      "not exist",
-			Name:         "annie",
-			ExecutorPath: "not exist",
-			Valid:        true,
+		Info: engine.Info{
+			Version:  "not exist",
+			Name:     "annie",
+			Executor: "not exist",
+			Enable:   false,
+			Valid:    false,
 		},
 	}
 )
@@ -21,7 +22,7 @@ func init() {
 	engine.Register(annie)
 }
 
-// Annie downloader Base core 'annie'
+// Annie downloader Info core 'annie'
 type Annie struct {
-	engine.Base
+	engine.Info
 }

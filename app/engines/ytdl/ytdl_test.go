@@ -22,7 +22,7 @@ const (
 )
 
 func init() {
-	_ytdl.ExecutorPath = path.Join(baseDir, _ytdl.ExecutorPath)
+	_ytdl.Executor = path.Join(baseDir, _ytdl.Executor)
 	db.Setup()
 	db.DB.AutoMigrate(task.DTask{})
 }

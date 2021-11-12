@@ -12,28 +12,38 @@ import (
 	"github.com/ingbyr/vdm/pkg/ws"
 )
 
-var _ Engine = (*Base)(nil)
+var _ Engine = (*Info)(nil)
 
-type Base struct {
-	Version      string `json:"version"`
-	Name         string `json:"name"`
-	ExecutorPath string `json:"executorPath"`
-	Valid        bool   `json:"valid"`
+type Info struct {
+	// Name is a common name for engine
+	Name string `json:"name"`
+
+	// Version is engine executor binary version
+	Version string `json:"version"`
+
+	// Executor is engine executor binary path
+	Executor string `json:"executor"`
+
+	// Enable if enable is false, the engine will not register to manager
+	Enable bool `json:"enable"`
+
+	// Valid is false if engine path not existed or not an executable binary
+	Valid bool `json:"valid"`
 }
 
-func (b *Base) GetBase() *Base {
+func (b *Info) GetInfo() *Info {
 	return b
 }
 
-func (b *Base) FetchMediaInfo(mTask *task.MTask) (*media.Media, error) {
+func (b *Info) FetchMediaInfo(mTask *task.MTask) (*media.Media, error) {
 	panic("implement me")
 }
 
-func (b *Base) DownloadMedia(dTask *task.DTask) error {
+func (b *Info) DownloadMedia(dTask *task.DTask) error {
 	panic("implement me")
 }
 
-func (b *Base) Broadcast(dTask *task.DTask) {
+func (b *Info) Broadcast(dTask *task.DTask) {
 	jsonData, _ := json.Marshal(dTask)
 	if db.DB == nil {
 		panic("db not loaded")

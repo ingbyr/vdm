@@ -29,16 +29,14 @@ func Engines() map[string]Engine {
 }
 
 func Register(engine Engine) {
-	if _, err := exec.LookPath(engine.GetBase().ExecutorPath); err != nil {
-		engine.GetBase().Valid = false
-		log.Warnf("engine '%s' is not valid because '%s' not found", engine.GetBase().Name, engine.GetBase().ExecutorPath)
+	if !engine.GetInfo().Enable {
+		return
 	}
-	m.Engines[engine.GetBase().Name] = engine
-}
-
-func Enabled(engine Engine) bool {
-	_, ok := m.Engines[engine.GetBase().Name]
-	return ok
+	if _, err := exec.LookPath(engine.GetInfo().Executor); err != nil {
+		engine.GetInfo().Valid = false
+		log.Warnf("engine '%s' is not valid because '%s' not found", engine.GetInfo().Name, engine.GetInfo().Executor)
+	}
+	m.Engines[engine.GetInfo().Name] = engine
 }
 
 func FetchMediaInfo(mtask *task.MTask) (*media.Media, error) {

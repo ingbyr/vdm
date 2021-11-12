@@ -28,11 +28,12 @@ const (
 var (
 	log   = logging.New("ytdl")
 	_ytdl = &ytdl{
-		Base: engine.Base{
-			Version:      "local",
-			Name:         name,
-			ExecutorPath: executorPath,
-			Valid:        true,
+		Info: engine.Info{
+			Version:  "local",
+			Name:     name,
+			Executor: executorPath,
+			Enable:   true,
+			Valid:    true,
 		},
 		mediaNameTemplate: "%(title)s.%(ext)s",
 		regSpeed:          regexp.MustCompile("\\d+\\.?\\d*\\w+/s"),
@@ -48,7 +49,7 @@ func init() {
 
 // ytdl is youtube-dl download engine
 type ytdl struct {
-	engine.Base
+	engine.Info
 	mediaNameTemplate string
 	regSpeed          *regexp.Regexp
 	regProgress       *regexp.Regexp
@@ -56,7 +57,7 @@ type ytdl struct {
 }
 
 func (y *ytdl) FetchMediaInfo(mtask *task.MTask) (*media.Media, error) {
-	execArgs := exec.NewArgs(y.ExecutorPath)
+	execArgs := exec.NewArgs(y.Executor)
 	execArgs.Add(mtask.MediaUrl)
 	execArgs.Add(argDumpJson)
 	mediaInfo := new(MediaInfo)
@@ -71,7 +72,7 @@ func (y *ytdl) FetchMediaInfo(mtask *task.MTask) (*media.Media, error) {
 }
 
 func (y *ytdl) DownloadMedia(dtask *task.DTask) error {
-	execArgs := exec.NewArgs(y.ExecutorPath)
+	execArgs := exec.NewArgs(y.Executor)
 	execArgs.Add(dtask.MediaUrl)
 	execArgs.Add(argNewLine)
 	execArgs.Add(argNoColor)
