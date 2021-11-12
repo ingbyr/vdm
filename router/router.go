@@ -24,7 +24,7 @@ func Init() *gin.Engine {
 func initWsRouter(r *gin.Engine) {
 	wsGroup := r.Group("/ws")
 	wsGroup.GET("/connect", WsConnect)
-	wsGroup.GET("/send", WsSendMsg)
+	wsGroup.GET("/send", WsBroadcast)
 }
 
 func initApiV1(r *gin.Engine) {

@@ -5,8 +5,10 @@
 package engine
 
 import (
+	"encoding/json"
 	"github.com/ingbyr/vdm/app/media"
 	"github.com/ingbyr/vdm/app/task"
+	"github.com/ingbyr/vdm/pkg/ws"
 )
 
 var _ Engine = (*Base)(nil)
@@ -22,10 +24,15 @@ func (b *Base) GetBase() *Base {
 	return b
 }
 
-func (b *Base) FetchMediaInfo(task *task.MTask) (*media.Media, error) {
+func (b *Base) FetchMediaInfo(mTask *task.MTask) (*media.Media, error) {
 	panic("implement me")
 }
 
-func (b *Base) DownloadMedia(task *task.DTask) {
+func (b *Base) DownloadMedia(dTask *task.DTask) {
 	panic("implement me")
+}
+
+func (b *Base) Broadcast(dTask *task.DTask) {
+	jsonData, _ := json.Marshal(dTask)
+	ws.Broadcast(jsonData)
 }

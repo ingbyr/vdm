@@ -11,7 +11,6 @@ import (
 	"github.com/ingbyr/vdm/app/media"
 	"github.com/ingbyr/vdm/app/task"
 	"github.com/ingbyr/vdm/pkg/logging"
-	"github.com/ingbyr/vdm/pkg/ws"
 	"path"
 	"regexp"
 	"strings"
@@ -78,7 +77,6 @@ func (y *ytdl) DownloadMedia(dTask *task.DTask) {
 	if dTask.FormatId != "" {
 		execArgs.AddV(argFormat, dTask.FormatId)
 	}
-	ws.AppendHeartbeatData(engine.TaskProgressGroup, dTask.ID.String(), dTask.Progress)
 	callback := exec.Callback{
 		OnNewLine: y.taskUpdateHandler(dTask),
 		OnError:   y.taskErrorHandler(dTask),
@@ -102,6 +100,7 @@ func (y *ytdl) taskUpdateHandler(dTask *task.DTask) func(line string) {
 		// update speed
 		dTask.Speed = y.regSpeed.FindString(line)
 		log.Debugw("update download task", "task", dTask)
+		y.Broadcast(dTask)
 	}
 }
 
@@ -109,6 +108,7 @@ func (y *ytdl) taskErrorHandler(dTask *task.DTask) func(errMsg string) {
 	return func(errMsg string) {
 		dTask.Status = task.Failed
 		dTask.StatusMsg = errMsg
+		y.Broadcast(dTask)
 	}
 }
 
@@ -117,7 +117,7 @@ func (y *ytdl) taskExitHandler(dTask *task.DTask) func() {
 		if dTask.Status == task.Downloading {
 			dTask.Status = task.Paused
 		}
-		ws.RemoveHeartbeatData(engine.TaskProgressGroup, dTask.ID)
+		y.Broadcast(dTask)
 	}
 }
 

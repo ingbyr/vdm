@@ -34,4 +34,7 @@ type Engine interface {
 
 	// DownloadMedia TODO context
 	DownloadMedia(task *task.DTask)
+
+	// Broadcast the current download task data
+	Broadcast(task *task.DTask)
 }

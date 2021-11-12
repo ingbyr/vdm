@@ -23,7 +23,7 @@ const (
 
 // DTask is a media downloading task
 type DTask struct {
-	db.Model
+	*db.Model
 	*DTaskOpt
 	*Progress
 	*media.Media

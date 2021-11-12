@@ -42,7 +42,7 @@ func (c *Client) Read() {
 			c.Socket.Close()
 			break
 		}
-		log.Debug("Recv msg from Client %s: %s", c.ID, string(msg))
+		log.Debugw("receive msg", "client", c.ID, "msg", string(msg))
 	}
 }
 
@@ -59,7 +59,7 @@ func (c *Client) Write() {
 				Manager.unregister <- c
 				return
 			}
-			log.Debug("client %s send msg: %s", c.ID, string(msg))
+			log.Debugw("send msg", "client", c.ID, "msg", string(msg))
 			c.Socket.WriteMessage(websocket.TextMessage, msg)
 		}
 	}

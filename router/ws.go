@@ -12,8 +12,8 @@ func WsConnect(c *gin.Context) {
 	ws.Register(client)
 }
 
-func WsSendMsg(c *gin.Context) {
+func WsBroadcast(c *gin.Context) {
 	msg := c.Query("msg")
-	ws.SendBroadcast([]byte(msg))
-	c.String(http.StatusOK, "vdm-ws send %s", msg)
+	ws.Broadcast([]byte(msg))
+	c.String(http.StatusOK, "ws broadcast %s", msg)
 }

@@ -3,26 +3,24 @@ package ws
 import (
 	"context"
 	"encoding/json"
-	"fmt"
-	"github.com/ingbyr/vdm/pkg/setting"
-	"time"
 )
 
 type manager struct {
-	clients       map[string]*Client
-	register      chan *Client
-	unregister    chan *Client
-	broadcast     chan []byte
-	heartbeatData map[string]map[string]interface{}
+	clients    map[string]*Client
+	register   chan *Client
+	unregister chan *Client
+	broadcast  chan []byte
+	//heartbeatData map[string]map[string]interface{}
 }
 
 var Manager = manager{
-	clients:       make(map[string]*Client),
-	register:      make(chan *Client),
-	unregister:    make(chan *Client),
-	broadcast:     make(chan []byte),
+	clients:    make(map[string]*Client),
+	register:   make(chan *Client),
+	unregister: make(chan *Client),
+	broadcast:  make(chan []byte, 1024),
 	// FIXME map causes memory leaking
-	heartbeatData: make(map[string]map[string]interface{}),
+	//heartbeatData: make(map[string]map[string]interface{}),
+
 }
 
 func startManager(ctx context.Context) {
@@ -43,7 +41,7 @@ func startManager(ctx context.Context) {
 			if len(Manager.clients) == 0 {
 				continue
 			}
-			log.Debug("broadcast msg size: %d", len(msg))
+			log.Debugw("broadcast msg", "size", len(msg))
 			for _, c := range Manager.clients {
 				select {
 				case c.Send <- msg:
@@ -64,41 +62,41 @@ func Register(client *Client) {
 	go client.Write()
 }
 
-func SendBroadcast(msg []byte) {
+func Broadcast(msg []byte) {
 	Manager.broadcast <- msg
 }
 
-func Heartbeat(ctx context.Context) {
-	ticker := time.NewTicker(setting.AppSetting.HeartbeatInterval * time.Second)
-	defer ticker.Stop()
-	for {
-		select {
-		case <-ticker.C:
-			InvokeHeartbeat()
-		case <-ctx.Done():
-			return
-		}
-	}
-}
+//func Heartbeat(ctx context.Context) {
+//	ticker := time.NewTicker(setting.AppSetting.HeartbeatInterval * time.Second)
+//	defer ticker.Stop()
+//	for {
+//		select {
+//		case <-ticker.C:
+//			InvokeHeartbeat()
+//		case <-ctx.Done():
+//			return
+//		}
+//	}
+//}
 
-func InvokeHeartbeat() {
-	data, _ := json.Marshal(Manager.heartbeatData)
-	SendBroadcast(data)
-}
-
-func AppendHeartbeatData(group string, id string, data interface{}) {
-	if _, ok := Manager.heartbeatData[group]; !ok {
-		log.Debug("create heartbeat group: %s", group)
-		Manager.heartbeatData[group] = make(map[string]interface{})
-	}
-	Manager.heartbeatData[group][id] = data
-}
-
-func RemoveHeartbeatData(group string, id interface{}) {
-	if _, ok := Manager.heartbeatData[group]; !ok {
-		return
-	}
-	// must send once before removing
-	InvokeHeartbeat()
-	delete(Manager.heartbeatData[group], fmt.Sprintf("%v", id))
-}
+//func InvokeHeartbeat() {
+//	data, _ := json.Marshal(Manager.heartbeatData)
+//	Broadcast(data)
+//}
+//
+//func AppendHeartbeatData(group string, id string, data interface{}) {
+//	if _, ok := Manager.heartbeatData[group]; !ok {
+//		log.Debug("create heartbeat group: %s", group)
+//		Manager.heartbeatData[group] = make(map[string]interface{})
+//	}
+//	Manager.heartbeatData[group][id] = data
+//}
+//
+//func RemoveHeartbeatData(group string, id interface{}) {
+//	if _, ok := Manager.heartbeatData[group]; !ok {
+//		return
+//	}
+//	// must send once before removing
+//	InvokeHeartbeat()
+//	delete(Manager.heartbeatData[group], fmt.Sprintf("%v", id))
+//}

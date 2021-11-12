@@ -15,7 +15,7 @@ import (
 )
 
 func GetEngines(c *gin.Context) {
-	r.OK(c, engine.Manager.Engines)
+	r.OK(c, engine.Engines())
 }
 
 func FetchMediaInfo(c *gin.Context) {
@@ -24,7 +24,7 @@ func FetchMediaInfo(c *gin.Context) {
 		r.F(c, e.InvalidParams)
 		return
 	}
-	res, err := engine.Manager.FetchMediaInfo(mtask)
+	res, err := engine.FetchMediaInfo(mtask)
 	if err != nil {
 		r.FE(c, e.FetchMediaInfoError, err)
 		return
@@ -38,15 +38,14 @@ func DownloadMedia(c *gin.Context) {
 		r.F(c, e.InvalidParams)
 		return
 	}
-	t := task.NewDTask(taskOpt)
-	err := engine.Manager.DownloadMedia(t)
-	if err != nil {
+	dTask := task.NewDTask(taskOpt)
+	if err := engine.DownloadMedia(dTask); err != nil {
 		r.F(c, e.DownloadMediaError)
 		return
 	}
 	// save to database
-	db.DB.Create(t)
-	r.OK(c, t)
+	db.DB.Create(dTask)
+	r.OK(c, dTask)
 }
 
 func GetDownloadTasks(c *gin.Context) {

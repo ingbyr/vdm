@@ -15,7 +15,7 @@ import (
 )
 
 var (
-	Manager = &manager{
+	m = &manager{
 		Engines: make(map[string]Engine),
 	}
 )
@@ -24,20 +24,24 @@ type manager struct {
 	Engines map[string]Engine `json:"engines,omitempty"`
 }
 
+func Engines() map[string]Engine {
+	return m.Engines
+}
+
 func Register(engine Engine) {
 	if _, err := exec.LookPath(engine.GetBase().ExecutorPath); err != nil {
 		engine.GetBase().Valid = false
 		log.Warnf("engine '%s' is not valid because '%s' not found", engine.GetBase().Name, engine.GetBase().ExecutorPath)
 	}
-	Manager.Engines[engine.GetBase().Name] = engine
+	m.Engines[engine.GetBase().Name] = engine
 }
 
-func (m *manager) Enabled(engine Engine) bool {
+func Enabled(engine Engine) bool {
 	_, ok := m.Engines[engine.GetBase().Name]
 	return ok
 }
 
-func (m *manager) FetchMediaInfo(mTask *task.MTask) (*media.Media, error) {
+func FetchMediaInfo(mTask *task.MTask) (*media.Media, error) {
 	engine, ok := m.Engines[mTask.Engine]
 	if !ok {
 		return nil, errors.New("not found Base")
@@ -46,10 +50,10 @@ func (m *manager) FetchMediaInfo(mTask *task.MTask) (*media.Media, error) {
 	return engine.FetchMediaInfo(mTask)
 }
 
-func (m *manager) DownloadMedia(task *task.DTask) error {
+func DownloadMedia(task *task.DTask) error {
 	engine, ok := m.Engines[task.Engine]
 	if !ok {
-		return errors.New(fmt.Sprintf("engine '%s' not found or is disabled", task.Engine))
+		return fmt.Errorf("engine '%s' not found", task.Engine)
 	}
 	task.Ctx, task.Cancel = context.WithCancel(ctx)
 	engine.DownloadMedia(task)

@@ -17,7 +17,7 @@ var log = logging.New("db")
 
 func Setup() {
 	if DB != nil {
-		return
+		panic("can not setup database again")
 	}
 	var err error
 	var dbPath string
