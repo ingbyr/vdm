@@ -15,28 +15,28 @@ import (
 // Model is a base database model
 type Model struct {
 	ID        snowflake.ID `json:"id" gorm:"primaryKey" form:"id"`
-	CreatedAt *JsonTime    `json:"createTime" gorm:"embedded column:created_at" form:"created_at"`
-	UpdatedAt *JsonTime    `json:"updateTime" gorm:"embedded column:updated_at" form:"updated_at"`
+	CreatedAt *LocalTime   `json:"createTime" gorm:"embedded column:created_at" form:"created_at"`
+	UpdatedAt *LocalTime   `json:"updateTime" gorm:"embedded column:updated_at" form:"updated_at"`
 }
 
 func NewModel() *Model {
 	return &Model{
 		ID:        uuid.Instance.Generate(),
-		CreatedAt: &JsonTime{time.Now()},
-		UpdatedAt: &JsonTime{time.Now()},
+		CreatedAt: &LocalTime{time.Now()},
+		UpdatedAt: &LocalTime{time.Now()},
 	}
 }
 
-// JsonTime provide a time which can be formatted in json
-type JsonTime struct {
+// LocalTime provide a time which can be formatted in json and database
+type LocalTime struct {
 	time.Time
 }
 
-func (t *JsonTime) MarshalJSON() ([]byte, error) {
+func (t *LocalTime) MarshalJSON() ([]byte, error) {
 	return []byte(fmt.Sprintf(`"%s"`, t.Format("2006-01-02 15:04:05"))), nil
 }
 
-func (t *JsonTime) UnmarshalJSON(data []byte) error {
+func (t *LocalTime) UnmarshalJSON(data []byte) error {
 	var err error
 	if t.Time, err = time.Parse(`"2006-01-02 15:04:05"`, string(data)); err != nil {
 		return err
@@ -44,7 +44,7 @@ func (t *JsonTime) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (t *JsonTime) Value() (driver.Value, error) {
+func (t *LocalTime) Value() (driver.Value, error) {
 	var zeroTime time.Time
 	if t.Time.UnixNano() == zeroTime.UnixNano() {
 		return nil, nil
@@ -52,10 +52,10 @@ func (t *JsonTime) Value() (driver.Value, error) {
 	return t.Time, nil
 }
 
-func (t *JsonTime) Scan(v interface{}) error {
+func (t *LocalTime) Scan(v interface{}) error {
 	value, ok := v.(time.Time)
 	if ok {
-		*t = JsonTime{Time: value}
+		*t = LocalTime{Time: value}
 		return nil
 	}
 	return fmt.Errorf("can not convert %v to timestamp", v)
