@@ -8,6 +8,7 @@ type Media struct {
 	Title    string   `json:"title"  form:"title" binding:"required"`
 	Desc     string   `json:"desc" form:"desc" binding:"required"`
 	Url      string   `json:"url" form:"url" binding:"required"`
+	// TODO remove this
 	FormatId string   `json:"formatId" form:"formatId" binding:"required"`
 	Formats  []Format `json:"formats,omitempty" form:"formats" gorm:"-"`
 }

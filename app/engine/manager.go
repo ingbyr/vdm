@@ -34,7 +34,9 @@ func Register(engine Engine) {
 	}
 	if _, err := exec.LookPath(engine.GetConfig().Executor); err != nil {
 		engine.GetConfig().Valid = false
-		log.Warnf("engine '%s' is not valid because '%s' not found", engine.GetConfig().Name, engine.GetConfig().Executor)
+		log.Warnw("engine is not valid",
+			"engine", engine.GetConfig().Name,
+			"notFound", engine.GetConfig().Executor)
 	}
 	m.Engines[engine.GetConfig().Name] = engine
 }

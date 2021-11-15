@@ -49,7 +49,5 @@ func (b *Config) Broadcast(dTask *task.DTask) {
 		panic("db not loaded")
 	}
 	store.DB.Save(dTask)
-
-
 	ws.Broadcast(jsonData)
 }

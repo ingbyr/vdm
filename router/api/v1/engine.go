@@ -8,7 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/ingbyr/vdm/app/engine"
 	"github.com/ingbyr/vdm/app/task"
-	"github.com/ingbyr/vdm/pkg/store"
 	"github.com/ingbyr/vdm/pkg/e"
 	"github.com/ingbyr/vdm/pkg/r"
 )
@@ -42,7 +41,5 @@ func DownloadMedia(c *gin.Context) {
 		r.FE(c, e.DownloadMediaError, err)
 		return
 	}
-	// save to database
-	store.DB.Create(dtask)
 	r.OK(c, dtask)
 }
