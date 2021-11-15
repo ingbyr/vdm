@@ -25,7 +25,7 @@ const (
 type DTask struct {
 	*db.Model
 	Media       *media.Media       `json:"media" gorm:"embedded"`
-	Engine      string             `json:"engine" gorm:"engine" form:"engine"`
+	Engine      string             `json:"engine" gorm:"engine" form:"engine" binding:"required"`
 	StoragePath string             `json:"storagePath" gorm:"storagePath" form:"storagePath"`
 	Progress    *Progress          `json:"progress" gorm:"embedded"`
 	Status      status             `json:"status" gorm:"status"`

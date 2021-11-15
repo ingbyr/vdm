@@ -20,7 +20,7 @@ func GetEngines(c *gin.Context) {
 func FetchMediaInfo(c *gin.Context) {
 	mtask := new(task.MTask)
 	if err := c.BindJSON(mtask); err != nil {
-		r.F(c, e.InvalidParams)
+		r.FE(c, e.InvalidParams, err)
 		return
 	}
 	res, err := engine.FetchMediaInfo(mtask)
@@ -34,13 +34,12 @@ func FetchMediaInfo(c *gin.Context) {
 func DownloadMedia(c *gin.Context) {
 	dtask := task.NewDTask()
 	if err := c.BindJSON(dtask); err != nil {
-		log.Error(err)
-		r.F(c, e.InvalidParams)
+		r.FE(c, e.InvalidParams, err)
 		return
 	}
 	if err := engine.DownloadMedia(dtask); err != nil {
 		log.Error(err)
-		r.F(c, e.DownloadMediaError)
+		r.FE(c, e.DownloadMediaError, err)
 		return
 	}
 	// save to database
