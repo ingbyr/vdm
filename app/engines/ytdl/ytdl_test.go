@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"github.com/ingbyr/vdm/app/media"
 	"github.com/ingbyr/vdm/app/task"
-	"github.com/ingbyr/vdm/pkg/db"
+	"github.com/ingbyr/vdm/pkg/store"
 	"github.com/ingbyr/vdm/pkg/setting"
 	"path"
 	"testing"
@@ -23,8 +23,8 @@ const (
 
 func init() {
 	_ytdl.Executor = path.Join(baseDir, _ytdl.Executor)
-	db.Setup()
-	db.DB.AutoMigrate(task.DTask{})
+	store.Setup()
+	store.DB.AutoMigrate(task.DTask{})
 }
 
 func TestYoutubedl_FetchMediaInfo(t *testing.T) {
@@ -82,7 +82,7 @@ func TestYoutubedl_GenerateStoragePath(t *testing.T) {
 func TestYoutubedl_DownloadMedia(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.TODO())
 	dtask := &task.DTask{
-		Model:       db.NewModel(),
+		Model:       store.NewModel(),
 		Status:      task.Created,
 		MediaUrl:    mediaUrl,
 		Engine:      _ytdl.Name,

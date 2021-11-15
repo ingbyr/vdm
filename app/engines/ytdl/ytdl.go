@@ -28,7 +28,7 @@ const (
 var (
 	log   = logging.New("ytdl")
 	_ytdl = &ytdl{
-		Info: engine.Info{
+		Config: engine.Config{
 			Version:  "local",
 			Name:     name,
 			Executor: executorPath,
@@ -49,7 +49,7 @@ func init() {
 
 // ytdl is youtube-dl download engine
 type ytdl struct {
-	engine.Info
+	engine.Config
 	mediaNameTemplate string
 	regSpeed          *regexp.Regexp
 	regProgress       *regexp.Regexp

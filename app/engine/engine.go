@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	log = logging.New("Info")
+	log = logging.New("Config")
 	ctx context.Context
 )
 
@@ -22,8 +22,8 @@ func Setup(globalCtx context.Context) {
 
 // Engine is a common download engine
 type Engine interface {
-	// GetInfo get engine base info
-	GetInfo() *Info
+	// GetConfig get engine config
+	GetConfig() *Config
 
 	// FetchMediaInfo fetch media json format info
 	FetchMediaInfo(mtask *task.MTask) (*media.Media, error)

@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/ingbyr/vdm/app/page"
 	"github.com/ingbyr/vdm/app/task"
-	"github.com/ingbyr/vdm/pkg/db"
+	"github.com/ingbyr/vdm/pkg/store"
 	"github.com/ingbyr/vdm/pkg/e"
 	"github.com/ingbyr/vdm/pkg/r"
 )
@@ -19,7 +19,7 @@ func GetDownloadTasks(c *gin.Context) {
 		log.Panic("get page failed: %v", err)
 		r.FE(c, e.InvalidParams, err)
 	}
-	tx := db.DB.Model(dtask)
+	tx := store.DB.Model(dtask)
 	if dtask.Media.Title != "" {
 		tx.Where("title LIKE ?", "%"+dtask.Media.Title+"%")
 		dtask.Media.Title = ""

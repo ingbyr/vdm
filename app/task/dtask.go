@@ -7,27 +7,16 @@ package task
 import (
 	"context"
 	"github.com/ingbyr/vdm/app/media"
-	"github.com/ingbyr/vdm/pkg/db"
-)
-
-type status = int
-
-const (
-	Created status = iota
-	Downloading
-	Merging
-	Paused
-	Completed
-	Failed
+	"github.com/ingbyr/vdm/pkg/store"
 )
 
 // DTask is a media downloading task
 type DTask struct {
-	*db.Model
-	Media       *media.Media       `json:"media" gorm:"embedded"`
+	*store.Model
+	Media       *media.Media       `json:"media" gorm:"embedded;embeddedPrefix:media_"`
 	Engine      string             `json:"engine" gorm:"engine" form:"engine" binding:"required"`
 	StoragePath string             `json:"storagePath" gorm:"storagePath" form:"storagePath"`
-	Progress    *Progress          `json:"progress" gorm:"embedded"`
+	Progress    *Progress          `json:"progress" gorm:"embedded;embeddedPrefix:progress_"`
 	Status      status             `json:"status" gorm:"status"`
 	Ctx         context.Context    `json:"-" gorm:"-"`
 	Cancel      context.CancelFunc `json:"-" gorm:"-"`
@@ -41,7 +30,7 @@ type Progress struct {
 
 func NewDTask() *DTask {
 	return &DTask{
-		Model:    db.NewModel(),
+		Model:    store.NewModel(),
 		Progress: &Progress{},
 	}
 }

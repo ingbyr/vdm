@@ -2,7 +2,7 @@
  @Author: ingbyr
 */
 
-package db
+package store
 
 import (
 	"github.com/ingbyr/vdm/pkg/logging"

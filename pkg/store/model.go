@@ -2,7 +2,7 @@
  @Author: ingbyr
 */
 
-package db
+package store
 
 import (
 	"database/sql/driver"

@@ -8,13 +8,13 @@ import (
 	"encoding/json"
 	"github.com/ingbyr/vdm/app/media"
 	"github.com/ingbyr/vdm/app/task"
-	"github.com/ingbyr/vdm/pkg/db"
+	"github.com/ingbyr/vdm/pkg/store"
 	"github.com/ingbyr/vdm/pkg/ws"
 )
 
-var _ Engine = (*Info)(nil)
+var _ Engine = (*Config)(nil)
 
-type Info struct {
+type Config struct {
 	// Name is a common name for engine
 	Name string `json:"name"`
 
@@ -31,23 +31,25 @@ type Info struct {
 	Valid bool `json:"valid"`
 }
 
-func (b *Info) GetInfo() *Info {
+func (b *Config) GetConfig() *Config {
 	return b
 }
 
-func (b *Info) FetchMediaInfo(mTask *task.MTask) (*media.Media, error) {
+func (b *Config) FetchMediaInfo(mTask *task.MTask) (*media.Media, error) {
 	panic("implement me")
 }
 
-func (b *Info) DownloadMedia(dTask *task.DTask) error {
+func (b *Config) DownloadMedia(dTask *task.DTask) error {
 	panic("implement me")
 }
 
-func (b *Info) Broadcast(dTask *task.DTask) {
+func (b *Config) Broadcast(dTask *task.DTask) {
 	jsonData, _ := json.Marshal(dTask)
-	if db.DB == nil {
+	if store.DB == nil {
 		panic("db not loaded")
 	}
-	db.DB.Save(dTask)
+	store.DB.Save(dTask)
+
+
 	ws.Broadcast(jsonData)
 }

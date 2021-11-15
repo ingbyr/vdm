@@ -12,7 +12,7 @@ import (
 	"github.com/ingbyr/vdm/app/engine"
 	_ "github.com/ingbyr/vdm/app/engines"
 	"github.com/ingbyr/vdm/app/schema"
-	"github.com/ingbyr/vdm/pkg/db"
+	"github.com/ingbyr/vdm/pkg/store"
 	"github.com/ingbyr/vdm/pkg/logging"
 	"github.com/ingbyr/vdm/pkg/setting"
 	"github.com/ingbyr/vdm/pkg/ws"
@@ -30,7 +30,7 @@ func setup() (context.Context, context.CancelFunc) {
 	ctx, cancel := context.WithCancel(context.Background())
 	setting.Setup()
 	ws.Setup(ctx)
-	db.Setup()
+	store.Setup()
 	engine.Setup(ctx)
 	schema.Setup()
 	gin.SetMode(setting.ServerSetting.RunMode)
