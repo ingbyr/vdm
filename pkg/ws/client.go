@@ -1,6 +1,7 @@
 package ws
 
 import (
+	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"github.com/ingbyr/vdm/pkg/logging"
@@ -13,6 +14,8 @@ type Client struct {
 	ID     string
 	Socket *websocket.Conn
 	Send   chan []byte
+	Ctx    context.Context
+	Cancel context.CancelFunc
 }
 
 func NewClient(uid string, c *gin.Context) *Client {
@@ -29,38 +32,45 @@ func NewClient(uid string, c *gin.Context) *Client {
 	}
 }
 
-func (c *Client) Read() {
+func (c *Client) ReadLoop() {
 	defer func() {
 		Manager.unregister <- c
 		c.Socket.Close()
 	}()
 	for {
-		c.Socket.PongHandler()
-		_, msg, err := c.Socket.ReadMessage()
-		if err != nil {
-			Manager.unregister <- c
-			c.Socket.Close()
-			break
+		select {
+		case <-c.Ctx.Done():
+			return
+		default:
+			c.Socket.PongHandler()
+			_, msg, err := c.Socket.ReadMessage()
+			if err != nil {
+				return
+			}
+			log.Debugw("receive msg", "client", c.ID, "msg", string(msg))
 		}
-		log.Debugw("receive msg", "client", c.ID, "msg", string(msg))
 	}
 }
 
-func (c *Client) Write() {
+func (c *Client) WriteLoop() {
 	defer func() {
+		Manager.unregister <- c
 		c.Socket.Close()
 	}()
 
 	for {
 		select {
+		case <-c.Ctx.Done():
+			return
 		case msg, ok := <-c.Send:
 			if !ok {
-				c.Socket.WriteMessage(websocket.CloseMessage, []byte{})
-				Manager.unregister <- c
+				_ = c.Socket.WriteMessage(websocket.CloseMessage, []byte{})
 				return
 			}
 			log.Debugw("send msg", "client", c.ID, "msg", string(msg))
-			c.Socket.WriteMessage(websocket.TextMessage, msg)
+			if err := c.Socket.WriteMessage(websocket.TextMessage, msg); err != nil {
+				return
+			}
 		}
 	}
 }

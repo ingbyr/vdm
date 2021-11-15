@@ -32,12 +32,14 @@ func FetchMediaInfo(c *gin.Context) {
 }
 
 func DownloadMedia(c *gin.Context) {
-	dtask := new(task.DTask)
+	dtask := task.NewDTask()
 	if err := c.BindJSON(dtask); err != nil {
+		log.Error(err)
 		r.F(c, e.InvalidParams)
 		return
 	}
 	if err := engine.DownloadMedia(dtask); err != nil {
+		log.Error(err)
 		r.F(c, e.DownloadMediaError)
 		return
 	}

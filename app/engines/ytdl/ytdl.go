@@ -68,17 +68,17 @@ func (y *ytdl) FetchMediaInfo(mtask *task.MTask) (*media.Media, error) {
 	if err = json.Unmarshal(output, mediaInfo); err != nil {
 		return nil, err
 	}
-	return mediaInfo.standardize(), nil
+	return mediaInfo.standardize(mtask), nil
 }
 
 func (y *ytdl) DownloadMedia(dtask *task.DTask) error {
 	execArgs := exec.NewArgs(y.Executor)
-	execArgs.Add(dtask.MediaUrl)
+	execArgs.Add(dtask.Media.Url)
 	execArgs.Add(argNewLine)
 	execArgs.Add(argNoColor)
 	execArgs.AddV(argOutput, y.getStoragePath(dtask.StoragePath))
-	if dtask.FormatId != "" {
-		execArgs.AddV(argFormat, dtask.FormatId)
+	if dtask.Media.FormatId != "" {
+		execArgs.AddV(argFormat, dtask.Media.FormatId)
 	}
 	callback := exec.Callback{
 		OnNewLine: y.taskUpdateHandler(dtask),

@@ -5,9 +5,11 @@
 package media
 
 type Media struct {
-	Title   string   `json:"title"  form:"title"`
-	Desc    string   `json:"description" form:"desc"`
-	Formats []Format `json:"formats,omitempty" form:"formats" gorm:"-"`
+	Title    string   `json:"title"  form:"title"`
+	Desc     string   `json:"desc" form:"desc"`
+	Url      string   `json:"url" form:"url"`
+	FormatId string   `json:"formatId" form:"formatId"`
+	Formats  []Format `json:"formats,omitempty" form:"formats" gorm:"-"`
 }
 
 type Format struct {
