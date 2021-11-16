@@ -27,7 +27,7 @@ type MediaFormat struct {
 }
 
 // standardize convert media info of ytdl to standardized media format
-func (m *MediaInfo) standardize(mtask *task.MTask) *media.Media {
+func (m *MediaInfo) standardize(mtask *task.MTask) *media.Formats {
 	yFormats := m.Formats
 	formats := make([]media.Format, 0, len(yFormats))
 	for _, yFormat := range m.Formats {
@@ -39,10 +39,12 @@ func (m *MediaInfo) standardize(mtask *task.MTask) *media.Media {
 			FileSize: yFormat.FileSize,
 		})
 	}
-	return &media.Media{
-		Title:   m.Title,
-		Desc:    m.Desc,
-		Url:     mtask.MediaUrl,
+	return &media.Formats{
+		Info: &media.Info{
+			Title: m.Title,
+			Desc:  m.Desc,
+			Url:   mtask.MediaUrl,
+		},
 		Formats: formats,
 	}
 }

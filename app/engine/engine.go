@@ -26,7 +26,7 @@ type Engine interface {
 	GetConfig() *Config
 
 	// FetchMediaInfo fetch media json format info
-	FetchMediaInfo(mtask *task.MTask) (*media.Media, error)
+	FetchMediaInfo(mtask *task.MTask) (*media.Formats, error)
 
 	// DownloadMedia download specified media
 	DownloadMedia(dtask *task.DTask) error

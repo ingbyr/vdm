@@ -35,7 +35,7 @@ func (b *Config) GetConfig() *Config {
 	return b
 }
 
-func (b *Config) FetchMediaInfo(mTask *task.MTask) (*media.Media, error) {
+func (b *Config) FetchMediaInfo(mTask *task.MTask) (*media.Formats, error) {
 	panic("implement me")
 }
 

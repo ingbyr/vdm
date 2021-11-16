@@ -13,22 +13,20 @@ import (
 // DTask is a media downloading task
 type DTask struct {
 	*store.Model
-	// TODO decouple
-	Media       *media.Media       `json:"media" gorm:"embedded;embeddedPrefix:media_"`
+	Media       *media.Selection   `json:"media" gorm:"embedded;embeddedPrefix:media_"`
 	Engine      string             `json:"engine" gorm:"engine" form:"engine" binding:"required"`
 	ExtArgs     string             `json:"extArgs" gorm:"ext_args"`
 	StoragePath string             `json:"storagePath" gorm:"storage_path" form:"storagePath"`
-	// TODO embed this
 	Progress    *Progress          `json:"progress" gorm:"embedded;embeddedPrefix:progress_"`
-	Status      status             `json:"status" gorm:"status"`
 	Ctx         context.Context    `json:"-" gorm:"-"`
 	Cancel      context.CancelFunc `json:"-" gorm:"-"`
 }
 
 type Progress struct {
+	Status    status `json:"status" gorm:"status"`
+	CmdOutput string `json:"cmdOutput" gorm:"cmd_output"`
 	Percent   string `json:"progress" gorm:"percent"`
 	Speed     string `json:"speed" gorm:"speed"`
-	StatusMsg string `json:"status_msg" gorm:"status_msg"`
 }
 
 func NewDTask() *DTask {

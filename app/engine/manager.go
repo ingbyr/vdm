@@ -41,7 +41,7 @@ func Register(engine Engine) {
 	m.Engines[engine.GetConfig().Name] = engine
 }
 
-func FetchMediaInfo(mtask *task.MTask) (*media.Media, error) {
+func FetchMediaInfo(mtask *task.MTask) (*media.Formats, error) {
 	engine, ok := m.Engines[mtask.Engine]
 	if !ok {
 		return nil, fmt.Errorf("can not found engine %s", mtask.Engine)

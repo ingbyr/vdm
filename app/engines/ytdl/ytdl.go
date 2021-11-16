@@ -56,7 +56,7 @@ type ytdl struct {
 	progressCompleted string
 }
 
-func (y *ytdl) FetchMediaInfo(mtask *task.MTask) (*media.Media, error) {
+func (y *ytdl) FetchMediaInfo(mtask *task.MTask) (*media.Formats, error) {
 	execArgs := exec.NewArgs(y.Executor)
 	execArgs.Add(mtask.MediaUrl)
 	execArgs.Add(argDumpJson)
@@ -97,9 +97,9 @@ func (y *ytdl) taskUpdateHandler(dtask *task.DTask) func(line string) {
 			dtask.Progress.Percent = progressStr[:len(progressStr)-1]
 		}
 		// update status
-		dtask.Status = task.Downloading
+		dtask.Progress.Status = task.Downloading
 		if strings.HasPrefix(dtask.Progress.Percent, y.progressCompleted) || strings.Contains(line, "has already been downloaded") {
-			dtask.Status = task.Completed
+			dtask.Progress.Status = task.Completed
 		}
 		// update speed
 		dtask.Progress.Speed = y.regSpeed.FindString(line)
@@ -110,16 +110,16 @@ func (y *ytdl) taskUpdateHandler(dtask *task.DTask) func(line string) {
 
 func (y *ytdl) taskErrorHandler(dtask *task.DTask) func(errMsg string) {
 	return func(errMsg string) {
-		dtask.Status = task.Failed
-		dtask.Progress.StatusMsg = errMsg
+		dtask.Progress.Status = task.Failed
+		dtask.Progress.CmdOutput = errMsg
 		y.Broadcast(dtask)
 	}
 }
 
 func (y *ytdl) taskExitHandler(dtask *task.DTask) func() {
 	return func() {
-		if dtask.Status == task.Downloading {
-			dtask.Status = task.Paused
+		if dtask.Progress.Status == task.Downloading {
+			dtask.Progress.Status = task.Paused
 		}
 		y.Broadcast(dtask)
 	}
