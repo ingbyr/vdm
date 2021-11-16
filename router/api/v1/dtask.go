@@ -6,30 +6,22 @@ package v1
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/ingbyr/vdm/app/page"
 	"github.com/ingbyr/vdm/app/task"
-	"github.com/ingbyr/vdm/pkg/store"
 	"github.com/ingbyr/vdm/pkg/e"
 	"github.com/ingbyr/vdm/pkg/r"
+	"github.com/ingbyr/vdm/pkg/store"
 )
 
 func GetDownloadTasks(c *gin.Context) {
 	dtask := &task.DTask{}
 	if err := c.ShouldBindQuery(dtask); err != nil {
-		log.Panic("get page failed: %v", err)
 		r.FE(c, e.InvalidParams, err)
+		return
 	}
-	tx := store.DB.Model(dtask)
-	if dtask.Media.Title != "" {
-		tx.Where("title LIKE ?", "%"+dtask.Media.Title+"%")
-		dtask.Media.Title = ""
+	p := &store.Page{}
+	if err := c.ShouldBindQuery(p); err != nil {
+		r.FE(c, e.InvalidUrl, err)
+		return
 	}
-	if dtask.Media.Desc != "" {
-		tx.Where("desc LIKE ?", "%"+dtask.Media.Desc+"%")
-		dtask.Media.Desc = ""
-	}
-	tx.Where(dtask).Order("status DESC")
-	p := page.Query(c, tx, &[]task.DTask{})
-	r.OK(c, p)
+	r.OK(c, dtask.GetDTasks(p))
 }
-

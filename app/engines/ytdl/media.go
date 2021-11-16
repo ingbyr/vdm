@@ -28,15 +28,14 @@ type MediaFormat struct {
 
 // standardize convert media info of ytdl to standardized media format
 func (m *MediaInfo) standardize(mtask *task.MTask) *media.Formats {
-	yFormats := m.Formats
-	formats := make([]media.Format, 0, len(yFormats))
-	for _, yFormat := range m.Formats {
+	formats := make([]media.Format, 0, len(m.Formats))
+	for _, format := range m.Formats {
 		formats = append(formats, media.Format{
-			Format:   yFormat.Format,
-			Id:       yFormat.FormatId,
-			Url:      yFormat.Url,
-			Ext:      yFormat.Ext,
-			FileSize: yFormat.FileSize,
+			Format:   format.Format,
+			Id:       format.FormatId,
+			Url:      format.Url,
+			Ext:      format.Ext,
+			FileSize: format.FileSize,
 		})
 	}
 	return &media.Formats{

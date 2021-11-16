@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"github.com/ingbyr/vdm/app/media"
 	"github.com/ingbyr/vdm/app/task"
-	"github.com/ingbyr/vdm/pkg/store"
 	"os/exec"
 	"time"
 )
@@ -29,16 +28,16 @@ func Engines() map[string]Engine {
 }
 
 func Register(engine Engine) {
-	if !engine.GetConfig().Enable {
+	if !engine.GetBase().Enable {
 		return
 	}
-	if _, err := exec.LookPath(engine.GetConfig().Executor); err != nil {
-		engine.GetConfig().Valid = false
+	if _, err := exec.LookPath(engine.GetBase().Executor); err != nil {
+		engine.GetBase().Valid = false
 		log.Warnw("engine is not valid",
-			"engine", engine.GetConfig().Name,
-			"notFound", engine.GetConfig().Executor)
+			"engine", engine.GetBase().Name,
+			"notFound", engine.GetBase().Executor)
 	}
-	m.Engines[engine.GetConfig().Name] = engine
+	m.Engines[engine.GetBase().Name] = engine
 }
 
 func FetchMediaInfo(mtask *task.MTask) (*media.Formats, error) {
@@ -47,7 +46,7 @@ func FetchMediaInfo(mtask *task.MTask) (*media.Formats, error) {
 		return nil, fmt.Errorf("can not found engine %s", mtask.Engine)
 	}
 	mtask.Ctx, mtask.Cancel = context.WithTimeout(ctx, 10*time.Second)
-	return engine.FetchMediaInfo(mtask)
+	return engine.FetchMediaFormats(mtask)
 }
 
 func DownloadMedia(dtask *task.DTask) error {
@@ -56,7 +55,6 @@ func DownloadMedia(dtask *task.DTask) error {
 		return fmt.Errorf("can not found engine %s", dtask.Engine)
 	}
 	// TODO check same task in db
-	dtask.Model = store.NewModel()
 	dtask.Ctx, dtask.Cancel = context.WithCancel(ctx)
 	return engine.DownloadMedia(dtask)
 }

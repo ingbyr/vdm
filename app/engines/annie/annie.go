@@ -8,7 +8,7 @@ import "github.com/ingbyr/vdm/app/engine"
 
 var (
 	annie = &Annie{
-		Config: engine.Config{
+		Base: engine.Base{
 			Version:  "not exist",
 			Name:     "annie",
 			Executor: "not exist",
@@ -22,7 +22,7 @@ func init() {
 	engine.Register(annie)
 }
 
-// Annie downloader Config core 'annie'
+// Annie downloader Base core 'annie'
 type Annie struct {
-	engine.Config
+	engine.Base
 }

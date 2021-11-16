@@ -28,7 +28,7 @@ const (
 var (
 	log   = logging.New("ytdl")
 	_ytdl = &ytdl{
-		Config: engine.Config{
+		Base: engine.Base{
 			Version:  "local",
 			Name:     name,
 			Executor: executorPath,
@@ -49,14 +49,14 @@ func init() {
 
 // ytdl is youtube-dl download engine
 type ytdl struct {
-	engine.Config
+	engine.Base
 	mediaNameTemplate string
 	regSpeed          *regexp.Regexp
 	regProgress       *regexp.Regexp
 	progressCompleted string
 }
 
-func (y *ytdl) FetchMediaInfo(mtask *task.MTask) (*media.Formats, error) {
+func (y *ytdl) FetchMediaFormats(mtask *task.MTask) (*media.Formats, error) {
 	execArgs := exec.NewArgs(y.Executor)
 	execArgs.Add(mtask.MediaUrl)
 	execArgs.Add(argDumpJson)
@@ -77,8 +77,8 @@ func (y *ytdl) DownloadMedia(dtask *task.DTask) error {
 	execArgs.Add(argNewLine)
 	execArgs.Add(argNoColor)
 	execArgs.AddV(argOutput, y.getStoragePath(dtask.StoragePath))
-	if dtask.Media.FormatId != "" {
-		execArgs.AddV(argFormat, dtask.Media.FormatId)
+	if dtask.FormatId != "" {
+		execArgs.AddV(argFormat, dtask.FormatId)
 	}
 	callback := exec.Callback{
 		OnNewLine: y.taskUpdateHandler(dtask),

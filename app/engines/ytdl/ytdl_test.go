@@ -35,7 +35,7 @@ func TestYoutubedl_FetchMediaInfo(t *testing.T) {
 		Ctx:      ctx,
 		Cancel:   cancel,
 	}
-	data, err := _ytdl.FetchMediaInfo(mTask)
+	data, err := _ytdl.FetchMediaFormats(mTask)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -50,7 +50,7 @@ func TestYoutubedl_FetchMediaInfo_Timeout(t *testing.T) {
 		Ctx:      ctx,
 		Cancel:   cancel,
 	}
-	data, err := _ytdl.FetchMediaInfo(mtask)
+	data, err := _ytdl.FetchMediaFormats(mtask)
 	if err != nil {
 		t.Fatal(err)
 	}

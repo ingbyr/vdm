@@ -13,7 +13,7 @@ import (
 
 var DB *gorm.DB
 
-var log = logging.New("db")
+var log = logging.New("store")
 
 func Setup() {
 	if DB != nil {

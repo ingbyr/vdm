@@ -12,9 +12,9 @@ import (
 	"github.com/ingbyr/vdm/pkg/ws"
 )
 
-var _ Engine = (*Config)(nil)
+var _ Engine = (*Base)(nil)
 
-type Config struct {
+type Base struct {
 	// Name is a common name for engine
 	Name string `json:"name"`
 
@@ -31,23 +31,24 @@ type Config struct {
 	Valid bool `json:"valid"`
 }
 
-func (b *Config) GetConfig() *Config {
+func (b *Base) GetBase() *Base {
 	return b
 }
 
-func (b *Config) FetchMediaInfo(mTask *task.MTask) (*media.Formats, error) {
+func (b *Base) FetchMediaFormats(mTask *task.MTask) (*media.Formats, error) {
 	panic("implement me")
 }
 
-func (b *Config) DownloadMedia(dTask *task.DTask) error {
+func (b *Base) DownloadMedia(dTask *task.DTask) error {
 	panic("implement me")
 }
 
-func (b *Config) Broadcast(dTask *task.DTask) {
-	jsonData, _ := json.Marshal(dTask)
+func (b *Base) Broadcast(dTask *task.DTask) {
+	dtaskProgress, _ := json.Marshal(dTask.Progress)
 	if store.DB == nil {
 		panic("db not loaded")
 	}
+	// TODO use task.SaveDTask
 	store.DB.Save(dTask)
-	ws.Broadcast(jsonData)
+	ws.Broadcast(dtaskProgress)
 }
