@@ -47,7 +47,7 @@ func init() {
 	engine.Register(_ytdl)
 }
 
-// ytdl is youtube-dl download engine
+// ytdl from https://github.com/yt-dlp/yt-dlp
 type ytdl struct {
 	engine.Base
 	mediaNameTemplate string
@@ -56,7 +56,7 @@ type ytdl struct {
 	progressCompleted string
 }
 
-func (y *ytdl) FetchMediaFormats(mtask *task.MTask) (*media.Formats, error) {
+func (y *ytdl) GetMediaFormats(mtask *task.MTask) (*media.Formats, error) {
 	execArgs := exec.NewArgs(y.Executor)
 	execArgs.Add(mtask.MediaUrl)
 	execArgs.Add(argDumpJson)

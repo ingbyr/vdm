@@ -32,7 +32,7 @@ func initApiV1(r *gin.Engine) {
 	apiv1 := apiGroup.Group("/v1")
 
 	apiv1.GET("/engines", v1.GetEngines)
-	apiv1.POST("/media/info/fetch", v1.FetchMediaInfo)
+	apiv1.GET("/media/formats", v1.GetMediaFormats)
 	apiv1.POST("/media/download", v1.DownloadMedia)
 	apiv1.GET("/tasks", v1.GetDownloadTasks)
 }

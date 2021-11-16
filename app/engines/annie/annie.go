@@ -22,7 +22,7 @@ func init() {
 	engine.Register(annie)
 }
 
-// Annie downloader Base core 'annie'
+// Annie from https://github.com/iawia002/annie
 type Annie struct {
 	engine.Base
 }

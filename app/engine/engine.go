@@ -25,8 +25,8 @@ type Engine interface {
 	// GetBase get engine base info
 	GetBase() *Base
 
-	// FetchMediaFormats fetch media json format info
-	FetchMediaFormats(mtask *task.MTask) (*media.Formats, error)
+	// GetMediaFormats fetch media json format info
+	GetMediaFormats(mtask *task.MTask) (*media.Formats, error)
 
 	// DownloadMedia download specified media
 	DownloadMedia(dtask *task.DTask) error

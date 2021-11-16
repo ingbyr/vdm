@@ -40,13 +40,13 @@ func Register(engine Engine) {
 	m.Engines[engine.GetBase().Name] = engine
 }
 
-func FetchMediaInfo(mtask *task.MTask) (*media.Formats, error) {
+func GetMediaFormats(mtask *task.MTask) (*media.Formats, error) {
 	engine, ok := m.Engines[mtask.Engine]
 	if !ok {
 		return nil, fmt.Errorf("can not found engine %s", mtask.Engine)
 	}
 	mtask.Ctx, mtask.Cancel = context.WithTimeout(ctx, 10*time.Second)
-	return engine.FetchMediaFormats(mtask)
+	return engine.GetMediaFormats(mtask)
 }
 
 func DownloadMedia(dtask *task.DTask) error {
@@ -56,5 +56,6 @@ func DownloadMedia(dtask *task.DTask) error {
 	}
 	// TODO check same task in db
 	dtask.Ctx, dtask.Cancel = context.WithCancel(ctx)
+	dtask.Save()
 	return engine.DownloadMedia(dtask)
 }

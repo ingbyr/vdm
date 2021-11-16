@@ -16,13 +16,13 @@ func GetEngines(c *gin.Context) {
 	r.OK(c, engine.Engines())
 }
 
-func FetchMediaInfo(c *gin.Context) {
+func GetMediaFormats(c *gin.Context) {
 	mtask := new(task.MTask)
-	if err := c.BindJSON(mtask); err != nil {
+	if err := c.ShouldBindQuery(mtask); err != nil {
 		r.FE(c, e.InvalidParams, err)
 		return
 	}
-	res, err := engine.FetchMediaInfo(mtask)
+	res, err := engine.GetMediaFormats(mtask)
 	if err != nil {
 		r.FE(c, e.FetchMediaInfoError, err)
 		return
@@ -32,12 +32,11 @@ func FetchMediaInfo(c *gin.Context) {
 
 func DownloadMedia(c *gin.Context) {
 	dtask := task.NewDTask()
-	if err := c.BindJSON(dtask); err != nil {
+	if err := c.ShouldBindJSON(dtask); err != nil {
 		r.FE(c, e.InvalidParams, err)
 		return
 	}
 	if err := engine.DownloadMedia(dtask); err != nil {
-		log.Error(err)
 		r.FE(c, e.DownloadMediaError, err)
 		return
 	}

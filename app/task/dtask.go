@@ -18,6 +18,7 @@ type DTask struct {
 	// Media is selected media format info
 	Media *media.Info `json:"media" gorm:"embedded"`
 
+	// FormatId is media format id from media formats
 	FormatId string `json:"formatId" form:"formatId"`
 
 	// Engine is one of download engines
@@ -30,7 +31,7 @@ type DTask struct {
 	StoragePath string `json:"storagePath" gorm:"storage_path" form:"storagePath"`
 
 	// Progress will be updated in downloading operation and be sent to websocket client
-	Progress *Progress `json:"progress" gorm:"embedded"`
+	Progress Progress `json:"progress" gorm:"embedded"`
 
 	Ctx    context.Context    `json:"-" gorm:"-"`
 	Cancel context.CancelFunc `json:"-" gorm:"-"`
@@ -49,23 +50,34 @@ func NewDTask() *DTask {
 	model := store.NewModel()
 	return &DTask{
 		Model: model,
-		Progress: &Progress{
+		Progress: Progress{
 			ID: model.ID,
 		},
 	}
 }
 
-func (dtask *DTask) GetDTasks(page *store.Page) *store.Page {
+func (dtask *DTask) Save() {
+	store.DB.Save(dtask)
+}
+
+func (dtask *DTask) QueryPage(page *store.Page) *store.Page {
 	page.Data = &[]DTask{}
 	tx := store.DB.Model(dtask)
-	if dtask.Media.Title != "" {
-		tx.Where("title LIKE ?", "%"+dtask.Media.Title+"%")
-		dtask.Media.Title = ""
-	}
-	if dtask.Media.Desc != "" {
-		tx.Where("desc LIKE ?", "%"+dtask.Media.Desc+"%")
-		dtask.Media.Desc = ""
+	if dtask.Media != nil {
+		if dtask.Media.Title != "" {
+			tx.Where("title LIKE ?", "%"+dtask.Media.Title+"%")
+			dtask.Media.Title = ""
+		}
+		if dtask.Media.Desc != "" {
+			tx.Where("desc LIKE ?", "%"+dtask.Media.Desc+"%")
+			dtask.Media.Desc = ""
+		}
 	}
 	tx.Where(dtask).Order("status DESC")
 	return store.Query(tx, page)
+}
+
+func (dtask *DTask) SaveProgress() {
+	dtaskUpdater := DTask{Progress: dtask.Progress}
+	store.DB.Model(dtask).Updates(dtaskUpdater)
 }
