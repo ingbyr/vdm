@@ -18,7 +18,7 @@ type DTask struct {
 	// Media is selected media format info
 	Media *media.Info `json:"media" gorm:"embedded"`
 
-	// FormatId is media format id from media formats
+	// FormatId is media format id from media.Format
 	FormatId string `json:"formatId" form:"formatId"`
 
 	// Engine is one of download engines
@@ -60,7 +60,7 @@ func (dtask *DTask) Save() {
 	store.DB.Save(dtask)
 }
 
-func (dtask *DTask) QueryPage(page *store.Page) *store.Page {
+func (dtask *DTask) Find(page *store.Page) *store.Page {
 	page.Data = &[]DTask{}
 	tx := store.DB.Model(dtask)
 	if dtask.Media != nil {
@@ -74,10 +74,21 @@ func (dtask *DTask) QueryPage(page *store.Page) *store.Page {
 		}
 	}
 	tx.Where(dtask).Order("status DESC")
-	return store.Query(tx, page)
+	return store.PagingQuery(tx, page)
 }
 
 func (dtask *DTask) SaveProgress() {
 	dtaskUpdater := DTask{Progress: dtask.Progress}
 	store.DB.Model(dtask).Updates(dtaskUpdater)
+}
+
+func (dtask *DTask) SameTasks(page *store.Page) *store.Page {
+	query := DTask{
+		Media:       dtask.Media,
+		FormatId:    dtask.FormatId,
+		Engine:      dtask.Engine,
+		ExtArgs:     dtask.ExtArgs,
+		StoragePath: dtask.StoragePath,
+	}
+	return query.Find(page)
 }

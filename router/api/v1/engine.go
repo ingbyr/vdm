@@ -30,15 +30,18 @@ func GetMediaFormats(c *gin.Context) {
 	r.OK(c, res)
 }
 
+
+
 func DownloadMedia(c *gin.Context) {
 	dtask := task.NewDTask()
 	if err := c.ShouldBindJSON(dtask); err != nil {
 		r.FE(c, e.InvalidParams, err)
 		return
 	}
-	if err := engine.DownloadMedia(dtask); err != nil {
+	dtasks, err := engine.DownloadMedia(dtask)
+	if err != nil {
 		r.FE(c, e.DownloadMediaError, err)
 		return
 	}
-	r.OK(c, dtask)
+	r.OK(c, dtasks)
 }

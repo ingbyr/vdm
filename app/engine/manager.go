@@ -49,13 +49,15 @@ func GetMediaFormats(mtask *task.MTask) (*media.Formats, error) {
 	return engine.GetMediaFormats(mtask)
 }
 
-func DownloadMedia(dtask *task.DTask) error {
+func DownloadMedia(dtask *task.DTask) ([]task.DTask, error) {
 	engine, ok := m.Engines[dtask.Engine]
 	if !ok {
-		return fmt.Errorf("can not found engine %s", dtask.Engine)
+		return nil, fmt.Errorf("can not found engine %s", dtask.Engine)
 	}
-	// TODO check same task in db
 	dtask.Ctx, dtask.Cancel = context.WithCancel(ctx)
 	dtask.Save()
-	return engine.DownloadMedia(dtask)
+	if err := engine.DownloadMedia(dtask); err != nil {
+		return nil, err
+	}
+	return []task.DTask{*dtask}, nil
 }

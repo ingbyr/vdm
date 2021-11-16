@@ -23,5 +23,19 @@ func GetDownloadTasks(c *gin.Context) {
 		r.FE(c, e.InvalidUrl, err)
 		return
 	}
-	r.OK(c, dtask.QueryPage(page))
+	r.OK(c, dtask.Find(page))
+}
+
+func GetSameDownloadTasks(c *gin.Context) {
+	dtask := task.NewDTask()
+	if err := c.ShouldBindQuery(dtask); err != nil {
+		r.FE(c, e.InvalidParams, err)
+		return
+	}
+	page := &store.Page{}
+	if err := c.ShouldBindQuery(page); err != nil {
+		r.FE(c, e.InvalidUrl, err)
+		return
+	}
+	r.OK(c, dtask.SameTasks(page))
 }

@@ -11,7 +11,7 @@ type Page struct {
 	Data  interface{} `json:"data"`
 }
 
-func Query(tx *gorm.DB, page *Page) *Page {
+func PagingQuery(tx *gorm.DB, page *Page) *Page {
 	// max 100 item
 	if page.Size > 100 {
 		page.Size = 100
@@ -23,6 +23,7 @@ func Query(tx *gorm.DB, page *Page) *Page {
 	// page query
 	offset := (page.Page - 1) * page.Size
 	tx.Offset(offset).Limit(page.Size)
+	// TODO disable debug mode
 	if err := tx.Debug().Find(page.Data).Error; err != nil {
 		log.Panic("failed to query page", err)
 	}

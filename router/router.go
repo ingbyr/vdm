@@ -35,4 +35,5 @@ func initApiV1(r *gin.Engine) {
 	apiv1.GET("/media/formats", v1.GetMediaFormats)
 	apiv1.POST("/media/download", v1.DownloadMedia)
 	apiv1.GET("/tasks", v1.GetDownloadTasks)
+	apiv1.GET("/tasks/same", v1.GetSameDownloadTasks)
 }
