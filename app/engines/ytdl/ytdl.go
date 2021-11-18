@@ -56,7 +56,7 @@ type ytdl struct {
 	progressCompleted string
 }
 
-func (y *ytdl) GetMediaFormats(mtask *task.MTask) (*media.Formats, error) {
+func (y *ytdl) FetchMediaFormats(mtask *task.MTask) (*media.Formats, error) {
 	execArgs := exec.NewArgs(y.Executor)
 	execArgs.Add(mtask.MediaUrl)
 	execArgs.Add(argDumpJson)

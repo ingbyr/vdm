@@ -9,8 +9,8 @@ import (
 	"fmt"
 	"github.com/ingbyr/vdm/app/media"
 	"github.com/ingbyr/vdm/app/task"
-	"github.com/ingbyr/vdm/pkg/store"
 	"github.com/ingbyr/vdm/pkg/setting"
+	"github.com/ingbyr/vdm/pkg/store"
 	"path"
 	"testing"
 	"time"
@@ -35,7 +35,7 @@ func TestYoutubedl_FetchMediaInfo(t *testing.T) {
 		Ctx:      ctx,
 		Cancel:   cancel,
 	}
-	data, err := _ytdl.GetMediaFormats(mTask)
+	data, err := _ytdl.FetchMediaFormats(mTask)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -50,7 +50,7 @@ func TestYoutubedl_FetchMediaInfo_Timeout(t *testing.T) {
 		Ctx:      ctx,
 		Cancel:   cancel,
 	}
-	data, err := _ytdl.GetMediaFormats(mtask)
+	data, err := _ytdl.FetchMediaFormats(mtask)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -83,15 +83,19 @@ func TestYoutubedl_DownloadMedia(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.TODO())
 	dtask := &task.DTask{
 		Model:       store.NewModel(),
-		Status:      task.Created,
-		MediaUrl:    mediaUrl,
 		Engine:      _ytdl.Name,
 		StoragePath: path.Join(baseDir, setting.DirRuntime),
-		FormatId:    "",
-		Progress:    &task.Progress{},
-		Media:       &media.Media{},
-		Ctx:         ctx,
-		Cancel:      cancel,
+		FormatId:    "0",
+		Progress: task.Progress{
+			Status: task.Created,
+		},
+		Media: &media.Info{
+			Title: "test title",
+			Desc:  "test desc",
+			Url:   mediaUrl,
+		},
+		Ctx:    ctx,
+		Cancel: cancel,
 	}
 	if err := _ytdl.DownloadMedia(dtask); err != nil {
 		t.Fatal(err)

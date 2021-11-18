@@ -28,16 +28,16 @@ func Engines() map[string]Engine {
 }
 
 func Register(engine Engine) {
-	if !engine.GetBase().Enable {
+	if !engine.isEnable() {
 		return
 	}
-	if _, err := exec.LookPath(engine.GetBase().Executor); err != nil {
-		engine.GetBase().Valid = false
+	if _, err := exec.LookPath(engine.GetExecutor()); err != nil {
+		engine.SetValid(false)
 		log.Warnw("engine is not valid",
-			"engine", engine.GetBase().Name,
-			"notFound", engine.GetBase().Executor)
+			"engine", engine.GetName(),
+			"notFound", engine.GetExecutor())
 	}
-	m.Engines[engine.GetBase().Name] = engine
+	m.Engines[engine.GetName()] = engine
 }
 
 func GetMediaFormats(mtask *task.MTask) (*media.Formats, error) {
@@ -46,7 +46,7 @@ func GetMediaFormats(mtask *task.MTask) (*media.Formats, error) {
 		return nil, fmt.Errorf("can not found engine %s", mtask.Engine)
 	}
 	mtask.Ctx, mtask.Cancel = context.WithTimeout(ctx, 10*time.Second)
-	return engine.GetMediaFormats(mtask)
+	return engine.FetchMediaFormats(mtask)
 }
 
 func DownloadMedia(dtask *task.DTask) ([]task.DTask, error) {
