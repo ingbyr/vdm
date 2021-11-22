@@ -32,7 +32,7 @@ type Engine interface {
 	SetValid(valid bool)
 	FetchMediaFormats(mtask *task.MTask) (*media.Formats, error)
 	DownloadMedia(dtask *task.DTask) error
-	Broadcast(dtask *task.DTask)
+	BroadcastProgress(progress task.Progress)
 }
 
 var _ Engine = (*Base)(nil)
@@ -86,8 +86,9 @@ func (b *Base) DownloadMedia(dTask *task.DTask) error {
 	panic("implement me")
 }
 
-func (b *Base) Broadcast(dtask *task.DTask) {
-	dtask.SaveProgress()
-	progress, _ := json.Marshal(dtask.Progress)
-	ws.Broadcast(progress)
+func (b *Base) BroadcastProgress(progress task.Progress) {
+	// before send progress we need store to database first
+	progress.Save()
+	progressJson, _ := json.Marshal(progress)
+	ws.Broadcast(progressJson)
 }

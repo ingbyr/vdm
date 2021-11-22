@@ -6,16 +6,16 @@ package task
 
 import (
 	"context"
-	"github.com/bwmarrin/snowflake"
 	"github.com/ingbyr/vdm/app/media"
 	"github.com/ingbyr/vdm/pkg/store"
 )
 
 // DTask is a media downloading task
 type DTask struct {
+	// Base model
 	*store.Model
 
-	// Media is selected media format info
+	// Media format info
 	*media.Info `json:"media" gorm:"embedded"`
 
 	// FormatId is media format id from media.Format
@@ -30,26 +30,18 @@ type DTask struct {
 	// StoragePath is a media storage path
 	StoragePath string `json:"storagePath" gorm:"storage_path" form:"storagePath"`
 
-	// Progress will be updated in downloading operation and be sent to websocket client
-	Progress Progress `json:"progress" gorm:"embedded"`
+	// Progress will be updated in downloading operation
+	Progress Progress `json:"progress" gorm:"foreignKey:ID"`
 
 	Ctx    context.Context    `json:"-" gorm:"-"`
 	Cancel context.CancelFunc `json:"-" gorm:"-"`
-}
-
-type Progress struct {
-	// ID is from DTask id field
-	ID        snowflake.ID `json:"id" gorm:"-"`
-	Status    status       `json:"status" gorm:"status"`
-	CmdOutput string       `json:"cmdOutput" gorm:"cmd_output"`
-	Percent   string       `json:"progress" gorm:"percent"`
-	Speed     string       `json:"speed" gorm:"speed"`
 }
 
 func NewDTask() *DTask {
 	model := store.NewModel()
 	return &DTask{
 		Model: model,
+		Info:  &media.Info{},
 		Progress: Progress{
 			ID: model.ID,
 		},
@@ -76,12 +68,7 @@ func (dtask *DTask) Find(page *store.Page) *store.Page {
 	return store.PagingQuery(tx, page)
 }
 
-func (dtask *DTask) SaveProgress() {
-	dtaskUpdater := DTask{Progress: dtask.Progress}
-	store.DB.Model(dtask).Updates(dtaskUpdater)
-}
-
-func (dtask *DTask) SameTasks(page *store.Page) *store.Page {
+func (dtask *DTask) FindSame(page *store.Page) *store.Page {
 	query := DTask{
 		Info:        dtask.Info,
 		FormatId:    dtask.FormatId,

@@ -37,5 +37,5 @@ func GetSameDownloadTasks(c *gin.Context) {
 		r.FE(c, e.InvalidUrl, err)
 		return
 	}
-	r.OK(c, dtask.SameTasks(page))
+	r.OK(c, dtask.FindSame(page))
 }

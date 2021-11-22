@@ -13,8 +13,13 @@ import (
 var log = logging.New("db")
 
 func Setup() {
-	err := store.DB.AutoMigrate(task.DTask{})
+	migrate(task.DTask{})
+	migrate(task.Progress{})
+}
+
+func migrate(table interface{}) {
+	err := store.DB.AutoMigrate(table)
 	if err != nil {
-		log.Panic("can not create database, %v", err)
+		log.Panicw("failed migrate", "err", err)
 	}
 }

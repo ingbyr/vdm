@@ -16,7 +16,6 @@ var Manager = manager{
 	clients:    make(map[string]*Client),
 	register:   make(chan *Client),
 	unregister: make(chan *Client),
-	// 4KB cache
 	broadcast:  make(chan []byte, 1<<12),
 }
 

@@ -104,7 +104,7 @@ func (y *ytdl) taskUpdateHandler(dtask *task.DTask) func(line string) {
 		// update speed
 		dtask.Progress.Speed = y.regSpeed.FindString(line)
 		log.Debugw("update download task", "task", dtask)
-		y.Broadcast(dtask)
+		y.BroadcastProgress(dtask.Progress)
 	}
 }
 
@@ -112,7 +112,7 @@ func (y *ytdl) taskErrorHandler(dtask *task.DTask) func(errMsg string) {
 	return func(errMsg string) {
 		dtask.Progress.Status = task.Failed
 		dtask.Progress.CmdOutput = errMsg
-		y.Broadcast(dtask)
+		y.BroadcastProgress(dtask.Progress)
 	}
 }
 
@@ -121,7 +121,7 @@ func (y *ytdl) taskExitHandler(dtask *task.DTask) func() {
 		if dtask.Progress.Status == task.Downloading {
 			dtask.Progress.Status = task.Paused
 		}
-		y.Broadcast(dtask)
+		y.BroadcastProgress(dtask.Progress)
 	}
 }
 
