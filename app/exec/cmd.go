@@ -9,6 +9,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"github.com/ingbyr/vdm/mode"
 	"github.com/ingbyr/vdm/pkg/logging"
 	"io"
 	"os/exec"
@@ -20,6 +21,9 @@ var log = logging.New("exec")
 func Cmd(ctx context.Context, args *Args) ([]byte, error) {
 	cmd := exec.CommandContext(ctx, args.executor, args.Args()...)
 	log.Debugw("exec cmd", "cmd", cmd.Args)
+	if mode.DisableCmd {
+		return nil, nil
+	}
 	var stderr bytes.Buffer
 	var stdout bytes.Buffer
 	cmd.Stderr = &stderr
@@ -28,7 +32,7 @@ func Cmd(ctx context.Context, args *Args) ([]byte, error) {
 		log.Errorw("exec cmd failed", "error", err.Error(), "stderr", stderr.String())
 		return nil, fmt.Errorf(stderr.String(), err)
 	}
-	log.Debug("exec cmd ok", "output", stdout.String())
+	log.Debugw("exec cmd finished", "output", stdout.String())
 	return stdout.Bytes(), nil
 }
 
@@ -40,7 +44,11 @@ type Callback struct {
 
 func CmdAsnyc(ctx context.Context, cancel context.CancelFunc, callback Callback, cmdArgs *Args) {
 	cmd := exec.CommandContext(ctx, cmdArgs.executor, cmdArgs.Args()...)
-	log.Debug("exec cmd args: %s", cmd.Args)
+	log.Debugw("exec cmd", "cmd", cmd.Args)
+	if mode.DisableCmd {
+		return
+	}
+
 	stdOutput := make(chan string)
 	errOutput := make(chan string)
 

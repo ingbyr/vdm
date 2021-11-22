@@ -49,15 +49,12 @@ func GetMediaFormats(mtask *task.MTask) (*media.Formats, error) {
 	return engine.FetchMediaFormats(mtask)
 }
 
-func DownloadMedia(dtask *task.DTask) ([]task.DTask, error) {
+func DownloadMedia(dtask *task.DTask) error {
 	engine, ok := m.Engines[dtask.Engine]
 	if !ok {
-		return nil, fmt.Errorf("can not found engine %s", dtask.Engine)
+		return fmt.Errorf("can not found engine %s", dtask.Engine)
 	}
 	dtask.Ctx, dtask.Cancel = context.WithCancel(ctx)
 	dtask.Save()
-	if err := engine.DownloadMedia(dtask); err != nil {
-		return nil, err
-	}
-	return []task.DTask{*dtask}, nil
+	return engine.DownloadMedia(dtask)
 }

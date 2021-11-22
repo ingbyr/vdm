@@ -66,6 +66,7 @@ func (y *ytdl) FetchMediaFormats(mtask *task.MTask) (*media.Formats, error) {
 		return nil, err
 	}
 	if err = json.Unmarshal(output, mediaInfo); err != nil {
+		log.Errorw("unmarshal error", "err", err)
 		return nil, err
 	}
 	return mediaInfo.standardize(mtask), nil
