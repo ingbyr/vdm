@@ -13,3 +13,4 @@ log/
 /runtime
 tmp*
 /vdm
+mock.txt
