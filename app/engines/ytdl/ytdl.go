@@ -73,7 +73,7 @@ func (y *ytdl) FetchMediaFormats(mtask *task.MTask) (*media.Formats, error) {
 
 func (y *ytdl) DownloadMedia(dtask *task.DTask) error {
 	execArgs := exec.NewArgs(y.Executor)
-	execArgs.Add(dtask.Media.Url)
+	execArgs.Add(dtask.Url)
 	execArgs.Add(argNewLine)
 	execArgs.Add(argNoColor)
 	execArgs.AddV(argOutput, y.getStoragePath(dtask.StoragePath))

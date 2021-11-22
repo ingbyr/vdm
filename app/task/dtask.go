@@ -16,7 +16,7 @@ type DTask struct {
 	*store.Model
 
 	// Media is selected media format info
-	Media *media.Info `json:"media" gorm:"embedded"`
+	*media.Info `json:"media" gorm:"embedded"`
 
 	// FormatId is media format id from media.Format
 	FormatId string `json:"formatId" form:"formatId"`
@@ -63,16 +63,15 @@ func (dtask *DTask) Save() {
 func (dtask *DTask) Find(page *store.Page) *store.Page {
 	page.Data = &[]DTask{}
 	tx := store.DB.Model(dtask)
-	if dtask.Media != nil {
-		if dtask.Media.Title != "" {
-			tx.Where("title LIKE ?", "%"+dtask.Media.Title+"%")
-			dtask.Media.Title = ""
-		}
-		if dtask.Media.Desc != "" {
-			tx.Where("desc LIKE ?", "%"+dtask.Media.Desc+"%")
-			dtask.Media.Desc = ""
-		}
+	if dtask.Title != "" {
+		tx.Where("title LIKE ?", "%"+dtask.Title+"%")
+		dtask.Title = ""
 	}
+	if dtask.Desc != "" {
+		tx.Where("desc LIKE ?", "%"+dtask.Desc+"%")
+		dtask.Desc = ""
+	}
+
 	tx.Where(dtask).Order("status DESC")
 	return store.PagingQuery(tx, page)
 }
@@ -84,7 +83,7 @@ func (dtask *DTask) SaveProgress() {
 
 func (dtask *DTask) SameTasks(page *store.Page) *store.Page {
 	query := DTask{
-		Media:       dtask.Media,
+		Info:        dtask.Info,
 		FormatId:    dtask.FormatId,
 		Engine:      dtask.Engine,
 		ExtArgs:     dtask.ExtArgs,
