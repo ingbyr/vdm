@@ -5,7 +5,6 @@
 ![](https://img.shields.io/github/issues/ingbyr/VDM.svg)
 ![](https://img.shields.io/badge/license-MIT-blue.svg)
 
-[中文说明](http://www.ingbyr.com/post/youget-zh/)
 
 # Download
 - Install the [JRE8](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html) first (If you have installed the JRE, skip this step).
@@ -36,6 +35,3 @@ SOFTWARE.
 # Contributors
 - gojko71: Hungarian Language Support
 - david082321: Traditional Chinese Support
-
-# Authors
-Made by [@ingbyr](https://www.ingbyr.com)
