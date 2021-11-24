@@ -2,7 +2,9 @@ package com.ingbyr.vdm.controllers
 
 import com.ingbyr.vdm.engines.AbstractEngine
 import com.ingbyr.vdm.engines.utils.EngineFactory
+import com.ingbyr.vdm.engines.utils.EngineType
 import com.ingbyr.vdm.events.CreateDownloadTask
+import com.ingbyr.vdm.events.RefreshEngineVersion
 import com.ingbyr.vdm.events.RestorePreferencesViewEvent
 import com.ingbyr.vdm.events.UpdateEngineTask
 import com.ingbyr.vdm.models.DownloadTaskModel
@@ -10,7 +12,9 @@ import com.ingbyr.vdm.models.DownloadTaskStatus
 import com.ingbyr.vdm.models.DownloadTaskType
 import com.ingbyr.vdm.models.TaskConfig
 import com.ingbyr.vdm.utils.*
-import com.ingbyr.vdm.views.PreferencesView
+import com.ingbyr.vdm.utils.Attributes
+import com.ingbyr.vdm.utils.config.update
+import javafx.application.Platform
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tornadofx.*
@@ -27,9 +31,12 @@ class MainController : Controller() {
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
     val downloadTaskModelList = mutableListOf<DownloadTaskModel>().observable()
     private val engineList = ConcurrentHashMap<String, AbstractEngine>() // FIXME auto clean the finished models engines
-    private val cu = AppConfigUtils(app.config)
 
     init {
+
+        // debug mode
+        DebugUtils.changeDebugMode(app.config.boolean(Attributes.DEBUG_MODE, Attributes.Defaults.DEBUG_MODE))
+
         subscribe<CreateDownloadTask> {
             logger.debug("create models: ${it.downloadTask}")
             addToModelListAndStartTask(it.downloadTask)
@@ -38,12 +45,14 @@ class MainController : Controller() {
 
         // background thread
         subscribe<UpdateEngineTask> {
-            val charset = cu.safeLoad(AppProperties.CHARSET, "UTF-8")
+            val charset = app.config.string(Attributes.CHARSET, Attributes.Defaults.CHARSET)
             val engine = EngineFactory.create(it.engineType, charset)
             val taskConfig = TaskConfig("", it.engineType, DownloadTaskType.ENGINE, true, engine.enginePath)
             val downloadTask = DownloadTaskModel(taskConfig, DateTimeUtils.now(), title = "[${messages["ui.update"]} ${it.engineType.name}]")
-            downloadTaskModelList.add(downloadTask)
-
+            // make sure thread safe
+            Platform.runLater {
+                downloadTaskModelList.add(downloadTask)
+            }
             try {
                 if (engine.existNewVersion(it.localVersion)) {
                     downloadTask.taskConfig.url = engine.updateUrl()
@@ -61,13 +70,24 @@ class MainController : Controller() {
             }
             fire(RestorePreferencesViewEvent)
         }
+
+        subscribe<RefreshEngineVersion> {
+            when (it.engineType) {
+                EngineType.YOUTUBE_DL -> {
+                    app.config.update(Attributes.YOUTUBE_DL_VERSION, it.newVersion)
+                }
+                EngineType.ANNIE -> {
+                    app.config.update(Attributes.ANNIE_VERSION, it.newVersion)
+                }
+            }
+        }
     }
 
 
     fun startTask(downloadTask: DownloadTaskModel) {
         if (downloadTask.taskConfig.downloadType == DownloadTaskType.ENGINE) return
         downloadTask.status = DownloadTaskStatus.ANALYZING
-        val charset = cu.safeLoad(AppProperties.CHARSET, "UTF-8")
+        val charset = app.config.string(Attributes.CHARSET, Attributes.Defaults.CHARSET)
         runAsync {
             // download
             val engine = EngineFactory.create(downloadTask.taskConfig.engineType, charset)
@@ -116,7 +136,7 @@ class MainController : Controller() {
 
     private fun addToModelListAndStartTask(downloadTask: DownloadTaskModel) {
         downloadTaskModelList.add(downloadTask)
-         startTask(downloadTask)
+        startTask(downloadTask)
     }
 
     fun loadTaskFromDB() {

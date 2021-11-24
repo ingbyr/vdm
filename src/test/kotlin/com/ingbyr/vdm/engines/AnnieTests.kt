@@ -6,11 +6,11 @@ import org.junit.jupiter.api.Test
 import java.util.regex.Pattern
 
 class AnnieTests {
-
     @Test
     fun `parse the media json`() {
-        val engine = EngineFactory.create(EngineType.ANNIE, "UTF-8")
-        engine.simulateJson().url("https://www.bilibili.com/video/av30092341/").fetchMediaJson()
+        val engine = EngineFactory.create(EngineType.ANNIE)
+        val mediaJsonData = engine.simulateJson().url("https://www.bilibili.com/video/av30092341/").fetchMediaJson()
+        println(engine.parseFormatsJson(mediaJsonData))
     }
 
     @Test

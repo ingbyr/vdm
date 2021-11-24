@@ -1,17 +1,19 @@
 package com.ingbyr.vdm.views
 
-import ch.qos.logback.classic.Level
 import com.ingbyr.vdm.controllers.PreferencesController
 import com.ingbyr.vdm.controllers.ThemeController
 import com.ingbyr.vdm.engines.utils.EngineType
+import com.ingbyr.vdm.events.RefreshCookieContent
 import com.ingbyr.vdm.events.RefreshEngineVersion
 import com.ingbyr.vdm.events.RestorePreferencesViewEvent
 import com.ingbyr.vdm.models.ProxyType
-import com.ingbyr.vdm.utils.AppConfigUtils
-import com.ingbyr.vdm.utils.AppProperties
-import com.ingbyr.vdm.utils.EnginesJsonUtils
+import com.ingbyr.vdm.utils.Attributes
+import com.ingbyr.vdm.utils.config.engine
+import com.ingbyr.vdm.utils.config.proxy
+import com.ingbyr.vdm.utils.config.update
 import com.jfoenix.controls.*
 import javafx.scene.control.Label
+import javafx.scene.control.TextArea
 import javafx.stage.DirectoryChooser
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -37,8 +39,8 @@ class PreferencesView : View() {
     private val btnChangeFFMPEGPath: JFXButton by fxid()
     private val tbDownloadDefault: JFXToggleButton by fxid()
     private val tbEnableDebug: JFXToggleButton by fxid()
-    private val themeSelector : JFXComboBox<String> by fxid()
-    private val charsetSelector : JFXComboBox<String> by fxid()
+    private val themeSelector: JFXComboBox<String> by fxid()
+    private val charsetSelector: JFXComboBox<String> by fxid()
 
     private val tbYoutubeDL: JFXToggleButton by fxid()
     private val btnUpdateYoutubeDL: JFXButton by fxid()
@@ -54,79 +56,81 @@ class PreferencesView : View() {
     private val tfHTTPAddress: JFXTextField by fxid()
     private val tfHTTPPort: JFXTextField by fxid()
 
-    private val cu = AppConfigUtils(app.config)
+    private val cookieToggleButton: JFXToggleButton by fxid()
+    private val newCookieButton: JFXButton by fxid()
+    private val editCookieButton: JFXButton by fxid()
+    private val deleteCookieButton: JFXButton by fxid()
+    private val cookieComboBox: JFXComboBox<String> by fxid()
+    private val cookieTextArea: TextArea by fxid()
+
 
     init {
+        subEvents()
+        loadVDMConfig()
+        initListeners()
+    }
+
+    private fun subEvents() {
         subscribe<RefreshEngineVersion> {
             when (it.engineType) {
                 EngineType.YOUTUBE_DL -> {
                     labelYoutubeDLVersion.text = it.newVersion
-                    EnginesJsonUtils.engineInfo(AppProperties.YOUTUBE_DL).version = it.newVersion
                 }
                 EngineType.ANNIE -> {
                     labelAnnieVersion.text = it.newVersion
-                    EnginesJsonUtils.engineInfo(AppProperties.ANNIE).version = it.newVersion
-                }
-                else -> {
                 }
             }
-            EnginesJsonUtils.save2JsonFile()
         }
 
         subscribe<RestorePreferencesViewEvent> {
             logger.debug("restore preferences view")
             this@PreferencesView.currentStage?.isIconified = false
         }
-
-        loadVDMConfig()
-        initListeners()
-        initSelectorContent()
-    }
-
-    private fun initSelectorContent() {
-        // init theme selector
-        themeSelector.items.addAll(themeController.themes)
-        themeSelector.bind(themeController.activeThemeProperty)
-
-        // init charset
-        charsetSelector.items.addAll(Charset.availableCharsets().keys.toList())
-        charsetSelector.selectionModel.select(cu.safeLoad(AppProperties.CHARSET, "UTF-8"))
-        charsetSelector.selectionModel.selectedItemProperty().addListener { _, _, newCharset ->
-            cu.update(AppProperties.CHARSET, newCharset)
-        }
     }
 
     private fun loadVDMConfig() {
         // download settings area
-        labelStoragePath.text = cu.safeLoad(AppProperties.STORAGE_PATH, AppProperties.APP_DIR)
-        labelFFMPEGPath.text = cu.safeLoad(AppProperties.FFMPEG_PATH, "")
-        tbDownloadDefault.isSelected = cu.safeLoad(AppProperties.DOWNLOAD_DEFAULT_FORMAT, "false").toBoolean()
+        labelStoragePath.text = app.config.string(Attributes.STORAGE_PATH, Attributes.Defaults.STORAGE_PATH)
+        labelFFMPEGPath.text = app.config.string(Attributes.FFMPEG_PATH, Attributes.Defaults.FFMPEG_PATH)
+        tbDownloadDefault.isSelected =
+            app.config.boolean(Attributes.DOWNLOAD_DEFAULT_FORMAT, Attributes.Defaults.DOWNLOAD_DEFAULT_FORMAT)
 
         // engines settings area
-        val engineType = EngineType.valueOf(cu.safeLoad(AppProperties.ENGINE_TYPE, EngineType.YOUTUBE_DL))
+        val engineType = app.config.engine(Attributes.ENGINE_TYPE, Attributes.Defaults.ENGINE_TYPE)
         when (engineType) {
             EngineType.YOUTUBE_DL -> tbYoutubeDL.isSelected = true
             EngineType.ANNIE -> tbAnnie.isSelected = true
-            else -> logger.error("no engines type of $engineType")
         }
-        labelYoutubeDLVersion.text = EnginesJsonUtils.engineInfo(AppProperties.YOUTUBE_DL).version
-        labelAnnieVersion.text = EnginesJsonUtils.engineInfo(AppProperties.ANNIE).version
 
+        labelYoutubeDLVersion.text = app.config.string(Attributes.YOUTUBE_DL_VERSION, Attributes.Defaults.ENGINE_VERSION)
+        labelAnnieVersion.text = app.config.string(Attributes.ANNIE_VERSION, Attributes.Defaults.ENGINE_VERSION)
         // proxy settings area
-        val proxyType = ProxyType.valueOf(cu.safeLoad(AppProperties.PROXY_TYPE, ProxyType.NONE))
+        val proxyType = app.config.proxy(Attributes.PROXY_TYPE, Attributes.Defaults.PROXY_TYPE)
         when (proxyType) {
             ProxyType.SOCKS5 -> tbSocks5.isSelected = true
             ProxyType.HTTP -> tbHTTP.isSelected = true
             ProxyType.NONE -> {
             }
         }
-        tfSocks5Address.text = cu.safeLoad(AppProperties.SOCKS5_PROXY_ADDRESS, "")
-        tfSocks5Port.text = cu.safeLoad(AppProperties.SOCKS5_PROXY_PORT, "")
-        tfHTTPAddress.text = cu.safeLoad(AppProperties.HTTP_PROXY_ADDRESS, "")
-        tfHTTPPort.text = cu.safeLoad(AppProperties.HTTP_PROXY_PORT, "")
+
+        tfSocks5Address.text = app.config.string(Attributes.SOCKS5_PROXY_ADDRESS, Attributes.Defaults.SOCKS5_PROXY_ADDRESS)
+        tfSocks5Port.text = app.config.string(Attributes.SOCKS5_PROXY_PORT, Attributes.Defaults.SOCKS5_PROXY_PORT)
+        tfHTTPAddress.text = app.config.string(Attributes.HTTP_PROXY_ADDRESS, Attributes.Defaults.HTTP_PROXY_ADDRESS)
+        tfHTTPPort.text = app.config.string(Attributes.HTTP_PROXY_PORT, Attributes.Defaults.HTTP_PROXY_PORT)
 
         // debug mode
-        tbEnableDebug.isSelected = cu.safeLoad(AppProperties.DEBUG_MODE, "false").toBoolean()
+        tbEnableDebug.selectedProperty().bindBidirectional(controller.debugModeProperty)
+
+        // whether to use cookie
+        cookieToggleButton.isSelected = app.config.boolean(Attributes.ENABLE_COOKIE, Attributes.Defaults.ENABLE_COOKIE)
+
+        // TODO init theme selector
+//        themeSelector.items.addAll(themeController.themes)
+//        themeSelector.bind(themeController.activeThemeProperty)
+
+        // init charset
+        charsetSelector.items.addAll(Charset.availableCharsets().keys.toList()) // TODO wrap in func?
+        charsetSelector.selectionModel.select(app.config.string(Attributes.CHARSET, Attributes.Defaults.CHARSET))
     }
 
     private fun initListeners() {
@@ -135,7 +139,7 @@ class PreferencesView : View() {
             val file = DirectoryChooser().showDialog(primaryStage)
             file?.apply {
                 val newPath = this.absoluteFile.toString()
-                app.config[AppProperties.STORAGE_PATH] = newPath
+                app.config[Attributes.STORAGE_PATH] = newPath
                 labelStoragePath.text = newPath
             }
         }
@@ -143,69 +147,102 @@ class PreferencesView : View() {
             val file = DirectoryChooser().showDialog(primaryStage)
             file?.apply {
                 val newPath = this.absoluteFile.toString()
-                app.config[AppProperties.FFMPEG_PATH] = newPath
+                app.config[Attributes.FFMPEG_PATH] = newPath
                 labelFFMPEGPath.text = newPath
             }
         }
         tbDownloadDefault.action {
-            cu.update(AppProperties.DOWNLOAD_DEFAULT_FORMAT, tbDownloadDefault.isSelected)
-        }
-        tbEnableDebug.action {
-            val rootLogger = LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME) as ch.qos.logback.classic.Logger
-            if (tbEnableDebug.isSelected) {
-                rootLogger.level = Level.DEBUG
-                cu.update(AppProperties.DEBUG_MODE, true)
-            } else {
-                rootLogger.level = Level.ERROR
-                cu.update(AppProperties.DEBUG_MODE, false)
-            }
+            app.config.update(Attributes.DOWNLOAD_DEFAULT_FORMAT, tbDownloadDefault.isSelected)
         }
 
         // engines settings area
         tbYoutubeDL.whenSelected {
-            cu.update(AppProperties.ENGINE_TYPE, EngineType.YOUTUBE_DL)
+            app.config.update(Attributes.ENGINE_TYPE, EngineType.YOUTUBE_DL)
         }
         tbAnnie.whenSelected {
-            cu.update(AppProperties.ENGINE_TYPE, EngineType.ANNIE)
+            app.config.update(Attributes.ENGINE_TYPE, EngineType.ANNIE)
         }
         btnUpdateYoutubeDL.setOnMouseClicked {
-            controller.updateEngine(EngineType.YOUTUBE_DL, EnginesJsonUtils.engineInfo(AppProperties.YOUTUBE_DL).version)
+            controller.updateEngine(
+                EngineType.YOUTUBE_DL,
+                app.config.string(Attributes.YOUTUBE_DL_VERSION, Attributes.Defaults.ENGINE_VERSION)
+            )
             this.currentStage?.isIconified = true
         }
         btnUpdateAnnie.setOnMouseClicked {
-            controller.updateEngine(EngineType.ANNIE, EnginesJsonUtils.engineInfo(AppProperties.ANNIE).version)
+            controller.updateEngine(
+                EngineType.ANNIE,
+                app.config.string(Attributes.ANNIE_VERSION, Attributes.Defaults.ENGINE_VERSION)
+            )
             this.currentStage?.isIconified = true
         }
 
         // proxy settings area
         tbSocks5.action {
             if (tbSocks5.isSelected) {
-                cu.update(AppProperties.PROXY_TYPE, ProxyType.SOCKS5)
+                app.config.update(Attributes.PROXY_TYPE, ProxyType.SOCKS5)
             } else if (!tbHTTP.isSelected) {
-                cu.update(AppProperties.PROXY_TYPE, ProxyType.NONE)
+                app.config.update(Attributes.PROXY_TYPE, ProxyType.NONE)
             }
         }
         tbHTTP.action {
             if (tbHTTP.isSelected) {
-                cu.update(AppProperties.PROXY_TYPE, ProxyType.HTTP)
+                app.config.update(Attributes.PROXY_TYPE, ProxyType.HTTP)
             } else if (!tbSocks5.isSelected) {
-                cu.update(AppProperties.PROXY_TYPE, ProxyType.NONE)
+                app.config.update(Attributes.PROXY_TYPE, ProxyType.NONE)
             }
+        }
+
+        // charset
+        charsetSelector.selectionModel.selectedItemProperty().addListener { _, _, newCharset ->
+            app.config.update(Attributes.CHARSET, newCharset)
+        }
+
+        // cookie
+        cookieTextArea.bind(controller.cookieProperty)
+        cookieToggleButton.action {
+            app.config.update(Attributes.ENABLE_COOKIE, cookieToggleButton.isSelected)
+        }
+        cookieComboBox.items = controller.cookieList
+        cookieComboBox.selectionModel.select(app.config.string(Attributes.CURRENT_COOKIE, Attributes.Defaults.COOKIE))
+        cookieComboBox.selectionModel.selectedItemProperty().addListener { _, _, cookieName ->
+            cookieName?.let {
+                app.config.update(Attributes.CURRENT_COOKIE, it)
+                controller.readCookieContent()
+            }
+        }
+        newCookieButton.setOnMouseClicked {
+            //            find<TextEditorView>(
+//                mapOf(
+//                    "fileEditorOption" to FileEditorOption(Attributes.COOKIES_DIR, true, ".txt")
+//                )
+//            ).openWindow()
+        }
+        editCookieButton.setOnMouseClicked {
+            //            find<TextEditorView>(
+//                mapOf(
+//                    "fileEditorOption" to FileEditorOption(
+//                        Attributes.COOKIES_DIR.resolve(ConfigUtils.load(Attributes.CURRENT_COOKIE)),
+//                        false,
+//                        ".txt"
+//                    )
+//                )
+//            ).openWindow()
+        }
+        subscribe<RefreshCookieContent> {
+            controller.freshCookieListAndContent()
+            cookieComboBox.selectionModel.select(app.config.string(Attributes.CURRENT_COOKIE, Attributes.Defaults.COOKIE))
         }
     }
 
-    private fun saveTextFieldContent() {
-        cu.update(AppProperties.SOCKS5_PROXY_ADDRESS, tfSocks5Address.text)
-        cu.update(AppProperties.SOCKS5_PROXY_PORT, tfSocks5Port.text)
-        cu.update(AppProperties.HTTP_PROXY_ADDRESS, tfHTTPAddress.text)
-        cu.update(AppProperties.HTTP_PROXY_PORT, tfHTTPPort.text)
-    }
-
     /**
-     * Save the config to the file when close this view
+     * Save the app to the file when close this view
      */
     override fun onUndock() {
         super.onUndock()
-        saveTextFieldContent()
+        app.config.update(Attributes.SOCKS5_PROXY_ADDRESS, tfSocks5Address.text)
+        app.config.update(Attributes.SOCKS5_PROXY_PORT, tfSocks5Port.text)
+        app.config.update(Attributes.HTTP_PROXY_ADDRESS, tfHTTPAddress.text)
+        app.config.update(Attributes.HTTP_PROXY_PORT, tfHTTPPort.text)
     }
 }

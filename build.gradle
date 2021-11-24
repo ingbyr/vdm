@@ -2,10 +2,10 @@ group = "com.ingbyr.vdm"
 version = "0.4.0"
 
 buildscript {
-    ext.kotlin_version = "1.2.60"
+    ext.kotlin_version = "1.3.10"
 
     repositories {
-        mavenCentral()
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -20,24 +20,25 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 repositories {
-    maven { url 'https://maven.aliyun.com/repository/central' }
-    maven { url 'https://maven.aliyun.com/repository/jcenter' }
+    maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
     maven { url "https://dl.bintray.com/kotlin/exposed" }
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    compile "no.tornado:tornadofx:1.7.17"
-    compile "com.jfoenix:jfoenix:8.0.7"
-    compile "ch.qos.logback:logback-core:1.2.3"
-    compile "ch.qos.logback:logback-classic:1.2.3"
-    compile "com.squareup.okhttp3:okhttp:3.10.0"
-    compile "com.squareup.okio:okio:1.14.0"
-    compile "com.h2database:h2:1.4.197"
-    compile "org.jetbrains.exposed:exposed:0.10.4"
-    compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.4.1"
-    testCompile('org.junit.jupiter:junit-jupiter-api:5.2.0')
-    testRuntime('org.junit.jupiter:junit-jupiter-engine:5.2.0')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "no.tornado:tornadofx:1.7.18"
+    implementation "com.jfoenix:jfoenix:8.0.8"
+    implementation "ch.qos.logback:logback-core:1.2.3"
+    implementation "ch.qos.logback:logback-classic:1.2.3"
+    implementation "com.squareup.okhttp3:okhttp:3.10.0"
+    implementation "com.squareup.okio:okio:1.14.0"
+    implementation "com.h2database:h2:1.4.197"
+    implementation "org.jetbrains.exposed:exposed:0.11.2"
+    implementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.4.1"
+    implementation "org.apache.commons:commons-compress:1.18"
+    implementation "commons-io:commons-io:2.6"
+    testImplementation('org.junit.jupiter:junit-jupiter-api:5.2.0')
+    testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine:5.2.0')
 
 }
 

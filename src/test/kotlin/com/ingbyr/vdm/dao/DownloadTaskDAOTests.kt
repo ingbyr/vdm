@@ -4,7 +4,7 @@ import com.ingbyr.vdm.engines.utils.EngineType
 import com.ingbyr.vdm.models.DownloadTaskStatus
 import com.ingbyr.vdm.models.DownloadTaskType
 import com.ingbyr.vdm.models.ProxyType
-import com.ingbyr.vdm.utils.AppProperties
+import com.ingbyr.vdm.utils.Attributes
 import com.ingbyr.vdm.utils.DateTimeUtils
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test
 
 class DownloadTaskDAOTests {
     init {
-        Database.connect(AppProperties.DATABASE_URL, driver = "org.h2.Driver", user = "vdm", password = "vdm")
+        Database.connect(Attributes.DATABASE_URL, driver = "org.h2.Driver", user = "vdm", password = "vdm")
         transaction {
             addLogger(StdOutSqlLogger)
             SchemaUtils.create(DownloadTaskTable, TaskConfigTable)
@@ -32,7 +32,7 @@ class DownloadTaskDAOTests {
                 downloadType = DownloadTaskType.SINGLE_MEDIA.name
                 engineType = EngineType.YOUTUBE_DL.name
                 downloadDefaultFormat = false
-                storagePath = AppProperties.APP_DIR.toString()
+                storagePath = Attributes.APP_DIR.toString()
                 cookie = "test cookie"
                 ffmpeg = "test ffmpeg"
                 formatId = "test format id"

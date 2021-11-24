@@ -13,7 +13,7 @@
     </appender>
 
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>${user.home}/.vdm/log/debug.log</file>
+        <file>${user.dir}/log/debug.log</file>
         <append>false</append>
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36}.%M\(%line\) - %msg%n</pattern>
@@ -22,7 +22,7 @@
     </appender>
 
     <root level="debug">
-        <!--<appender-ref ref="STDOUT"/>-->
-        <appender-ref ref="FILE"/>
+        <appender-ref ref="STDOUT"/>
+        <!--<appender-ref ref="FILE"/>-->
     </root>
 </configuration>

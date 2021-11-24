@@ -16,9 +16,9 @@ object DBUtils {
     private val log = LoggerFactory.getLogger(DBUtils::class.java)
 
     init {
-        Database.connect(AppProperties.DATABASE_URL, driver = "org.h2.Driver", user = "vdm", password = "vdm")
+        Database.connect(Attributes.DATABASE_URL, driver = "org.h2.Driver", user = "vdm", password = "vdm")
         transaction {
-            addLogger(StdOutSqlLogger)
+//            addLogger(StdOutSqlLogger) // TODO enable db logger
             SchemaUtils.create(TaskConfigTable, DownloadTaskTable)
         }
     }
@@ -29,7 +29,7 @@ object DBUtils {
         transaction {
             val oldDownloadTask = DownloadTaskDAO.find { DownloadTaskTable.createdAt eq newDownloadTaskModel.createdAt }.firstOrNull()
             if (oldDownloadTask != null) {
-                // update task config
+                // update task app
                 updateTaskConfigInDB(oldDownloadTask.taskConfig, newTaskConfig)
                 // update download task model
                 updateDownloadTaskModelInDB(oldDownloadTask, newDownloadTaskModel)
@@ -46,8 +46,8 @@ object DBUtils {
      * must be wrapped in transaction block
      */
     private fun updateTaskConfigInDB(oldTaskConfig: TaskConfigDAO, newTaskConfig: TaskConfig) {
-        log.debug("update download task config data in db")
-        // update task config
+        log.debug("update download task app data in db")
+        // update task app
         oldTaskConfig.url = newTaskConfig.url
         oldTaskConfig.downloadType = newTaskConfig.downloadType.name
         oldTaskConfig.engineType = newTaskConfig.engineType.name
@@ -77,7 +77,7 @@ object DBUtils {
      * must be wrapped in transaction block
      */
     private fun createTaskConfigInDB(taskConfig: TaskConfig) = TaskConfigDAO.new {
-        log.debug("create task config and save to db")
+        log.debug("create task app and save to db")
         url = taskConfig.url
         downloadType = taskConfig.downloadType.name
         engineType = taskConfig.engineType.name

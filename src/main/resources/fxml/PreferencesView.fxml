@@ -10,12 +10,13 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<JFXTabPane id="preferences-view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" rotateGraphic="true" side="LEFT" xmlns="http://javafx.com/javafx/8.0.172" xmlns:fx="http://javafx.com/fxml/1">
+<JFXTabPane id="preferences-view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" rotateGraphic="true" side="LEFT" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
    <tabs>
       <Tab>
           <graphic>
@@ -34,7 +35,7 @@
                         <AnchorPane>
                            <children>
                               <Label layoutX="15.0" text="%ui.storagePath" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                              <JFXButton id="settings-btn" fx:id="btnChangeStoragePath" buttonType="RAISED" layoutX="15.0" layoutY="35.0" text="%ui.changePath" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <JFXButton fx:id="btnChangeStoragePath" buttonType="RAISED" layoutX="15.0" layoutY="35.0" text="%ui.changePath" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                            </children>
                         </AnchorPane>
                         <Label id="small-text" fx:id="labelStoragePath" text="path" wrapText="true" />
@@ -51,7 +52,7 @@
                         <AnchorPane>
                            <children>
                               <Label layoutX="15.0" text="%ui.ffmpegPath" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                              <JFXButton id="settings-btn" fx:id="btnChangeFFMPEGPath" buttonType="RAISED" layoutX="15.0" layoutY="35.0" text="%ui.changePath" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <JFXButton fx:id="btnChangeFFMPEGPath" buttonType="RAISED" layoutX="15.0" layoutY="35.0" text="%ui.changePath" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                            </children>
                         </AnchorPane>
                         <Label id="small-text" fx:id="labelFFMPEGPath" text="path" wrapText="true" />
@@ -120,7 +121,7 @@
                                     <Label text="%ui.youtube-dl" />
                                  </children>
                               </HBox>
-                              <JFXButton id="settings-btn" fx:id="btnUpdateYoutubeDL" buttonType="RAISED" layoutY="60.0" text="%ui.checkForUpdates" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0" />
+                              <JFXButton fx:id="btnUpdateYoutubeDL" buttonType="RAISED" layoutY="60.0" text="%ui.checkForUpdates" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0" />
                            </children>
                            <VBox.margin>
                               <Insets />
@@ -161,7 +162,7 @@
                                     <Label text="%ui.annie" />
                                  </children>
                               </HBox>
-                              <JFXButton id="settings-btn" fx:id="btnUpdateAnnie" buttonType="RAISED" layoutY="60.0" text="%ui.checkForUpdates" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0" />
+                              <JFXButton fx:id="btnUpdateAnnie" buttonType="RAISED" layoutY="60.0" text="%ui.checkForUpdates" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0" />
                            </children>
                         </AnchorPane>
                         <HBox alignment="CENTER_LEFT" spacing="10.0">
@@ -284,6 +285,46 @@
                   </VBox>
                </items>
             </SplitPane>
+         </content>
+      </Tab>
+      <Tab>
+         <graphic>
+            <Group>
+               <children>
+                  <Label id="label-option" rotate="90" text="%ui.cookieSettings" />
+               </children>
+            </Group>
+         </graphic>
+         <content>
+            <AnchorPane>
+               <children>
+                  <VBox layoutX="5.0" spacing="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <JFXToggleButton fx:id="cookieToggleButton" text="%ui.enableCookie" />
+                        <AnchorPane>
+                           <children>
+                              <Label layoutX="10.0" layoutY="48.0" text="%ui.currentCookie" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <JFXComboBox fx:id="cookieComboBox" layoutX="10.0" layoutY="77.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </children>
+                           <padding>
+                              <Insets left="10.0" right="10.0" />
+                           </padding>
+                        </AnchorPane>
+                        <HBox spacing="10.0">
+                           <children>
+                              <JFXButton id="settings-btn" fx:id="newCookieButton" buttonType="RAISED" text="%ui.newCookie" />
+                              <JFXButton id="settings-btn" fx:id="editCookieButton" buttonType="RAISED" text="%ui.editCookie" />
+                              <JFXButton id="settings-btn" fx:id="deleteCookieButton" buttonType="RAISED" text="%ui.deleteCookie" />
+                           </children>
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <TextArea fx:id="cookieTextArea" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="160.0" />
+               </children>
+            </AnchorPane>
          </content>
       </Tab>
    </tabs>

@@ -5,11 +5,10 @@ import com.ingbyr.vdm.engines.Annie
 import com.ingbyr.vdm.engines.YoutubeDL
 
 object EngineFactory {
-    fun create(engineType: EngineType, charset: String): AbstractEngine {
+    fun create(engineType: EngineType, charset: String = "UTF-8"): AbstractEngine {
         return when (engineType) {
             EngineType.YOUTUBE_DL -> {
                 val engine = YoutubeDL()
-                // set the charset
                 engine.charset = charset
                 engine
             }
@@ -18,7 +17,6 @@ object EngineFactory {
                 engine.charset = charset
                 engine
             }
-            else -> throw EngineException("bad engine type: $engineType")
         }
     }
 }

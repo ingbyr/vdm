@@ -6,33 +6,33 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox id="main-view" alignment="TOP_CENTER" xmlns="http://javafx.com/javafx/8.0.172" xmlns:fx="http://javafx.com/fxml/1">
+<VBox id="main-view" alignment="TOP_CENTER" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
   <children>
       <AnchorPane id="shortcut-icons">
          <children>
             <HBox alignment="CENTER" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
                <children>
-                  <JFXButton id="#button-download" fx:id="btnNew" text="">
+                  <JFXButton id="shortcut-button" fx:id="btnNew" text="">
                      <graphic>
                         <Region id="button-download-region" />
                      </graphic>
                   </JFXButton>
-                  <JFXButton fx:id="btnStart" text="">
+                  <JFXButton id="shortcut-button"  fx:id="btnStart" text="">
                      <graphic>
                         <Region id="button-play-region" />
                      </graphic>
                   </JFXButton>
-                  <JFXButton fx:id="btnStop" text="">
+                  <JFXButton id="shortcut-button" fx:id="btnStop" text="">
                      <graphic>
                         <Region id="button-pause-region" />
                      </graphic>
                   </JFXButton>
-                  <JFXButton fx:id="btnDelete" text="">
+                  <JFXButton id="shortcut-button" fx:id="btnDelete" text="">
                      <graphic>
                         <Region id="button-delete-region" />
                      </graphic>
                   </JFXButton>
-                  <JFXButton fx:id="btnOpenFile" text="">
+                  <JFXButton id="shortcut-button" fx:id="btnOpenFile" text="">
                      <graphic>
                         <Region id="button-open-region" />
                      </graphic>
@@ -41,17 +41,17 @@
             </HBox>
             <HBox alignment="CENTER" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
                <children>
-                  <JFXButton fx:id="btnSearch" text="">
+                  <JFXButton id="shortcut-button" fx:id="btnSearch" text="">
                      <graphic>
                         <Region id="button-search-region" />
                      </graphic>
                   </JFXButton>
-                  <JFXButton fx:id="btnPreferences" text="">
+                  <JFXButton id="shortcut-button" fx:id="btnPreferences" text="">
                      <graphic>
                         <Region id="button-setting-region" />
                      </graphic>
                   </JFXButton>
-                  <JFXButton fx:id="btnMenu" text="">
+                  <JFXButton id="shortcut-button" fx:id="btnMenu" text="">
                      <graphic>
                         <Region id="button-more-menus" />
                      </graphic>

@@ -17,7 +17,7 @@ object OSUtils {
     val currentOS: OSType = when {
         platform.startsWith("Linux") -> OSType.LINUX
         platform.startsWith("Win") -> OSType.WINDOWS
-        platform.startsWith("MAC") -> OSType.MAC_OS
+        platform.startsWith("Mac") -> OSType.MAC_OS
         else -> throw OSException("not supported os")
     }
 

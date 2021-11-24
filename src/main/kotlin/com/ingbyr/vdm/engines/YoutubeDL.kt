@@ -12,6 +12,7 @@ import com.ingbyr.vdm.models.DownloadTaskStatus
 import com.ingbyr.vdm.models.MediaFormat
 import com.ingbyr.vdm.models.ProxyType
 import com.ingbyr.vdm.utils.*
+import com.ingbyr.vdm.utils.config.app
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.BufferedReader
@@ -22,17 +23,15 @@ import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 
 
-/**
- * TODO wrap download playlist
- */
 class YoutubeDL : AbstractEngine() {
     override val logger: Logger = LoggerFactory.getLogger(this::class.java)
     override val downloadNewEngineNeedUnzip: Boolean = false
-    override val engineInfo = EnginesJsonUtils.engineInfo("youtube-dl")
-    override val remoteVersionUrl: String = engineInfo.remoteVersionUrl
+    override val remoteVersionUrl: String =
+        "https://raw.githubusercontent.com/rg3/youtube-dl/master/youtube_dl/version.py"
     override val engineType = EngineType.YOUTUBE_DL
-    override val enginePath: String = AppProperties.PACKAGE_DIR.resolve(engineInfo.path).normalize().toString()
+    override val enginePath: String = engineExecPath()
     override var remoteVersion: String? = null
+    override var version: String = app.config.string(Attributes.YOUTUBE_DL_VERSION, Attributes.Defaults.ENGINE_VERSION)
     override var taskModel: DownloadTaskModel? = null
     override val argsMap: MutableMap<String, String> = mutableMapOf("engines" to enginePath)
 
@@ -52,7 +51,8 @@ class YoutubeDL : AbstractEngine() {
         val mapper = jacksonObjectMapper()
         val mediaJson = mapper.readValue<YoutubeDlMediaJson>(jsonString)
         mediaJson.formats.forEach {
-            formats.add(MediaFormat(
+            formats.add(
+                MediaFormat(
                     title = mediaJson.title,
                     desc = mediaJson.description,
                     formatID = it.formatId,
@@ -60,12 +60,13 @@ class YoutubeDL : AbstractEngine() {
                     formatNote = it.formatNote,
                     fileSize = it.filesize,
                     ext = it.ext
-            ))
+                )
+            )
         }
         return formats
     }
 
-    override fun simulateJson(): AbstractEngine{
+    override fun simulateJson(): AbstractEngine {
         argsMap["SimulateJson"] = "-j"
         return this
     }
@@ -231,12 +232,16 @@ class YoutubeDL : AbstractEngine() {
         }
     }
 
-    private fun String.playlistIsCompleted(): Boolean {
-        /**
-         * Compare a / b and return the a>=b
-         */
-        val progress = this.split("/")
-        return progress[0].trim() >= progress[1].trim()
+    override fun engineExecPath(): String = when (OSUtils.currentOS) {
+        OSType.WINDOWS -> {
+            Attributes.ENGINES_DIR.resolve("youtube-dl.exe").toAbsolutePath().toString()
+        }
+        OSType.LINUX -> {
+            Attributes.ENGINES_DIR.resolve("youtube-dl").toAbsolutePath().toString()
+        }
+        OSType.MAC_OS -> {
+            Attributes.ENGINES_DIR.resolve("youtube-dl").toAbsolutePath().toString()
+        }
     }
 
     override fun updateUrl() = when (OSUtils.currentOS) {
@@ -268,51 +273,17 @@ class YoutubeDL : AbstractEngine() {
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class YoutubeDlMediaJson(
-        @JsonProperty("formats") val formats: List<Format> = listOf(),
-        @JsonProperty("fulltitle") val fulltitle: String = "",
-        @JsonProperty("resolution") val resolution: Any? = Any(),
-        @JsonProperty("format_id") val formatId: String = "",
-        @JsonProperty("description") val description: String = "",
-        @JsonProperty("title") val title: String = "",
-        @JsonProperty("format") val format: String = "",
-        @JsonProperty("ext") val ext: String = "",
-        @JsonProperty("playlist") val playlist: Any? = Any()
-) {
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    data class Format(
-            @JsonProperty("abr") val abr: Int = 0,
-            @JsonProperty("format") val format: String = "",
-            @JsonProperty("format_note") val formatNote: String = "",
-            @JsonProperty("ext") val ext: String = "",
-            @JsonProperty("filesize") val filesize: Long = 0,
-            @JsonProperty("vcodec") val vcodec: String = "",
-            @JsonProperty("acodec") val acodec: String = "",
-            @JsonProperty("container") val container: String = "",
-            @JsonProperty("player_url") val playerUrl: String = "",
-            @JsonProperty("downloader_options") val downloaderOptions: DownloaderOptions = DownloaderOptions(),
-            @JsonProperty("url") val url: String = "",
-            @JsonProperty("quality") val quality: Int = 0,
-            @JsonProperty("http_headers") val httpHeaders: HttpHeaders = HttpHeaders(),
-            @JsonProperty("tbr") val tbr: Double = 0.0,
-            @JsonProperty("format_id") val formatId: String = "",
-            @JsonProperty("protocol") val protocol: String = "",
-            @JsonProperty("height") val height: Int = 0,
-            @JsonProperty("fps") val fps: Int = 0,
-            @JsonProperty("width") val width: Int = 0,
-            @JsonProperty("resolution") val resolution: String = ""
-    ) {
-        @JsonIgnoreProperties(ignoreUnknown = true)
-        data class HttpHeaders(
-                @JsonProperty("Accept-Language") val acceptLanguage: String = "",
-                @JsonProperty("User-Agent") val userAgent: String = "",
-                @JsonProperty("Accept") val accept: String = "",
-                @JsonProperty("Accept-Charset") val acceptCharset: String = "",
-                @JsonProperty("Accept-Encoding") val acceptEncoding: String = ""
-        )
+    @JsonProperty("formats") val formats: List<Format> = listOf(),
+    @JsonProperty("fulltitle") val fulltitle: String = "",
+    @JsonProperty("description") val description: String = "",
+    @JsonProperty("title") val title: String = ""
+)
 
-        @JsonIgnoreProperties(ignoreUnknown = true)
-        data class DownloaderOptions(
-                @JsonProperty("http_chunk_size") val httpChunkSize: Int = 0
-        )
-    }
-}
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class Format(
+    @JsonProperty("format") val format: String = "",
+    @JsonProperty("format_note") val formatNote: String = "",
+    @JsonProperty("ext") val ext: String = "",
+    @JsonProperty("filesize") val filesize: Long = 0,
+    @JsonProperty("format_id") val formatId: String = ""
+)

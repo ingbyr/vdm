@@ -1,7 +1,6 @@
 package com.ingbyr.vdm.engines
 
 import com.ingbyr.vdm.engines.utils.EngineDownloadType
-import com.ingbyr.vdm.engines.utils.EngineInfo
 import com.ingbyr.vdm.engines.utils.EngineType
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.models.MediaFormat
@@ -10,26 +9,18 @@ import org.slf4j.Logger
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
-
 abstract class AbstractEngine {
-    /**
-     * Adapt to the different platform
-     * Build the args for the command line
-     * Exec the command line
-     * Parse the output and update the main UI thread
-     * Stop thread
-     */
     var charset = "UTF-8"
 
     protected abstract val logger: Logger
     protected val running: AtomicBoolean = AtomicBoolean(false)
     abstract val downloadNewEngineNeedUnzip: Boolean
-    abstract val engineInfo: EngineInfo
     abstract val enginePath: String
     abstract val engineType: EngineType
     abstract val argsMap: MutableMap<String, String>
     abstract val remoteVersionUrl: String
     abstract var remoteVersion: String?
+    abstract var version: String
     abstract var taskModel: DownloadTaskModel?
 
     abstract fun url(url: String): AbstractEngine
@@ -44,6 +35,8 @@ abstract class AbstractEngine {
     abstract fun parseDownloadOutput(line: String)
     abstract fun execCommand(command: MutableList<String>, downloadType: EngineDownloadType): StringBuilder?
     abstract fun parseFormatsJson(jsonString: String): List<MediaFormat>
+
+    abstract fun engineExecPath(): String
     abstract fun updateUrl(): String
     abstract fun existNewVersion(localVersion: String): Boolean
 

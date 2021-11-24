@@ -1,17 +1,18 @@
 package com.ingbyr.vdm.engines
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.ingbyr.vdm.engines.utils.EngineDownloadType
 import com.ingbyr.vdm.engines.utils.EngineException
-import com.ingbyr.vdm.engines.utils.EngineInfo
 import com.ingbyr.vdm.engines.utils.EngineType
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.models.DownloadTaskStatus
 import com.ingbyr.vdm.models.MediaFormat
 import com.ingbyr.vdm.models.ProxyType
 import com.ingbyr.vdm.utils.*
+import com.ingbyr.vdm.utils.config.app
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.BufferedReader
@@ -24,12 +25,12 @@ import java.util.regex.Pattern
 class Annie : AbstractEngine() {
     override val logger: Logger = LoggerFactory.getLogger(Annie::class.java)
     override val downloadNewEngineNeedUnzip: Boolean = true
-    override val engineInfo: EngineInfo = EnginesJsonUtils.engineInfo(AppProperties.ANNIE)
-    override val enginePath: String = AppProperties.PACKAGE_DIR.resolve(engineInfo.path).normalize().toString()
+    override val enginePath: String = engineExecPath()
     override val engineType: EngineType = EngineType.ANNIE
     override val argsMap: MutableMap<String, String> = mutableMapOf("engine" to enginePath)
-    override val remoteVersionUrl: String = engineInfo.remoteVersionUrl
+    override val remoteVersionUrl: String = "https://raw.githubusercontent.com/iawia002/annie/master/app/version.go"
     override var remoteVersion: String? = null
+    override var version: String = app.config.string(Attributes.ANNIE_VERSION, Attributes.Defaults.ENGINE_VERSION)
     override var taskModel: DownloadTaskModel? = null
 
     private val remoteVersionPattern: Pattern = Pattern.compile("\\d+.+\\d+")
@@ -93,7 +94,7 @@ class Annie : AbstractEngine() {
     }
 
     override fun cookies(cookies: String): AbstractEngine {
-        if(cookies.isNotEmpty()) {
+        if (cookies.isNotEmpty()) {
             argsMap["-c"] = cookies
         }
         return this
@@ -192,18 +193,33 @@ class Annie : AbstractEngine() {
     override fun parseFormatsJson(jsonString: String): List<MediaFormat> {
         val formats = mutableListOf<MediaFormat>()
         val annieMediaJson = jacksonObjectMapper().readValue<AnnieMediaJson>(jsonString)
-        annieMediaJson.formats.forEach { id, formatInfo ->
-            formats.add(MediaFormat(
+        annieMediaJson.streams.forEach { id, formatInfo ->
+
+            formats.add(
+                MediaFormat(
                     title = annieMediaJson.title,
                     desc = "",
                     formatID = id,
                     format = formatInfo.quality,
                     formatNote = "",
                     fileSize = formatInfo.size.toLong(),
-                    ext = formatInfo.urls.first().ext
-            ))
+                    ext = formatInfo.urls.first().ext // FIXME youtube has many urls
+                )
+            )
         }
         return formats
+    }
+
+    override fun engineExecPath(): String = when (OSUtils.currentOS) {
+        OSType.WINDOWS -> {
+            Attributes.ENGINES_DIR.resolve("annie.exe").toAbsolutePath().toString()
+        }
+        OSType.LINUX -> {
+            Attributes.ENGINES_DIR.resolve("annie").toAbsolutePath().toString()
+        }
+        OSType.MAC_OS -> {
+            Attributes.ENGINES_DIR.resolve("annie").toAbsolutePath().toString()
+        }
     }
 
     override fun updateUrl(): String = when (OSUtils.currentOS) {
@@ -235,23 +251,37 @@ class Annie : AbstractEngine() {
     }
 }
 
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class AnnieMediaJson(
-        @JsonProperty("Site") val site: String = "",
-        @JsonProperty("Title") val title: String = "",
-        @JsonProperty("Type") val type: String = "",
-        @JsonProperty("Formats") val formats: Map<String, Format>
-) {
-    data class Format(
-            @JsonProperty("URLs") val urls: List<URL> = listOf(),
-            @JsonProperty("Quality") val quality: String = "",
-            @JsonProperty("Size") val size: Int = 0
-    ) {
+    @JsonProperty("site")
+    val site: String,
+    @JsonProperty("streams")
+    val streams: Map<String, Stream>,
+    @JsonProperty("title")
+    val title: String,
+    @JsonProperty("type")
+    val type: String,
+    @JsonProperty("url")
+    val url: String
+)
 
-        data class URL(
-                @JsonProperty("URL") val uRL: String = "",
-                @JsonProperty("Size") val size: Int = 0,
-                @JsonProperty("Ext") val ext: String = ""
-        )
-    }
-}
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class Stream(
+    @JsonProperty("quality")
+    val quality: String,
+    @JsonProperty("size")
+    val size: Int,
+    @JsonProperty("urls")
+    val urls: List<Url>
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class Url(
+    @JsonProperty("ext")
+    val ext: String,
+    @JsonProperty("size")
+    val size: Int,
+    @JsonProperty("url")
+    val url: String
+)
+

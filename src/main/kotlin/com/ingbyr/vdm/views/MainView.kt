@@ -1,21 +1,18 @@
 package com.ingbyr.vdm.views
 
-import ch.qos.logback.classic.Level
 import com.ingbyr.vdm.controllers.MainController
 import com.ingbyr.vdm.controllers.ThemeController
 import com.ingbyr.vdm.models.DownloadTaskModel
 import com.ingbyr.vdm.models.DownloadTaskStatus
-import com.ingbyr.vdm.utils.AppConfigUtils
+import com.ingbyr.vdm.utils.Attributes
 import com.ingbyr.vdm.utils.OSUtils
-import com.ingbyr.vdm.utils.AppProperties
+import com.ingbyr.vdm.utils.config.update
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXProgressBar
 import javafx.scene.control.*
 import javafx.scene.layout.ColumnConstraints
 import javafx.scene.layout.GridPane
 import javafx.scene.layout.VBox
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import tornadofx.*
 import java.text.DecimalFormat
 import java.util.*
@@ -54,21 +51,11 @@ class MainView : View() {
     private var selectedTaskModel: DownloadTaskModel? = null
     private var downloadTaskTableView: TableView<DownloadTaskModel>
 
-    private val cu = AppConfigUtils(app.config)
-
     init {
-        // init theme
         themeController.initTheme()
-
         downloadTaskTableView = tableview(controller.downloadTaskModelList) {
             fitToParentSize()
             columnResizePolicy = SmartResize.POLICY
-            // TODO multi options
-//                column("", DownloadTaskModel::checkedProperty).cellFormat {
-//                    val cb = JFXCheckBox("")
-//                    cb.isSelected = it
-//                    graphic = cb
-//                }
             column(messages["ui.title"], DownloadTaskModel::titleProperty).remainingWidth()
             column(messages["ui.size"], DownloadTaskModel::sizeProperty)
             column(messages["ui.status"], DownloadTaskModel::statusProperty).cellFormat {
@@ -127,32 +114,36 @@ class MainView : View() {
         menuAbout = MenuItem(messages["ui.about"])
         menuQuit = MenuItem(messages["ui.quit"])
         menuDonate = MenuItem(messages["ui.donate"])
-        contextMenu.items.addAll(menuNew, menuOpenDir, menuStartAllTask, menuStopAllTask, SeparatorMenuItem(), menuPreferences, menuAbout, menuDonate, SeparatorMenuItem(), menuQuit)
+        contextMenu.items.addAll(
+            menuNew,
+            menuOpenDir,
+            menuStartAllTask,
+            menuStopAllTask,
+            SeparatorMenuItem(),
+            menuPreferences,
+            menuAbout,
+            menuDonate,
+            SeparatorMenuItem(),
+            menuQuit
+        )
         loadVDMConfig()
         initListeners()
         controller.loadTaskFromDB()
     }
 
     private fun loadVDMConfig() {
-        // create the config file when first time use VDM
-        val firstTimeUse = cu.safeLoad(AppProperties.FIRST_TIME_USE, "true").toBoolean()
+        // create the app.app file when first time use VDM
+        val firstTimeUse = app.config.boolean(Attributes.FIRST_TIME_USE, Attributes.Defaults.FIRST_TIME_USE)
         if (firstTimeUse) {
-            // init config file
-            cu.update(AppProperties.VDM_VERSION, vdmVersion)
+            // init app.app file
+            app.config.update(Attributes.VDM_VERSION, vdmVersion)
 
             find(PreferencesView::class).openWindow()?.hide()
-            cu.update(AppProperties.FIRST_TIME_USE, "false")
+//            find(WizardView::class).openWindow(stageStyle = StageStyle.UNDECORATED)?.isAlwaysOnTop = true  // todo use this
+            find(WizardView::class).openWindow()?.isAlwaysOnTop = true  // make sure wizard is always on top
+//            ConfigUtils.update(Attributes.FIRST_TIME_USE, "false")     // TODO uncomment this
         } else {
-            cu.update(AppProperties.VDM_VERSION, vdmVersion)
-        }
-
-        // debug mode
-        val rootLogger = LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME) as ch.qos.logback.classic.Logger
-        if (cu.load(AppProperties.DEBUG_MODE).toBoolean()) {
-            rootLogger.level = Level.DEBUG
-        } else {
-            rootLogger.level = Level.ERROR
-            cu.update(AppProperties.DEBUG_MODE, false)
+            app.config.update(Attributes.VDM_VERSION, vdmVersion)
         }
     }
 
@@ -164,7 +155,7 @@ class MainView : View() {
 
         // shortcut buttons
         // start models
-        btnStart.setOnMouseClicked {
+        btnStart.setOnMouseClicked { _ ->
             selectedTaskModel?.let { controller.startTask(it) }
         }
         // preferences view
@@ -188,7 +179,7 @@ class MainView : View() {
             if (selectedTaskModel != null) {
                 OSUtils.openDir(selectedTaskModel!!.taskConfig.storagePath)
             } else {
-                OSUtils.openDir(cu.load(AppProperties.STORAGE_PATH))
+                OSUtils.openDir(app.config.string(Attributes.STORAGE_PATH, Attributes.Defaults.STORAGE_PATH))
             }
         }
         // TODO search models
@@ -207,7 +198,7 @@ class MainView : View() {
             if (selectedTaskModel != null) {
                 OSUtils.openDir(selectedTaskModel!!.taskConfig.storagePath)
             } else {
-                OSUtils.openDir(cu.load(AppProperties.STORAGE_PATH))
+                OSUtils.openDir(app.config.string(Attributes.STORAGE_PATH, Attributes.Defaults.STORAGE_PATH))
             }
         }
         menuStartAllTask.action {
